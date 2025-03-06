@@ -1,0 +1,5239 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html>
+<html epub:prefix="z3998: http://www.daisy.org/z3998/2012/vocab/structure/#" lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+ <head>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   21String Localization and Regular Expressions
+  </title>
+ </head>
+ <body>
+  <div class="navigation">
+   <a class="nav-button" href="chapter_031.html">
+    ← Previous
+   </a>
+   <a class="nav-button" href="index.html">
+    Table of Contents
+   </a>
+   <a class="nav-button" href="chapter_033.html">
+    Next →
+   </a>
+  </div>
+  <div class="chapter-content">
+   <section aria-labelledby="c21_1" epub:type="chapter" role="doc-chapter">
+    <header>
+     <h1 id="c21_1">
+      <span aria-label="831" epub:type="pagebreak" id="Page_831" role="doc-pagebreak">
+      </span>
+      <span id="c21">
+      </span>
+      <span class="chapterNumber">
+       21
+      </span>
+      <br/>
+      <span class="chapterTitle">
+       String Localization and Regular Expressions
+      </span>
+     </h1>
+    </header>
+    <section aria-label="chapter opening">
+     <span id="c21-sec-0001">
+     </span>
+     <section>
+      <aside>
+       <div class="top hr">
+        <hr/>
+       </div>
+       <section class="feature3">
+        <h3>
+         WHAT'S IN THIS CHAPTER?
+        </h3>
+        <ul class="check3" id="c21-list-0001">
+         <li id="c21-li-0001">
+          How to localize your applications to reach a worldwide audience
+         </li>
+         <li id="c21-li-0002">
+          How to use regular expressions to do powerful pattern matching
+         </li>
+         <li id="c21-li-0003">
+          How to use regular expressions to validate strings, search substrings, find and replace strings, and more
+         </li>
+        </ul>
+        <div class="bottom hr">
+         <hr/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <section>
+      <aside>
+       <div class="top hr">
+        <hr/>
+       </div>
+       <section class="feature3">
+        <span id="c21-fea-0001">
+        </span>
+        <h3 id="head-2-221">
+         WILEY.COM DOWNLOADS FOR THIS CHAPTER
+        </h3>
+        <span id="c21-sec-0003">
+        </span>
+        <p id="c21-para-0004">
+         Please note that all the code examples for this chapter are available as part of this chapter's code download on the book's website at
+         <code>
+          <a href="http://www.wiley.com/go/proc++6e">
+           www.wiley.com/go/proc++6e
+          </a>
+         </code>
+         on the Download Code tab.
+        </p>
+        <div class="bottom hr">
+         <hr/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <p id="c21-para-0005">
+      This chapter starts with a discussion of localization, which allows you to write software that can be localized to different regions around the world. An application that is properly localized displays numbers, dates, currencies, and so on in the appropriate format according to rules for a specific country or region.
+     </p>
+     <p id="c21-para-0006">
+      The second part of this chapter introduces the
+      <i>
+       regular expressions library
+      </i>
+      , which makes it easy to perform pattern matching on strings. It allows you to search for substrings matching a given pattern, but also to validate, parse, and transform strings. Regular expressions are powerful. I recommend that you use them, as they are less error prone than manually writing your own string processing code.
+     </p>
+    </section>
+    <span aria-label="832" epub:type="pagebreak" id="Page_832" role="doc-pagebreak">
+    </span>
+    <section aria-labelledby="head-2-222">
+     <span id="c21-sec-0004">
+     </span>
+     <h2 id="head-2-222">
+      LOCALIZATION
+     </h2>
+     <p>
+      When you're learning how to program in C or C++, it's useful to think of a character as equivalent to a byte and to treat all characters as members of the American Standard Code for Information Interchange (ASCII) character set. ASCII is a 7-bit set usually stored in an 8-bit
+      <code>
+       char
+      </code>
+      type. In reality, experienced C++ programmers recognize that successful programs are used throughout the world. Even if you don't initially write your program with international audiences in mind, you shouldn't prevent yourself from
+      <i>
+       localizing
+      </i>
+      , or making the software
+      <i>
+       locale aware
+      </i>
+      , at a later date.
+     </p>
+     <section>
+      <aside>
+       <div class="top hr">
+        <hr/>
+       </div>
+       <section class="feature1">
+        <p id="c21-para-0008">
+         <b>
+          NOTE
+         </b>
+         <i>
+          This chapter gives you an introduction to localization, different character encodings, and string code portability. It is outside the scope of this book to discuss all these topics in detail, because they warrant an entire book on their own
+         </i>
+         .
+        </p>
+        <div class="bottom hr">
+         <hr/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <section>
+      <span id="c21-sec-0006">
+      </span>
+      <h3 id="head-3-450">
+       Wide Characters
+      </h3>
+      <p id="c21-para-0009">
+       The problem with viewing a character as a byte is that not all languages, or
+       <i>
+        character sets
+       </i>
+       , can be fully represented in 8 bits, or 1 byte. C++ has a built-in type called
+       <code>
+        wchar_t
+       </code>
+       that holds a
+       <i>
+        wide character
+       </i>
+       . Languages with non-ASCII (US) characters, such as Japanese and Arabic, can be represented in C++ with
+       <code>
+        wchar_t
+       </code>
+       . However, the C++ standard does not define the size for
+       <code>
+        wchar_t
+       </code>
+       . Some compilers use 16 bits, while others use 32 bits. Most of the time, it matches the size of the native Unicode character type on the underlying operating system. To write cross-platform code, it is not safe to assume that
+       <code>
+        wchar_t
+       </code>
+       is of a particular size.
+      </p>
+      <p>
+       If there is
+       <i>
+        any
+       </i>
+       chance that your program will be used in a non-Western character set context (hint: there is!), you should use wide characters from the beginning. When working with
+       <code>
+        wchar_t
+       </code>
+       , string and character literals are prefixed with the letter
+       <code>
+        L
+       </code>
+       to indicate that a wide-character encoding should be used. For example, to initialize a
+       <code>
+        wchar_t
+       </code>
+       character to the letter
+       <code>
+        m
+       </code>
+       , you write it like this:
+      </p>
+      <pre id="c21-code-0001"><code>wchar_t myWideCharacter { L'm' };</code></pre>
+      <p id="c21-para-0011">
+       There are wide-character versions of most of your favorite types and classes. The wide
+       <code>
+        string
+       </code>
+       class is
+       <code>
+        wstring
+       </code>
+       . The “prefix letter w” pattern applies to streams as well. Wide-character file output streams are handled with
+       <code>
+        wofstream
+       </code>
+       , and input is handled with
+       <code>
+        wifstream
+       </code>
+       . The joy of pronouncing these class names (
+       <i>
+        woof-stream? whiff-stream?
+       </i>
+       ) is reason enough to make your programs locale aware! Streams are discussed in detail in
+       <a href="c13.xhtml">
+        Chapter 13
+       </a>
+       , “Demystifying C++ I/O.”
+      </p>
+      <p>
+       There are also wide-versions of
+       <code>
+        cout
+       </code>
+       ,
+       <code>
+        cin
+       </code>
+       ,
+       <code>
+        cerr
+       </code>
+       , and
+       <code>
+        clog
+       </code>
+       available, called
+       <code>
+        wcout
+       </code>
+       ,
+       <code>
+        wcin
+       </code>
+       ,
+       <code>
+        wcerr
+       </code>
+       , and
+       <code>
+        wclog
+       </code>
+       . Using them is no different than using the non-wide versions:
+      </p>
+      <pre id="c21-code-0002"><code>wcout &lt;&lt; L"I am a wide-character string literal." &lt;&lt; endl;</code></pre>
+      <p>
+       <code>
+        print()
+       </code>
+       and
+       <code>
+        println()
+       </code>
+       don't support
+       <code>
+        wchar_t
+       </code>
+       string literals, but they do support UTF-8 string literals, discussed later in this chapter. On the other hand,
+       <code>
+        format()
+       </code>
+       does support wide-character strings:
+      </p>
+      <pre id="c21-code-0003"><code>wcout &lt;&lt; format(L"myWideCharacter is {}", myWideCharacter) &lt;&lt; endl;</code></pre>
+     </section>
+     <span aria-label="833" epub:type="pagebreak" id="Page_833" role="doc-pagebreak">
+     </span>
+     <section>
+      <span id="c21-sec-0007">
+      </span>
+      <h3 id="head-3-451">
+       Non-Western Character Sets
+      </h3>
+      <p id="c21-para-0014">
+       Wide characters are a great step forward because they increase the amount of space available to define a single character. The next step is to figure out how that space is used. In wide character sets, just like in ASCII, characters are represented by numbers, now called
+       <i>
+        code points
+       </i>
+       . The only difference is that each number does not fit in 8 bits. The map of characters to code points is quite a bit larger because it handles many different character sets in addition to the characters that English-speaking programmers are familiar with.
+      </p>
+      <p id="c21-para-0015">
+       The Universal Character Set (UCS)—defined by the International Standard ISO 10646—and Unicode are both standardized sets of characters. They both identify characters by an unambiguous name and a code point. The same characters with the same numbers exist in both standards. At the time of this writing, the latest version of Unicode was version 15, which defines 149,186 characters. Both UCS and Unicode have specific
+       <i>
+        encodings
+       </i>
+       that you can use to represent specific code points. This is important: a code point is just a number; an encoding specifies how to represent that number as one or more bytes. For example, UTF-8 is an example of a Unicode encoding where Unicode characters are encoded using one to four 8-bit bytes. UTF-16 encodes Unicode characters as one or two 16-bit values, and UTF-32 encodes Unicode characters as exactly 32 bits.
+      </p>
+      <p>
+       Different applications can use different encodings. Unfortunately, as mentioned earlier in this chapter, the C++ standard does not specify a size for wide characters (
+       <code>
+        wchar_t
+       </code>
+       ). On Windows it is 16 bits, while on other platforms it could be 32 bits. You need to be aware of this when using wide characters for character encoding in cross-platform code. To help solve this issue, there are other character types:
+       <code>
+        char8_t
+       </code>
+       ,
+       <code>
+        char16_t
+       </code>
+       , and
+       <code>
+        char32_t
+       </code>
+       . The following list gives an overview of the available character types:
+      </p>
+      <ul class="check1" id="c21-list-0002">
+       <li id="c21-li-0004">
+        <b>
+         <code>
+          char:
+         </code>
+        </b>
+        Stores 8 bits. This type can be used to store ASCII characters or as a basic building block for storing UTF-8 encoded Unicode characters, where one Unicode character is encoded with up to four
+        <code>
+         char
+        </code>
+        s.
+       </li>
+       <li id="c21-li-0005">
+        <b>
+         <code>
+          char
+          <i>
+           x
+          </i>
+          _t
+         </code>
+         :
+        </b>
+        Stores at least
+        <i>
+         x
+        </i>
+        bits where
+        <i>
+         x
+        </i>
+        can be 8, 16, or 32. This type can be used as the basic building block for UTF-
+        <i>
+         x
+        </i>
+        encoded Unicode characters, encoding one Unicode character with up to four
+        <code>
+         char8_t
+        </code>
+        s, up to two
+        <code>
+         char16_t
+        </code>
+        s, or one
+        <code>
+         char32_t
+        </code>
+        .
+       </li>
+       <li id="c21-li-0006">
+        <b>
+         <code>
+          wchar_t
+         </code>
+         :
+        </b>
+        Stores a wide character of a compiler-specific size and encoding.
+       </li>
+      </ul>
+      <p id="c21-para-0017">
+       The benefits of using the
+       <code>
+        char
+        <i>
+         x
+        </i>
+        _t
+       </code>
+       types instead of
+       <code>
+        wchar_t
+       </code>
+       is that the standard guarantees minimum sizes for the
+       <code>
+        char
+        <i>
+         x
+        </i>
+        _t
+       </code>
+       types, independent of the compiler. There is no minimum size guaranteed for
+       <code>
+        wchar_t
+       </code>
+       .
+      </p>
+      <p>
+       String literals can have a string prefix to turn them into a specific type. The complete set of supported string prefixes is as follows:
+      </p>
+      <ul class="check1" id="c21-list-0003">
+       <li id="c21-li-0007">
+        u8: A
+        <code>
+         char8_t
+        </code>
+        string literal with UTF-8 encoding
+       </li>
+       <li id="c21-li-0008">
+        <b>
+         <code>
+          u
+         </code>
+         :
+        </b>
+        A
+        <code>
+         char16_t
+        </code>
+        string literal with UTF-16 encoding
+       </li>
+       <li id="c21-li-0009">
+        <b>
+         <code>
+          U
+         </code>
+         :
+        </b>
+        A
+        <code>
+         char32_t
+        </code>
+        string literal with UTF-32 encoding
+       </li>
+       <li id="c21-li-0010">
+        <b>
+         <code>
+          L
+         </code>
+         :
+        </b>
+        A
+        <code>
+         wchar_t
+        </code>
+        string literal with a compiler-dependent encoding
+       </li>
+      </ul>
+      <p>
+       <span aria-label="834" epub:type="pagebreak" id="Page_834" role="doc-pagebreak">
+       </span>
+       All of these string literals can be combined with the raw string literal prefix,
+       <code>
+        R
+       </code>
+       , discussed in
+       <a href="c02.xhtml">
+        Chapter 2
+       </a>
+       , “Working with Strings and String Views.” Here are some examples:
+      </p>
+      <pre id="c21-code-0004"><code>const char8_t* s1 { u8R"(Raw UTF-8 string literal)" };</code>
+<code>const wchar_t* s2 { LR"(Raw wide string literal)" };</code>
+<code>const char16_t* s3 { uR"(Raw UTF-16 string literal)" };</code>
+<code>const char32_t* s4 { UR"(Raw UTF-32 string literal)" };</code></pre>
+      <p id="c21-para-0020">
+       You can insert specific Unicode code points in non-raw string literals using several different escape sequences. The following table gives an overview of your options. The last column shows the encoding of the superscript two, ², character.
+      </p>
+      <table border="1">
+       <thead>
+        <tr>
+         <th class="left bgcolor2" scope="col">
+          ESCAPE SEQUENCE
+         </th>
+         <th class="left bgcolor2" scope="col">
+          DESCRIPTION
+         </th>
+         <th class="left bgcolor2" scope="col">
+          EXAMPLE:
+          <sup>
+           2
+          </sup>
+         </th>
+        </tr>
+       </thead>
+       <tbody>
+        <tr>
+         <td class="left bgcolor3">
+          <span class="forecolor1">
+           \nnn
+          </span>
+         </td>
+         <td class="left bgcolor3">
+          1 to 3 octal digits
+         </td>
+         <td class="left bgcolor3">
+          <span class="forecolor1">
+           \262
+          </span>
+         </td>
+        </tr>
+        <tr>
+         <td class="left bgcolor3">
+          <img alt="C++23" src="../images\images/icon1.png"/>
+          <code>
+           \o{n…}
+          </code>
+         </td>
+         <td class="left bgcolor3">
+          Arbitrary number of octal digits
+         </td>
+         <td class="left bgcolor3">
+          <span class="forecolor1">
+           \o{262}
+          </span>
+         </td>
+        </tr>
+        <tr>
+         <td class="left bgcolor3">
+          <span class="forecolor1">
+           \xn…
+          </span>
+         </td>
+         <td class="left bgcolor3">
+          Arbitrary number of hexadecimal digits
+         </td>
+         <td class="left bgcolor3">
+          <span class="forecolor1">
+           \xB2
+          </span>
+          or
+          <code>
+           \x00B2
+          </code>
+         </td>
+        </tr>
+        <tr>
+         <td class="left bgcolor3">
+          <img alt="C++23" src="../images\images/icon1.png"/>
+          <code>
+           \x{n…}
+          </code>
+         </td>
+         <td class="left bgcolor3">
+          Arbitrary number of hexadecimal digits
+         </td>
+         <td class="left bgcolor3">
+          <span class="forecolor1">
+           \x{B2}
+          </span>
+          or
+          <code>
+           \x{00B2}
+          </code>
+         </td>
+        </tr>
+        <tr>
+         <td class="left bgcolor3">
+          <span class="forecolor1">
+           \unnnn
+          </span>
+         </td>
+         <td class="left bgcolor3">
+          4 hexadecimal digits
+         </td>
+         <td class="left bgcolor3">
+          <span class="forecolor1">
+           \u00B2
+          </span>
+         </td>
+        </tr>
+        <tr>
+         <td class="left bgcolor3">
+          <img alt="C++23" src="../images\images/icon1.png"/>
+          <code>
+           \u{n…}
+          </code>
+         </td>
+         <td class="left bgcolor3">
+          Arbitrary number of hexadecimal digits
+         </td>
+         <td class="left bgcolor3">
+          <span class="forecolor1">
+           \u{B2}
+          </span>
+          or
+          <code>
+           \u{00B2}
+          </code>
+         </td>
+        </tr>
+        <tr>
+         <td class="left bgcolor3">
+          <span class="forecolor1">
+           \Unnnnnnnn
+          </span>
+         </td>
+         <td class="left bgcolor3">
+          8 hexadecimal digits
+         </td>
+         <td class="left bgcolor3">
+          <span class="forecolor1">
+           \U000000B2
+          </span>
+         </td>
+        </tr>
+        <tr>
+         <td class="left bgcolor3">
+          <img alt="C++23" src="../images\images/icon1.png"/>
+          <code>
+           \N{name}
+          </code>
+         </td>
+         <td class="left bgcolor3">
+          Universal character name
+         </td>
+         <td class="left bgcolor3">
+          <span class="forecolor1">
+           \N{SUPERSCRIPT TWO}
+          </span>
+         </td>
+        </tr>
+       </tbody>
+      </table>
+      <p id="c21-para-0031">
+       The
+       <code>
+        \o{n…}
+       </code>
+       ,
+       <code>
+        \x{n…}
+       </code>
+       , and
+       <code>
+        \u{n…}
+       </code>
+       notations introduced with C++23 are useful to avoid problems when the next character in a string literal happens to be a valid octal or hexadecimal digit. For the
+       <code>
+        \N{name}
+       </code>
+       notation, the name must be the official Unicode name of the character, which you can look up in any Unicode character reference.
+      </p>
+      <p>
+       Here are some more examples representing the formula
+       <code>
+        π r
+       </code>
+       <sup>
+        2
+       </sup>
+       . The
+       <code>
+        π
+       </code>
+       character has code
+       <code>
+        3C0
+       </code>
+       , and the superscript two character has code
+       <code>
+        B2
+       </code>
+       .
+      </p>
+      <pre id="c21-code-0005"><code>const char8_t* formula1 { u8"\x3C0 r\xB2" };</code>
+<code>const char8_t* formula2 { u8"\u03C0 r\u00B2" };</code>
+<code>const char8_t* formula3 { u8"\N{GREEK SMALL LETTER PI} r\N{SUPERSCRIPT TWO}" };</code></pre>
+      <p id="c21-para-0033">
+       Besides string literals, character literals can also have a prefix to turn them into specific types. The prefixes
+       <code>
+        u8
+       </code>
+       ,
+       <code>
+        u
+       </code>
+       ,
+       <code>
+        U
+       </code>
+       , and
+       <code>
+        L
+       </code>
+       are supported, for example:
+       <code>
+        u'a'
+       </code>
+       ,
+       <code>
+        U'a'
+       </code>
+       ,
+       <code>
+        L'a'
+       </code>
+       , and
+       <code>
+        u8'a'
+       </code>
+       .
+      </p>
+      <p>
+       In addition to the
+       <code>
+        std::string
+       </code>
+       class, there is also support for
+       <code>
+        wstring
+       </code>
+       ,
+       <code>
+        u8string
+       </code>
+       ,
+       <code>
+        u16string
+       </code>
+       , and
+       <code>
+        u32string
+       </code>
+       . They are defined as follows:
+      </p>
+      <ul class="check1" id="c21-list-0004">
+       <li id="c21-li-0011">
+        <code>
+         using string = basic_string&lt;char&gt;;
+        </code>
+       </li>
+       <li id="c21-li-0012">
+        <code>
+         using wstring = basic_string&lt;wchar_t&gt;;
+        </code>
+       </li>
+       <li id="c21-li-0013">
+        <code>
+         using u8string = basic_string&lt;char8_t&gt;;
+        </code>
+       </li>
+       <li id="c21-li-0014">
+        <span aria-label="835" epub:type="pagebreak" id="Page_835" role="doc-pagebreak">
+        </span>
+        <code>
+         using u16string = basic_string&lt;char16_t&gt;;
+        </code>
+       </li>
+       <li id="c21-li-0015">
+        <code>
+         using u32string = basic_string&lt;char32_t&gt;;
+        </code>
+       </li>
+      </ul>
+      <p id="c21-para-0035">
+       Similarly, the Standard Library provides
+       <code>
+        std::string_view
+       </code>
+       ,
+       <code>
+        wstring_view
+       </code>
+       ,
+       <code>
+        u8string_view
+       </code>
+       ,
+       <code>
+        u16string_view
+       </code>
+       , and
+       <code>
+        u32string_view
+       </code>
+       , all based on
+       <code>
+        basic_string_view
+       </code>
+       .
+      </p>
+      <p id="c21-para-0036">
+       Multibyte strings are strings with characters composed of one or more bytes using a locale-dependent encoding. Locales are discussed later in this chapter. A multibyte string could use Unicode encoding, or any other kind of encoding such as Shift-JIS, EUC-JP, and so on. Conversion functions are available to convert between
+       <code>
+        char8_t
+       </code>
+       /
+       <code>
+        char16_t
+       </code>
+       /
+       <code>
+        char32_t
+       </code>
+       and multibyte strings, and vice versa:
+       <code>
+        mbrtoc8()
+       </code>
+       and
+       <code>
+        c8rtomb()
+       </code>
+       , and
+       <code>
+        mbrtoc16()
+       </code>
+       ,
+       <code>
+        c16rtomb()
+       </code>
+       ,
+       <code>
+        mbrtoc32()
+       </code>
+       , and
+       <code>
+        c32rtomb()
+       </code>
+       .
+      </p>
+      <p id="c21-para-0037">
+       Unfortunately, the support for
+       <code>
+        char8_t
+       </code>
+       ,
+       <code>
+        char16_t
+       </code>
+       , and
+       <code>
+        char32_t
+       </code>
+       doesn't go much further. There are some conversion classes available (see later in this chapter), but, for example, there is nothing like a version of
+       <code>
+        cout
+       </code>
+       ,
+       <code>
+        cin
+       </code>
+       ,
+       <code>
+        println()
+       </code>
+       ,
+       <code>
+        format()
+       </code>
+       , and so on, that supports these character types; this makes it difficult to print such strings to a console or to read them from user input. If you want to do more with such strings, you need to resort to third-party libraries. International Components for Unicode (ICU) is one well-known library that provides Unicode and globalization support for your applications. (See
+       <code>
+        <a href="http://icu-project.org">
+         icu-project.org
+        </a>
+       </code>
+       .)
+      </p>
+      <p>
+       <img alt="C++23" src="../images\images/icon1.png"/>
+       C++23 improves things slightly. It allows a
+       <code>
+        u8
+       </code>
+       UTF-8 string literal to initialize an array of type
+       <code>
+        const char
+       </code>
+       or
+       <code>
+        const unsigned char
+       </code>
+       , and functions like
+       <code>
+        std::format()
+       </code>
+       and
+       <code>
+        print()
+       </code>
+       do support
+       <code>
+        const char[]
+       </code>
+       . For example, the following initializes a
+       <code>
+        const char[]
+       </code>
+       array with a UTF-8 string literal and then prints it using
+       <code>
+        println()
+       </code>
+       . If your environment is set up to handle Japanese characters, then the output is “Hello world” in Japanese.
+      </p>
+      <pre id="c21-code-0006"><code>const char hello[] { u8"こんにちは世界" };</code>
+<code>println("{}", hello);</code></pre>
+      <p>
+       If you would use
+       <code>
+        char8_t[]
+       </code>
+       instead of
+       <code>
+        char[]
+       </code>
+       as follows, you will get a compilation error as
+       <code>
+        println()
+       </code>
+       doesn't understand the
+       <code>
+        char8_t
+       </code>
+       type.
+      </p>
+      <pre id="c21-code-0007"><code>const <b>char8_t</b> hello[] { u8"こんにちは世界" };</code>
+<code>println("{}", hello);  <span class="color3">// Error: doesn't compile!</span></code></pre>
+     </section>
+     <section>
+      <span id="c21-sec-0008">
+      </span>
+      <h3 id="head-3-452">
+       Localizing String Literals
+      </h3>
+      <p id="c21-para-0041">
+       A critical aspect of localization is that you should never put any native-language string literals in your source code, except maybe for debug strings targeted at the developer. In Microsoft Windows applications, this is accomplished by putting all strings for an application in
+       <code>
+        STRINGTABLE
+       </code>
+       resources. Most other platforms offer similar capabilities. If you need to translate your application to another language, translating those resources should be all you need to do, without requiring any source changes. There are tools available that will help you with this translation process.
+      </p>
+      <p>
+       To make your source code localizable, you should not compose sentences out of string literals, even if the individual literals can be localized. Here is an example:
+      </p>
+      <pre id="c21-code-0008"><code>unsigned n { 5 };</code>
+<code>wstring filename { L"file1.txt" };</code>
+<code>wcout &lt;&lt; n &lt;&lt; L" bytes read from " &lt;&lt; filename &lt;&lt; endl;</code></pre>
+      <p>
+       <span aria-label="836" epub:type="pagebreak" id="Page_836" role="doc-pagebreak">
+       </span>
+       This statement cannot be localized to, for example, German because it requires a reordering of the words. The German translation is as follows:
+      </p>
+      <pre id="c21-code-0009"><code>wcout &lt;&lt; n &lt;&lt; L" Bytes aus " &lt;&lt; filename &lt;&lt; L" gelezen" &lt;&lt; endl;</code></pre>
+      <p>
+       To make sure you can properly localize such strings, you could implement it as follows:
+      </p>
+      <pre id="c21-code-0010"><code>vprint_unicode(loadResource(IDS_TRANSFERRED), make_format_args(n, filename));</code></pre>
+      <p id="c21-para-0045">
+       <code>
+        IDS_TRANSFERRED
+       </code>
+       is the name of an entry in a string resource table. For the English version,
+       <code>
+        IDS_TRANSFERRED
+       </code>
+       could be defined as “
+       <code>
+        {0} bytes read from {1}
+       </code>
+       ”, while the German version of the resource could be defined as “
+       <code>
+        {0} Bytes aus {1} gelezen
+       </code>
+       ”. The
+       <code>
+        loadResource()
+       </code>
+       function loads the string resource with the given name, and
+       <code>
+        vprint_unicode()
+       </code>
+       (see
+       <a href="c02.xhtml">
+        Chapter 2
+       </a>
+       ) substitutes
+       <code>
+        {0}
+       </code>
+       with the value of
+       <code>
+        n
+       </code>
+       and
+       <code>
+        {1}
+       </code>
+       with the value of
+       <code>
+        filename
+       </code>
+       .
+      </p>
+     </section>
+     <section>
+      <span id="c21-sec-0009">
+      </span>
+      <h3 id="head-3-453">
+       Locales and Facets
+      </h3>
+      <p id="c21-para-0046">
+       Character sets are only one of the differences in data representation between countries. Even countries that use similar character sets, such as Great Britain and the United States, still differ in how they represent certain data, such as dates and monetary values.
+      </p>
+      <p id="c21-para-0047">
+       The standard C++ mechanism that groups specific data about a particular set of cultural parameters is called a
+       <i>
+        locale
+       </i>
+       . An individual component of a locale, such as date format, time format, number format, and so on, is called a
+       <i>
+        facet
+       </i>
+       . An example of a locale is US English. An example of a facet is the format used to display a date. Several built-in facets are common to all locales. C++ also provides a way to customize or add facets.
+      </p>
+      <p id="c21-para-0048">
+       There are third-party libraries available that make it easier to work with locales. One example is
+       <code>
+        boost.locale
+       </code>
+       (
+       <?span Start cssStyle="text-decoration:underline"??>
+       <code>
+        boost.org
+       </code>
+       ), which is able to use ICU as its backend, supporting collations and conversions, converting strings to uppercase (instead of converting character by character to uppercase), and so on.
+      </p>
+      <section>
+       <span id="c21-sec-0010">
+       </span>
+       <h4 id="head-4-336">
+        Locales
+       </h4>
+       <p id="c21-para-0049">
+        When using I/O streams, data is formatted according to a particular locale. Locales are objects that can be attached to a stream, and they are defined in
+        <code>
+         &lt;locale&gt;
+        </code>
+        . Locale names are implementation specific. The POSIX standard is to separate a language and an area into two-letter sections with an optional encoding. For example, the locale for the English language as spoken in the United States is
+        <code>
+         en_US
+        </code>
+        , while the locale for the English language as spoken in Great Britain is
+        <code>
+         en_GB
+        </code>
+        . The locale for Japanese spoken in Japan with Japanese Industrial Standard encoding is
+        <code>
+         ja_JP.jis
+        </code>
+        .
+       </p>
+       <p>
+        Locale names on Windows can have two formats. The preferred format is similar to the POSIX format but uses a dash instead of an underscore. The second, old format looks as follows where everything between square brackets is optional:
+       </p>
+       <pre id="c21-code-0011"><code>lang[_country_region[.code_page]]</code></pre>
+       <p>
+        The following table shows some examples of the POSIX, preferred Windows, and old Windows locale formats:
+       </p>
+       <table border="1">
+        <thead>
+         <tr>
+          <th class="left bgcolor2" scope="col">
+           LANGUAGE
+          </th>
+          <th class="left bgcolor2" scope="col">
+           POSIX
+          </th>
+          <th class="left bgcolor2" scope="col">
+           WINDOWS
+          </th>
+          <th class="left bgcolor2" scope="col">
+           WINDOWS OLD
+          </th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="left bgcolor3">
+           US English
+          </td>
+          <td class="left bgcolor3">
+           en_US
+          </td>
+          <td class="left bgcolor3">
+           en-US
+          </td>
+          <td class="left bgcolor3">
+           English_United States
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           Great Britain English
+          </td>
+          <td class="left bgcolor3">
+           en_GB
+          </td>
+          <td class="left bgcolor3">
+           en-GB
+          </td>
+          <td class="left bgcolor3">
+           English_Great Britain
+           <span aria-label="837" epub:type="pagebreak" id="Page_837" role="doc-pagebreak">
+           </span>
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p id="c21-para-0052">
+        Most operating systems have a mechanism to determine the locale as defined by the user. In C++, you can pass an empty string to the
+        <code>
+         std::locale
+        </code>
+        constructor to create a
+        <code>
+         locale
+        </code>
+        from the user's environment. Once this object is created, you can use it to query the
+        <code>
+         locale
+        </code>
+        , possibly making programmatic decisions based on it.
+       </p>
+      </section>
+      <section>
+       <span id="c21-sec-0011">
+       </span>
+       <h4 id="head-4-337">
+        Global Locale
+       </h4>
+       <p id="c21-para-0053">
+        The
+        <code>
+         std::locale::global()
+        </code>
+        function can be used to replace the global C++ locale in your application with a given locale. The default constructor of
+        <code>
+         std::locale
+        </code>
+        returns a copy of this global locale. Keep in mind, though, that the C++ Standard Library objects that use locales, for example streams such as
+        <code>
+         cout
+        </code>
+        , store a copy of the global locale at construction time. Changing the global locale afterward does not impact objects that were already created before. If needed, you can use the
+        <code>
+         imbue()
+        </code>
+        member function on streams (see the next section) to change their locale after construction.
+       </p>
+       <p>
+        Here is an example outputting a number with the default locale, changing the global locale to US English and outputting the same number again:
+       </p>
+       <pre id="c21-code-0012"><code>void print()</code>
+<code>{</code>
+<code>    stringstream stream;</code>
+<code>    stream &lt;&lt; 32767;</code>
+<code>    println("{}", stream.str());</code>
+<code>}</code>
+<code></code>
+<code>int main()</code>
+<code>{</code>
+<code>    print();</code>
+<code>    locale::global(locale { "en-US" }); <span class="color3">// "en_US" for POSIX</span></code>
+<code>    print();</code>
+<code>}</code></pre>
+       <p>
+        The output is as follows:
+       </p>
+       <pre id="c21-code-0013"><code>32767</code>
+<code>32,767</code></pre>
+      </section>
+      <section>
+       <span id="c21-sec-0012">
+       </span>
+       <h4 id="head-4-338">
+        Using Locales
+       </h4>
+       <p>
+        The following code demonstrates how to use the user's locale for a stream by calling the
+        <code>
+         imbue()
+        </code>
+        member function on the stream. The result is that everything that is sent to
+        <code>
+         cout
+        </code>
+        is formatted according to the formatting rules of the user's environment:
+       </p>
+       <pre id="c21-code-0014"><code>cout.imbue(locale { "" });</code>
+<code>cout &lt;&lt; "User's locale: " &lt;&lt; 32767 &lt;&lt; endl;</code></pre>
+       <p id="c21-para-0057">
+        This means that if your system locale is English United States and you output the number 32767, the number is displayed as 32,767; however, if your system locale is Dutch Belgium, the same number is displayed as 32.767.
+       </p>
+       <p>
+        <span aria-label="838" epub:type="pagebreak" id="Page_838" role="doc-pagebreak">
+        </span>
+        The default locale is the
+        <i>
+         classic/neutral
+        </i>
+        locale, and not the user's locale. The classic locale uses ANSI C conventions and has the name C. The classic C locale is similar to US English, but there are slight differences. For example, numbers are handled without any punctuation.
+       </p>
+       <pre id="c21-code-0015"><code>cout.imbue(locale { "C" });</code>
+<code>cout &lt;&lt; "C locale: " &lt;&lt; 32767 &lt;&lt; endl;</code></pre>
+       <p>
+        The output of this code is as follows:
+       </p>
+       <pre id="c21-code-0016"><code>C locale: 32767</code></pre>
+       <p>
+        The following code manually sets the US English locale, so the number 32767 is formatted with US English punctuation, independent of your system locale:
+       </p>
+       <pre id="c21-code-0017"><code>cout.imbue(locale { "en-US" }); <span class="color3">// "en_US" for POSIX</span></code>
+<code>cout &lt;&lt; "en-US locale: " &lt;&lt; 32767 &lt;&lt; endl;</code></pre>
+       <p>
+        The output of this code is as follows:
+       </p>
+       <pre id="c21-code-0018"><code>en-US locale: 32,767</code></pre>
+       <p>
+        By default,
+        <code>
+         std::print()
+        </code>
+        and
+        <code>
+         println()
+        </code>
+        use the C locale. For example, the following prints 32767:
+       </p>
+       <pre id="c21-code-0019"><code>println("println(): {}", 32767);</code></pre>
+       <p>
+        You can specify the
+        <code>
+         L
+        </code>
+        format specifier, in which case the global locale is used.
+       </p>
+       <pre id="c21-code-0020"><code>println("println() using global locale: <b>{:L}</b>", 32767);</code></pre>
+       <p>
+        <code>
+         std::format()
+        </code>
+        also supports locales by using the
+        <code>
+         L
+        </code>
+        format specifier and optionally accepts a
+        <code>
+         locale
+        </code>
+        as first argument. When the
+        <code>
+         L
+        </code>
+        format specifier is used and a
+        <code>
+         locale
+        </code>
+        is passed to
+        <code>
+         format()
+        </code>
+        , that
+        <code>
+         locale
+        </code>
+        is used for formatting. If the
+        <code>
+         L
+        </code>
+        format specifier is used without passing a
+        <code>
+         locale
+        </code>
+        to
+        <code>
+         format()
+        </code>
+        , the global
+        <code>
+         locale
+        </code>
+        is used. For example, the following prints 32,767 according to English formatting rules:
+       </p>
+       <pre id="c21-code-0021"><code>cout &lt;&lt; format(<b>locale { "en-US" }</b>, "format() with en-US locale: <b>{:L}</b>", 32767);</code></pre>
+       <p>
+        A
+        <code>
+         locale
+        </code>
+        object allows you to query information about the locale. For example, the following program creates a
+        <code>
+         locale
+        </code>
+        matching the user's environment. The
+        <code>
+         name()
+        </code>
+        member function is used to get a C++
+        <code>
+         string
+        </code>
+        that describes the locale. Then, the
+        <code>
+         find()
+        </code>
+        member function is used on the
+        <code>
+         string
+        </code>
+        object to find a given substring, which returns
+        <code>
+         string::npos
+        </code>
+        when the given substring is not found. The code checks for the Windows name and the POSIX name. One of two messages is printed, depending on whether the locale appears to be US English.
+       </p>
+       <pre id="c21-code-0022"><code>locale loc { "" };</code>
+<code>if (loc.name().find("en_US") == string::npos &amp;&amp;</code>
+<code>    loc.name().find("en-US") == string::npos) {</code>
+<code>    println("Welcome non-US English speaker!");</code>
+<code>} else {</code>
+<code>    println("Welcome US English speaker!");</code>
+<code>}</code></pre>
+       <section>
+        <aside>
+         <div class="top hr">
+          <hr/>
+         </div>
+         <section class="feature1">
+          <p id="c21-para-0067">
+           <b>
+            NOTE
+           </b>
+           <i>
+            When you have to write data to a file that is supposed to be read back by a program, it's recommended to write it using the neutral
+           </i>
+           <code>
+            <i>
+             "
+            </i>
+            C
+            <i>
+             "
+            </i>
+           </code>
+           <i>
+            locale; otherwise, parsing will be difficult. On the other hand, when displaying data in a user interface, it's recommended to format the data according to the user locale,
+            <code>
+             ""
+            </code>
+            .
+           </i>
+          </p>
+          <div class="bottom hr">
+           <hr/>
+          </div>
+         </section>
+        </aside>
+       </section>
+      </section>
+      <span aria-label="839" epub:type="pagebreak" id="Page_839" role="doc-pagebreak">
+      </span>
+      <section>
+       <span id="c21-sec-0014">
+       </span>
+       <h4 id="head-4-339">
+        Character Classification
+       </h4>
+       <p>
+        <code>
+         &lt;locale&gt;
+        </code>
+        contains the following character classification functions:
+        <code>
+         std::isspace()
+        </code>
+        ,
+        <code>
+         isblank()
+        </code>
+        ,
+        <code>
+         iscntrl()
+        </code>
+        ,
+        <code>
+         isupper()
+        </code>
+        ,
+        <code>
+         islower()
+        </code>
+        ,
+        <code>
+         isalpha()
+        </code>
+        ,
+        <code>
+         isdigit()
+        </code>
+        ,
+        <code>
+         ispunct()
+        </code>
+        ,
+        <code>
+         isxdigit()
+        </code>
+        ,
+        <code>
+         isalnum()
+        </code>
+        ,
+        <code>
+         isprint()
+        </code>
+        , and
+        <code>
+         isgraph()
+        </code>
+        . They all accept two parameters: the character to classify and the locale to use for the classification. The exact meaning of the different character classes is discussed later in this chapter in the context of regular expressions. Here is an example of using
+        <code>
+         isupper()
+        </code>
+        with a French locale to verify whether a letter is uppercase or not:
+       </p>
+       <pre id="c21-code-0023"><code>println("É {}", isupper(L'É', locale{ "fr-FR" }));</code>
+<code>println("é {}", isupper(L'é', locale{ "fr-FR" }));</code></pre>
+       <p>
+        The output is as follows:
+       </p>
+       <pre id="c21-code-0024"><code>É true</code>
+<code>é false</code></pre>
+      </section>
+      <section>
+       <span id="c21-sec-0015">
+       </span>
+       <h4 id="head-4-340">
+        Character Conversion
+       </h4>
+       <p>
+        <code>
+         &lt;locale&gt;
+        </code>
+        also defines two character conversion functions:
+        <code>
+         std::toupper()
+        </code>
+        and
+        <code>
+         tolower()
+        </code>
+        . They accept two parameters: the character to convert and the locale to use for the conversion. Here is an example:
+       </p>
+       <pre id="c21-code-0025"><code>auto upper { toupper(L'é', locale { "fr-FR" }) };  <span class="color3">// É</span></code></pre>
+      </section>
+      <section>
+       <span id="c21-sec-0016">
+       </span>
+       <h4 id="head-4-341">
+        Using Facets
+       </h4>
+       <p>
+        You can use the
+        <code>
+         std::use_facet()
+        </code>
+        function template to obtain a particular facet for a particular locale. The template type argument specifies the facet to retrieve, while the function argument specifies the
+        <code>
+         locale
+        </code>
+        from which to retrieve the facet. For example, the following expression retrieves the standard monetary punctuation facet of the British English locale using the POSIX locale name:
+       </p>
+       <pre id="c21-code-0026"><code>use_facet&lt;moneypunct&lt;wchar_t&gt;&gt;(locale { "en_GB" })</code></pre>
+       <p>
+        Note that the innermost template type determines the character type to use. The result is an object that contains all the information you want to know about British monetary punctuation. The data available in the standard facets is defined in
+        <code>
+         &lt;locale&gt;
+        </code>
+        . The following table lists the facet categories defined by the standard. Consult a Standard Library reference (see
+        <a href="b02.xhtml">
+         Appendix B
+        </a>
+        , “Annotated Bibliography”) for details about the individual facets.
+       </p>
+       <table border="1">
+        <thead>
+         <tr>
+          <th class="left bgcolor2" scope="col">
+           FACET
+          </th>
+          <th class="left bgcolor2" scope="col">
+           DESCRIPTION
+          </th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            ctype
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Character classification facets
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            codecvt
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Conversion facets; see next section
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            collate
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Comparing strings lexicographically
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            time_get
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Parsing dates and times
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            time_put
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Formatting dates and times
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            num_get
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Parsing numeric values
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            num_put
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Formatting numeric values
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            numpunct
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Defines the formatting rules for numeric values
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            money_get
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Parsing monetary values
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            money_put
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Formatting monetary values
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            moneypunct
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Defines the formatting rules for monetary values
+           <span aria-label="840" epub:type="pagebreak" id="Page_840" role="doc-pagebreak">
+           </span>
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p>
+        The following code snippet brings together locales and facets by printing out the currency symbol in both US English and British English. Note that, depending on your environment, the British currency symbol may appear as a question mark, a box, or not at all. If your environment is set up to handle it, you may actually get the British pound symbol.
+       </p>
+       <pre id="c21-code-0027"><code>locale locUSEng { "en-US" };       <span class="color3">// "en_US" for POSIX</span></code>
+<code>locale locBritEng { "en-GB" };     <span class="color3">// "en_GB" for POSIX</span></code>
+<code></code>
+<code>wstring dollars { use_facet&lt;moneypunct&lt;wchar_t&gt;&gt;(locUSEng).curr_symbol() };</code>
+<code>wstring pounds { use_facet&lt;moneypunct&lt;wchar_t&gt;&gt;(locBritEng).curr_symbol() };</code>
+<code></code>
+<code>wcout &lt;&lt; L"In the US, the currency symbol is " &lt;&lt; dollars &lt;&lt; endl;</code>
+<code>wcout &lt;&lt; L"In Great Britain, the currency symbol is " &lt;&lt; pounds &lt;&lt; endl;</code></pre>
+      </section>
+      <section>
+       <span id="c21-sec-0017">
+       </span>
+       <h4 id="head-4-342">
+        Conversions
+       </h4>
+       <p>
+        The C++ standard provides the
+        <code>
+         codecvt
+        </code>
+        class template to help with converting between different character encodings.
+        <code>
+         &lt;locale&gt;
+        </code>
+        defines the following four encoding conversion classes:
+       </p>
+       <table border="1">
+        <thead>
+         <tr>
+          <th class="left bgcolor2" scope="col">
+           CLASS
+          </th>
+          <th class="left bgcolor2" scope="col">
+           DESCRIPTION
+          </th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            codecvt&lt;char,char,mbstate_t&gt;
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Identity conversion, that is, no conversion
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <code>
+            codecvt&lt;char16_t,char,mbstate_t&gt;
+           </code>
+           <br/>
+           <code>
+            codecvt&lt;char16_t,char8_t,mbstate_t&gt;
+           </code>
+          </td>
+          <td class="left bgcolor3">
+           Conversion between UTF-16 and UTF-8
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <code>
+            codecvt&lt;char32_t,char,mbstate_t&gt;
+           </code>
+           <br/>
+           <code>
+            codecvt&lt;char32_t,char8_t,mbstate_t&gt;
+           </code>
+          </td>
+          <td class="left bgcolor3">
+           Conversion between UTF-32 and UTF-8
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            codecvt&lt;wchar_t,char,mbstate_t&gt;
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Conversion between wide (implementation-specific) and narrow character encodings
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p>
+        Unfortunately, these facets are rather complicated to use. As an example, the following code snippet converts a narrow string to a wide string:
+       </p>
+       <pre id="c21-code-0028"><code>auto&amp; facet { use_facet&lt;codecvt&lt;wchar_t, char, mbstate_t&gt;&gt;(locale { }) };</code>
+<code>string narrowString { "Hello" };</code>
+<code>mbstate_t mb { };</code>
+<code>wstring wideString(narrowString.size(), '\0');</code>
+<code>const char* fromNext { nullptr };</code>
+<span aria-label="841" epub:type="pagebreak" id="Page_841" role="doc-pagebreak"></span><code>wchar_t* toNext { nullptr };</code>
+<code>facet.in(mb,</code>
+<code>    narrowString.data(), narrowString.data() + narrowString.size(), fromNext,</code>
+<code>    wideString.data(), wideString.data() + wideString.size(), toNext);</code>
+<code>wideString.resize(toNext - wideString.data());</code>
+<code>wcout &lt;&lt; wideString &lt;&lt; endl;</code></pre>
+       <p id="c21-para-0080">
+        Before C++17, the following three code conversion facets were defined in
+        <code>
+         &lt;codecvt&gt;
+        </code>
+        :
+        <code>
+         codecvt_utf8
+        </code>
+        ,
+        <code>
+         codecvt_utf16
+        </code>
+        , and
+        <code>
+         codecvt_utf8_utf16
+        </code>
+        . These could be used with two convenience conversion interfaces:
+        <code>
+         wstring_convert
+        </code>
+        and
+        <code>
+         wbuffer_convert
+        </code>
+        . However, C++17 has deprecated those three conversion facets (the entirety of
+        <code>
+         &lt;codecvt&gt;
+        </code>
+        ) and the two convenience interfaces, so they are not further discussed in this book. The C++ Standards Committee decided to deprecate this functionality because it does not handle errors very well. Ill-formed Unicode strings are a security risk, and in fact can be and have been used as an attack vector to compromise the security of systems. Also, the API is too obscure and too hard to understand. I recommend using third-party libraries, such as ICU, to work correctly with Unicode strings until the Standards Committee comes up with a suitable, safe, and easier-to-use replacement for the deprecated functionality.
+       </p>
+      </section>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-223">
+     <span id="c21-sec-0018">
+     </span>
+     <h2 id="head-2-223">
+      REGULAR EXPRESSIONS
+     </h2>
+     <p>
+      Regular expressions, defined in
+      <code>
+       &lt;regex&gt;
+      </code>
+      , are a powerful string-related feature of the Standard Library. They support a special mini-language for string processing and might seem complicated at first, but once you get to know them, they make working with strings easier. Regular expressions can be used for several string operations:
+     </p>
+     <ul class="check1" id="c21-list-0005">
+      <li id="c21-li-0016">
+       <b>
+        Validation:
+       </b>
+       Check if an input string is well formed. For example, is the input string a well-formed phone number?
+      </li>
+      <li id="c21-li-0017">
+       <b>
+        Decision:
+       </b>
+       Check what kind of string an input represents. For example, is the input string the name of a JPEG or a PNG file?
+      </li>
+      <li id="c21-li-0018">
+       <b>
+        Parsing:
+       </b>
+       Extract information from an input string. For example, extract the year, month, and day from a date.
+      </li>
+      <li id="c21-li-0019">
+       <b>
+        Transformation:
+       </b>
+       Search substrings and replace them with a new formatted substring. For example, search all occurrences of “C++23” and replace them with “C++”.
+      </li>
+      <li id="c21-li-0020">
+       <b>
+        Iteration:
+       </b>
+       Search all occurrences of a substring. For example, extract all phone numbers from an input string.
+      </li>
+      <li id="c21-li-0021">
+       <b>
+        Tokenization:
+       </b>
+       Split a string into substrings based on a set of delimiters. For example, split a string on whitespace, commas, periods, and so on, to extract the individual words.
+      </li>
+     </ul>
+     <p id="c21-para-0082">
+      Of course, you could write your own code to perform any of these operations on strings, but I recommend using the regular expressions functionality, because writing correct and safe code to process strings is tricky.
+     </p>
+     <p>
+      Before going into more detail on regular expressions, there is some important terminology you need to know. The following terms are used throughout the discussion:
+     </p>
+     <ul class="check1" id="c21-list-0006">
+      <li id="c21-li-0022">
+       <b>
+        Pattern:
+       </b>
+       The actual regular expression is a pattern represented by a string.
+      </li>
+      <li id="c21-li-0023">
+       <span aria-label="842" epub:type="pagebreak" id="Page_842" role="doc-pagebreak">
+       </span>
+       <b>
+        Match:
+       </b>
+       Determines whether there is a match between a given regular expression and all of the characters in a given sequence [first, last).
+      </li>
+      <li id="c21-li-0024">
+       <b>
+        Search:
+       </b>
+       Determines whether there is some substring within a given sequence [first, last) that matches a given regular expression.
+      </li>
+      <li id="c21-li-0025">
+       <b>
+        Replace:
+       </b>
+       Identifies substrings in a given sequence and replaces them with a corresponding new substring computed from another pattern, called a
+       <i>
+        substitution pattern
+       </i>
+       .
+      </li>
+     </ul>
+     <p>
+      There are several different grammars for regular expressions. C++ includes support for the following grammars:
+     </p>
+     <ul class="check1" id="c21-list-0007">
+      <li id="c21-li-0026">
+       <b>
+        ECMAScript:
+       </b>
+       The grammar based on the ECMAScript standard. ECMAScript is a scripting language standardized by ECMA-262. The core of JavaScript, ActionScript, Jscript, and so on, all use the ECMAScript language standard.
+      </li>
+      <li id="c21-li-0027">
+       <b>
+        basic:
+       </b>
+       The basic POSIX grammar.
+      </li>
+      <li id="c21-li-0028">
+       <b>
+        extended:
+       </b>
+       The extended POSIX grammar.
+      </li>
+      <li id="c21-li-0029">
+       <b>
+        awk:
+       </b>
+       The grammar used by the POSIX awk utility.
+      </li>
+      <li id="c21-li-0030">
+       <b>
+        grep:
+       </b>
+       The grammar used by the POSIX grep utility.
+      </li>
+      <li id="c21-li-0031">
+       <b>
+        egrep:
+       </b>
+       The grammar used by the POSIX grep utility with the
+       <code>
+        -E
+       </code>
+       parameter.
+      </li>
+     </ul>
+     <p>
+      If you already know any of these regular expression grammars, you can use it straightaway in C++ by instructing the regular expression library to use that specific syntax (
+      <code>
+       syntax_option_type
+      </code>
+      ). The default grammar in C++ is ECMAScript, whose syntax is explained in detail in the following section. It is also the most powerful grammar. Explaining the other regular expression grammars falls outside the scope of this book.
+     </p>
+     <section>
+      <aside>
+       <div class="top hr">
+        <hr/>
+       </div>
+       <section class="feature1">
+        <p id="c21-para-0086">
+         <b>
+          NOTE
+         </b>
+         <i>
+          If this is the first time you're hearing about regular expressions, just use the default ECMAScript syntax
+         </i>
+         .
+        </p>
+        <div class="bottom hr">
+         <hr/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <section>
+      <span id="c21-sec-0020">
+      </span>
+      <h3 id="head-3-454">
+       ECMAScript Syntax
+      </h3>
+      <p>
+       A regular expression pattern is a sequence of characters representing what you want to match. Any character in the regular expression matches itself except, for the following special characters:
+      </p>
+      <pre id="c21-code-0029"><code>^ $ \ . * + ? ( ) [ ] { } |</code></pre>
+      <p>
+       These special characters are explained throughout the following discussion. If you need to match one of these special characters, you need to escape it using the
+       <code>
+        \
+       </code>
+       character, as in this example:
+      </p>
+      <pre id="c21-code-0030"><code>\[ or \. or \* or \\</code></pre>
+      <section>
+       <span id="c21-sec-0021">
+       </span>
+       <h4 id="head-4-343">
+        Anchor
+       </h4>
+       <p id="c21-para-0089">
+        The special characters
+        <code>
+         ^
+        </code>
+        and
+        <code>
+         $
+        </code>
+        are called
+        <i>
+         anchors
+        </i>
+        . The
+        <code>
+         ^
+        </code>
+        character matches the position immediately following a line termination character, and
+        <code>
+         $
+        </code>
+        matches the position of a line termination character. By
+        <span aria-label="843" epub:type="pagebreak" id="Page_843" role="doc-pagebreak">
+        </span>
+        default,
+        <code>
+         ^
+        </code>
+        and
+        <code>
+         $
+        </code>
+        also match the beginning and ending of a string, respectively, but this behavior can be disabled.
+       </p>
+       <p id="c21-para-0090">
+        For example,
+        <code>
+         ^test$
+        </code>
+        matches only the string
+        <code>
+         test
+        </code>
+        , and not strings that contain
+        <code>
+         test
+        </code>
+        somewhere in the line, such as
+        <code>
+         1test
+        </code>
+        ,
+        <code>
+         test2
+        </code>
+        ,
+        <code>
+         test abc
+        </code>
+        , and so on.
+       </p>
+      </section>
+      <section>
+       <span id="c21-sec-0022">
+       </span>
+       <h4 id="head-4-344">
+        Wildcard
+       </h4>
+       <p id="c21-para-0091">
+        The
+        <i>
+         wildcard
+        </i>
+        character
+        <code>
+         .
+        </code>
+        can be used to match any single character except a newline character. For example, the regular expression
+        <code>
+         a.c
+        </code>
+        will match
+        <code>
+         abc
+        </code>
+        , and
+        <code>
+         a5c
+        </code>
+        , but will not match
+        <code>
+         ab5c
+        </code>
+        ,
+        <code>
+         ac
+        </code>
+        , and so on.
+       </p>
+      </section>
+      <section>
+       <span id="c21-sec-0023">
+       </span>
+       <h4 id="head-4-345">
+        Alternation
+       </h4>
+       <p id="c21-para-0092">
+        The
+        <code>
+         |
+        </code>
+        character can be used to specify the “or” relationship. For example,
+        <code>
+         a|b
+        </code>
+        matches
+        <code>
+         a
+        </code>
+        or
+        <code>
+         b
+        </code>
+        .
+       </p>
+      </section>
+      <section>
+       <span id="c21-sec-0024">
+       </span>
+       <h4 id="head-4-346">
+        Grouping
+       </h4>
+       <p>
+        Parentheses,
+        <code>
+         ()
+        </code>
+        , are used to mark
+        <i>
+         subexpressions
+        </i>
+        , also called
+        <i>
+         capture groups
+        </i>
+        . Capture groups can be used for several purposes:
+       </p>
+       <ul class="check1" id="c21-list-0008">
+        <li id="c21-li-0032">
+         Capture groups can be used to identify individual subsequences of the original string; each marked subexpression (capture group) is returned in the result. For example, the regular expression
+         <code>
+          (.)(ab|cd)(.)
+         </code>
+         has three marked subexpressions. Performing a search operation with this regular expression on
+         <code>
+          1cd4
+         </code>
+         results in a match with four entries. The first entry is the entire match,
+         <code>
+          1cd4
+         </code>
+         , followed by three entries for the three marked subexpressions. These three entries are
+         <code>
+          1
+         </code>
+         ,
+         <code>
+          cd
+         </code>
+         , and
+         <code>
+          4
+         </code>
+         .
+        </li>
+        <li id="c21-li-0033">
+         Capture groups can be used during matching for a purpose called
+         <i>
+          back references
+         </i>
+         (explained later).
+        </li>
+        <li id="c21-li-0034">
+         Capture groups can be used to identify components during
+         <i>
+          replace operations
+         </i>
+         (explained later).
+        </li>
+       </ul>
+      </section>
+      <section>
+       <span id="c21-sec-0025">
+       </span>
+       <h4 id="head-4-347">
+        Quantifier
+       </h4>
+       <p>
+        Parts of a regular expression can be repeated by using one of four
+        <i>
+         quantifiers
+        </i>
+        :
+       </p>
+       <ul class="check1" id="c21-list-0009">
+        <li id="c21-li-0035">
+         <code>
+          *
+         </code>
+         matches the preceding part
+         <i>
+          zero or more
+         </i>
+         times. For example,
+         <code>
+          a*b
+         </code>
+         matches
+         <code>
+          b
+         </code>
+         ,
+         <code>
+          ab
+         </code>
+         ,
+         <code>
+          aab
+         </code>
+         ,
+         <code>
+          aaaab
+         </code>
+         , and so on.
+        </li>
+        <li id="c21-li-0036">
+         <code>
+          +
+         </code>
+         matches the preceding part
+         <i>
+          one or more
+         </i>
+         times. For example,
+         <code>
+          a+b
+         </code>
+         matches
+         <code>
+          ab
+         </code>
+         ,
+         <code>
+          aab
+         </code>
+         ,
+         <code>
+          aaaab
+         </code>
+         , and so on, but not
+         <code>
+          b
+         </code>
+         .
+        </li>
+        <li id="c21-li-0037">
+         <code>
+          ?
+         </code>
+         matches the preceding part
+         <i>
+          zero or one
+         </i>
+         time. For example,
+         <code>
+          a?b
+         </code>
+         matches
+         <code>
+          b
+         </code>
+         and
+         <code>
+          ab
+         </code>
+         , but nothing else.
+        </li>
+        <li id="c21-li-0038">
+         <code>
+          {…}
+         </code>
+         represents a
+         <i>
+          bounded quantifier
+         </i>
+         .
+         <code>
+          b{n}
+         </code>
+         matches
+         <code>
+          b
+         </code>
+         repeated
+         <i>
+          exactly n
+         </i>
+         times;
+         <code>
+          b{n,}
+         </code>
+         matches
+         <code>
+          b
+         </code>
+         repeated
+         <i>
+          n times or more
+         </i>
+         ; and
+         <code>
+          b{n,m}
+         </code>
+         matches
+         <code>
+          b
+         </code>
+         repeated
+         <i>
+          between n and m
+         </i>
+         times inclusive. For example,
+         <code>
+          b{3,4}
+         </code>
+         matches
+         <code>
+          bbb
+         </code>
+         and
+         <code>
+          bbbb
+         </code>
+         but not
+         <code>
+          b
+         </code>
+         ,
+         <code>
+          bb
+         </code>
+         ,
+         <code>
+          bbbbb
+         </code>
+         , and so on.
+        </li>
+       </ul>
+       <p id="c21-para-0095">
+        These quantifiers are called
+        <i>
+         greedy
+        </i>
+        because they find the longest match while still matching the remainder of the regular expression. To make them
+        <i>
+         non-greedy
+        </i>
+        , a
+        <code>
+         ?
+        </code>
+        can be added behind the
+        <span aria-label="844" epub:type="pagebreak" id="Page_844" role="doc-pagebreak">
+        </span>
+        quantifier, as in
+        <code>
+         *?
+        </code>
+        ,
+        <code>
+         +?
+        </code>
+        ,
+        <code>
+         ??
+        </code>
+        , and
+        <code>
+         {…}?
+        </code>
+        . A non-greedy quantifier repeats its pattern as few times as possible while still matching the remainder of the regular expression.
+       </p>
+       <p>
+        For example, the following table shows the difference between a greedy and a non-greedy regular expression, and the resulting submatches when running them on the input sequence
+        <code>
+         aaabbb
+        </code>
+        :
+       </p>
+       <table border="1">
+        <thead>
+         <tr>
+          <th class="left bgcolor2" scope="col">
+           REGULAR EXPRESSION
+          </th>
+          <th class="left bgcolor2" scope="col">
+           SUBMATCHES
+          </th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="left bgcolor3">
+           Greedy:
+           <span class="forecolor1">
+            (a+)(ab)*(b+)
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            "aaa" "" "bbb"
+           </span>
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           Non-greedy:
+           <span class="forecolor1">
+            (a+?)(ab)*(b+)
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            "aa" "ab" "bb"
+           </span>
+          </td>
+         </tr>
+        </tbody>
+       </table>
+      </section>
+      <section>
+       <span id="c21-sec-0026">
+       </span>
+       <h4 id="head-4-348">
+        Precedence
+       </h4>
+       <p>
+        Just as with mathematical formulas, it's important to know the precedence of regular expression elements. Precedence is as follows:
+       </p>
+       <ul class="check1" id="c21-list-0010">
+        <li id="c21-li-0039">
+         <b>
+          Elements
+         </b>
+         like
+         <code>
+          b
+         </code>
+         are the basic building blocks of a regular expression.
+        </li>
+        <li id="c21-li-0040">
+         <b>
+          Quantifiers
+         </b>
+         like
+         <code>
+          +
+         </code>
+         ,
+         <code>
+          *
+         </code>
+         ,
+         <code>
+          ?
+         </code>
+         , and
+         <code>
+          {…}
+         </code>
+         bind tightly to the element on the left; for example,
+         <code>
+          b+.
+         </code>
+        </li>
+        <li id="c21-li-0041">
+         <b>
+          Concatenation
+         </b>
+         like
+         <code>
+          ab+c
+         </code>
+         binds after quantifiers.
+        </li>
+        <li id="c21-li-0042">
+         <b>
+          Alternation
+         </b>
+         like
+         <code>
+          |
+         </code>
+         binds last.
+        </li>
+       </ul>
+       <p id="c21-para-0098">
+        For example, the regular expression
+        <code>
+         ab+c|d
+        </code>
+        matches
+        <code>
+         abc
+        </code>
+        ,
+        <code>
+         abbc
+        </code>
+        ,
+        <code>
+         abbbc
+        </code>
+        , and so on, and also
+        <code>
+         d
+        </code>
+        . Parentheses can be used to change these precedence rules. For example,
+        <code>
+         ab+(c|d)
+        </code>
+        matches
+        <code>
+         abc
+        </code>
+        ,
+        <code>
+         abbc
+        </code>
+        ,
+        <code>
+         abbbc
+        </code>
+        , …,
+        <code>
+         abd
+        </code>
+        ,
+        <code>
+         abbd
+        </code>
+        ,
+        <code>
+         abbbd
+        </code>
+        , and so on. However, by using parentheses, you also mark it as a subexpression or capture group. It is possible to change the precedence rules without creating new capture groups by using
+        <code>
+         (?:
+        </code>
+        …
+        <code>
+         )
+        </code>
+        . For example,
+        <code>
+         ab+(?:c|d)
+        </code>
+        matches the same as the earlier
+        <code>
+         ab+(c|d)
+        </code>
+        but does not create an additional capture group.
+       </p>
+      </section>
+      <section>
+       <span id="c21-sec-0027">
+       </span>
+       <h4 id="head-4-349">
+        Character Set Matches
+       </h4>
+       <p>
+        Instead of writing
+        <code>
+         (a|b|c|
+        </code>
+        …
+        <code>
+         |z)
+        </code>
+        , which is clumsy and introduces a capture group, a special syntax for specifying sets of characters or ranges of characters is available. In addition, a “not” form of the match is also available. A
+        <i>
+         character set
+        </i>
+        is specified between square brackets and allows you to write
+        <code>
+         [c
+        </code>
+        <sub>
+         1
+        </sub>
+        <code>
+         c
+        </code>
+        <sub>
+         2
+        </sub>
+        …
+        <code>
+         c
+        </code>
+        <sub>
+         n
+        </sub>
+        <code>
+         ]
+        </code>
+        , which matches any of the characters
+        <code>
+         c
+        </code>
+        <sub>
+         1
+        </sub>
+        ,
+        <code>
+         c
+        </code>
+        <sub>
+         2
+        </sub>
+        , …, or
+        <code>
+         c
+        </code>
+        <sub>
+         n
+        </sub>
+        . For example,
+        <code>
+         [abc]
+        </code>
+        matches any character
+        <code>
+         a
+        </code>
+        ,
+        <code>
+         b
+        </code>
+        , or
+        <code>
+         c
+        </code>
+        . If the first character is
+        <code>
+         ^
+        </code>
+        , it means “any but”:
+       </p>
+       <ul class="check1" id="c21-list-0011">
+        <li id="c21-li-0043">
+         <code>
+          ab[cde]
+         </code>
+         matches
+         <code>
+          abc
+         </code>
+         ,
+         <code>
+          abd
+         </code>
+         , and
+         <code>
+          abe
+         </code>
+         .
+        </li>
+        <li id="c21-li-0044">
+         <code>
+          ab[^cde]
+         </code>
+         matches
+         <code>
+          abf
+         </code>
+         ,
+         <code>
+          abp
+         </code>
+         , and so on, but not
+         <code>
+          abc
+         </code>
+         ,
+         <code>
+          abd
+         </code>
+         , and
+         <code>
+          abe
+         </code>
+         .
+        </li>
+       </ul>
+       <p id="c21-para-0100">
+        If you need to match the
+        <code>
+         ^
+        </code>
+        ,
+        <code>
+         [
+        </code>
+        , or
+        <code>
+         ]
+        </code>
+        characters themselves, you need to escape them; for example,
+        <code>
+         [\[\^\]]
+        </code>
+        matches the characters
+        <code>
+         [
+        </code>
+        ,
+        <code>
+         ^
+        </code>
+        , or
+        <code>
+         ]
+        </code>
+        .
+       </p>
+       <p id="c21-para-0101">
+        If you want to specify all letters, you could use a character set like
+        <code>
+         [abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ]
+        </code>
+        ; however, this is clumsy, and doing this several times is awkward, especially if you make a typo and omit one of the letters accidentally. There are two solutions to this.
+       </p>
+       <p id="c21-para-0102">
+        <span aria-label="845" epub:type="pagebreak" id="Page_845" role="doc-pagebreak">
+        </span>
+        One solution is to use the
+        <i>
+         range specification
+        </i>
+        in square brackets; this allows you to write
+        <code>
+         [a-zA-Z]
+        </code>
+        , which recognizes all the letters in the range
+        <code>
+         a
+        </code>
+        to
+        <code>
+         z
+        </code>
+        and
+        <code>
+         A
+        </code>
+        to
+        <code>
+         Z
+        </code>
+        . If you need to match a hyphen, you need to escape it; for example,
+        <code>
+         [a-zA-Z\-]+
+        </code>
+        matches any word including a hyphenated word.
+       </p>
+       <p>
+        Another solution is to use one of the
+        <i>
+         character classes
+        </i>
+        . These are used to denote specific types of characters and are represented as
+        <code>
+         [:name:]
+        </code>
+        . Which character classes are available depends on the locale, but the names listed in the following table are always recognized. The exact meaning of these character classes is also dependent on the locale. This table assumes the standard C locale:
+       </p>
+       <table border="1">
+        <thead>
+         <tr>
+          <th class="left bgcolor2" scope="col">
+           CHARACTER CLASS NAME
+          </th>
+          <th class="left bgcolor2" scope="col">
+           DESCRIPTION
+          </th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            digit
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Digits, which are 0, 1, 2, 3, 4, 5, 6, 7, 8, 9.
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            d
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Same as
+           <span class="forecolor1">
+            digit
+           </span>
+           .
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            xdigit
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Digits (
+           <span class="forecolor1">
+            digit
+           </span>
+           ) and the following letters used in hexadecimal numbers: a, b, c, d, e, f, A, B, C, D, E, F.
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            alpha
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Alphabetic characters. For the C locale, these are all lowercase and uppercase letters.
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            alnum
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           A combination of the
+           <span class="forecolor1">
+            alpha
+           </span>
+           class and the
+           <code>
+            digit
+           </code>
+           class.
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            w
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Same as
+           <span class="forecolor1">
+            alnum
+           </span>
+           .
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            lower
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Lowercase letters, if applicable to the locale.
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            upper
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Uppercase letters, if applicable to the locale.
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            blank
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Blank characters, which are whitespace characters used to separate words within a line of text. For the C locale, these are space and
+           <span class="forecolor1">
+            \t
+           </span>
+           (tab).
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            space
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Whitespace characters. For the C locale, these are space,
+           <span class="forecolor1">
+            \t
+           </span>
+           ,
+           <code>
+            \n
+           </code>
+           ,
+           <code>
+            \r
+           </code>
+           ,
+           <code>
+            \v
+           </code>
+           , and
+           <code>
+            \f
+           </code>
+           .
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            s
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Same as
+           <span class="forecolor1">
+            space
+           </span>
+           .
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            print
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Printable characters. These occupy a printing position—for example, on a display—and are the opposite of control characters (
+           <span class="forecolor1">
+            cntrl
+           </span>
+           ). Examples are lowercase letters, uppercase letters, digits, punctuation characters, and space characters.
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            cntrl
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Control characters. These are the opposite of printable characters (
+           <span class="forecolor1">
+            print
+           </span>
+           ), and don't occupy a printing position, for example, on a display. Some examples for the C locale are
+           <code>
+            \f
+           </code>
+           ,
+           <code>
+            \n
+           </code>
+           , and
+           <code>
+            \r
+           </code>
+           .
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            graph
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Characters with a graphical representation. These are all characters that are printable (
+           <span class="forecolor1">
+            print
+           </span>
+           ), except the space character
+           <code>
+            ' '
+           </code>
+           .
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            punct
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Punctuation characters. For the C locale, these are all graphical characters (
+           <span class="forecolor1">
+            graph
+           </span>
+           ) that are not alphanumeric (
+           <code>
+            alnum
+           </code>
+           ). Some examples are
+           <code>
+            !
+           </code>
+           ,
+           <code>
+            #
+           </code>
+           ,
+           <code>
+            @
+           </code>
+           ,
+           <code>
+            }
+           </code>
+           , and so on.
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p id="c21-para-0104">
+        <span aria-label="846" epub:type="pagebreak" id="Page_846" role="doc-pagebreak">
+        </span>
+        Character classes are used within character sets; for example,
+        <code>
+         [[:alpha:]]*
+        </code>
+        in English means the same as
+        <code>
+         [a-zA-Z]*
+        </code>
+        .
+       </p>
+       <p>
+        Because certain character classes are so common, e.g., digits, there are shorthand patterns for them. For example,
+        <code>
+         [:digit:]
+        </code>
+        and
+        <code>
+         [:d:]
+        </code>
+        have the same meaning as
+        <code>
+         [0-9]
+        </code>
+        . Some classes have an even shorter pattern using the escape notation. For example,
+        <code>
+         \d
+        </code>
+        means
+        <code>
+         [:digit:]
+        </code>
+        . Therefore, to recognize a sequence of one or more numbers, you can write any of the following patterns:
+       </p>
+       <ul class="check1" id="c21-list-0012">
+        <li id="c21-li-0045">
+         <code>
+          [0-9]+
+         </code>
+        </li>
+        <li id="c21-li-0046">
+         <code>
+          [[:digit:]]+
+         </code>
+        </li>
+        <li id="c21-li-0047">
+         <code>
+          [[:d:]]+
+         </code>
+        </li>
+        <li id="c21-li-0048">
+         <code>
+          \d+
+         </code>
+        </li>
+       </ul>
+       <p>
+        The following table lists the available escape notations for character classes:
+       </p>
+       <table border="1">
+        <thead>
+         <tr>
+          <th class="left bgcolor2" scope="col">
+           ESCAPE NOTATION
+          </th>
+          <th class="left bgcolor2" scope="col">
+           EQUIVALENT TO
+          </th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            \d
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            [[:d:]]
+           </span>
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            \D
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            [^[:d:]]
+           </span>
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            \s
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            [[:s:]]
+           </span>
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            \S
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            [^[:s:]]
+           </span>
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            \w
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            [_[:w:]]
+           </span>
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            \W
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            [^_[:w:]]
+           </span>
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p>
+        Here are some examples:
+       </p>
+       <ul class="check1" id="c21-list-0013">
+        <li id="c21-li-0049">
+         <code>
+          Test[5-8]
+         </code>
+         matches
+         <code>
+          Test5
+         </code>
+         ,
+         <code>
+          Test6
+         </code>
+         ,
+         <code>
+          Test7
+         </code>
+         , and
+         <code>
+          Test8
+         </code>
+         .
+        </li>
+        <li id="c21-li-0050">
+         <code>
+          [[:lower:]]
+         </code>
+         matches
+         <code>
+          a
+         </code>
+         ,
+         <code>
+          b
+         </code>
+         , and so on, but not
+         <code>
+          A
+         </code>
+         ,
+         <code>
+          B
+         </code>
+         , and so on.
+        </li>
+        <li id="c21-li-0051">
+         <code>
+          [^[:lower:]]
+         </code>
+         matches any character except lowercase letters like
+         <code>
+          a
+         </code>
+         ,
+         <code>
+          b
+         </code>
+         , and so on.
+        </li>
+        <li id="c21-li-0052">
+         <code>
+          [[:lower:]5-7]
+         </code>
+         matches any lowercase letter like
+         <code>
+          a
+         </code>
+         ,
+         <code>
+          b
+         </code>
+         , and so on, and the numbers
+         <code>
+          5
+         </code>
+         ,
+         <code>
+          6
+         </code>
+         , and
+         <code>
+          7
+         </code>
+         .
+        </li>
+       </ul>
+      </section>
+      <section>
+       <span id="c21-sec-0028">
+       </span>
+       <h4 id="head-4-350">
+        Word Boundary
+       </h4>
+       <p>
+        A
+        <i>
+         word boundary
+        </i>
+        can mean the following:
+       </p>
+       <ul class="check1" id="c21-list-0014">
+        <li id="c21-li-0053">
+         The first character of a word, which is one of the word characters, while the preceding character is not a word character. A word character is a letter, digit, or an underscore. For the standard C locale, this is equal to
+         <code>
+          [A-Za-z0-9_]
+         </code>
+         .
+        </li>
+        <li id="c21-li-0054">
+         The end of a word, which is a non-word character, while the preceding character is a word character.
+        </li>
+        <li id="c21-li-0055">
+         <span aria-label="847" epub:type="pagebreak" id="Page_847" role="doc-pagebreak">
+         </span>
+         The beginning of the source string if the first character of the source string is one of the word characters. Matching the beginning of the source string is enabled by default, but you can disable it with
+         <code>
+          regex_constants::match_not_bow
+         </code>
+         , where
+         <code>
+          bow
+         </code>
+         stands for beginning-of-word.
+        </li>
+        <li id="c21-li-0056">
+         The end of the source string if the last character of the source string is one of the word characters. Matching the end of the source string is enabled by default, but you can disable it with
+         <code>
+          regex_constants::match_not_eow
+         </code>
+         , where
+         <code>
+          eow
+         </code>
+         stands for end-of-word.
+        </li>
+       </ul>
+       <p id="c21-para-0109">
+        You can use
+        <code>
+         \b
+        </code>
+        to match a word boundary, and you can use
+        <code>
+         \B
+        </code>
+        to match anything except a word boundary.
+       </p>
+      </section>
+      <section>
+       <span id="c21-sec-0029">
+       </span>
+       <h4 id="head-4-351">
+        Back Reference
+       </h4>
+       <p>
+        A
+        <i>
+         back reference
+        </i>
+        allows you to reference a captured group inside the regular expression itself:
+        <code>
+         \n
+        </code>
+        refers to the
+        <i>
+         n
+        </i>
+        -th captured group, with
+        <code>
+         n &gt; 0
+        </code>
+        . For example, the regular expression
+        <code>
+         (\d+)-.*-\1
+        </code>
+        matches a string that has the following format:
+       </p>
+       <ul class="check1" id="c21-list-0015">
+        <li id="c21-li-0057">
+         One or more digits captured in a capture group
+         <code>
+          (\d+)
+         </code>
+        </li>
+        <li id="c21-li-0058">
+         Followed by a dash
+         <code>
+          -
+         </code>
+        </li>
+        <li id="c21-li-0059">
+         Followed by zero or more characters
+         <code>
+          .*
+         </code>
+        </li>
+        <li id="c21-li-0060">
+         Followed by another dash
+         <code>
+          -
+         </code>
+        </li>
+        <li id="c21-li-0061">
+         Followed by the same digits captured by the first capture group
+         <code>
+          \1
+         </code>
+        </li>
+       </ul>
+       <p id="c21-para-0111">
+        This regular expression matches
+        <code>
+         123-abc-123
+        </code>
+        ,
+        <code>
+         1234-a-1234
+        </code>
+        , and so on, but does not match
+        <code>
+         123-abc-1234
+        </code>
+        ,
+        <code>
+         123-abc-321
+        </code>
+        , and so on.
+       </p>
+      </section>
+      <section>
+       <span id="c21-sec-0030">
+       </span>
+       <h4 id="head-4-352">
+        Lookahead
+       </h4>
+       <p id="c21-para-0112">
+        Regular expressions support
+        <i>
+         positive lookahead
+        </i>
+        (which uses ?=pattern) and
+        <i>
+         negative lookahead
+        </i>
+        (which uses ?!pattern). The characters following the lookahead must match (positive) or not match (negative) the lookahead pattern, but those characters are not yet consumed.
+       </p>
+       <p id="c21-para-0113">
+        For example, the pattern
+        <code>
+         a(?!b)
+        </code>
+        contains a negative lookahead to match a letter
+        <code>
+         a
+        </code>
+        not followed by a
+        <code>
+         b
+        </code>
+        . The pattern
+        <code>
+         a(?=b)
+        </code>
+        contains a positive lookahead to match a letter
+        <code>
+         a
+        </code>
+        followed by a
+        <code>
+         b
+        </code>
+        , but
+        <code>
+         b
+        </code>
+        is not consumed so it does not become part of the match.
+       </p>
+       <p>
+        The following is a more realistic example. The regular expression matches an input sequence that consists of at least one lowercase letter, at least one uppercase letter, at least one punctuation character, and is at least eight characters long. Such a regular expression can, for example, be used to enforce that passwords satisfy certain criteria.
+       </p>
+       <pre id="c21-code-0031"><code>(?=.*[[:lower:]])(?=.*[[:upper:]])(?=.*[[:punct:]]).{8,}</code></pre>
+       <p id="c21-para-0115">
+        In one of the exercises at the end of this chapter, you'll experiment with this password-validation regular expression.
+       </p>
+      </section>
+      <span aria-label="848" epub:type="pagebreak" id="Page_848" role="doc-pagebreak">
+      </span>
+      <section>
+       <span id="c21-sec-0031">
+       </span>
+       <h4 id="head-4-353">
+        Regular Expressions and Raw String Literals
+       </h4>
+       <p id="c21-para-0116">
+        As seen in the preceding sections, regular expressions often use special characters that must be escaped in normal C++ string literals. For example, if you write
+        <code>
+         \d
+        </code>
+        in a regular expression, it matches any digit. However, because
+        <code>
+         \
+        </code>
+        is a special character in C++, you need to escape it in a regular expression string literal as
+        <code>
+         \\d
+        </code>
+        ; otherwise, your C++ compiler tries to interpret the
+        <code>
+         \d
+        </code>
+        . It gets more complicated if you want a regular expression to match a single backslash character,
+        <code>
+         \
+        </code>
+        . Because
+        <code>
+         \
+        </code>
+        is a special character in the regular expression syntax itself, you need to escape it as
+        <code>
+         \\
+        </code>
+        . The
+        <code>
+         \
+        </code>
+        character is also a special character in C++ string literals, so you need to escape it, resulting in
+        <code>
+         \\\\
+        </code>
+        .
+       </p>
+       <p>
+        You can use raw string literals to make complicated regular expressions easier to read in C++ source code. (Raw string literals are discussed in
+        <a href="c02.xhtml">
+         Chapter 2
+        </a>
+        .) For example, take the following regular expression:
+       </p>
+       <pre id="c21-code-0032"><code>"( |\\n|\\r|\\\\)"</code></pre>
+       <p>
+        This regular expression matches spaces, newlines, carriage returns, and backslashes. It requires a lot of escape characters. Using raw string literals, this can be replaced with the following more readable regular expression:
+       </p>
+       <pre id="c21-code-0033"><code>R"(( |\n|\r|\\))"</code></pre>
+       <p id="c21-para-0119">
+        The raw string literal starts with
+        <code>
+         R"(
+        </code>
+        and ends with
+        <code>
+         )"
+        </code>
+        . Everything in between is the regular expression. Of course, you still need a double backslash at the end because the backslash needs to be escaped in the regular expression itself.
+       </p>
+      </section>
+      <section>
+       <span id="c21-sec-0032">
+       </span>
+       <h4 id="head-4-354">
+        Common Regular Expressions
+       </h4>
+       <p id="c21-para-0120">
+        Writing correct regular expressions is not always trivial. For common patterns such as validating passwords, phone numbers, Social Security numbers, IP addresses, email addresses, credit card numbers, dates, and so on, you don't have to. When you use your favorite Internet search engine and search for
+        <i>
+         regular expressions online
+        </i>
+        , you'll find several websites with collections of predefined patterns, such as
+        <?span Start cssStyle="text-decoration:underline"??>
+        <code>
+         regexr.com
+        </code>
+        ,
+        <?span Start cssStyle="text-decoration:underline"??>
+        <code>
+         regex101.com
+        </code>
+        ,
+        <?span Start cssStyle="text-decoration:underline"??>
+        <code>
+         regextester.com
+        </code>
+        , and many more. Quite a few of these sites allow you to test patterns online, so you can easily verify whether they are correct before using them in your code.
+       </p>
+       <p id="c21-para-0121">
+        This concludes a brief description of the ECMAScript grammar. The following sections explain how to actually use regular expressions in C++ code.
+       </p>
+      </section>
+     </section>
+     <section>
+      <span id="c21-sec-0033">
+      </span>
+      <h3 id="head-3-455">
+       The regex Library
+      </h3>
+      <p>
+       Everything for the regular expression library is defined in
+       <code>
+        &lt;regex&gt;
+       </code>
+       and in the
+       <code>
+        std
+       </code>
+       namespace. The basic template types defined by the regular expression library are:
+      </p>
+      <ul class="check1" id="c21-list-0016">
+       <li id="c21-li-0062">
+        <b>
+         <code>
+          basic_regex
+         </code>
+         :
+        </b>
+        An object representing a specific regular expression.
+       </li>
+       <li id="c21-li-0063">
+        <b>
+         <code>
+          match_results
+         </code>
+         :
+        </b>
+        A substring that matched a regular expression, including all the captured groups. It is a collection of
+        <code>
+         sub_match
+        </code>
+        es.
+       </li>
+       <li id="c21-li-0064">
+        <b>
+         <code>
+          sub_match
+         </code>
+         :
+        </b>
+        An object containing a pair of iterators into the input sequence. These iterators represent a matched capture group. The pair is an iterator pointing to the first character of a
+        <span aria-label="849" epub:type="pagebreak" id="Page_849" role="doc-pagebreak">
+        </span>
+        matched capture group and an iterator pointing to one-past-the-last character of the matched capture group. It has an
+        <code>
+         str()
+        </code>
+        member function that returns the matched capture group as a string.
+       </li>
+      </ul>
+      <p>
+       The library provides three key algorithms:
+       <code>
+        regex_match()
+       </code>
+       ,
+       <code>
+        regex_search()
+       </code>
+       , and
+       <code>
+        regex_replace()
+       </code>
+       . All of these algorithms have different overloads that allow you to specify the source string as a
+       <code>
+        string
+       </code>
+       , a C-style string, or as a begin/end iterator pair. The iterators can be any of the following:
+      </p>
+      <ul class="check1" id="c21-list-0017">
+       <li id="c21-li-0065">
+        <code>
+         const char*
+        </code>
+        or
+        <code>
+         const wchar_t*
+        </code>
+       </li>
+       <li id="c21-li-0066">
+        <code>
+         string::const_iterator
+        </code>
+        or
+        <code>
+         wstring::const_iterator
+        </code>
+       </li>
+      </ul>
+      <p id="c21-para-0124">
+       In fact, any iterator that behaves as a bidirectional iterator can be used. See
+       <a href="c17.xhtml">
+        Chapters 17
+       </a>
+       , “Understanding Iterators and the Ranges Library,” for details on iterators.
+      </p>
+      <p>
+       The library also defines the following two
+       <i>
+        regular expression iterators
+       </i>
+       , which play an important role in finding all occurrences of a pattern in a source string:
+      </p>
+      <ul class="check1" id="c21-list-0018">
+       <li id="c21-li-0067">
+        <b>
+         <code>
+          regex_iterator
+         </code>
+         :
+        </b>
+        Iterates over all the occurrences of a pattern in a source string.
+       </li>
+       <li id="c21-li-0068">
+        <b>
+         <code>
+          regex_token_iterator
+         </code>
+         :
+        </b>
+        Iterates over all the capture groups of all occurrences of a pattern in a source string.
+       </li>
+      </ul>
+      <p>
+       To make the library easier to use, the standard defines a number of type aliases for the preceding templates:
+      </p>
+      <pre id="c21-code-0034"><code>using regex  = basic_regex&lt;char&gt;;</code>
+<code>using wregex = basic_regex&lt;wchar_t&gt;;</code>
+<code></code>
+<code>using csub_match  = sub_match&lt;const char*&gt;;</code>
+<code>using wcsub_match = sub_match&lt;const wchar_t*&gt;;</code>
+<code>using ssub_match  = sub_match&lt;string::const_iterator&gt;;</code>
+<code>using wssub_match = sub_match&lt;wstring::const_iterator&gt;;</code>
+<code></code>
+<code>using cmatch  = match_results&lt;const char*&gt;;</code>
+<code>using wcmatch = match_results&lt;const wchar_t*&gt;;</code>
+<code>using smatch  = match_results&lt;string::const_iterator&gt;;</code>
+<code>using wsmatch = match_results&lt;wstring::const_iterator&gt;;</code>
+<code></code>
+<code>using cregex_iterator  = regex_iterator&lt;const char*&gt;;</code>
+<code>using wcregex_iterator = regex_iterator&lt;const wchar_t*&gt;;</code>
+<code>using sregex_iterator  = regex_iterator&lt;string::const_iterator&gt;;</code>
+<code>using wsregex_iterator = regex_iterator&lt;wstring::const_iterator&gt;;</code>
+<code></code>
+<code>using cregex_token_iterator  = regex_token_iterator&lt;const char*&gt;;</code>
+<code>using wcregex_token_iterator = regex_token_iterator&lt;const wchar_t*&gt;;</code>
+<code>using sregex_token_iterator  = regex_token_iterator&lt;string::const_iterator&gt;;</code>
+<code>using wsregex_token_iterator = regex_token_iterator&lt;wstring::const_iterator&gt;;</code></pre>
+      <p id="c21-para-0127">
+       The following sections explain the
+       <code>
+        regex_match()
+       </code>
+       ,
+       <code>
+        regex_search()
+       </code>
+       , and
+       <code>
+        regex_replace()
+       </code>
+       algorithms, and the
+       <code>
+        regex_iterator
+       </code>
+       and
+       <code>
+        regex_token_iterator
+       </code>
+       classes.
+      </p>
+     </section>
+     <section>
+      <span id="c21-sec-0034">
+      </span>
+      <h3 id="head-3-456">
+       regex_match()
+      </h3>
+      <p>
+       The
+       <code>
+        regex_match()
+       </code>
+       algorithm can be used to compare a given source string with a regular expression pattern. It returns
+       <code>
+        true
+       </code>
+       if the pattern matches the entire source string, and
+       <code>
+        false
+       </code>
+       otherwise.
+       <span aria-label="850" epub:type="pagebreak" id="Page_850" role="doc-pagebreak">
+       </span>
+       There are seven overloads of the
+       <code>
+        regex_match()
+       </code>
+       algorithm accepting different kinds of arguments. They all have the following form:
+      </p>
+      <pre id="c21-code-0035"><code>template&lt;…&gt;</code>
+<code>bool regex_match(InputSequence[, MatchResults], RegEx[, Flags]);</code></pre>
+      <p>
+       The
+       <code>
+        InputSequence
+       </code>
+       can be represented as follows:
+      </p>
+      <ul class="check1" id="c21-list-0019">
+       <li id="c21-li-0069">
+        A start and end iterator into a source string
+       </li>
+       <li id="c21-li-0070">
+        An
+        <code>
+         std::string
+        </code>
+       </li>
+       <li id="c21-li-0071">
+        A C-style string
+       </li>
+      </ul>
+      <p id="c21-para-0130">
+       The optional
+       <code>
+        MatchResults
+       </code>
+       parameter is a reference to a
+       <code>
+        match_results
+       </code>
+       and receives the match. If
+       <code>
+        regex_match()
+       </code>
+       returns
+       <code>
+        false
+       </code>
+       , you are only allowed to call
+       <code>
+        match_results::empty()
+       </code>
+       or
+       <code>
+        match_results::size()
+       </code>
+       ; anything else is undefined. If
+       <code>
+        regex_match()
+       </code>
+       returns
+       <code>
+        true
+       </code>
+       , a match is found, and you can inspect the
+       <code>
+        match_results
+       </code>
+       object for what exactly got matched. This is explained with examples in the following subsections.
+      </p>
+      <p id="c21-para-0131">
+       The
+       <code>
+        RegEx
+       </code>
+       parameter is the regular expression that needs to be matched. The optional
+       <code>
+        Flags
+       </code>
+       parameter specifies options for the matching algorithm. In most cases, you can keep the default. For more details, consult a Standard Library Reference.
+      </p>
+      <section>
+       <span id="c21-sec-0035">
+       </span>
+       <h4 id="head-4-355">
+        regex_match() Examples
+       </h4>
+       <p>
+        The following program asks the user to enter a date in the format year/month/day, where year is four digits, month is a number between 1 and 12, and day is a number between 1 and 31. A regular expression together with the
+        <code>
+         regex_match()
+        </code>
+        algorithm is used to validate the user input. The details of the regular expression are explained after the code.
+       </p>
+       <pre id="c21-code-0036"><code>regex r { "\\d{4}/(?:0?[1-9]|1[0-2])/(?:0?[1-9]|[1-2][0-9]|3[0-1])" };</code>
+<code>while (true) {</code>
+<code>    print("Enter a date (year/month/day) (q=quit): ");</code>
+<code>    string str;</code>
+<code>    if (!getline(cin, str) || str == "q") { break; }</code>
+<code></code>
+<code>    <b>if (regex_match(str, r))</b> { println("  Valid date."); }</code>
+<code>    else { println("  Invalid date!"); }</code>
+<code>}</code></pre>
+       <p>
+        The first line creates the regular expression. The expression consists of three parts separated by a forward slash (
+        <code>
+         /
+        </code>
+        ) character: one part for year, one for month, and one for day. The following list explains these parts:
+       </p>
+       <ul class="check1" id="c21-list-0020">
+        <li id="c21-li-0072">
+         \d{4}: Matches any combination of four digits; for example, 1234, 2024, and so on.
+        </li>
+        <li id="c21-li-0073">
+         <b>
+          <code>
+           (?:0?[1-9]|1[0-2])
+          </code>
+          :
+         </b>
+         This subpart of the regular expression is wrapped inside parentheses to make sure the precedence is correct. We don't need a capture group, so
+         <code>
+          (?:
+         </code>
+         …
+         <code>
+          )
+         </code>
+         is used. The inner expression consists of an alternation of two parts separated by the
+         <code>
+          |
+         </code>
+         character.
+         <ul class="check1" id="c21-list-0021">
+          <li id="c21-li-0074">
+           <b>
+            <code>
+             0?[1-9]
+            </code>
+            :
+           </b>
+           Matches any number from 1 to 9 with an optional 0 in front of it. For example, it matches 1, 2, 9, 03, 04, and so on. It does not match 0, 10, 11, and so on.
+          </li>
+          <li id="c21-li-0075">
+           1[0-2]: Matches 10, 11, or 12, and nothing else.
+          </li>
+         </ul>
+        </li>
+        <li id="c21-li-0076">
+         <span aria-label="851" epub:type="pagebreak" id="Page_851" role="doc-pagebreak">
+         </span>
+         <b>
+          <code>
+           (?:0?[1-9]|[1-2][0-9]|3[0-1])
+          </code>
+          :
+         </b>
+         This subpart is also wrapped inside a non-capture group and consists of an alternation of three parts.
+         <ul class="check1" id="c21-list-0022">
+          <li id="c21-li-0077">
+           <b>
+            <code>
+             0?[1-9]
+            </code>
+            :
+           </b>
+           Again matches any number from 1 to 9 with an optional 0 in front of it.
+          </li>
+          <li id="c21-li-0078">
+           <b>
+            <code>
+             [1-2][0-9]
+            </code>
+            :
+           </b>
+           Matches any number between 10 and 29 inclusive and nothing else.
+          </li>
+          <li id="c21-li-0079">
+           <b>
+            <code>
+             3[0-1]
+            </code>
+            :
+           </b>
+           Matches 30 or 31 and nothing else.
+          </li>
+         </ul>
+        </li>
+       </ul>
+       <p id="c21-para-0136">
+        The example then enters an infinite loop to ask the user to enter a date. Each date entered is given to the
+        <code>
+         regex_match()
+        </code>
+        algorithm. When
+        <code>
+         regex_match()
+        </code>
+        returns
+        <code>
+         true
+        </code>
+        , the user has entered a date that matches the date regular expression pattern.
+       </p>
+       <p id="c21-para-0137">
+        This example can be extended by asking the
+        <code>
+         regex_match()
+        </code>
+        algorithm to return captured subexpressions in a results object. You first have to understand what a capture group does. By specifying a
+        <code>
+         match_results
+        </code>
+        object like
+        <code>
+         smatch
+        </code>
+        in a call to
+        <code>
+         regex_match()
+        </code>
+        , the elements of the
+        <code>
+         match_results
+        </code>
+        object are filled in when the regular expression matches the input string. To be able to extract these substrings, you must create capture groups using parentheses.
+       </p>
+       <p id="c21-para-0138">
+        The first element,
+        <code>
+         [0]
+        </code>
+        , in a
+        <code>
+         match_results
+        </code>
+        object contains the string that matched the entire pattern. When using
+        <code>
+         regex_match()
+        </code>
+        and a match is found, this is the entire source sequence. When using
+        <code>
+         regex_search()
+        </code>
+        , discussed in the next section, this can be a substring in the source sequence that matches the regular expression. Element
+        <code>
+         [1]
+        </code>
+        is the substring matched by the first capture group,
+        <code>
+         [2]
+        </code>
+        by the second capture group, and so on. To get a string representation of the i
+        <sup>
+         th
+        </sup>
+        capture group from a
+        <code>
+         match_results
+        </code>
+        object
+        <code>
+         m
+        </code>
+        , you can use
+        <code>
+         m[i]
+        </code>
+        as in the following code, or
+        <code>
+         m[i].str()
+        </code>
+        .
+       </p>
+       <p>
+        The following code extracts the year, month, and day digits into three separate integer variables. The regular expression in the revised example has a few small changes. The first part matching the year is wrapped in a capture group, while the month and day parts are now also capture groups instead of non-capture groups. The call to
+        <code>
+         regex_match()
+        </code>
+        includes a
+        <code>
+         smatch
+        </code>
+        parameter, which receives the matched capture groups. Here is the adapted example:
+       </p>
+       <pre id="c21-code-0037"><code><b>regex r { "(\\d{4})/(0?[1-9]|1[0-2])/(0?[1-9]|[1-2][0-9]|3[0-1])" };</b></code>
+<code>while (true) {</code>
+<code>    print("Enter a date (year/month/day) (q=quit): ");</code>
+<code>    string str;</code>
+<code>    if (!getline(cin, str) || str == "q") { break; }</code>
+<code></code>
+<code>    <b>if (smatch m; regex_match(str, m, r)) {</b></code>
+<code>        <b>int year { stoi(m[1]) };</b></code>
+<code>        <b>int month { stoi(m[2]) };</b></code>
+<code>        <b>int day { stoi(m[3]) };</b></code>
+<code>        <b>println("  Valid date: Year={}, month={}, day={}", year, month, day);</b></code>
+<code>    } else {</code>
+<code>        println("  Invalid date!");</code>
+<code>    }</code>
+<code>}</code></pre>
+       <p>
+        In this example, there are four elements in the
+        <code>
+         smatch
+        </code>
+        results objects:
+       </p>
+       <ul class="check1" id="c21-list-0023">
+        <li id="c21-li-0080">
+         <b>
+          <code>
+           [0]:
+          </code>
+         </b>
+         The string matching the full regular expression, which in this example is the full date
+        </li>
+        <li id="c21-li-0081">
+         <b>
+          <code>
+           [1]:
+          </code>
+         </b>
+         The year
+        </li>
+        <li id="c21-li-0082">
+         <b>
+          <code>
+           [2]:
+          </code>
+         </b>
+         The month
+        </li>
+        <li id="c21-li-0083">
+         <b>
+          <code>
+           [3]:
+          </code>
+         </b>
+         The day
+        </li>
+       </ul>
+       <p>
+        <span aria-label="852" epub:type="pagebreak" id="Page_852" role="doc-pagebreak">
+        </span>
+        When you execute this example, you can get the following output:
+       </p>
+       <pre id="c21-code-0038"><code>Enter a date (year/month/day) (q=quit): 2024/12/01</code>
+<code>  Valid date: Year=2024, month=12, day=1</code>
+<code>Enter a date (year/month/day) (q=quit): 24/12/01</code>
+<code>  Invalid date!</code></pre>
+       <section>
+        <aside>
+         <div class="top hr">
+          <hr/>
+         </div>
+         <section class="feature1">
+          <p>
+           <b>
+            NOTE
+           </b>
+           <i>
+            These date-matching examples check only if the date consists of a year (four digits), a month (1–12), and a day (1–31). They do not perform any validation for the number of days in a month, leap years, and so on. If you need that, you have to write code to validate the year, month, and day values that are extracted by
+           </i>
+           <code>
+            regex_match()
+           </code>
+           <i>
+            . If you implement such validation, then the regular expression could be simplified to just match 4 digits for the year, 1 or 2 digits for the month, and 1 or 2 digits for the day.
+           </i>
+          </p>
+          <pre id="c21-code-0039"><code>    regex r { "(\\d{4})/(\\d{1,2})/(\\d{1,2})" };</code></pre>
+          <div class="bottom hr">
+           <hr/>
+          </div>
+         </section>
+        </aside>
+       </section>
+      </section>
+     </section>
+     <section>
+      <span id="c21-sec-0037">
+      </span>
+      <h3 id="head-3-457">
+       regex_search()
+      </h3>
+      <p>
+       The
+       <code>
+        regex_match()
+       </code>
+       algorithm discussed in the previous section returns
+       <code>
+        true
+       </code>
+       if the entire source string matches the regular expression and
+       <code>
+        false
+       </code>
+       otherwise. If you want to search for a matching substring, you need to use
+       <code>
+        regex_search()
+       </code>
+       . There are seven overloads of
+       <code>
+        regex_search()
+       </code>
+       , and they all have the following form:
+      </p>
+      <pre id="c21-code-0040"><code>template&lt;…&gt;</code>
+<code>bool regex_search(InputSequence[, MatchResults], RegEx[, Flags]);</code></pre>
+      <p id="c21-para-0145">
+       All overloads return
+       <code>
+        true
+       </code>
+       when a match is found somewhere in the input sequence and
+       <code>
+        false
+       </code>
+       otherwise. The parameters are similar to the parameters for
+       <code>
+        regex_match()
+       </code>
+       .
+      </p>
+      <p>
+       Two overloads of
+       <code>
+        regex_search()
+       </code>
+       accept a begin and end iterator as the input sequence that you want to process. You might be tempted to use this version of
+       <code>
+        regex_search()
+       </code>
+       in a loop to find all occurrences of a pattern in a source string by manipulating these begin and end iterators for each
+       <code>
+        regex_search()
+       </code>
+       call. Never do this! It can cause problems when your regular expression uses anchors (
+       <code>
+        ^
+       </code>
+       or
+       <code>
+        $
+       </code>
+       ), word boundaries, and so on. It can also cause an infinite loop due to empty matches. Use a
+       <code>
+        regex_iterator
+       </code>
+       or
+       <code>
+        regex_token_iterator
+       </code>
+       as explained later in this chapter to extract all occurrences of a pattern from a source string.
+      </p>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <p id="c21-para-0147">
+          <b>
+           WARNING
+          </b>
+          <i>
+           Never use
+          </i>
+          <code>
+           regex_search()
+          </code>
+          <i>
+           in a loop to find all occurrences of a pattern in a source string. Instead, use a
+          </i>
+          <code>
+           regex_iterator
+          </code>
+          <i>
+           or
+          </i>
+          <code>
+           regex_token_iterator
+          </code>
+          <i>
+           .
+          </i>
+         </p>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <section>
+       <span id="c21-sec-0039">
+       </span>
+       <h4 id="head-4-356">
+        regex_search() Examples
+       </h4>
+       <p>
+        The
+        <code>
+         regex_search()
+        </code>
+        algorithm can be used to extract a matching substring from an input sequence. For example, the following program extracts code comments from a string. The regular expression
+        <span aria-label="853" epub:type="pagebreak" id="Page_853" role="doc-pagebreak">
+        </span>
+        searches for a substring that starts with
+        <code>
+         //
+        </code>
+        followed by optional whitespace,
+        <code>
+         \s*
+        </code>
+        , followed by one or more characters captured in a capture group,
+        <code>
+         (.+)
+        </code>
+        . This capture group captures only the comment substring. The
+        <code>
+         smatch
+        </code>
+        object
+        <code>
+         m
+        </code>
+        receives the search results. If successful,
+        <code>
+         m[1]
+        </code>
+        contains the comment that was found. You can check the
+        <code>
+         m[1].first
+        </code>
+        and
+        <code>
+         m[1].second
+        </code>
+        iterators to see where exactly the comment was found in the source string.
+       </p>
+       <pre id="c21-code-0041"><code>regex r { "//\\s*(.+)$" };</code>
+<code>while (true) {</code>
+<code>    print("Enter a string with optional code comments (q=quit):\n &gt; ");</code>
+<code>    string str;</code>
+<code>    if (!getline(cin, str) || str == "q") { break; }</code>
+<code></code>
+<code>    <b>if (smatch m; regex_search(str, m, r)) {</b></code>
+<code>        println("  Found comment '{}'", m[1].str());</code>
+<code>    } else {</code>
+<code>        println("  No comment found!");</code>
+<code>    }</code>
+<code>}</code></pre>
+       <p>
+        The output of this program can look as follows:
+       </p>
+       <pre id="c21-code-0042"><code>Enter a string with optional code comments (q=quit):</code>
+<code>&gt; std::string str;   // Our source string</code>
+<code>  Found comment 'Our source string'</code>
+<code>Enter a string with optional code comments (q=quit):</code>
+<code>&gt; int a; // A comment with // in the middle</code>
+<code>  Found comment 'A comment with // in the middle'</code>
+<code>Enter a string with optional code comments (q=quit):</code>
+<code>&gt; std::vector values { 1, 2, 3 };</code>
+<code>  No comment found!</code></pre>
+       <p id="c21-para-0150">
+        The
+        <code>
+         match_results
+        </code>
+        object also has a
+        <code>
+         prefix()
+        </code>
+        and
+        <code>
+         suffix()
+        </code>
+        member function, which return the string preceding or following the match, respectively.
+       </p>
+      </section>
+     </section>
+     <section>
+      <span id="c21-sec-0040">
+      </span>
+      <h3 id="head-3-458">
+       regex_iterator
+      </h3>
+      <p id="c21-para-0151">
+       As explained in the previous section, you should never use
+       <code>
+        regex_search()
+       </code>
+       in a loop to extract all occurrences of a pattern from a source sequence. Instead, you should use a
+       <code>
+        regex_iterator
+       </code>
+       or
+       <code>
+        regex_token_iterator
+       </code>
+       . They work similarly to iterators for Standard Library containers.
+      </p>
+      <section>
+       <span id="c21-sec-0041">
+       </span>
+       <h4 id="head-4-357">
+        regex_iterator Examples
+       </h4>
+       <p id="c21-para-0152">
+        The following example asks the user to enter a source string, extracts every word from the string, and prints all words between quotes. The regular expression in this case is
+        <code>
+         [\w]+
+        </code>
+        , which searches for one or more word-letters. This example uses
+        <code>
+         std::string
+        </code>
+        as a source, so it uses
+        <code>
+         sregex_iterator
+        </code>
+        for the iterators. A standard iterator loop is used, but in this case, the end iterator is done slightly differently from the end iterators of Standard Library containers. Normally, you specify an end iterator for a particular container, but for
+        <code>
+         regex_iterator
+        </code>
+        , there is only one “end” iterator. You get this end iterator by default constructing a
+        <code>
+         regex_iterator
+        </code>
+        .
+       </p>
+       <p>
+        The
+        <code>
+         for
+        </code>
+        loop creates a start iterator called
+        <code>
+         iter
+        </code>
+        , which accepts a begin and end iterator into the source string and a regular expression. The loop body is called for every match found, which is every word in this example. The
+        <code>
+         sregex_iterator
+        </code>
+        iterates over all the matches. By dereferencing
+        <span aria-label="854" epub:type="pagebreak" id="Page_854" role="doc-pagebreak">
+        </span>
+        a
+        <code>
+         sregex_iterator
+        </code>
+        , you get a
+        <code>
+         smatch
+        </code>
+        object. Accessing the first element of this
+        <code>
+         smatch
+        </code>
+        object,
+        <code>
+         [0]
+        </code>
+        , gives you the matched substring:
+       </p>
+       <pre id="c21-code-0043"><code>regex reg { "[\\w]+" };</code>
+<code>while (true) {</code>
+<code>    print("Enter a string to split (q=quit): ");</code>
+<code>    string str;</code>
+<code>    if (!getline(cin, str) || str == "q") { break; }</code>
+<code></code>
+<code>    <b>const sregex_iterator end;</b></code>
+<code>    <b>for (sregex_iterator iter { cbegin(str), cend(str), reg };</b></code>
+<code>        <b>iter != end; ++iter) {</b></code>
+<code>        println("\"{}\"", (*iter)[0].str());</code>
+<code>    }</code>
+<code>}</code></pre>
+       <p>
+        The output of this program can look as follows:
+       </p>
+       <pre id="c21-code-0044"><code>Enter a string to split (q=quit): This, is    a test.</code>
+<code>"This"</code>
+<code>"is"</code>
+<code>"a"</code>
+<code>"test"</code></pre>
+       <p id="c21-para-0155">
+        As this example demonstrates, even simple regular expressions can perform some powerful string operations!
+       </p>
+       <p>
+        Note that both
+        <code>
+         regex_iterator
+        </code>
+        , and
+        <code>
+         regex_token_iterator
+        </code>
+        discussed in the next section, internally store a pointer to the given regular expression. Hence, they both explicitly delete any constructors accepting rvalue reference regular expressions to prevent you from constructing them with temporary
+        <code>
+         regex
+        </code>
+        objects. For example, the following does not compile:
+       </p>
+       <pre id="c21-code-0045"><code>for (sregex_iterator iter { cbegin(str), cend(str), <b>regex { "[\\w]+" }</b> };</code>
+<code>    iter != end; ++iter) { … }</code></pre>
+      </section>
+     </section>
+     <section>
+      <span id="c21-sec-0042">
+      </span>
+      <h3 id="head-3-459">
+       regex_token_iterator
+      </h3>
+      <p id="c21-para-0157">
+       The previous section describes
+       <code>
+        regex_iterator
+       </code>
+       , which iterates through every match. On each iteration, you get a
+       <code>
+        match_results
+       </code>
+       object, which you can use to extract subexpressions for a match that are captured by capture groups.
+      </p>
+      <p>
+       A
+       <code>
+        regex_token_iterator
+       </code>
+       can be used to automatically iterate over all or selected capture groups across all matches. There are four constructors with the following format:
+      </p>
+      <pre id="c21-code-0046"><code>regex_token_iterator(BidirectionalIterator a,</code>
+<code>                     BidirectionalIterator b,</code>
+<code>                     const regex_type&amp; re</code>
+<code>                     [, SubMatches</code>
+<code>                     [, Flags]]);</code></pre>
+      <p>
+       All of them require a begin and end iterator as input sequence, and a regular expression. The optional
+       <code>
+        SubMatches
+       </code>
+       parameter is used to specify which capture groups should be iterated over.
+       <code>
+        SubMatches
+       </code>
+       can be specified in four ways:
+      </p>
+      <ul class="check1" id="c21-list-0024">
+       <li id="c21-li-0084">
+        As a single integer representing the index of the capture group that you want to iterate over
+       </li>
+       <li id="c21-li-0085">
+        As a
+        <code>
+         vector
+        </code>
+        with integers representing the indices of the capture groups that you want to iterate over
+       </li>
+       <li id="c21-li-0086">
+        <span aria-label="855" epub:type="pagebreak" id="Page_855" role="doc-pagebreak">
+        </span>
+        As an
+        <code>
+         initializer_list
+        </code>
+        with capture group indices
+       </li>
+       <li id="c21-li-0087">
+        As a C-style array with capture group indices
+       </li>
+      </ul>
+      <p id="c21-para-0160">
+       When you omit
+       <code>
+        SubMatches
+       </code>
+       or when you specify a 0 for
+       <code>
+        SubMatches
+       </code>
+       , you get an iterator that iterates over all capture groups with index 0, which are the substrings matching the full regular expression. The optional
+       <code>
+        Flags
+       </code>
+       parameter specifies options for the matching algorithm. In most cases, you can keep the default. Consult a Standard Library Reference for more details.
+      </p>
+      <section>
+       <span id="c21-sec-0043">
+       </span>
+       <h4 id="head-4-358">
+        regex_token_iterator Examples
+       </h4>
+       <p>
+        The earlier
+        <code>
+         regex_iterator
+        </code>
+        example can be rewritten using a
+        <code>
+         regex_token_iterator
+        </code>
+        as follows. Instead of using
+        <code>
+         (*iter)[0].str()
+        </code>
+        in the loop body, you simply use
+        <code>
+         iter-&gt;str()
+        </code>
+        because a token iterator with 0 (= default)
+        <code>
+         submatch
+        </code>
+        index automatically iterates over all capture groups with index 0. The output of this code is the same as the output generated by the earlier
+        <code>
+         regex_iterator
+        </code>
+        example.
+       </p>
+       <pre id="c21-code-0047"><code>regex reg { "[\\w]+" };</code>
+<code>while (true) {</code>
+<code>    print("Enter a string to split (q=quit): ");</code>
+<code>    string str;</code>
+<code>    if (!getline(cin, str) || str == "q") { break; }</code>
+<code></code>
+<code>    <b>const sregex_token_iterator end;</b></code>
+<code>    <b>for (sregex_token_iterator iter { cbegin(str), cend(str), reg };</b></code>
+<code>        iter != end; ++iter) {</code>
+<code>        println("\"{}\"", <b>iter-&gt;str()</b>);</code>
+<code>    }</code>
+<code>}</code></pre>
+       <p>
+        The following example asks the user to enter a date and then uses a
+        <code>
+         regex_token_iterator
+        </code>
+        to iterate over the second and third capture groups (month and day), which are specified as a
+        <code>
+         vector
+        </code>
+        of integers. The regular expression used for dates is explained earlier in this chapter. The only difference is that
+        <code>
+         ^
+        </code>
+        and
+        <code>
+         $
+        </code>
+        anchors are added since we want to match the entire source sequence. Earlier, that was not necessary, because
+        <code>
+         regex_match()
+        </code>
+        automatically matches the entire input string.
+       </p>
+       <pre id="c21-code-0048"><code>regex reg { "^(\\d{4})/(0?[1-9]|1[0-2])/(0?[1-9]|[1-2][0-9]|3[0-1])$" };</code>
+<code>while (true) {</code>
+<code>    print("Enter a date (year/month/day) (q=quit): ");</code>
+<code>    string str;</code>
+<code>    if (!getline(cin, str) || str == "q") { break; }</code>
+<code></code>
+<code>    <b>vector indices { 2, 3 };</b></code>
+<code>    <b>const sregex_token_iterator end;</b></code>
+<code>    <b>for (sregex_token_iterator iter { cbegin(str), cend(str), reg, indices };</b></code>
+<code>        iter != end; ++iter) {</code>
+<code>        println("\"{}\"", iter-&gt;str());</code>
+<code>    }</code>
+<code>}</code></pre>
+       <p>
+        This code prints only the month and day of valid dates. Output generated by this example can look like this:
+       </p>
+       <pre id="c21-code-0049"><code>Enter a date (year/month/day) (q=quit): 2024/1/13</code>
+<code>"1"</code>
+<code>"13"</code>
+<span aria-label="856" epub:type="pagebreak" id="Page_856" role="doc-pagebreak"></span><code>Enter a date (year/month/day) (q=quit): 2024/1/32</code>
+<code>Enter a date (year/month/day) (q=quit): 2024/12/5</code>
+<code>"12"</code>
+<code>"5"</code></pre>
+       <p>
+        The
+        <code>
+         regex_token_iterator
+        </code>
+        can also be used to perform a
+        <i>
+         field splitting
+        </i>
+        or
+        <i>
+         tokenization
+        </i>
+        . It is a much safer and more flexible alternative compared to using the old, and not further discussed,
+        <code>
+         strtok()
+        </code>
+        function from C. Tokenization is enabled in the
+        <code>
+         regex_token_iterator
+        </code>
+        constructor by specifying
+        <code>
+         -1
+        </code>
+        as the capture group index to iterate over. In tokenization mode, the iterator iterates over all substrings of the input sequence that
+        <i>
+         do not match
+        </i>
+        the regular expression. The following code demonstrates this by tokenizing a string on the delimiters
+        <code>
+         ,
+        </code>
+        and
+        <code>
+         ;
+        </code>
+        with zero or more whitespace characters before or after a delimiter. The code demonstrates the tokenization in two ways: first by iterating over the tokens directly and then by creating a new
+        <code>
+         vector
+        </code>
+        containing all the tokens followed by printing the contents of the
+        <code>
+         vector
+        </code>
+        :
+       </p>
+       <pre id="c21-code-0050"><code>regex reg { R"(\s*[,;]\s*)" };</code>
+<code>while (true) {</code>
+<code>    print("Enter a string to split on ',' and ';' (q=quit): ");</code>
+<code>    string str;</code>
+<code>    if (!getline(cin, str) || str == "q") { break; }</code>
+<code></code>
+<code>    <span class="color3">// Iterate over the tokens.</span></code>
+<code>    <b>const sregex_token_iterator end;</b></code>
+<code>    <b>for (sregex_token_iterator iter { cbegin(str), cend(str), reg, -1 };</b></code>
+<code>        iter != end; ++iter) {</code>
+<code>        print("\"{}\", ", iter-&gt;str()); </code>
+<code>    }</code>
+<code>    println("");</code>
+<code></code>
+<code>    <span class="color3">// Store all tokens in a vector.</span></code>
+<code>    vector&lt;string&gt; tokens {</code>
+<code>        <b>sregex_token_iterator { cbegin(str), cend(str), reg, -1 }</b>,</code>
+<code>        <b>sregex_token_iterator {}</b> };</code>
+<code>    <span class="color3">// Print the contents of the tokens vector.</span></code>
+<code>    println("{:n}", tokens);</code>
+<code>}</code></pre>
+       <p>
+        The regular expression in this example is specified as a raw string literal and searches for patterns that match the following:
+       </p>
+       <ul class="check1" id="c21-list-0025">
+        <li id="c21-li-0088">
+         Zero or more whitespace characters
+        </li>
+        <li id="c21-li-0089">
+         Followed by a
+         <code>
+          ,
+         </code>
+         or
+         <code>
+          ;
+         </code>
+         character
+        </li>
+        <li id="c21-li-0090">
+         Followed by zero or more whitespace characters
+        </li>
+       </ul>
+       <p>
+        The output can be as follows:
+       </p>
+       <pre id="c21-code-0051"><code>Enter a string to split on ',' and ';' (q=quit): This is,   a; test string.</code>
+<code>"This is", "a", "test string.", </code>
+<code>"This is", "a", "test string."</code></pre>
+       <p id="c21-para-0167">
+        As you can see from this output, the string is split on
+        <code>
+         ,
+        </code>
+        and
+        <code>
+         ;
+        </code>
+        . All whitespace characters around the
+        <code>
+         ,
+        </code>
+        and
+        <code>
+         ;
+        </code>
+        are removed because the tokenization iterator iterates over all substrings that
+        <i>
+         do not match
+        </i>
+        the regular expression and because the regular expression matches
+        <code>
+         ,
+        </code>
+        and
+        <code>
+         ;
+        </code>
+        <i>
+         with
+        </i>
+        whitespace around them.
+       </p>
+      </section>
+     </section>
+     <span aria-label="857" epub:type="pagebreak" id="Page_857" role="doc-pagebreak">
+     </span>
+     <section>
+      <span id="c21-sec-0044">
+      </span>
+      <h3 id="head-3-460">
+       regex_replace()
+      </h3>
+      <p>
+       The
+       <code>
+        regex_replace()
+       </code>
+       algorithm requires a regular expression and a formatting string that is used to replace matching substrings. This formatting string can reference parts of the matched substrings by using the escape sequences in the following table.
+      </p>
+      <table border="1">
+       <thead>
+        <tr>
+         <th class="left bgcolor2" scope="col">
+          ESCAPE SEQUENCE
+         </th>
+         <th class="left bgcolor2" scope="col">
+          REPLACED WITH
+         </th>
+        </tr>
+       </thead>
+       <tbody>
+        <tr>
+         <td class="left bgcolor3">
+          <span class="forecolor1">
+           $n
+          </span>
+         </td>
+         <td class="left bgcolor3">
+          The string matching the
+          <i>
+           n
+          </i>
+          <sup>
+           th
+          </sup>
+          capture group; for example,
+          <span class="forecolor1">
+           $1
+          </span>
+          for the first capture group,
+          <code>
+           $2
+          </code>
+          for the second, and so on.
+          <i>
+           n
+          </i>
+          must be greater than 0.
+         </td>
+        </tr>
+        <tr>
+         <td class="left bgcolor3">
+          <span class="forecolor1">
+           $&amp;
+          </span>
+         </td>
+         <td class="left bgcolor3">
+          The string matching the entire regular expression.
+         </td>
+        </tr>
+        <tr>
+         <td class="left bgcolor3">
+          <span class="forecolor1">
+           $`
+          </span>
+         </td>
+         <td class="left bgcolor3">
+          The part of the input sequence that appears to the left of the substring matching the regular expression.
+         </td>
+        </tr>
+        <tr>
+         <td class="left bgcolor3">
+          <span class="forecolor1">
+           $´
+          </span>
+         </td>
+         <td class="left bgcolor3">
+          The part of the input sequence that appears to the right of the substring matching the regular expression.
+         </td>
+        </tr>
+        <tr>
+         <td class="left bgcolor3">
+          <span class="forecolor1">
+           $$
+          </span>
+         </td>
+         <td class="left bgcolor3">
+          A single dollar sign.
+         </td>
+        </tr>
+       </tbody>
+      </table>
+      <p>
+       There are six overloads of
+       <code>
+        regex_replace()
+       </code>
+       . The difference between them is in the type of parameters. Four of them have the following format:
+      </p>
+      <pre id="c21-code-0052"><code>template&lt;…&gt;</code>
+<code>string regex_replace(InputSequence, RegEx, FormatString[, Flags]);</code></pre>
+      <p id="c21-para-0170">
+       These four overloads return the resulting string after performing the replacement. Both the
+       <code>
+        InputSequence
+       </code>
+       and the
+       <code>
+        FormatString
+       </code>
+       can be an
+       <code>
+        std::string
+       </code>
+       or a C-style string. The
+       <code>
+        RegEx
+       </code>
+       parameter is the regular expression that needs to be matched. The optional
+       <code>
+        Flags
+       </code>
+       parameter specifies options for the replace algorithm.
+      </p>
+      <p>
+       Two overloads of
+       <code>
+        regex_replace()
+       </code>
+       have the following format:
+      </p>
+      <pre id="c21-code-0053"><code>OutputIterator regex_replace(OutputIterator,</code>
+<code>                             BidirectionalIterator first,</code>
+<code>                             BidirectionalIterator last,</code>
+<code>                             RegEx, FormatString[, Flags]);</code></pre>
+      <p id="c21-para-0172">
+       These two overloads write the resulting string to the given output iterator and return this output iterator. The input sequence is given as a begin and end iterator. The other parameters are identical to the other four overloads of
+       <code>
+        regex_replace()
+       </code>
+       .
+      </p>
+      <section>
+       <span id="c21-sec-0045">
+       </span>
+       <h4 id="head-4-359">
+        regex_replace() Examples
+       </h4>
+       <p>
+        As a first example, take the following HTML source string:
+       </p>
+       <pre id="c21-code-0054"><code> &lt;body&gt;&lt;h1&gt;Header&lt;/h1&gt;&lt;p&gt;Some text&lt;/p&gt; 
+&lt;/body&gt;</code></pre>
+       <p>
+        and the following regular expression:
+       </p>
+       <pre id="c21-code-0055"><code>&lt;h1&gt;(.*)&lt;/h1&gt;&lt;p&gt;(.*)&lt;/p&gt;</code></pre>
+       <p>
+        <span aria-label="858" epub:type="pagebreak" id="Page_858" role="doc-pagebreak">
+        </span>
+        The following table shows the different escape sequences and what they will be replaced with:
+       </p>
+       <table border="1">
+        <thead>
+         <tr>
+          <th class="left bgcolor2" scope="col">
+           ESCAPE SEQUENCE
+          </th>
+          <th class="left bgcolor2" scope="col">
+           REPLACED WITH
+          </th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            $1
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            Header
+           </span>
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            $2
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            Some text
+           </span>
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            $&amp;
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            &lt;h1&gt;Header&lt;/h1&gt;&lt;p&gt;Some text&lt;/p&gt;
+           </span>
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            $`
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            &lt;body&gt;
+           </span>
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            $´
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            &lt;/body&gt;
+           </span>
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p>
+        The following code demonstrates the use of
+        <code>
+         regex_replace()
+        </code>
+        :
+       </p>
+       <pre id="c21-code-0056"><code>const string str { " 
+&lt;body&gt;&lt;h1&gt;Header&lt;/h1&gt;&lt;p&gt;Some text&lt;/p&gt; 
+&lt;/body&gt;" };</code>
+<code>regex r { "&lt;h1&gt;(.*)&lt;/h1&gt;&lt;p&gt;(.*)&lt;/p&gt;" };</code>
+<code></code>
+<code><b>const string replacement { "H1=$1 and P=$2" };</b>  <span class="color3">// See earlier table.</span></code>
+<code><b>string result { regex_replace(str, r, replacement) };</b></code>
+<code></code>
+<code>println("Original string: '{}'", str);</code>
+<code>println("New string     : '{}'", result);</code></pre>
+       <p>
+        The output of this program is as follows:
+       </p>
+       <pre id="c21-code-0057"><code>Original string: ' 
+&lt;body&gt;&lt;h1&gt;Header&lt;/h1&gt;&lt;p&gt;Some text&lt;/p&gt; 
+&lt;/body&gt;'</code>
+<code>New string     : ' 
+&lt;body&gt;H1=Header and P=Some text 
+&lt;/body&gt;'</code></pre>
+       <p>
+        The
+        <code>
+         regex_replace()
+        </code>
+        algorithm accepts a number of flags to change its behavior. The most important flags are given in the following table:
+       </p>
+       <table border="1">
+        <thead>
+         <tr>
+          <th class="left bgcolor2" scope="col">
+           FLAG
+          </th>
+          <th class="left bgcolor2" scope="col">
+           DESCRIPTION
+          </th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            format_default
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           The default is to replace all occurrences of the pattern and to also copy everything to the output that does not match the pattern.
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            format_no_copy
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Replaces all occurrences of the pattern but does not copy anything to the output that does not match the pattern.
+          </td>
+         </tr>
+         <tr>
+          <td class="left bgcolor3">
+           <span class="forecolor1">
+            format_first_only
+           </span>
+          </td>
+          <td class="left bgcolor3">
+           Replaces only the first occurrence of the pattern.
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p>
+        The call to
+        <code>
+         regex_replace()
+        </code>
+        in the previous code snippet can be modified to use the
+        <code>
+         format_no_copy
+        </code>
+        flag:
+       </p>
+       <pre id="c21-code-0058"><code><b>string result { regex_replace(str, r, replacement,</b></code>
+<code>    <b>regex_constants::format_no_copy) };</b></code></pre>
+       <p>
+        The output now is as follows:
+       </p>
+       <pre id="c21-code-0059"><code>Original string: ' 
+&lt;body&gt;&lt;h1&gt;Header&lt;/h1&gt;&lt;p&gt;Some text&lt;/p&gt; 
+&lt;/body&gt;'</code>
+<code>New string     : 'H1=Header and P=Some text'</code></pre>
+       <p>
+        Another example using
+        <code>
+         regex_replace()
+        </code>
+        is to replace each word boundary in a string with a newline character so that the output contains only one word per line. The following code snippet
+        <span aria-label="859" epub:type="pagebreak" id="Page_859" role="doc-pagebreak">
+        </span>
+        demonstrates this without using any loops to process a given input string. The code first creates a regular expression that matches individual words. When a match is found with
+        <code>
+         regex_replace()
+        </code>
+        , it is substituted with
+        <code>
+         $1\n
+        </code>
+        where
+        <code>
+         $1
+        </code>
+        is replaced with the matched word. Note also the use of the
+        <code>
+         format_no_copy
+        </code>
+        flag to prevent copying whitespace and other non-word characters from the source string to the output.
+       </p>
+       <pre id="c21-code-0060"><code>regex reg { "([\\w]+)" };</code>
+<code>const string replacement { "$1\n" };</code>
+<code>while (true) {</code>
+<code>    print("Enter a string to split over multiple lines (q=quit): ");</code>
+<code>    string str;</code>
+<code>    if (!getline(cin, str) || str == "q") { break; }</code>
+<code></code>
+<code>    <b>println("{}", regex_replace(str, reg, replacement,</b></code>
+<code>        <b>regex_constants::format_no_copy));</b></code>
+<code>}</code></pre>
+       <p>
+        The output of this program can be as follows:
+       </p>
+       <pre id="c21-code-0061"><code>Enter a string to split over multiple lines (q=quit):   This is   a test.</code>
+<code>This</code>
+<code>is</code>
+<code>a</code>
+<code>test</code></pre>
+      </section>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-224">
+     <span id="c21-sec-0046">
+     </span>
+     <h2 id="head-2-224">
+      SUMMARY
+     </h2>
+     <p id="c21-para-0183">
+      This chapter gave you an appreciation for coding with localization in mind. As anyone who has been through a localization effort will tell you, adding support for a new language or locale is infinitely easier if you have planned ahead, for example, by using Unicode characters and being mindful of locales.
+     </p>
+     <p id="c21-para-0184">
+      The second part of this chapter explained the regular expressions library. Once you know the syntax of regular expressions, it becomes much easier to work with strings. Regular expressions allow you to validate strings, search for substrings inside an input sequence, perform find-and-replace operations, and so on. It is highly recommended that you get to know regular expressions and start using them instead of writing your own string manipulation routines. They will make your life easier.
+     </p>
+    </section>
+    <section aria-labelledby="head-2-225">
+     <span id="c21-sec-0047">
+     </span>
+     <h2 id="head-2-225">
+      EXERCISES
+     </h2>
+     <p id="c21-para-0185">
+      By solving the following exercises, you can practice the material discussed in this chapter. Solutions to all exercises are available with the code download on the book's website at
+      <code>
+       <a href="http://www.wiley.com/go/proc++6e">
+        www.wiley.com/go/proc++6e
+       </a>
+      </code>
+      . However, if you are stuck on an exercise, first reread parts of this chapter to try to find an answer yourself before looking at the solution from the website.
+     </p>
+     <section>
+      <span id="c21-exsec-0001">
+      </span>
+      <ol class="none">
+       <li id="c21-ex-0001">
+        <b>
+         Exercise 21-1:
+        </b>
+        Use an appropriate facet to figure out the decimal separator for formatting numbers according to the user's environment. Consult a Standard Library reference to learn about the exact member functions of your chosen facet.
+       </li>
+       <li id="c21-ex-0002">
+        <span aria-label="860" epub:type="pagebreak" id="Page_860" role="doc-pagebreak">
+        </span>
+        <b>
+         Exercise 21-2:
+        </b>
+        Write an application that asks the user to enter a phone number as formatted in the United States. Here's an example: 202-555-0108. Use a regular expression to validate the format of the phone number, that is, three digits, followed by a dash, three more digits, another dash, and a final four digits. If it's a valid phone number, print out the three parts on separate lines. For example, for the earlier phone number, the result must be as follows:
+        <pre id="c21-code-0062"><code>202</code>
+<code>555</code>
+<code>0108</code></pre>
+       </li>
+       <li id="c21-ex-0003">
+        <b>
+         Exercise 21-3:
+        </b>
+        Write an application that asks the user for a piece of source code that can span multiple lines and that can contain
+        <code>
+         //
+        </code>
+        style comments. To signal the end of the input, use a sentinel character, for example
+        <code>
+         @
+        </code>
+        . You can use
+        <code>
+         std::getline()
+        </code>
+        with
+        <code>
+         '@'
+        </code>
+        as delimiter to read in multiple lines of text from the standard input console. Finally, use a regular expression to remove comments from all lines of the code snippet. Make sure your code properly works on a snippet such as the following:
+        <pre id="c21-code-0063"><code>string str; // A comment // Some more comments.</code>
+<code>str = "Hello"; // Hello.</code></pre>
+        <p class="listPara1" id="c21-para-0189">
+         The result for this input must be as follows:
+        </p>
+        <pre><code>string str;</code>
+<code>str = "Hello";</code></pre>
+       </li>
+       <li id="c21-ex-0004">
+        <b>
+         Exercise 21-4:
+        </b>
+        The section “
+        <a href="#c21-sec-0030">
+         Lookahead
+        </a>
+        ” earlier in this chapter mentioned a password-validation regular expression. Write a program to test this regular expression. Ask the user to enter a password and validate it. Once you've verified that the regular expression works, add one more validation rule to it: a password must also consist of at least two digits.
+       </li>
+      </ol>
+     </section>
+    </section>
+   </section>
+  </div>
+ </body>
+</html>

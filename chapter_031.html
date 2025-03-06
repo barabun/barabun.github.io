@@ -1,0 +1,5530 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html>
+<html epub:prefix="z3998: http://www.daisy.org/z3998/2012/vocab/structure/#" lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+ <head>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   20Mastering Standard Library Algorithms
+  </title>
+ </head>
+ <body>
+  <div class="navigation">
+   <a class="nav-button" href="chapter_030.html">
+    ← Previous
+   </a>
+   <a class="nav-button" href="index.html">
+    Table of Contents
+   </a>
+   <a class="nav-button" href="chapter_032.html">
+    Next →
+   </a>
+  </div>
+  <div class="chapter-content">
+   <section aria-labelledby="c20_1" epub:type="chapter" role="doc-chapter">
+    <header>
+     <h1 id="c20_1">
+      <span aria-label="791" epub:type="pagebreak" id="Page_791" role="doc-pagebreak">
+      </span>
+      <span id="c20">
+      </span>
+      <span class="chapterNumber">
+       20
+      </span>
+      <br/>
+      <span class="chapterTitle">
+       Mastering Standard Library Algorithms
+      </span>
+     </h1>
+    </header>
+    <section aria-label="chapter opening">
+     <span id="c20-sec-0001">
+     </span>
+     <section>
+      <aside>
+       <div class="top hr">
+        <hr/>
+       </div>
+       <section class="feature3">
+        <h3>
+         WHAT'S IN THIS CHAPTER?
+        </h3>
+        <ul class="check3" id="c20-list-0001">
+         <li id="c20-li-0001">
+          What Standard Library algorithms are and what principles they are built on
+         </li>
+         <li id="c20-li-0002">
+          Details of the algorithms provided by the Standard Library
+         </li>
+         <li id="c20-li-0003">
+          How to execute algorithms in parallel to improve performance
+         </li>
+         <li id="c20-li-0004">
+          What constrained algorithms are
+         </li>
+        </ul>
+        <div class="bottom hr">
+         <hr/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <section>
+      <aside>
+       <div class="top hr">
+        <hr/>
+       </div>
+       <section class="feature3">
+        <span id="c20-fea-0001">
+        </span>
+        <h3 id="head-2-216">
+         WILEY.COM DOWNLOADS FOR THIS CHAPTER
+        </h3>
+        <span id="c20-sec-0003">
+        </span>
+        <p id="c20-para-0004">
+         Please note that all the code examples for this chapter are available as part of this chapter's code download on the book's website at
+         <code>
+          <a href="http://www.wiley.com/go/proc++6e">
+           www.wiley.com/go/proc++6e
+          </a>
+         </code>
+         on the Download Code tab.
+        </p>
+        <div class="bottom hr">
+         <hr/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <p id="c20-para-0005">
+      As
+      <a href="c18.xhtml">
+       Chapter 18
+      </a>
+      , “Standard Library Containers,” shows, the Standard Library provides an impressive collection of generic data structures. Most libraries stop there. The Standard Library, however, contains an additional assortment of generic algorithms that can, with some exceptions, be applied to elements from any container. Using these algorithms, you can find, sort, and process elements in containers and perform a host of other operations. The beauty of the algorithms is that they are independent not only of the types of the underlying elements, but also of the types of the containers on which they operate. Algorithms perform their work using only the iterator or ranges interfaces, discussed in
+      <a href="c17.xhtml">
+       Chapter 17
+      </a>
+      , “Understanding Iterators and the Ranges Library.”
+     </p>
+     <p id="c20-para-0006">
+      The Standard Library comes with a large set of
+      <i>
+       unconstrained algorithms
+      </i>
+      , all working solely with iterators. These algorithms don't have any constraints in the form of concepts; see
+      <span aria-label="792" epub:type="pagebreak" id="Page_792" role="doc-pagebreak">
+      </span>
+      <a href="c12.xhtml">
+       Chapter 12
+      </a>
+      , “Writing Generic Code with Templates,” attached to them. The Standard Library additionally has a large collection of
+      <i>
+       constrained algorithms
+      </i>
+      , sometimes called
+      <i>
+       range-based algorithms
+      </i>
+      . These are able to work with iterators and ranges and are properly constrained, so the compiler can produce more readable error messages when an algorithm is used wrongly. This chapter focuses first on the unconstrained algorithms, as these are the ones used in most existing and legacy code bases; hence, you need to know how they work. Once you know how they work, it will be refreshing to see how the constrained algorithms make things easier.
+     </p>
+     <p id="c20-para-0007">
+      <a href="c16.xhtml">
+       Chapter 16
+      </a>
+      , “Overview of the C++ Standard Library,” gives a high-level overview of all the Standard Library algorithms, but without any coding details. Combined with the knowledge of
+      <a href="c19.xhtml">
+       Chapter 19
+      </a>
+      , “Function Pointers, Function Objects, and Lambda Expressions,” now it's time to look at how those algorithms can be used in practice and discover their true power.
+     </p>
+    </section>
+    <section aria-labelledby="head-2-217">
+     <span id="c20-sec-0004">
+     </span>
+     <h2 id="head-2-217">
+      OVERVIEW OF ALGORITHMS
+     </h2>
+     <p id="c20-para-0008">
+      The “magic” behind the unconstrained algorithms is that they work on iterator intermediaries instead of on the containers themselves. In that way, they are not tied to specific container implementations. All the Standard Library algorithms are implemented as function templates, where the template type parameters are usually iterator types. The iterators themselves are specified as arguments to the function. Function templates can usually deduce the template types from the function arguments, so you can generally call the algorithms as if they were normal functions, not templates.
+     </p>
+     <p id="c20-para-0009">
+      Most algorithms require a source sequence on which to apply the algorithm. For the unconstrained algorithms, a source sequence is specified as an iterator pair, a begin and end iterator, which is called a
+      <i>
+       common range
+      </i>
+      . As
+      <a href="c17.xhtml">
+       Chapter 17
+      </a>
+      explains, common ranges are half-open for most containers such that they include the first element in the range but exclude the last. The end iterator is really a “past-the-end” marker.
+     </p>
+     <p id="c20-para-0010">
+      Algorithms pose certain requirements on iterators passed to them. For instance,
+      <code>
+       copy_backward
+      </code>
+      (
+      <code>
+       )
+      </code>
+      , which copies elements from one sequence to another, starting with the last element, is an example of an algorithm that requires a bidirectional iterator. Similarly,
+      <code>
+       stable_sort()
+      </code>
+      , which sorts elements in place while preserving the order of duplicate elements, is an example of an algorithm requiring random access iterators. This means that such algorithms cannot work on containers that do not provide the necessary iterators.
+      <code>
+       forward_list
+      </code>
+      is an example of a container supporting only forward iterators, no bidirectional or random-access iterators; thus,
+      <code>
+       copy_backward()
+      </code>
+      and
+      <code>
+       stable_sort()
+      </code>
+      cannot work on
+      <code>
+       forward_list
+      </code>
+      .
+     </p>
+     <p id="c20-para-0011">
+      The majority of the algorithms are defined in
+      <code>
+       &lt;algorithm&gt;
+      </code>
+      , with some numerical algorithms defined in
+      <code>
+       &lt;numeric&gt;
+      </code>
+      . All of them are in the
+      <code>
+       std
+      </code>
+      namespace.
+     </p>
+     <p id="c20-para-0012">
+      Most algorithms are
+      <code>
+       constexpr
+      </code>
+      , which means they can be used in the implementation of
+      <code>
+       constexpr
+      </code>
+      functions. Consult a Standard Library Reference (see
+      <a href="b02.xhtml">
+       Appendix B
+      </a>
+      , “Annotated Bibliography”) to discover exactly which algorithms are
+      <code>
+       constexpr
+      </code>
+      .
+     </p>
+     <p id="c20-para-0013">
+      The best way to understand the algorithms is to look at some examples in detail first. After you've seen how a few of them work, it's easy to pick up the others. This section describes the
+      <code>
+       find()
+      </code>
+      ,
+      <code>
+       find_if()
+      </code>
+      , and
+      <code>
+       accumulate()
+      </code>
+      algorithms in detail. The subsequent sections discuss each of the classes of algorithms with representative samples.
+     </p>
+     <span aria-label="793" epub:type="pagebreak" id="Page_793" role="doc-pagebreak">
+     </span>
+     <section>
+      <span id="c20-sec-0005">
+      </span>
+      <h3 id="head-3-435">
+       The find and find_if Algorithms
+      </h3>
+      <p>
+       <code>
+        find()
+       </code>
+       looks for a specific element in a common range. You can use it on elements in any container type. It returns an iterator referring to the element found or the end iterator of the range in case the element is not found. Note that the range specified in the call to
+       <code>
+        find()
+       </code>
+       need not be the entire range of elements in a container; it could be a subset.
+      </p>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <p id="c20-para-0015">
+          <b>
+           WARNING
+          </b>
+          <i>
+           If
+          </i>
+          <code>
+           find()
+          </code>
+          <i>
+           <i>
+            <i>
+             fails to find an element, it returns an iterator equal to the end iterator specified in the function call, not the end iterator of the underlying container
+            </i>
+            .
+           </i>
+          </i>
+         </p>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <p>
+       Before looking at
+       <code>
+        find()
+       </code>
+       , let's define a function template to populate a container with integers. This function template is used throughout this chapter. It's a function template parameterized on the type of container. A constraint enforces that the given container type supports
+       <code>
+        push_back(int)
+       </code>
+       .
+      </p>
+      <pre id="c20-code-0001"><code>template &lt;typename Container&gt;</code>
+<code>    requires requires(Container&amp; c, int i) { c.push_back(i); }</code>
+<code>void populateContainer(Container&amp; cont)</code>
+<code>{</code>
+<code>    while (true) {</code>
+<code>        print("Enter a number (0 to stop): ");</code>
+<code>        int value;</code>
+<code>        cin &gt;&gt; value;</code>
+<code>        if (value == 0) { break; }</code>
+<code>        cont.push_back(value);</code>
+<code>    }</code>
+<code>}</code></pre>
+      <p>
+       Now we can look at how to use
+       <code>
+        std::find()
+       </code>
+       . This example and the populateContainer() function template assume that the user plays nice and enters valid numbers; it does not perform any error checking on the user input. Performing error checking on stream input is discussed in
+       <a href="c13.xhtml">
+        Chapter 13
+       </a>
+       , “Demystifying C++ I/O.”
+      </p>
+      <pre id="c20-code-0002"><code>vector&lt;int&gt; myVector;</code>
+<code>populateContainer(myVector);</code>
+<code> </code>
+<code>while (true) {</code>
+<code>    print("Enter a number to lookup (0 to stop): ");</code>
+<code>    int number;</code>
+<code>    cin &gt;&gt; number;</code>
+<code>    if (number == 0) { break; }</code>
+<code>    auto endIt { cend(myVector) };</code>
+<code>    <b>auto it { find(cbegin(myVector), endIt, number) };</b></code>
+<code>    if (it == endIt) {</code>
+<code>        println("Could not find {}", number);</code>
+<code>    } else {</code>
+<code>        println("Found {}", *it);</code>
+<code>    }</code>
+<code>}</code></pre>
+      <p id="c20-para-0018">
+       <span aria-label="794" epub:type="pagebreak" id="Page_794" role="doc-pagebreak">
+       </span>
+       To search all the elements of the
+       <code>
+        vector
+       </code>
+       ,
+       <code>
+        find()
+       </code>
+       is called with
+       <code>
+        cbegin(myVector)
+       </code>
+       and
+       <code>
+        endIt
+       </code>
+       as iterator arguments, where
+       <code>
+        endIt
+       </code>
+       is defined as
+       <code>
+        cend(myVector)
+       </code>
+       . If you want to search in a subrange, you can change these two iterators.
+      </p>
+      <p>
+       Here is a sample run of the program:
+      </p>
+      <pre id="c20-code-0003"><code>Enter a number (0 to stop): 3</code>
+<code>Enter a number (0 to stop): 4</code>
+<code>Enter a number (0 to stop): 5</code>
+<code>Enter a number (0 to stop): 6</code>
+<code>Enter a number (0 to stop): 0</code>
+<code>Enter a number to lookup (0 to stop): 5</code>
+<code>Found 5</code>
+<code>Enter a number to lookup (0 to stop): 8</code>
+<code>Could not find 8</code>
+<code>Enter a number to lookup (0 to stop): 0</code></pre>
+      <p>
+       With initializers for
+       <code>
+        if
+       </code>
+       statements, the call to
+       <code>
+        find()
+       </code>
+       and checking the result can be done with one statement as follows:
+      </p>
+      <pre id="c20-code-0004"><code><b>if (auto it { find(cbegin(myVector), endIt, number) }; it == endIt) {</b></code>
+<code>    println("Could not find {}", number);</code>
+<code>} else {</code>
+<code>    println("Found {}", *it);</code>
+<code>}</code></pre>
+      <p>
+       Some containers, such as
+       <code>
+        map
+       </code>
+       and
+       <code>
+        set
+       </code>
+       , provide their own versions of
+       <code>
+        find()
+       </code>
+       as class member functions, as demonstrated with examples during the discussion of those containers in
+       <a href="c18.xhtml">
+        Chapter 18
+       </a>
+       .
+      </p>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <p id="c20-para-0022">
+          <b>
+           WARNING
+          </b>
+          <i>
+           If a container provides a member function with the same functionality as a generic algorithm, you should use the member function instead, because it's faster. For example, the generic
+          </i>
+          <code>
+           find()
+          </code>
+          <i>
+           <i>
+            <i>
+             algorithm runs in linear time, even on a
+            </i>
+           </i>
+           <code>
+            map
+           </code>
+           , while the
+          </i>
+          <code>
+           find()
+          </code>
+          <i>
+           <i>
+            <i>
+             member function on a
+            </i>
+           </i>
+           <code>
+            map
+           </code>
+           runs in logarithmic time
+          </i>
+          .
+         </p>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <p>
+       <code>
+        find_if()
+       </code>
+       is similar to
+       <code>
+        find()
+       </code>
+       , except that it accepts a
+       <i>
+        predicate function callback
+       </i>
+       returning
+       <code>
+        true
+       </code>
+       or
+       <code>
+        false
+       </code>
+       , instead of a simple element to match. The
+       <code>
+        find_if()
+       </code>
+       algorithm calls the predicate on each element in the range until the predicate returns
+       <code>
+        true
+       </code>
+       , in which case
+       <code>
+        find_if()
+       </code>
+       returns an iterator referring to that element. The following program reads test scores from the user, then checks whether any of the scores are “perfect.” A perfect score is a score of
+       <code>
+        100
+       </code>
+       or higher. The program is similar to the previous example. Only the major differences are highlighted:
+      </p>
+      <pre id="c20-code-0005"><code><b>bool perfectScore(int num) { return num &gt;= 100; }</b></code>
+<code> </code>
+<code>int main()</code>
+<code>{</code>
+<code>    vector&lt;int&gt; myVector;</code>
+<code>    populateContainer(myVector);</code>
+<code> </code>
+<code>    auto endIt { cend(myVector) };</code>
+<code>    <b>auto it { find_if(cbegin(myVector), endIt, perfectScore) };</b></code>
+<span aria-label="795" epub:type="pagebreak" id="Page_795" role="doc-pagebreak"></span><code>    if (it == endIt) {</code>
+<code>        <b>println("No perfect scores");</b></code>
+<code>    } else {</code>
+<code>        <b>println("Found a \"perfect\" score of {}", *it);</b></code>
+<code>    }</code>
+<code>}</code></pre>
+      <p id="c20-para-0024">
+       This program passes a pointer to the
+       <code>
+        perfectScore()
+       </code>
+       function to
+       <code>
+        find_if()
+       </code>
+       , which the algorithm then calls on each element until it returns
+       <code>
+        true
+       </code>
+       .
+      </p>
+      <p>
+       <img alt="C++23" src="../images\images/icon1.png"/>
+       Instead of passing a function pointer to
+       <code>
+        find_if()
+       </code>
+       , you can also pass a functor.
+       <a href="c15.xhtml">
+        Chapter 15
+       </a>
+       , “Overloading C++ Operators,” explains that, starting with C++23, the function call operator of a functor can be marked as
+       <code>
+        static
+       </code>
+       if it doesn't need access to any non-
+       <code>
+        static
+       </code>
+       data members and member functions of the functor class. The
+       <code>
+        perfectScore()
+       </code>
+       function could be changed to a
+       <code>
+        PerfectScore
+       </code>
+       functor with a
+       <code>
+        static
+       </code>
+       function call operator as follows:
+      </p>
+      <pre id="c20-code-0006"><code>class PerfectScore</code>
+<code>{</code>
+<code>    public:</code>
+<code>        static bool operator()(int num) { return num &gt;= 100; }</code>
+<code>};</code></pre>
+      <p>
+       The call to
+       <code>
+        find_if()
+       </code>
+       then needs to change as follows:
+      </p>
+      <pre id="c20-code-0007"><code>auto it { find_if(cbegin(myVector), endIt, <b>&amp;PerfectScore::operator()</b>) };</code></pre>
+      <p>
+       Finally, instead of a
+       <code>
+        perfectScore()
+       </code>
+       function or a
+       <code>
+        PerfectScore
+       </code>
+       functor, you can use a lambda expression, discussed in
+       <a href="c19.xhtml">
+        Chapter 19
+       </a>
+       .
+      </p>
+      <pre id="c20-code-0008"><code>auto it { find_if(cbegin(myVector), endIt, <b>[](int i){ return i &gt;= 100; }</b>) };</code></pre>
+     </section>
+     <section>
+      <span id="c20-sec-0008">
+      </span>
+      <h3 id="head-3-436">
+       The accumulate Algorithm
+      </h3>
+      <p>
+       It's often useful to calculate the sum, or some other arithmetic quantity, of elements in a container. The
+       <code>
+        accumulate()
+       </code>
+       function—defined in
+       <code>
+        &lt;numeric&gt;
+       </code>
+       , not in
+       <code>
+        &lt;algorithm&gt;
+       </code>
+       —does just that. In its most basic form, it calculates the sum of the elements in a specified range. For example, the following function calculates the arithmetic mean of a sequence of integers given as a
+       <code>
+        span
+       </code>
+       . The arithmetic mean is simply the sum of all the elements divided by the number of elements:
+      </p>
+      <pre id="c20-code-0009"><code>double arithmeticMean(span&lt;const int&gt; values)</code>
+<code>{</code>
+<code>    double sum { accumulate(cbegin(values), cend(values), 0.0) };</code>
+<code>    return sum / values.size();</code>
+<code>}</code></pre>
+      <p id="c20-para-0030">
+       The
+       <code>
+        accumulate()
+       </code>
+       algorithm takes as its third parameter an initial value for the sum, which in this case should be
+       <code>
+        0.0
+       </code>
+       (the identity for addition) to start a fresh sum.
+      </p>
+      <p>
+       A second overload of
+       <code>
+        accumulate()
+       </code>
+       allows the caller to specify an operation to perform instead of the default addition. This operation takes the form of a binary callback. Suppose that you want to calculate the geometric mean, which is the product of all the numbers in the sequence to the power of the inverse of the size. In that case, you would want to use
+       <code>
+        accumulate()
+       </code>
+       to calculate the product instead of the sum. You could write it like this:
+      </p>
+      <pre id="c20-code-0010"><span aria-label="796" epub:type="pagebreak" id="Page_796" role="doc-pagebreak"></span><code>int product(int value1, int value2) { return value1 * value2; }</code>
+<code> </code>
+<code>double geometricMean(span&lt;const int&gt; values)</code>
+<code>{</code>
+<code>    int mult { accumulate(cbegin(values), cend(values), 1, <b>product</b>) };</code>
+<code>    return pow(mult, 1.0 / values.size());  <span class="color3">// pow() is defined in &lt;cmath&gt;</span></code>
+<code>}</code></pre>
+      <p id="c20-para-0032">
+       Note that the
+       <code>
+        product()
+       </code>
+       function is passed as a callback to
+       <code>
+        accumulate()
+       </code>
+       and that the initial value for the accumulation is
+       <code>
+        1
+       </code>
+       (the identity for multiplication).
+      </p>
+      <p>
+       Instead of a separate
+       <code>
+        product()
+       </code>
+       function, you could use a lambda expression:
+      </p>
+      <pre id="c20-code-0011"><code>double geometricMeanLambda(span&lt;const int&gt; values)</code>
+<code>{</code>
+<code>    int mult { accumulate(cbegin(values), cend(values), 1,</code>
+<code>        <b>[](int value1, int value2) { return value1 * value2; }</b>) };</code>
+<code>    return pow(mult, 1.0 / values.size());</code>
+<code>}</code></pre>
+      <p>
+       You could also use the transparent
+       <code>
+        multiplies&lt;&gt;
+       </code>
+       function object, discussed in
+       <a href="c19.xhtml">
+        Chapter 19
+       </a>
+       , to implement the
+       <code>
+        geometricMean()
+       </code>
+       function:
+      </p>
+      <pre id="c20-code-0012"><code>double geometricMeanFunctor(span&lt;const int&gt; values)</code>
+<code>{</code>
+<code>    int mult { accumulate(cbegin(values), cend(values), 1, <b>multiplies&lt;&gt;{}</b>) };</code>
+<code>    return pow(mult, 1.0 / values.size());</code>
+<code>}</code></pre>
+     </section>
+     <section>
+      <span id="c20-sec-0009">
+      </span>
+      <h3 id="head-3-437">
+       Move Semantics with Algorithms
+      </h3>
+      <p id="c20-para-0035">
+       Just like Standard Library containers, Standard Library algorithms are also optimized to use move semantics at appropriate times; that is, they can move objects instead of performing potential expensive copy operations. This can greatly speed up certain algorithms, for example,
+       <code>
+        remove()
+       </code>
+       , discussed in detail later in this chapter. For this reason, it is highly recommended that you implement move semantics in your custom element classes that you want to store in containers. Move semantics can be added to any class by implementing a move constructor and a move assignment operator. As discussed in
+       <a href="c18.xhtml">
+        Chapter 18
+       </a>
+       , both should be marked as
+       <code>
+        noexcept
+       </code>
+       , otherwise they won't be used by Standard Library containers and algorithms. Consult the “Implementing Move Semantics” section in
+       <a href="c09.xhtml">
+        Chapter 9
+       </a>
+       , “Mastering Classes and Objects,” for details on how to add move semantics to your classes.
+      </p>
+     </section>
+     <section>
+      <span id="c20-sec-0010">
+      </span>
+      <h3 id="head-3-438">
+       Algorithm Callbacks
+      </h3>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <p id="c20-para-0037">
+          <b>
+           WARNING
+          </b>
+          <i>
+           The algorithms are allowed to make multiple copies of given callbacks, such as functors and lambda expressions, and call different copies for different elements
+          </i>
+          .
+         </p>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <p id="c20-para-0038">
+       The fact that multiple copies of a callback can be made places strong restrictions on the side effects of such callbacks. Basically, the callbacks must be stateless. For functors, this means that the function call operator needs to be
+       <code>
+        const
+       </code>
+       ; thus, you cannot write functors such that they count on any internal
+       <span aria-label="797" epub:type="pagebreak" id="Page_797" role="doc-pagebreak">
+       </span>
+       state of the object being consistent between calls. Similar for lambda expressions, they cannot be marked as
+       <code>
+        mutable
+       </code>
+       .
+      </p>
+      <p id="c20-para-0039">
+       There are some exceptions. The
+       <code>
+        generate()
+       </code>
+       and
+       <code>
+        generate_n()
+       </code>
+       algorithms can accept stateful callbacks, but even these make one copy of the callback. On top of that, they don't return that copy, so you don't have access to the changes made to the state once the algorithm is finished. The only exception is
+       <code>
+        for_each()
+       </code>
+       . It copies the given predicate once into the
+       <code>
+        for_each()
+       </code>
+       algorithm and returns that copy when finished. You can access the changed state through this returned value.
+      </p>
+      <p>
+       To prevent callbacks from getting copied by algorithms, you can use the
+       <code>
+        std::ref()
+       </code>
+       helper function to pass a callback reference to the algorithm instead. This ensures that the algorithm always uses the same callback. For example, the following code snippet is based on an earlier example in this chapter but uses a lambda expression stored in a variable named
+       <code>
+        isPerfectScore
+       </code>
+       . The lambda expression counts how often it gets called and writes that to standard output.
+       <code>
+        isPerfectScore
+       </code>
+       is passed to the
+       <code>
+        find_if()
+       </code>
+       algorithm, not yet using
+       <code>
+        ref()
+       </code>
+       . The last statement of the snippet explicitly calls
+       <code>
+        isPerfectScore
+       </code>
+       one additional time.
+      </p>
+      <pre id="c20-code-0013"><code>auto isPerfectScore { [tally = 0] (int i) mutable {</code>
+<code>    println("{}", ++tally);  return i &gt;= 100; } };</code>
+<code> </code>
+<code>auto endIt { cend(myVector) };</code>
+<code>auto it { find_if(cbegin(myVector), endIt, <b>isPerfectScore</b>) };</code>
+<code>if (it != endIt) { println("Found a \"perfect\" score of {}", *it); }</code>
+<code>println("---");</code>
+<code>isPerfectScore(1);</code></pre>
+      <p>
+       The output can be as followed:
+      </p>
+      <pre id="c20-code-0014"><code>Enter a number (0 to stop): 11</code>
+<code>Enter a number (0 to stop): 22</code>
+<code>Enter a number (0 to stop): 33</code>
+<code>Enter a number (0 to stop): 0</code>
+<code>1</code>
+<code>2</code>
+<code>3</code>
+<code>---</code>
+<code>1</code></pre>
+      <p id="c20-para-0042">
+       The output shows that the
+       <code>
+        find_if()
+       </code>
+       algorithm calls
+       <code>
+        isPerfectScore
+       </code>
+       three times producing the output 1, 2, 3. The last line shows that the explicit call to
+       <code>
+        isPerfectScore
+       </code>
+       occurs on a different instance of
+       <code>
+        isPerfectScore
+       </code>
+       as it starts again at 1.
+      </p>
+      <p>
+       Now, change the call to
+       <code>
+        find_if()
+       </code>
+       as follows:
+      </p>
+      <pre id="c20-code-0015"><code>auto it { find_if(cbegin(myVector), endIt, <b>ref(isPerfectScore)</b>) };</code></pre>
+      <p id="c20-para-0044">
+       The output now will be 1, 2, 3, 4, showing that no copies of
+       <code>
+        isPerfectScore
+       </code>
+       are made.
+      </p>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-218">
+     <span id="c20-sec-0012">
+     </span>
+     <h2 id="head-2-218">
+      ALGORITHM DETAILS
+     </h2>
+     <p id="c20-para-0045">
+      <a href="c16.xhtml">
+       Chapter 16
+      </a>
+      lists all available Standard Library algorithms, divided into different categories. Most of the algorithms are defined in
+      <code>
+       &lt;algorithm&gt;
+      </code>
+      , but a few are located in
+      <code>
+       &lt;numeric&gt;
+      </code>
+      . They are all in the
+      <code>
+       std
+      </code>
+      namespace.
+     </p>
+     <p id="c20-para-0046">
+      <span aria-label="798" epub:type="pagebreak" id="Page_798" role="doc-pagebreak">
+      </span>
+      The goal of this chapter is not to provide a reference-style overview of all available algorithms. Instead, I have picked a number of categories and provided examples for them. Once you know how to use these algorithms, you should have no problems with other algorithms. Consult a Standard Library Reference (see
+      <a href="b02.xhtml">
+       Appendix B
+      </a>
+      ) for a full reference of
+      <i>
+       all
+      </i>
+      the algorithms.
+     </p>
+     <section>
+      <span id="c20-sec-0013">
+      </span>
+      <h3 id="head-3-439">
+       Non-modifying Sequence Algorithms
+      </h3>
+      <p id="c20-para-0047">
+       Non-modifying sequence algorithms are algorithms that do not modify the sequence of elements they operate on. These include algorithms for searching elements in a range and for comparing two ranges to each other; they also include a number of counting algorithms.
+      </p>
+      <section>
+       <span id="c20-sec-0014">
+       </span>
+       <h4 id="head-4-312">
+        Search Algorithms
+       </h4>
+       <p id="c20-para-0048">
+        You've already seen examples of two search algorithms earlier in this chapter:
+        <code>
+         find()
+        </code>
+        and
+        <code>
+         find_if()
+        </code>
+        . The Standard Library provides several other variations of the basic
+        <code>
+         find()
+        </code>
+        algorithm that work on sequences of elements. The section “
+        <a href="#c20-sec-0047">
+         Search Algorithms
+        </a>
+        ” in
+        <a href="c16.xhtml">
+         Chapter 16
+        </a>
+        describes the different search algorithms that are available, including their complexity.
+       </p>
+       <p id="c20-para-0049">
+        All the algorithms use
+        <code>
+         operator==
+        </code>
+        or
+        <code>
+         &lt;
+        </code>
+        as the default comparison operator, but also provide overloaded versions that allow you to specify a different comparison callback.
+       </p>
+       <p>
+        Here are examples of some of the search algorithms in action:
+       </p>
+       <pre id="c20-code-0016"><code><span class="color3">// The list of elements to be searched.</span></code>
+<code>vector myVector { 5, 6, 9, 8, 8, 3 };</code>
+<code>auto beginIter { cbegin(myVector) };</code>
+<code>auto endIter { cend(myVector) };</code>
+<code> </code>
+<code><span class="color3">// Find the first element that does not satisfy the given lambda expression.</span></code>
+<code><b>auto it { find_if_not(beginIter, endIter, [](int i){ return i &lt; 8; }) };</b></code>
+<code>if (it != endIter) {</code>
+<code>    println("First element not &lt; 8 is {}", *it);</code>
+<code>}</code>
+<code> </code>
+<code><span class="color3">// Find the first pair of matching consecutive elements.</span></code>
+<code><b>it = adjacent_find(beginIter, endIter);</b></code>
+<code>if (it != endIter) {</code>
+<code>    println("Found two consecutive equal elements with value {}", *it);</code>
+<code>}</code>
+<code> </code>
+<code><span class="color3">// Find the first of two values.</span></code>
+<code>vector targets { 8, 9 };</code>
+<code><b>it = find_first_of(beginIter, endIter, cbegin(targets), cend(targets));</b></code>
+<code>if (it != endIter) {</code>
+<code>    println("Found one of 8 or 9: {}", *it);</code>
+<code>}</code>
+<code> </code>
+<code><span class="color3">// Find the first subsequence.</span></code>
+<code>vector sub { 8, 3 };</code>
+<code><b>it = search(beginIter, endIter, cbegin(sub), cend(sub));</b></code>
+<code>if (it != endIter) {</code>
+<code>    println("Found subsequence {{8,3}}");</code>
+<span aria-label="799" epub:type="pagebreak" id="Page_799" role="doc-pagebreak"></span><code>} else {</code>
+<code>    println("Unable to find subsequence {{8,3}}");</code>
+<code>}</code>
+<code> </code>
+<code><span class="color3">// Find the last subsequence (which is the same as the first in this example).</span></code>
+<code><b>auto it2 { find_end(beginIter, endIter, cbegin(sub), cend(sub)) };</b></code>
+<code>if (it != it2) {</code>
+<code>    println("Error: search and find_end found different subsequences "</code>
+<code>         "even though there is only one match.");</code>
+<code>}</code>
+<code> </code>
+<code><span class="color3">// Find the first subsequence of two consecutive 8s.</span></code>
+<code><b>it = search_n(beginIter, endIter, 2, 8);</b></code>
+<code>if (it != endIter) {</code>
+<code>    println("Found two consecutive 8s");</code>
+<code>} else {</code>
+<code>    println("Unable to find two consecutive 8s");</code>
+<code>}</code></pre>
+       <p>
+        Here is the output:
+       </p>
+       <pre id="c20-code-0017"><code>First element not &lt; 8 is 9</code>
+<code>Found two consecutive equal elements with value 8</code>
+<code>Found one of 8 or 9: 9</code>
+<code>Found subsequence {8,3}</code>
+<code>Found two consecutive 8s</code></pre>
+       <section>
+        <aside>
+         <div class="top hr">
+          <hr/>
+         </div>
+         <section class="feature1">
+          <p id="c20-para-0053">
+           <b>
+            NOTE
+           </b>
+           <i>
+            Remember that some of the containers have member functions equivalent to generic algorithms. If that's the case, it's recommended to use those member functions instead of the generic algorithms, because the member functions are more efficient. An example is the
+           </i>
+           <code>
+            find()
+           </code>
+           <i>
+            <i>
+             <i>
+              member function of
+             </i>
+            </i>
+           </i>
+           <code>
+            std::set
+           </code>
+           <i>
+            <i>
+             <i>
+              and
+             </i>
+            </i>
+           </i>
+           <code>
+            std::map
+           </code>
+           <i>
+            <i>
+             .
+            </i>
+           </i>
+          </p>
+          <div class="bottom hr">
+           <hr/>
+          </div>
+         </section>
+        </aside>
+       </section>
+      </section>
+      <section>
+       <span id="c20-sec-0016">
+       </span>
+       <h4 id="head-4-313">
+        Specialized Searchers
+       </h4>
+       <p>
+        An optional parameter to the
+        <code>
+         search()
+        </code>
+        algorithm allows you to specify which search algorithm to use. You have three options—
+        <code>
+         default_searcher
+        </code>
+        ,
+        <code>
+         boyer_moore_searcher
+        </code>
+        , or
+        <code>
+         boyer_moore_horspool_searcher
+        </code>
+        —all defined in
+        <code>
+         &lt;functional&gt;
+        </code>
+        . The last two options implement the well-known
+        <i>
+         Boyer-Moore
+        </i>
+        and
+        <i>
+         Boyer-Moore-Horspool
+        </i>
+        search algorithms. These are more efficient than the default searcher and can be used to find a substring in a larger piece of text. The complexity of the Boyer-Moore searchers is as follows (
+        <i>
+         N
+        </i>
+        is the size of the sequence to search in, the haystack, and
+        <i>
+         M
+        </i>
+        is the size of the pattern to find, the needle):
+       </p>
+       <ul class="check1" id="c20-list-0002">
+        <li id="c20-li-0005">
+         If the pattern is not found, the worst-case complexity is
+         <i>
+          O
+         </i>
+         (
+         <i>
+          N
+         </i>
+         +
+         <i>
+          M
+         </i>
+         ).
+        </li>
+        <li id="c20-li-0006">
+         If the pattern is found, the worst-case complexity is
+         <i>
+          O
+         </i>
+         (
+         <i>
+          N*M
+         </i>
+         ).
+        </li>
+       </ul>
+       <p id="c20-para-0055">
+        These are the theoretical worst-case complexities. In practice, these specialized searchers are sublinear, better than
+        <i>
+         O
+        </i>
+        (
+        <i>
+         N
+        </i>
+        ), which means they are much faster than the default one! They are sublinear because
+        <span aria-label="800" epub:type="pagebreak" id="Page_800" role="doc-pagebreak">
+        </span>
+        they are able to skip characters instead of looking at each single character in the haystack. They also have an interesting property that the longer the needle is, the faster they work, as they will be able to skip more characters in the haystack. The difference between the Boyer-Moore and the Boyer-Moore-Horspool algorithm is that the latter has less constant overhead for its initialization and in each loop iteration of its algorithm; however, its worst-case complexity can be significantly higher than for the Boyer-Moore algorithm. So, which one to choose depends on your specific use case.
+       </p>
+       <p>
+        Here is an example of using a Boyer-Moore searcher:
+       </p>
+       <pre id="c20-code-0018"><code>string text { "This is the haystack to search a needle in." };</code>
+<code>string toSearchFor { "needle" };</code>
+<code><b>boyer_moore_searcher searcher { cbegin(toSearchFor), cend(toSearchFor) };</b></code>
+<code><b>auto result { search(cbegin(text), cend(text), searcher) };</b></code>
+<code>if (result != cend(text)) {</code>
+<code>    println("Found the needle.");</code>
+<code>} else {</code>
+<code>    println("Needle not found.");</code>
+<code>}</code></pre>
+      </section>
+      <section>
+       <span id="c20-sec-0017">
+       </span>
+       <h4 id="head-4-314">
+        Comparison Algorithms
+       </h4>
+       <p>
+        You can compare entire ranges of elements in several different ways:
+        <code>
+         equal()
+        </code>
+        ,
+        <code>
+         mismatch()
+        </code>
+        ,
+        <code>
+         lexicographical_compare()
+        </code>
+        , and
+        <code>
+         lexicographical_compare_three_way()
+        </code>
+        . These algorithms have the advantage that you can compare sequences from different containers. For example, you can compare the contents of a
+        <code>
+         vector
+        </code>
+        with the contents of a
+        <code>
+         list
+        </code>
+        . In general, these algorithms work best with sequential containers. They work by comparing the values in corresponding positions of the two collections to each other. The following list describes how each algorithm works:
+       </p>
+       <ul class="check1" id="c20-list-0003">
+        <li id="c20-li-0007">
+         <b>
+          <code>
+           equal()
+          </code>
+         </b>
+         returns
+         <code>
+          true
+         </code>
+         if all corresponding elements are equal. Originally,
+         <code>
+          equal()
+         </code>
+         accepted three iterators: begin and end iterators for the first range, and a begin iterator for the second range. This version required both ranges to have the same number of elements. Since C++14, there is an overload accepting four iterators: begin and end iterators for the first range, and begin and end iterators for the second range. This version can cope with ranges of different sizes. It's recommended to always use the four-iterator version because it's safer!
+        </li>
+        <li id="c20-li-0008">
+         <b>
+          <code>
+           mismatch()
+          </code>
+         </b>
+         returns iterators, one iterator for each range, to indicate where in the range the corresponding elements mismatch. There are three-iterator and four-iterator versions available, just as with
+         <code>
+          equal()
+         </code>
+         . It's again recommended to use the four-iterator version, because of safety!
+        </li>
+        <li id="c20-li-0009">
+         <b>
+          <code>
+           lexicographical_compare()
+          </code>
+         </b>
+         compares the elements that have the same position in both supplied ranges against each other (sequentially). It returns
+         <code>
+          true
+         </code>
+         if the first unequal element in the first range is less than its corresponding element in the second range, or if the first range has fewer elements than the second and all elements in the first range are equal to their corresponding initial subsequence in the second set.
+         <code>
+          lexicographical_compare()
+         </code>
+         gets its name because it resembles the rules for comparing strings in dictionaries, but extends this set of rules to deal with objects of any type.
+        </li>
+        <li id="c20-li-0010">
+         <b>
+          <code>
+           lexicographical_compare_three_way()
+          </code>
+         </b>
+         is similar to
+         <code>
+          lexicographical_compare()
+         </code>
+         except that it performs a three-way comparison and returns a comparison category type (
+         <code>
+          strong_ordering
+         </code>
+         ,
+         <code>
+          weak_ordering
+         </code>
+         , or
+         <code>
+          partial_ordering
+         </code>
+         , discussed in
+         <a href="c01.xhtml">
+          Chapter 1
+         </a>
+         , “A Crash Course in C++ and the Standard Library”) instead of a Boolean.
+        </li>
+       </ul>
+       <p>
+        <span aria-label="801" epub:type="pagebreak" id="Page_801" role="doc-pagebreak">
+        </span>
+       </p>
+       <section>
+        <aside>
+         <div class="top hr">
+          <hr/>
+         </div>
+         <section class="feature1">
+          <p id="c20-para-0058">
+           <b>
+            NOTE
+           </b>
+           <i>
+            If you want to compare all elements of two containers of the same type, you can just use operators such as
+           </i>
+           <code>
+            operator==
+           </code>
+           <i>
+            <i>
+             or
+            </i>
+           </i>
+           <code>
+            operator&lt;
+           </code>
+           <i>
+            <i>
+             <i>
+              instead of one of these algorithms. The algorithms are useful for comparing subranges, C-style arrays, sequences of elements from different container types, and so on
+             </i>
+             .
+            </i>
+           </i>
+          </p>
+          <div class="bottom hr">
+           <hr/>
+          </div>
+         </section>
+        </aside>
+       </section>
+       <p>
+        Here are some examples of these algorithms in action:
+       </p>
+       <pre id="c20-code-0019"><code>vector&lt;int&gt; myVector;</code>
+<code>list&lt;int&gt; myList;</code>
+<code> </code>
+<code>println("Populate the vector:");</code>
+<code>populateContainer(myVector);</code>
+<code>println("Populate the list:");</code>
+<code>populateContainer(myList);</code>
+<code> </code>
+<code><span class="color3">// Compare the two containers</span></code>
+<code><b>if (equal(cbegin(myVector), cend(myVector),</b></code>
+<code>          <b>cbegin(myList), cend(myList))) {</b></code>
+<code>    println("The two containers have equal elements");</code>
+<code>} else {</code>
+<code>    <span class="color3">// If the containers were not equal, find out why not</span></code>
+<code>    <b>auto miss { mismatch(cbegin(myVector), cend(myVector),</b></code>
+<code>                         <b>cbegin(myList), cend(myList)) };</b></code>
+<code>    println("The following initial elements are the same in "</code>
+<code>        "the vector and the list:");</code>
+<code>    for (auto iter { cbegin(myVector) }; iter != miss.first; ++iter) {</code>
+<code>        print("{}\t", *iter);</code>
+<code>    }</code>
+<code>    println("");</code>
+<code>}</code>
+<code> </code>
+<code><span class="color3">// Now order them.</span></code>
+<code><b>if (lexicographical_compare(cbegin(myVector), cend(myVector),</b></code>
+<code>                            <b>cbegin(myList), cend(myList))) {</b></code>
+<code>    println("The vector is lexicographically first.");</code>
+<code>} else {</code>
+<code>    println("The list is lexicographically first.");</code>
+<code>}</code></pre>
+       <p>
+        Here is a sample run of the program:
+       </p>
+       <pre id="c20-code-0020"><code>Populate the vector:</code>
+<code>Enter a number (0 to stop): 5</code>
+<code>Enter a number (0 to stop): 6</code>
+<code>Enter a number (0 to stop): 7</code>
+<code>Enter a number (0 to stop): 0</code>
+<code>Populate the list:</code>
+<code>Enter a number (0 to stop): 5</code>
+<code>Enter a number (0 to stop): 6</code>
+<code>Enter a number (0 to stop): 9</code>
+<code>Enter a number (0 to stop): 8</code>
+<span aria-label="802" epub:type="pagebreak" id="Page_802" role="doc-pagebreak"></span><code>Enter a number (0 to stop): 0</code>
+<code>The following initial elements are the same in the vector and the list:</code>
+<code>5      6</code>
+<code>The vector is lexicographically first.</code></pre>
+      </section>
+      <section>
+       <span id="c20-sec-0019">
+       </span>
+       <p>
+        Additionally, the following comparison algorithms work on a single range: all_of(), any_of(), and none_of(). Here are some examples:
+       </p>
+       <pre id="c20-code-0021"><code><span class="color3">// all_of()</span></code>
+<code>vector vec2 { 1, 1, 1, 1 };</code>
+<code><b>if (all_of(cbegin(vec2), cend(vec2), [](int i){ return i == 1; })) {</b></code>
+<code>    println("All elements are == 1");</code>
+<code>} else {</code>
+<code>    println("Not all elements are == 1");</code>
+<code>}</code>
+<code> </code>
+<code><span class="color3">// any_of()</span></code>
+<code>vector vec3 { 0, 0, 1, 0 };</code>
+<code><b>if (any_of(cbegin(vec3), cend(vec3), [](int i){ return i == 1; })) {</b></code>
+<code>    println("At least one element == 1");</code>
+<code>} else {</code>
+<code>    println("No elements are == 1");</code>
+<code>}</code>
+<code> </code>
+<code><span class="color3">// none_of()</span></code>
+<code>vector vec4 { 0, 0, 0, 0 };</code>
+<code><b>if (none_of(cbegin(vec4), cend(vec4), [](int i){ return i == 1; })) {</b></code>
+<code>    println("All elements are != 1");</code>
+<code>} else {</code>
+<code>    println("Some elements are == 1");</code>
+<code>}</code></pre>
+       <p>
+        The output is as follows:
+       </p>
+       <pre id="c20-code-0022"><code>All elements are == 1</code>
+<code>At least one element == 1</code>
+<code>All elements are != 1</code></pre>
+       <section>
+        <span id="c20-sec-1019">
+        </span>
+        Counting Algorithms
+        <p>
+         The non-modifying counting algorithms are count() and count_if(). The following example uses the
+         <code>
+          count_if()
+         </code>
+         algorithm to count the number of elements in a
+         <code>
+          vector
+         </code>
+         that satisfy a certain condition. The condition is given in the form of a lambda expression, which captures the
+         <code>
+          value
+         </code>
+         variable from its enclosing scope by value:
+        </p>
+        <pre id="c20-code-0023"><code>vector values { 1, 2, 3, 4, 5, 6, 7, 8, 9 };</code>
+<code>int value { 3 };</code>
+<code><b>auto tally { count_if(cbegin(values), cend(values),</b></code>
+<code>    <b>[value](int i){ return i &gt; value; }) };</b></code>
+<code>println("Found {} values &gt; {}.", tally, value);</code></pre>
+        <p>
+         The output is as follows:
+        </p>
+        <pre id="c20-code-0024"><code>Found 6 values&gt; 3</code></pre>
+        <p>
+         <span aria-label="803" epub:type="pagebreak" id="Page_803" role="doc-pagebreak">
+         </span>
+         The example can be extended to demonstrate capturing variables by reference. The following lambda expression counts the number of times it is called by incrementing a variable in the enclosing scope that is captured by reference:
+        </p>
+        <pre id="c20-code-0025"><code>vector values { 1, 2, 3, 4, 5, 6, 7, 8, 9 };</code>
+<code>int value { 3 };</code>
+<code><b>int callCounter { 0 };</b></code>
+<code><b>auto tally { count_if(cbegin(values), cend(values),</b></code>
+<code>    <b>[value, &amp;callCounter](int i){ ++callCounter; return i &gt; value; }) };</b></code>
+<code><b>println("The lambda expression was called {} times.", callCounter);</b></code>
+<code>println("Found {} values &gt; {}.", tally, value);</code></pre>
+        <p>
+         The output is as follows:
+        </p>
+        <pre id="c20-code-0026"><code>The lambda expression was called 9 times.</code>
+<code>Found 6 values &gt; 3</code></pre>
+       </section>
+      </section>
+     </section>
+     <section>
+      <span id="c20-sec-0020">
+      </span>
+      <h3 id="head-3-440">
+       Modifying Sequence Algorithms
+      </h3>
+      <p id="c20-para-0067">
+       The Standard Library provides a variety of
+       <i>
+        modifying sequence algorithms
+       </i>
+       that perform tasks such as copying elements from one range to another, removing elements, or reversing the order of elements in a range.
+      </p>
+      <p id="c20-para-0068">
+       Some modifying algorithms use the concept of a
+       <i>
+        source
+       </i>
+       and a
+       <i>
+        destination
+       </i>
+       range. The elements are read from the source range and modified in the destination range. An example of such an algorithm is
+       <code>
+        copy()
+       </code>
+       .
+      </p>
+      <p>
+       Other algorithms perform their work
+       <i>
+        in-place
+       </i>
+       ; that is, they require only one range, for example the
+       <code>
+        generate()
+       </code>
+       algorithm.
+      </p>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <p id="c20-para-0070">
+          <b>
+           WARNING
+          </b>
+          <i>
+           The modifying algorithms cannot insert elements into a destination. They can only overwrite/modify whatever elements are in the destination already
+          </i>
+          .
+          <a href="c17.xhtml">
+           <i>
+            Chapter
+           </i>
+           17
+          </a>
+          <i>
+           describes how iterator adapters can be used to really insert elements into a destination
+          </i>
+          .
+         </p>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <p id="c20-para-0071">
+          <b>
+           NOTE
+          </b>
+          <i>
+           Ranges from
+           <code>
+            map
+           </code>
+           s and
+          </i>
+          <code>
+           multimap
+          </code>
+          <i>
+           s cannot be used as destinations of modifying algorithms. These algorithms overwrite entire elements, which in a
+           <code>
+            map
+           </code>
+           consist of key/value pairs. However,
+           <code>
+            map
+           </code>
+           s and
+          </i>
+          <code>
+           multimap
+          </code>
+          <i>
+           s mark the key as
+          </i>
+          <code>
+           const
+          </code>
+          <i>
+           , so it cannot be assigned to. The same holds for
+          </i>
+          <code>
+           set
+          </code>
+          <i>
+           <i>
+            <i>
+             and
+            </i>
+           </i>
+          </i>
+          <code>
+           multiset
+          </code>
+          <i>
+           . Your alternative is to use an insert iterator, described in
+          </i>
+          <a href="c17.xhtml">
+           <i>
+            Chapter
+           </i>
+           17
+          </a>
+          .
+         </p>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <p id="c20-para-0072">
+       The section “
+       <a href="#c20-sec-0020">
+        Modifying Sequence Algorithms
+       </a>
+       ” in
+       <a href="c16.xhtml">
+        Chapter 16
+       </a>
+       lists all available modifying algorithms with a description of each one. This section provides code examples for a selection of
+       <span aria-label="804" epub:type="pagebreak" id="Page_804" role="doc-pagebreak">
+       </span>
+       those algorithms. If you understand how to use the algorithms explained in this section, you should not have any problems using the other algorithms for which no examples are given.
+      </p>
+      <section>
+       <span id="c20-sec-0023">
+       </span>
+       <h4 id="head-4-315">
+        generate
+       </h4>
+       <p>
+        The
+        <code>
+         generate()
+        </code>
+        algorithm requires a common range and replaces the values in that range with the values returned from the function callback given as third argument. The following example uses the
+        <code>
+         generate()
+        </code>
+        algorithm together with a lambda expression to put the numbers 2, 4, 8, 16, and so on, in a
+        <code>
+         vector
+        </code>
+        :
+       </p>
+       <pre id="c20-code-0027"><code>vector&lt;int&gt; values(10); <span class="color3">// Create a vector of 10 elements.</span></code>
+<code>int value { 1 };</code>
+<code><b>generate(begin(values), end(values), [&amp;value]{ value *= 2; return value; });</b></code>
+<code>println("{:n}", values);</code></pre>
+       <p>
+        The output is as follows:
+       </p>
+       <pre id="c20-code-0028"><code>2, 4, 8, 16, 32, 64, 128, 256, 512, 1024</code></pre>
+      </section>
+      <section>
+       <span id="c20-sec-0024">
+       </span>
+       <h4 id="head-4-316">
+        transform
+       </h4>
+       <p>
+        There are multiple overloads of the
+        <code>
+         transform()
+        </code>
+        algorithm. One overload applies a callback to each element in a range and expects the callback to generate a new element, which it stores in the specified destination range. The source and destination ranges can be the same if you want
+        <code>
+         transform()
+        </code>
+        to work in-place. The parameters are a begin and end iterator of the source sequence, a begin iterator of the destination sequence, and the callback. For example, the following code snippet adds 100 to each element in a
+        <code>
+         vector
+        </code>
+        . The
+        <code>
+         populateContainer()
+        </code>
+        function is the same as defined earlier in this chapter.
+       </p>
+       <pre id="c20-code-0029"><code>vector&lt;int&gt; myVector;</code>
+<code>populateContainer(myVector);</code>
+<code> </code>
+<code>println("The vector contains: {:n}", myVector);</code>
+<code><b>transform(begin(myVector), end(myVector), begin(myVector),</b></code>
+<code>    <b>[](int i){ return i + 100;});</b></code>
+<code>println("The vector contains: {:n}", myVector);</code></pre>
+       <p>
+        A possible output is as follows:
+       </p>
+       <pre id="c20-code-0030"><code>Enter a number (0 to stop): 1</code>
+<code>Enter a number (0 to stop): 11</code>
+<code>Enter a number (0 to stop): 0</code>
+<code>The vector contains: 1, 11</code>
+<code>The vector contains: 101, 111</code></pre>
+       <p>
+        Another overload of
+        <code>
+         transform()
+        </code>
+        calls a binary function on pairs of elements from two ranges. It requires a begin and end iterator of the first range, a begin iterator of the second range, and a begin iterator of the destination range. The following example creates two
+        <code>
+         vector
+        </code>
+        s and uses
+        <code>
+         transform()
+        </code>
+        to calculate the sum of pairs of elements and to store the result back in the first
+        <code>
+         vector
+        </code>
+        :
+       </p>
+       <pre id="c20-code-0031"><code>vector&lt;int&gt; vec1, vec2;</code>
+<code>println("Vector1:"); populateContainer(vec1);</code>
+<code>println("Vector2:"); populateContainer(vec2);</code>
+<code>if (vec2.size() &lt; vec1.size())</code>
+<code>{</code>
+<span aria-label="805" epub:type="pagebreak" id="Page_805" role="doc-pagebreak"></span><code>    println("Vector2 should be at least the same size as vector1.");</code>
+<code>    return 1;</code>
+<code>}</code>
+<code> </code>
+<code>println("Vector1: {:n}", vec1); </code>
+<code>println("Vector2: {:n}", vec2); </code>
+<code><b>transform(begin(vec1), end(vec1), begin(vec2), begin(vec1),</b></code>
+<code>    <b>[](int a, int b){ return a + b; });</b></code>
+<code>println("Vector1: {:n}", vec1); </code>
+<code>println("Vector2: {:n}", vec2); </code></pre>
+       <p>
+        The output could look like this:
+       </p>
+       <pre id="c20-code-0032"><code>Vector1:</code>
+<code>Enter a number (0 to stop): 1</code>
+<code>Enter a number (0 to stop): 2</code>
+<code>Enter a number (0 to stop): 0</code>
+<code>Vector2:</code>
+<code>Enter a number (0 to stop): 11</code>
+<code>Enter a number (0 to stop): 22</code>
+<code>Enter a number (0 to stop): 33</code>
+<code>Enter a number (0 to stop): 0</code>
+<code>Vector1: 1, 2</code>
+<code>Vector2: 11, 22, 33</code>
+<code>Vector1: 12, 24</code>
+<code>Vector2: 11, 22, 33</code></pre>
+       <section>
+        <aside>
+         <div class="top hr">
+          <hr/>
+         </div>
+         <section class="feature1">
+          <p id="c20-para-0080">
+           <b>
+            NOTE
+           </b>
+           <code>
+            transform()
+           </code>
+           <i>
+            <i>
+             <i>
+              and the other modifying algorithms often return an iterator referring to the past-the-end value of the destination range. The examples in this book usually ignore that return value
+             </i>
+             .
+            </i>
+           </i>
+          </p>
+          <div class="bottom hr">
+           <hr/>
+          </div>
+         </section>
+        </aside>
+       </section>
+      </section>
+      <section>
+       <span id="c20-sec-0026">
+       </span>
+       <h4 id="head-4-317">
+        copy
+       </h4>
+       <p id="c20-para-0081">
+        The
+        <code>
+         copy()
+        </code>
+        algorithm allows you to copy elements from one range to another, starting with the first element and proceeding to the last element in the range. The source and destination ranges must be different, but, with restrictions, they can overlap. The restrictions are as follows: for
+        <code>
+         copy(b,e,d)
+        </code>
+        , overlapping is fine if
+        <code>
+         d
+        </code>
+        is before
+        <code>
+         b
+        </code>
+        ; however, if
+        <code>
+         d
+        </code>
+        is within
+        <code>
+         [b,e)
+        </code>
+        , then the behavior is undefined. As with all modifying algorithms,
+        <code>
+         copy()
+        </code>
+        cannot insert elements into the destination. It just overwrites whatever elements are there already.
+        <a href="c17.xhtml">
+         Chapter 17
+        </a>
+        describes how to use iterator adapters to insert elements into a container or stream with
+        <code>
+         copy()
+        </code>
+        .
+       </p>
+       <p>
+        Here is a simple example of
+        <code>
+         copy()
+        </code>
+        that uses the
+        <code>
+         resize()
+        </code>
+        member function on a
+        <code>
+         vector
+        </code>
+        to ensure that there is enough space in the destination container. It copies all elements from
+        <code>
+         vec1
+        </code>
+        to
+        <code>
+         vec2
+        </code>
+        .
+       </p>
+       <pre id="c20-code-0033"><code>vector&lt;int&gt; vec1, vec2;</code>
+<code>populateContainer(vec1);</code>
+<code>vec2.resize(size(vec1));</code>
+<code><b>copy(cbegin(vec1), cend(vec1), begin(vec2));</b></code>
+<code>println("{:n}", vec2);</code></pre>
+       <p>
+        <span aria-label="806" epub:type="pagebreak" id="Page_806" role="doc-pagebreak">
+        </span>
+        There is also a
+        <code>
+         copy_backward()
+        </code>
+        algorithm, which copies the elements from the source backward to the destination. In other words, it starts with the last element of the source, puts it in the last position in the destination range, and then moves backward after each copy. Also for
+        <code>
+         copy_backward()
+        </code>
+        , the source and destination ranges must be different, but, with restrictions, they can again overlap. The restrictions this time are as follows: for
+        <code>
+         copy_backward(b,e,d)
+        </code>
+        , overlapping is fine if
+        <code>
+         d
+        </code>
+        is after
+        <code>
+         e
+        </code>
+        , however, if
+        <code>
+         d
+        </code>
+        is within
+        <code>
+         (b,e]
+        </code>
+        , then the behavior is undefined. The preceding example can be modified to use
+        <code>
+         copy_backward()
+        </code>
+        instead of
+        <code>
+         copy()
+        </code>
+        , as follows. Note that you need to specify
+        <code>
+         end(vec2)
+        </code>
+        as the third argument instead of
+        <code>
+         begin(vec2)
+        </code>
+        . The output is the same as the version using
+        <code>
+         copy()
+        </code>
+        .
+       </p>
+       <pre id="c20-code-0034"><code><b>copy_backward(cbegin(vec1), cend(vec1), end(vec2));</b></code></pre>
+       <p>
+        <code>
+         copy_if()
+        </code>
+        works by having an input range specified by two iterators, an output destination specified by one iterator, and a predicate (for example, a function or lambda expression). The algorithm copies all elements that satisfy the given predicate to the destination. Remember, copy does not create or extend containers; it merely replaces existing elements, so the destination should be big enough to hold all elements to be copied. Of course, after copying the elements, it might be desirable to remove the space “beyond” where the last element was copied to. To facilitate this,
+        <code>
+         copy_if()
+        </code>
+        returns an iterator to the one-past-the-last-copied element in the destination range. This can be used to determine how many elements should be removed from the destination container. The following example demonstrates this by copying only the even numbers to
+        <code>
+         vec2
+        </code>
+        :
+       </p>
+       <pre id="c20-code-0035"><code>vector&lt;int&gt; vec1, vec2;</code>
+<code>populateContainer(vec1);</code>
+<code>vec2.resize(size(vec1));</code>
+<code><b>auto endIterator { copy_if(cbegin(vec1), cend(vec1),</b></code>
+<code>         <b>begin(vec2), [](int i){ return i % 2 == 0; }) };</b></code>
+<code><b>vec2.erase(endIterator, end(vec2));</b></code>
+<code>println("{:n}", vec2);</code></pre>
+       <p>
+        <code>
+         copy_n()
+        </code>
+        copies
+        <code>
+         n
+        </code>
+        elements from the source to the destination. The first parameter of
+        <code>
+         copy_n()
+        </code>
+        is the start iterator. The second parameter is an integer specifying the number of elements to copy, and the third parameter is the destination iterator. The
+        <code>
+         copy_n()
+        </code>
+        algorithm does not perform any bounds checking, so you must make sure that the start iterator, incremented by the number of elements to copy, does not exceed the
+        <code>
+         end()
+        </code>
+        of the source collection or your program will have undefined behavior. Here is an example:
+       </p>
+       <pre id="c20-code-0036"><code>vector&lt;int&gt; vec1, vec2;</code>
+<code>populateContainer(vec1);</code>
+<code>size_t tally { 0 };</code>
+<code>print("Enter number of elements you want to copy: ");</code>
+<code>cin &gt;&gt; tally;</code>
+<code>tally = min(tally, size(vec1));</code>
+<code>vec2.resize(tally);</code>
+<code><b>copy_n(cbegin(vec1), tally, begin(vec2));</b></code>
+<code>println("{:n}", vec2);</code></pre>
+      </section>
+      <section>
+       <span id="c20-sec-0027">
+       </span>
+       <h4 id="head-4-318">
+        move
+       </h4>
+       <p>
+        There are two move-related algorithms:
+        <code>
+         move()
+        </code>
+        and
+        <code>
+         move_backward()
+        </code>
+        . They both use move semantics, discussed in
+        <a href="c09.xhtml">
+         Chapter 9
+        </a>
+        . You have to provide a move assignment operator in your element classes if you want to use these algorithms on containers with elements of your own types, as demonstrated
+        <span aria-label="807" epub:type="pagebreak" id="Page_807" role="doc-pagebreak">
+        </span>
+        in the following example. The
+        <code>
+         main()
+        </code>
+        function creates a
+        <code>
+         vector
+        </code>
+        with three
+        <code>
+         MyClass
+        </code>
+        objects and then moves those elements from
+        <code>
+         vecSrc
+        </code>
+        to
+        <code>
+         vecDst
+        </code>
+        . Note that the code includes two different uses of
+        <code>
+         move()
+        </code>
+        . The
+        <code>
+         move()
+        </code>
+        function accepting a single argument converts an lvalue into an rvalue and is defined in
+        <code>
+         &lt;utility&gt;
+        </code>
+        , while
+        <code>
+         move()
+        </code>
+        accepting three arguments is the Standard Library
+        <code>
+         move()
+        </code>
+        algorithm to move elements between containers. Consult
+        <a href="c09.xhtml">
+         Chapter 9
+        </a>
+        for details on implementing move assignment operators and the use of the single parameter version of
+        <code>
+         std::move()
+        </code>
+        .
+       </p>
+       <pre id="c20-code-0037"><code>class MyClass</code>
+<code>{</code>
+<code>    public:</code>
+<code>        MyClass() = default;</code>
+<code>        MyClass(const MyClass&amp; src) = default;</code>
+<code>        explicit MyClass(string str) : m_str { move(str) } {}</code>
+<code>        virtual ˜MyClass() = default;</code>
+<code> </code>
+<code>        <span class="color3">// Move assignment operator</span></code>
+<code>        MyClass&amp; operator=(MyClass&amp;&amp; rhs) noexcept {</code>
+<code>            if (this == &amp;rhs) { return *this; }</code>
+<code>            m_str = move(rhs.m_str);</code>
+<code>            println("Move operator= (m_str={})", m_str);</code>
+<code>            return *this;</code>
+<code>        }</code>
+<code> </code>
+<code>        void setString(string str) { m_str = move(str); }</code>
+<code>        const string&amp; getString() const { return m_str; }</code>
+<code>    private:</code>
+<code>        string m_str;</code>
+<code>};</code>
+<code> </code>
+<code>int main()</code>
+<code>{</code>
+<code>    vector&lt;MyClass&gt; vecSrc { MyClass { "a" }, MyClass { "b" }, MyClass { "c" } };</code>
+<code>    vector&lt;MyClass&gt; vecDst(vecSrc.size());</code>
+<code>    <b>move(begin(vecSrc), end(vecSrc), begin(vecDst));</b></code>
+<code>    for (const auto&amp; c : vecDst) { print("{} ", c.getString()); }</code>
+<code>}</code></pre>
+       <p>
+        The output is as follows:
+       </p>
+       <pre id="c20-code-0038"><code>Move operator= (m_str=a)</code>
+<code>Move operator= (m_str=b)</code>
+<code>Move operator= (m_str=c)</code>
+<code>a b c</code></pre>
+       <section>
+        <aside>
+         <div class="top hr">
+          <hr/>
+         </div>
+         <section class="feature1">
+          <p id="c20-para-0089">
+           <b>
+            NOTE
+           </b>
+           <a href="c09.xhtml">
+            <i>
+             Chapter
+            </i>
+            9
+           </a>
+           <i>
+            explains that source objects in a move operation are left in some valid but otherwise indeterminate state. For the previous example, this means you should not use the elements from
+           </i>
+           <code>
+            vecSrc
+           </code>
+           <i>
+            <i>
+             <i>
+              anymore after the move operation, unless you bring them back to a determinate state, for example by calling a member function on them without any preconditions, such as
+             </i>
+            </i>
+           </i>
+           <code>
+            setString()
+           </code>
+           <i>
+            <i>
+             .
+            </i>
+           </i>
+          </p>
+          <div class="bottom hr">
+           <hr/>
+          </div>
+         </section>
+        </aside>
+       </section>
+       <p id="c20-para-0090">
+        <span aria-label="808" epub:type="pagebreak" id="Page_808" role="doc-pagebreak">
+        </span>
+        <code>
+         move_backward()
+        </code>
+        uses the same move mechanism as
+        <code>
+         move()
+        </code>
+        , but it moves the elements starting from the last to the first element. For both
+        <code>
+         move()
+        </code>
+        and
+        <code>
+         move_backward()
+        </code>
+        , the source and destination ranges are allowed to overlap with the same restrictions as for
+        <code>
+         copy()
+        </code>
+        and
+        <code>
+         copy_backward()
+        </code>
+        .
+       </p>
+      </section>
+      <section>
+       <span id="c20-sec-0029">
+       </span>
+       <h4 id="head-4-319">
+        replace
+       </h4>
+       <p id="c20-para-0091">
+        The
+        <code>
+         replace()
+        </code>
+        and
+        <code>
+         replace:if()
+        </code>
+        algorithms replace elements in a range matching a value or predicate, respectively, with a new value. Take
+        <code>
+         replace:if()
+        </code>
+        as an example. Its first and second parameters specify the range of elements to process. The third parameter is a callback that returns
+        <code>
+         true
+        </code>
+        or
+        <code>
+         false
+        </code>
+        . If it returns
+        <code>
+         true
+        </code>
+        , the value in the container is replaced with the value given for the fourth parameter; if it returns
+        <code>
+         false
+        </code>
+        , it leaves the original value.
+       </p>
+       <p>
+        For example, you might want to replace all odd values in a container with the value zero:
+       </p>
+       <pre id="c20-code-0039"><code>vector&lt;int&gt; values;</code>
+<code>populateContainer(values);</code>
+<code><b>replace:if(begin(values), end(values), [](int i){ return i % 2 != 0; }, 0);</b></code>
+<code>println("{:n}", values);</code></pre>
+       <p id="c20-para-0093">
+        There are also variants of
+        <code>
+         replace()
+        </code>
+        and
+        <code>
+         replace:if()
+        </code>
+        called
+        <code>
+         replace:copy()
+        </code>
+        and
+        <code>
+         replace:copy_if()
+        </code>
+        that copy the results to a different destination range. They are similar to
+        <code>
+         copy()
+        </code>
+        , in that the destination range must already be large enough to hold the copied elements.
+       </p>
+      </section>
+      <section>
+       <span id="c20-sec-0030">
+       </span>
+       <h4 id="head-4-320">
+        erase
+       </h4>
+       <p id="c20-para-0094">
+        As introduced in
+        <a href="c18.xhtml">
+         Chapter 18
+        </a>
+        ,
+        <code>
+         std::erase()
+        </code>
+        and
+        <code>
+         std::erase_if()
+        </code>
+        support almost all Standard Library containers. Officially, these operations are called
+        <i>
+         uniform container erasure
+        </i>
+        . The
+        <code>
+         erase()
+        </code>
+        function deletes all elements matching a given value from a container, while
+        <code>
+         erase_if()
+        </code>
+        deletes all elements matching a given predicate. These algorithms require a reference to a container, instead of a common range, and are the preferred way to erase elements from containers.
+       </p>
+       <p>
+        For example, the following code snippet removes all empty strings from a
+        <code>
+         vector
+        </code>
+        of
+        <code>
+         string
+        </code>
+        s and uses
+        <code>
+         erase_if()
+        </code>
+        to do all the work:
+       </p>
+       <pre id="c20-code-0040"><code>vector&lt;string&gt; values {"", "one", "", "two", "three", "four"};</code>
+<code>println("{:n}", values);</code>
+<code><b>erase_if(values, [](const string&amp; str){ return str.empty(); });</b></code>
+<code>println("{:n}", values);</code></pre>
+       <p>
+        The output is as follows:
+       </p>
+       <pre id="c20-code-0041"><code>"", "one", "", "two", "three", "four"</code>
+<code>"one", "two", "three", "four"</code></pre>
+       <section>
+        <aside>
+         <div class="top hr">
+          <hr/>
+         </div>
+         <section class="feature1">
+          <p id="c20-para-0098">
+           <b>
+            NOTE
+           </b>
+           <code>
+            std::erase()
+           </code>
+           <i>
+            <i>
+             <i>
+              does not work with ordered and unordered associative containers, because these containers have a member function called
+             </i>
+            </i>
+           </i>
+           <code>
+            erase(key)
+           </code>
+           <i>
+            <i>
+             ,
+             <i>
+              which is much more performant and should be used instead. On the other hand, the
+             </i>
+            </i>
+           </i>
+           <code>
+            erase_if()
+           </code>
+           <i>
+            <i>
+             <i>
+              function works with all containers
+             </i>
+             .
+            </i>
+           </i>
+          </p>
+          <div class="bottom hr">
+           <hr/>
+          </div>
+         </section>
+        </aside>
+       </section>
+      </section>
+      <span aria-label="809" epub:type="pagebreak" id="Page_809" role="doc-pagebreak">
+      </span>
+      <section>
+       <span id="c20-sec-0032">
+       </span>
+       <h4 id="head-4-321">
+        remove
+       </h4>
+       <p>
+        The
+        <code>
+         erase()
+        </code>
+        and
+        <code>
+         erase_if()
+        </code>
+        algorithms discussed in the previous section have been available since C++20. Still, let's look at your options before C++20, as you will encounter them in legacy code. A first solution that you might think of is to check the documentation to see whether your container has an
+        <code>
+         erase()
+        </code>
+        member function and then iterate over all the elements and call
+        <code>
+         erase()
+        </code>
+        for each element that matches the condition. The
+        <code>
+         vector
+        </code>
+        is an example of a container that has such an
+        <code>
+         erase()
+        </code>
+        member function. However, if applied to the
+        <code>
+         vector
+        </code>
+        container, this solution is extremely inefficient as it will cause a lot of memory operations to keep the
+        <code>
+         vector
+        </code>
+        contiguous in memory, resulting in a quadratic complexity. This solution is also error-prone, because you need to be careful that you keep your iterators valid after a call to
+        <code>
+         erase()
+        </code>
+        . For example, here is a function that removes empty
+        <code>
+         string
+        </code>
+        s from a
+        <code>
+         vector
+        </code>
+        of
+        <code>
+         string
+        </code>
+        s without using algorithms. Note how
+        <code>
+         iter
+        </code>
+        is carefully manipulated inside the
+        <code>
+         for
+        </code>
+        loop.
+       </p>
+       <pre id="c20-code-0042"><code>void removeEmptyStringsWithoutAlgorithms(vector&lt;string&gt;&amp; strings)</code>
+<code>{</code>
+<code>    for (auto iter { begin(strings) }; iter != end(strings); ) {</code>
+<code>        if (iter-&gt;empty()) {</code>
+<code>            iter = strings.erase(iter);</code>
+<code>        } else {</code>
+<code>            ++iter;</code>
+<code>        }</code>
+<code>    }</code>
+<code>}</code></pre>
+       <section>
+        <aside>
+         <div class="top hr">
+          <hr/>
+         </div>
+         <section class="feature1">
+          <p id="c20-para-0101">
+           <b>
+            NOTE
+           </b>
+           <i>
+            Quadratic complexity means that the running time is a function of the square of the input size, O(n
+           </i>
+           <sup>
+            <i>
+             2
+            </i>
+           </sup>
+           <i>
+            )
+           </i>
+           .
+          </p>
+          <div class="bottom hr">
+           <hr/>
+          </div>
+         </section>
+        </aside>
+       </section>
+       <p id="c20-para-0102">
+        This solution is inefficient and not recommended. A much better solution for this problem is the
+        <i>
+         remove-erase-idiom
+        </i>
+        , which runs in linear time and is explained next.
+       </p>
+       <p>
+        The remove algorithms have access only to the iterator abstraction, not to the container. Thus, they cannot really remove elements from the underlying container. Instead, the algorithms work by replacing the elements that match a given value or predicate with the next element that does not match the given value or predicate. It does so using move assignments. The result is that all elements to be kept are moved toward the beginning of the range. The range becomes partitioned into two sets: the elements to be kept and the elements to be erased. An iterator is returned that points to the first element of the range of elements to be erased. Take care not to use any of the elements in that range, as they might have been moved. The only thing you must do with the returned iterator is to actually erase these elements from the container. So you first use the
+        <code>
+         remove()
+        </code>
+        or
+        <code>
+         remove_if()
+        </code>
+        algorithm, and then you must call
+        <code>
+         erase()
+        </code>
+        on the container to erase all the elements from the returned iterator up to the end of the range. This process is called the
+        <i>
+         remove-erase-idiom
+        </i>
+        . Here is an implementation of a
+        <code>
+         removeEmptyStrings()
+        </code>
+        function using this idiom:
+       </p>
+       <pre id="c20-code-0043"><code>void removeEmptyStrings(vector&lt;string&gt;&amp; strings)</code>
+<code>{</code>
+<code>    <b>auto it { remove_if(begin(strings), end(strings),</b></code>
+<code>        <b>[](const string&amp; str){ return str.empty(); }) };</b></code>
+<span aria-label="810" epub:type="pagebreak" id="Page_810" role="doc-pagebreak"></span><code>    <span class="color3">// Erase the removed elements.</span></code>
+<code>    strings.erase(it, end(strings));</code>
+<code>}</code></pre>
+       <section>
+        <aside>
+         <div class="top hr">
+          <hr/>
+         </div>
+         <section class="feature1">
+          <p id="c20-para-0105">
+           <b>
+            WARNING
+           </b>
+           <i>
+            When using the remove-erase-idiom, make sure not to forget the second argument to
+           </i>
+           <code>
+            erase()
+           </code>
+           <i>
+            ! If you forget this second argument
+           </i>
+           ,
+           <code>
+            erase()
+           </code>
+           <i>
+            <i>
+             <i>
+              will erase only a single element from the container, that is, the element referred to by the iterator passed as the first argument
+             </i>
+             .
+            </i>
+           </i>
+          </p>
+          <div class="bottom hr">
+           <hr/>
+          </div>
+         </section>
+        </aside>
+       </section>
+       <p>
+        The
+        <code>
+         remove_copy()
+        </code>
+        and
+        <code>
+         remove_copy_if()
+        </code>
+        variations of
+        <code>
+         remove()
+        </code>
+        and
+        <code>
+         remove_if()
+        </code>
+        do not change the source range. Instead, they copy all kept elements to a different destination range. They are similar to
+        <code>
+         copy()
+        </code>
+        , in that the destination range must already be large enough to hold the new elements.
+       </p>
+       <section>
+        <aside>
+         <div class="top hr">
+          <hr/>
+         </div>
+         <section class="feature1">
+          <p id="c20-para-0107">
+           <b>
+            NOTE
+           </b>
+           <i>
+            The
+           </i>
+           <code>
+            remove()
+           </code>
+           <i>
+            <i>
+             <i>
+              family of functions are stable; i.e., they maintain the order of elements remaining in the container even while moving the retained elements toward the beginning
+             </i>
+             .
+            </i>
+           </i>
+          </p>
+          <div class="bottom hr">
+           <hr/>
+          </div>
+         </section>
+        </aside>
+       </section>
+       <section>
+        <aside>
+         <div class="top hr">
+          <hr/>
+         </div>
+         <section class="feature1">
+          <p id="c20-para-0108">
+           <b>
+            NOTE
+           </b>
+           <i>
+            It's recommended to use the
+           </i>
+           <code>
+            std::erase_if()
+           </code>
+           <i>
+            <i>
+             <i>
+              and
+             </i>
+            </i>
+           </i>
+           <code>
+            std::erase()
+           </code>
+           <i>
+            <i>
+             <i>
+              algorithms (or the
+             </i>
+            </i>
+           </i>
+           <code>
+            erase(key)
+           </code>
+           <i>
+            <i>
+             <i>
+              member function for associative containers) over the remove-erase-idiom, and definitely over handwritten loops
+             </i>
+             .
+            </i>
+           </i>
+          </p>
+          <div class="bottom hr">
+           <hr/>
+          </div>
+         </section>
+        </aside>
+       </section>
+      </section>
+      <section>
+       <span id="c20-sec-0037">
+       </span>
+       <h4 id="head-4-322">
+        unique
+       </h4>
+       <p id="c20-para-0109">
+        The
+        <code>
+         unique()
+        </code>
+        algorithm is a special case of
+        <code>
+         remove()
+        </code>
+        that removes all duplicate contiguous elements. The
+        <code>
+         list
+        </code>
+        container provides its own
+        <code>
+         unique()
+        </code>
+        member function that implements the same semantics. You should generally use
+        <code>
+         unique()
+        </code>
+        on sorted sequences, but nothing prevents you from running it on unsorted sequences.
+       </p>
+       <p id="c20-para-0110">
+        <code>
+         unique()
+        </code>
+        works in a similar way as
+        <code>
+         remove()
+        </code>
+        : it moves all elements to be kept to the front of the range and returns an iterator that points to the first element of the range of elements to be erased. As with the remove-erase-idiom, calling
+        <code>
+         unique()
+        </code>
+        must be followed by a call to
+        <code>
+         erase()
+        </code>
+        .
+       </p>
+       <p id="c20-para-0111">
+        The basic form of
+        <code>
+         unique()
+        </code>
+        runs in place, but there is also a variant of the algorithm called
+        <code>
+         unique_copy()
+        </code>
+        that copies its results to a new destination range.
+       </p>
+       <p id="c20-para-0112">
+        <a href="c18.xhtml">
+         Chapter 18
+        </a>
+        shows an example of the
+        <code>
+         list::unique()
+        </code>
+        algorithm in the section “
+        <a href="c18.xhtml#c18-sec-0067">
+         list Example: Determining Enrollment
+        </a>
+        ,” so an example of the general form is omitted here.
+       </p>
+      </section>
+      <span aria-label="811" epub:type="pagebreak" id="Page_811" role="doc-pagebreak">
+      </span>
+      <section>
+       <span id="c20-sec-0038">
+       </span>
+       <h4 id="head-4-323">
+        shuffle
+       </h4>
+       <p>
+        <code>
+         shuffle()
+        </code>
+        rearranges the elements of a range in a random order with a linear complexity. It's useful for implementing tasks like shuffling a deck of cards.
+        <code>
+         shuffle()
+        </code>
+        requires a start and end iterator for the range that you want to shuffle and a uniform random number generator object that specifies how random numbers should be generated. Here is an example (details on how to use random number generation engines and how to “seed” them are explained in
+        <a href="c23.xhtml">
+         Chapter 23
+        </a>
+        , “Random Number Facilities”):
+       </p>
+       <pre id="c20-code-0044"><code>vector values { 1, 2, 3, 4, 5, 6, 7, 8, 9 };</code>
+<code> </code>
+<code>random_device seeder;</code>
+<code>default_random_engine generator { seeder() };</code>
+<code> </code>
+<code>for (int i { 0 }; i &lt; 6; ++i) {</code>
+<code>    <b>shuffle(begin(values), end(values), generator);</b></code>
+<code>    println("{:n}", values); </code>
+<code>}</code></pre>
+       <p>
+        Here is some possible output:
+       </p>
+       <pre id="c20-code-0045"><code>8, 6, 7, 5, 4, 1, 2, 9, 3</code>
+<code>4, 1, 6, 2, 3, 7, 5, 9, 8</code>
+<code>1, 4, 2, 5, 6, 8, 7, 3, 9</code>
+<code>8, 4, 2, 7, 5, 9, 1, 6, 3</code>
+<code>8, 9, 1, 7, 4, 5, 2, 6, 3</code>
+<code>1, 7, 8, 5, 4, 3, 9, 6, 2</code></pre>
+      </section>
+      <section>
+       <span id="c20-sec-0039">
+       </span>
+       <h4 id="head-4-324">
+        sample
+       </h4>
+       <p>
+        The
+        <code>
+         sample()
+        </code>
+        algorithm returns a selection of
+        <i>
+         n
+        </i>
+        randomly chosen elements from a given source range and stores them in a destination range. It requires five parameters:
+       </p>
+       <ul class="check1" id="c20-list-0004">
+        <li id="c20-li-0011">
+         A begin and end iterator of the range to sample
+        </li>
+        <li id="c20-li-0012">
+         A begin iterator of the destination range where to store the randomly selected elements
+        </li>
+        <li id="c20-li-0013">
+         The number of elements to select
+        </li>
+        <li id="c20-li-0014">
+         A random number generation engine
+        </li>
+       </ul>
+       <p>
+        Here is an example (details on how to use random number generation engines and how to “seed” them are explained in
+        <a href="c23.xhtml">
+         Chapter 23
+        </a>
+        ):
+       </p>
+       <pre id="c20-code-0046"><code>vector values { 1, 2, 3, 4, 5, 6, 7, 8, 9 };</code>
+<code>const size_t numberOfSamples { 5 };</code>
+<code>vector&lt;int&gt; samples(numberOfSamples);</code>
+<code> </code>
+<code>random_device seeder;</code>
+<code>default_random_engine generator { seeder() };</code>
+<code> </code>
+<code>for (int i { 0 }; i &lt; 6; ++i) {</code>
+<code>    <b>sample(cbegin(values), cend(values), begin(samples),</b></code>
+<code>        <b>numberOfSamples, generator);</b></code>
+<code>    println("{:n}", samples);</code>
+<code>}</code></pre>
+       <p>
+        <span aria-label="812" epub:type="pagebreak" id="Page_812" role="doc-pagebreak">
+        </span>
+        Here is some possible output:
+       </p>
+       <pre id="c20-code-0047"><code>1, 4, 7, 8, 9</code>
+<code>1, 3, 4, 7, 9</code>
+<code>2, 3, 4, 5, 7</code>
+<code>3, 5, 6, 7, 9</code>
+<code>1, 2, 3, 6, 7</code>
+<code>1, 2, 4, 5, 8</code></pre>
+      </section>
+      <section>
+       <span id="c20-sec-0040">
+       </span>
+       <h4 id="head-4-325">
+        reverse
+       </h4>
+       <p id="c20-para-0118">
+        The
+        <code>
+         reverse()
+        </code>
+        algorithm reverses the order of the elements in a range. The first element in the range is swapped with the last, the second with the second-to-last, and so on.
+       </p>
+       <p id="c20-para-0119">
+        The basic form of
+        <code>
+         reverse()
+        </code>
+        runs in place and requires two arguments: a start and end iterator for the range. There is also a variant of the algorithm called
+        <code>
+         reverse_copy()
+        </code>
+        that copies its results to a new destination range and requires three arguments: a start and end iterator for the source range, and a start iterator for the destination range. The destination range must already be large enough to hold the new elements.
+       </p>
+       <p>
+        Here is an example using
+        <code>
+         reverse()
+        </code>
+        :
+       </p>
+       <pre id="c20-code-0048"><code>vector&lt;int&gt; values;</code>
+<code>populateContainer(values);</code>
+<code><b>reverse(begin(values), end(values));</b></code>
+<code>println("{:n}", values);</code></pre>
+      </section>
+      <section>
+       <span id="c20-sec-0041">
+       </span>
+       <h4 id="head-4-326">
+        Shifting Elements
+       </h4>
+       <p>
+        The
+        <code>
+         shift_left()
+        </code>
+        and
+        <code>
+         shift_right()
+        </code>
+        algorithms shift elements in a given range by moving them to their new position.
+        <code>
+         shift_left()
+        </code>
+        returns an iterator to the end of the new range, while
+        <code>
+         shift_right()
+        </code>
+        returns an iterator to the beginning of the new range. After calling either algorithm, you must use the returned iterator in a call to
+        <code>
+         erase()
+        </code>
+        to delete elements that fell off either end of the range. Here is an example:
+       </p>
+       <pre id="c20-code-0049"><code>vector values { 11, 22, 33, 44, 55 };</code>
+<code>println("{:n}", values);</code>
+<code> </code>
+<code><span class="color3">// Shift elements to the left by 2 positions.</span></code>
+<code><b>auto newEnd { shift_left(begin(values), end(values), 2) };</b></code>
+<code><span class="color3">// Resize the vector to its proper size.</span></code>
+<code>values.erase(newEnd, end(values));</code>
+<code>println("{:n}", values);</code>
+<code> </code>
+<code><span class="color3">// Shift elements to the right by 2 positions.</span></code>
+<code><b>auto newBegin { shift_right(begin(values), end(values), 2) };</b></code>
+<code><span class="color3">// Resize the vector to its proper size.</span></code>
+<code>values.erase(begin(values), newBegin);</code>
+<code>println("{:n}", values);</code></pre>
+       <p>
+        The output is as follows:
+       </p>
+       <pre id="c20-code-0050"><code>11, 22, 33, 44, 55</code>
+<code>33, 44, 55</code>
+<code>33</code></pre>
+      </section>
+     </section>
+     <span aria-label="813" epub:type="pagebreak" id="Page_813" role="doc-pagebreak">
+     </span>
+     <section>
+      <span id="c20-sec-0042">
+      </span>
+      <h3 id="head-3-441">
+       Operational Algorithms
+      </h3>
+      <p id="c20-para-0123">
+       There are only two algorithms in this category:
+       <code>
+        for_each()
+       </code>
+       and
+       <code>
+        for_each_n()
+       </code>
+       . They execute a callback on each element of a range,
+       <code>
+        for_each()
+       </code>
+       , or on the first
+       <i>
+        n
+       </i>
+       elements of a range,
+       <code>
+        for_each_n()
+       </code>
+       . The callback can modify elements in the range if the given iterator type is non-
+       <code>
+        const
+       </code>
+       . The algorithms are mentioned here so you know they exist; however, it's often easier and more readable to use a simple range-based
+       <code>
+        for
+       </code>
+       loop instead.
+      </p>
+      <section>
+       <span id="c20-sec-0043">
+       </span>
+       <h4 id="head-4-327">
+        for_each
+       </h4>
+       <p>
+        The following is an example using a generic lambda expression, printing the elements from a
+        <code>
+         map
+        </code>
+        :
+       </p>
+       <pre id="c20-code-0051"><code>map&lt;int, int&gt; myMap { { 4, 40 }, { 5, 50 }, { 6, 60 } };</code>
+<code><b>for_each(cbegin(myMap), cend(myMap), [](const auto&amp; p)</b></code>
+<code>    <b>{ println("{} -&gt; {}", p.first, p.second); });</b></code></pre>
+       <p>
+        The type of
+        <code>
+         p
+        </code>
+        is
+        <code>
+         const pair&lt;int, int&gt;&amp;
+        </code>
+        . The output is as follows:
+       </p>
+       <pre id="c20-code-0052"><code>4 -&gt; 40</code>
+<code>5 -&gt; 50</code>
+<code>6 -&gt; 60</code></pre>
+       <p>
+        The following example shows how to use the
+        <code>
+         for_each()
+        </code>
+        algorithm and a lambda expression to calculate the sum and the product of a range of elements at the same time. The lambda expression explicitly captures only those variables it needs. It captures them by reference; otherwise, changes made to
+        <code>
+         sum
+        </code>
+        and
+        <code>
+         product
+        </code>
+        in the lambda expression would not be visible outside the lambda.
+       </p>
+       <pre id="c20-code-0053"><code>vector&lt;int&gt; myVector;</code>
+<code>populateContainer(myVector);</code>
+<code> </code>
+<code>int sum { 0 };</code>
+<code>int product { 1 };</code>
+<code><b>for_each(cbegin(myVector), cend(myVector),</b></code>
+<code>    <b>[&amp;sum, &amp;product](int i){</b></code>
+<code>        <b>sum += i;</b></code>
+<code>        <b>product *= i;</b></code>
+<code><b>});</b></code>
+<code>println("The sum is {}", sum);</code>
+<code>println("The product is {}", product);</code></pre>
+       <p>
+        This example can also be written with a functor in which you accumulate information that you can retrieve after
+        <code>
+         for_each()
+        </code>
+        has finished processing all the elements. For example, you can calculate both the sum and product of the elements in one pass by writing a functor
+        <code>
+         SumAndProduct
+        </code>
+        that tracks both at the same time:
+       </p>
+       <pre id="c20-code-0054"><code>class SumAndProduct</code>
+<code>{</code>
+<code>    public:</code>
+<code>        void operator()(int value)</code>
+<code>        {</code>
+<code>            m_sum += value;</code>
+<code>            m_product *= value;</code>
+<code>        }</code>
+<code> </code>
+<span aria-label="814" epub:type="pagebreak" id="Page_814" role="doc-pagebreak"></span><code>        int getSum() const { return m_sum; }</code>
+<code>        int getProduct() const { return m_product; }</code>
+<code>    private:</code>
+<code>        int m_sum { 0 };</code>
+<code>        int m_product { 1 };</code>
+<code>};</code>
+<code> </code>
+<code>int main()</code>
+<code>{</code>
+<code>    vector&lt;int&gt; myVector;</code>
+<code>    populateContainer(myVector);</code>
+<code> </code>
+<code>    SumAndProduct calculator;</code>
+<code>    <b>calculator = for_each(cbegin(myVector), cend(myVector), calculator);</b></code>
+<code>    println("The sum is {}", calculator.getSum());</code>
+<code>    println("The product is {}", calculator.getProduct());</code>
+<code>}</code></pre>
+       <p id="c20-para-0128">
+        You might be tempted to ignore the return value of
+        <code>
+         for_each()
+        </code>
+        yet still try to read information from
+        <code>
+         calculator
+        </code>
+        after the algorithm is finished. However, that doesn't work because
+        <code>
+         for_each()
+        </code>
+        copies the functor, and at the end, this copy is returned from the call. You must capture the return value to ensure correct behavior.
+       </p>
+       <p>
+        Another option is to pass
+        <code>
+         calculator
+        </code>
+        by reference using
+        <code>
+         std::ref()
+        </code>
+        , see earlier in this chapter:
+       </p>
+       <pre id="c20-code-0055"><code><b>for_each(cbegin(myVector), cend(myVector), ref(calculator));</b></code></pre>
+       <p>
+        A final point about
+        <code>
+         for_each()
+        </code>
+        (that also applies to
+        <code>
+         for_each_n()
+        </code>
+        discussed in the next section) is that the callback is allowed to have a reference-to-non-
+        <code>
+         const
+        </code>
+        as parameter and modify it. That has the effect of changing values in the actual range. Here is an example:
+       </p>
+       <pre id="c20-code-0056"><code>vector values { 11, 22, 33, 44 };</code>
+<code><span class="color3">// Double each element in the values vector.</span></code>
+<code><b>for_each(begin(values), end(values), [](auto&amp; value) { value *= 2; });</b></code>
+<code>println("{:n}", values);</code></pre>
+      </section>
+      <section>
+       <span id="c20-sec-0044">
+       </span>
+       <h4 id="head-4-328">
+        for_each_n
+       </h4>
+       <p>
+        The
+        <code>
+         for_each_n()
+        </code>
+        algorithm requires a begin iterator of the range, the number of elements to iterate over, n, and a callback. It returns an iterator equal to begin + n. As usual, it does not perform any bounds checking. Here is an example that only iterates over the first two elements of a
+        <code>
+         map
+        </code>
+        :
+       </p>
+       <pre id="c20-code-0057"><code>map&lt;int, int&gt; myMap { { 4, 40 }, { 5, 50 }, { 6, 60 } };</code>
+<code><b>for_each_n(cbegin(myMap), 2, [](const auto&amp; p)</b></code>
+<code>    <b>{ println("{} -&gt; {}", p.first, p.second); });</b></code></pre>
+      </section>
+     </section>
+     <section>
+      <span id="c20-sec-0045">
+      </span>
+      <h3 id="head-3-442">
+       Partition Algorithms
+      </h3>
+      <p>
+       <code>
+        partition_copy()
+       </code>
+       copies elements from a source to two different destinations. The destination for each element is selected based on the result of a predicate, either
+       <code>
+        true
+       </code>
+       or
+       <code>
+        false
+       </code>
+       . The value returned by
+       <code>
+        partition_copy()
+       </code>
+       is a pair of iterators: iterators referring to one-past-the-last-copied element in the first and second destination range. These returned iterators can be used in combination with
+       <code>
+        erase()
+       </code>
+       to remove excess elements from the two destination ranges, just as in the earlier
+       <code>
+        copy_if()
+       </code>
+       <span aria-label="815" epub:type="pagebreak" id="Page_815" role="doc-pagebreak">
+       </span>
+       example. The following code snippet asks the user to enter a number of integers, which are then
+       <i>
+        partitioned
+       </i>
+       into two destination
+       <code>
+        vector
+       </code>
+       s: one for the even numbers and one for the odd numbers:
+      </p>
+      <pre id="c20-code-0058"><code>vector&lt;int&gt; values, vecOdd, vecEven;</code>
+<code>populateContainer(values);</code>
+<code>vecOdd.resize(size(values));</code>
+<code>vecEven.resize(size(values));</code>
+<code> </code>
+<code><b>auto pairIters { partition_copy(cbegin(values), cend(values),</b></code>
+<code>    <b>begin(vecEven), begin(vecOdd),</b></code>
+<code>    <b>[](int i){ return i % 2 == 0; }) };</b></code>
+<code> </code>
+<code>vecEven.erase(pairIters.first, end(vecEven));</code>
+<code>vecOdd.erase(pairIters.second, end(vecOdd));</code>
+<code> </code>
+<code>println("Even numbers: {:n}", vecEven);</code>
+<code>println("Odd numbers: {:n}", vecOdd);</code></pre>
+      <p>
+       The output can be as follows:
+      </p>
+      <pre id="c20-code-0059"><code>Enter a number (0 to stop): 11</code>
+<code>Enter a number (0 to stop): 22</code>
+<code>Enter a number (0 to stop): 33</code>
+<code>Enter a number (0 to stop): 44</code>
+<code>Enter a number (0 to stop): 0</code>
+<code>Even numbers: 22, 44</code>
+<code>Odd numbers: 11, 33</code></pre>
+      <p>
+       The
+       <code>
+        partition()
+       </code>
+       algorithm sorts a sequence such that all elements for which a predicate returns
+       <code>
+        true
+       </code>
+       are before all elements for which it returns
+       <code>
+        false
+       </code>
+       , without preserving the original order of the elements within each partition. The following example demonstrates how to partition a
+       <code>
+        vector
+       </code>
+       into all even numbers followed by all odd numbers:
+      </p>
+      <pre id="c20-code-0060"><code>vector&lt;int&gt; values;</code>
+<code>populateContainer(values);</code>
+<code><b>partition(begin(values), end(values), [](int i){ return i % 2 == 0; });</b></code>
+<code>println("Partitioned result: {:n}", values);</code></pre>
+      <p>
+       The output can be as follows:
+      </p>
+      <pre id="c20-code-0061"><code>Enter a number (0 to stop): 55</code>
+<code>Enter a number (0 to stop): 44</code>
+<code>Enter a number (0 to stop): 33</code>
+<code>Enter a number (0 to stop): 22</code>
+<code>Enter a number (0 to stop): 11</code>
+<code>Enter a number (0 to stop): 0</code>
+<code>Partitioned result: 22, 44, 33, 55, 11</code></pre>
+      <p id="c20-para-0136">
+       A few more partition algorithms are available as well. See
+       <a href="c16.xhtml">
+        Chapter 16
+       </a>
+       for a list.
+      </p>
+     </section>
+     <section>
+      <span id="c20-sec-0046">
+      </span>
+      <h3 id="head-3-443">
+       Sorting Algorithms
+      </h3>
+      <p id="c20-para-0137">
+       The Standard Library provides several variations of sorting algorithms. A sorting algorithm reorders the contents of a container such that an ordering is maintained between sequential elements of the collection. Thus, it applies only to sequential collections. Sorting is not relevant for ordered
+       <span aria-label="816" epub:type="pagebreak" id="Page_816" role="doc-pagebreak">
+       </span>
+       associative containers because they already maintain elements in a sorted order. Sorting is not relevant for the unordered associative containers either, because they have no concept of ordering. Some containers, such as
+       <code>
+        list
+       </code>
+       and
+       <code>
+        forward_list
+       </code>
+       , provide their own sorting member functions, because these member functions can be implemented more efficiently than a generic sorting mechanism. Consequently, the generic sorting algorithms are most useful for
+       <code>
+        vector
+       </code>
+       s,
+       <code>
+        deque
+       </code>
+       s,
+       <code>
+        array
+       </code>
+       s, and C-style arrays.
+      </p>
+      <p id="c20-para-0138">
+       The
+       <code>
+        sort()
+       </code>
+       algorithm sorts a range of elements in
+       <i>
+        O
+       </i>
+       (
+       <i>
+        N
+       </i>
+       log
+       <i>
+        N
+       </i>
+       ) time in general. Following the application of
+       <code>
+        sort()
+       </code>
+       to a range, the elements in the range are in nondecreasing order (lowest to highest), according to
+       <code>
+        operator&lt;
+       </code>
+       . If you don't like that order, you can specify a different comparator, such as
+       <code>
+        greater
+       </code>
+       .
+      </p>
+      <p id="c20-para-0139">
+       A variant of
+       <code>
+        sort()
+       </code>
+       , called
+       <code>
+        stable_sort()
+       </code>
+       , maintains the relative order of equal elements in a range, but it is less efficient than
+       <code>
+        sort()
+       </code>
+       .
+      </p>
+      <p>
+       Here is an example of
+       <code>
+        sort()
+       </code>
+       using a transparent
+       <code>
+        greater&lt;&gt;
+       </code>
+       comparator:
+      </p>
+      <pre id="c20-code-0062"><code>vector&lt;int&gt; values;</code>
+<code>populateContainer(values);</code>
+<code><b>sort(begin(values), end(values), greater&lt;&gt;{});</b></code></pre>
+      <p id="c20-para-0141">
+       There is also
+       <code>
+        is_sorted()
+       </code>
+       , returning
+       <code>
+        true
+       </code>
+       if a given range is sorted, and
+       <code>
+        is_sorted_until()
+       </code>
+       , returning an iterator such that everything before this iterator is sorted.
+      </p>
+      <p id="c20-para-0142">
+       <code>
+        nth_element()
+       </code>
+       is a powerful
+       <i>
+        selection algorithm
+       </i>
+       . Given a range of elements and an iterator to the
+       <i>
+        n
+       </i>
+       <sup>
+        th
+       </sup>
+       element in that range, the algorithm rearranges the elements in the range such that the element in the position pointed to by
+       <i>
+        n
+       </i>
+       <sup>
+        th
+       </sup>
+       is the element that would be in that position if the whole range were sorted. Additionally, it rearranges all elements such that all elements preceding the
+       <i>
+        n
+       </i>
+       <sup>
+        th
+       </sup>
+       element are less than the new
+       <i>
+        n
+       </i>
+       <sup>
+        th
+       </sup>
+       element, and the ones following it are greater than the new
+       <i>
+        n
+       </i>
+       <sup>
+        th
+       </sup>
+       element. The interesting thing about this algorithm is that it does all this in linear time,
+       <i>
+        O
+       </i>
+       (
+       <i>
+        n
+       </i>
+       ). Instead of using
+       <code>
+        nth_element()
+       </code>
+       , you could also just sort the whole range and then retrieve the data you are interested in, but that would result in a complexity that is linear logarithmic,
+       <i>
+        O
+       </i>
+       (
+       <i>
+        n
+       </i>
+       log
+       <i>
+        n
+       </i>
+       ).
+      </p>
+      <p>
+       All this sounds complicated, so let's see this algorithm in action. A first example is to find the third largest element in a given range. It assumes the user enters at least three values.
+      </p>
+      <pre id="c20-code-0063"><code>vector&lt;int&gt; values;</code>
+<code>populateContainer(values);</code>
+<code><span class="color3">// Find the third largest value.</span></code>
+<code><b>nth_element(begin(values), begin(values) + 2, end(values), greater&lt;&gt;{});</b></code>
+<code>println("3rd largest value: {}", values[2]);</code></pre>
+      <p>
+       Another example is to get the five largest elements from a range in sorted order. It assumes the user enters at least five values.
+      </p>
+      <pre id="c20-code-0064"><code>vector&lt;int&gt; values;</code>
+<code>populateContainer(values);</code>
+<code><span class="color3">// Get the 5 largest elements in sorted order.</span></code>
+<code><b>nth_element(begin(values), begin(values) + 4, end(values), greater&lt;&gt;{});</b></code>
+<code><span class="color3">// nth_element() has partitioned the elements, now sort the first subrange.</span></code>
+<code><b>sort(begin(values), begin(values) + 5);</b></code>
+<code><span class="color3">// And finally, output the sorted subrange.</span></code>
+<code>for_each_n(begin(values), 5, [](const auto&amp; element) { print("{}  ", element); });</code></pre>
+     </section>
+     <span aria-label="817" epub:type="pagebreak" id="Page_817" role="doc-pagebreak">
+     </span>
+     <section>
+      <span id="c20-sec-0047">
+      </span>
+      <h3 id="head-3-444">
+       Binary Search Algorithms
+      </h3>
+      <p id="c20-para-0145">
+       There are several search algorithms that work only on sequences that are sorted or that are at least partitioned on the element that is searched for. These algorithms are
+       <code>
+        binary_search()
+       </code>
+       ,
+       <code>
+        lower_bound()
+       </code>
+       ,
+       <code>
+        upper_bound()
+       </code>
+       , and
+       <code>
+        equal_range()
+       </code>
+       . Note that the associative containers, such as
+       <code>
+        map
+       </code>
+       and
+       <code>
+        set
+       </code>
+       , have equivalent member functions that you should use instead. See
+       <a href="c18.xhtml">
+        Chapter 18
+       </a>
+       for an example on how to use these member functions on such containers.
+      </p>
+      <p>
+       The
+       <code>
+        lower_bound()
+       </code>
+       algorithm finds the first element in a sorted range not less than (greater or equal to) a given value. It is often used to find at which position in a sorted
+       <code>
+        vector
+       </code>
+       a new value should be inserted so that the
+       <code>
+        vector
+       </code>
+       remains sorted. Here is an example:
+      </p>
+      <pre id="c20-code-0065"><code>vector&lt;int&gt; values;</code>
+<code>populateContainer(values);</code>
+<code> </code>
+<code><span class="color3">// Sort the container</span></code>
+<code>sort(begin(values), end(values));</code>
+<code>println("Sorted vector: {:n}", values);</code>
+<code> </code>
+<code>while (true) {</code>
+<code>    int number;</code>
+<code>    print("Enter a number to insert (0 to stop): ");</code>
+<code>    cin &gt;&gt; number;</code>
+<code>    if (number == 0) { break; }</code>
+<code> </code>
+<code>    <b>auto iter { lower_bound(begin(values), end(values), number) };</b></code>
+<code>    <b>values.insert(iter, number);</b></code>
+<code>    println("New vector: {:n}", values);</code>
+<code>}</code></pre>
+      <p>
+       The
+       <code>
+        binary_search()
+       </code>
+       algorithm finds a matching element in logarithmic time instead of linear time. It requires a start and end iterator specifying the range to search in, a value to search, and optionally a comparator callback. It returns
+       <code>
+        true
+       </code>
+       if the value is found in the specified range,
+       <code>
+        false
+       </code>
+       otherwise. Binary search requires the range to be sorted and works by first comparing the middle element of the range. Depending on whether that middle element is greater than or less than the value to search, it continues by comparing the middle element of the left or right half of the range, respectively. This continues until the element is found. Basically, on each iteration, the range is halved, hence the logarithmic complexity. The following example demonstrates this algorithm:
+      </p>
+      <pre id="c20-code-0066"><code>vector&lt;int&gt; values;</code>
+<code>populateContainer(values);</code>
+<code> </code>
+<code><span class="color3">// Sort the container</span></code>
+<code>sort(begin(values), end(values));</code>
+<code> </code>
+<code>while (true) {</code>
+<code>    print("Enter a number to find (0 to stop): ");</code>
+<code>    int number;</code>
+<code>    cin &gt;&gt; number;</code>
+<code>    if (number == 0) { break; }</code>
+<code>    <b>if (binary_search(cbegin(values), cend(values), number)) {</b></code>
+<code>        println("That number is in the vector.");</code>
+<span aria-label="818" epub:type="pagebreak" id="Page_818" role="doc-pagebreak"></span><code>    } else {</code>
+<code>        println("That number is not in the vector.");</code>
+<code>    }</code>
+<code>}</code></pre>
+     </section>
+     <section>
+      <span id="c20-sec-0048">
+      </span>
+      <h3 id="head-3-445">
+       Set Algorithms
+      </h3>
+      <p id="c20-para-0148">
+       The set algorithms work on any sorted range. The
+       <code>
+        includes()
+       </code>
+       algorithm implements standard subset determination, checking whether all the elements of one sorted range are included in another sorted range, in any order.
+      </p>
+      <p>
+       The
+       <code>
+        set_union()
+       </code>
+       ,
+       <code>
+        set_intersection()
+       </code>
+       ,
+       <code>
+        set_difference()
+       </code>
+       , and
+       <code>
+        set_symmetric_difference()
+       </code>
+       algorithms implement the standard semantics of those operations. In set theory, the result of a union is all the elements in either set. The result of an intersection is all the elements that are in both sets. The result of a difference is all the elements in the first set but not the second. The result of a symmetric difference is the “exclusive or” of sets: all the elements in one, but not both, sets.
+      </p>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <p id="c20-para-0150">
+          <b>
+           WARNING
+          </b>
+          <i>
+           Make sure that your result range is large enough to hold the result of the operations. For
+          </i>
+          <code>
+           set_union()
+          </code>
+          <i>
+           <i>
+            <i>
+             and
+            </i>
+           </i>
+          </i>
+          <code>
+           set_symmetric_difference()
+          </code>
+          <i>
+           <i>
+            , the result is at most the sum of the sizes of the two input ranges. For
+           </i>
+          </i>
+          <code>
+           set_intersection()
+          </code>
+          <i>
+           <i>
+            ,
+            <i>
+             the result is at most the size of the smallest input range, and for
+            </i>
+           </i>
+          </i>
+          <code>
+           set_difference()
+          </code>
+          <i>
+           <i>
+            <i>
+             it's at most the size of the first range
+            </i>
+            .
+           </i>
+          </i>
+         </p>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <p id="c20-para-0151">
+          <b>
+           WARNING
+          </b>
+          <i>
+           You can't use common ranges from associative containers, including
+           <code>
+            set
+           </code>
+           s, to store the results because they don't allow changes to their keys
+          </i>
+          .
+         </p>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <p>
+       Let's look at these set algorithms in action. First, a constrained
+       <code>
+        DumpRange()
+       </code>
+       function template is defined to write elements of a given range to the standard output stream; it is implemented as follows.
+       <code>
+        ranges::subrange()
+       </code>
+       converts a common range, given as a pair of iterators, to a range, which can then be passed to
+       <code>
+        println()
+       </code>
+       .
+      </p>
+      <pre id="c20-code-0067"><code>template &lt;forward_iterator Iterator&gt;</code>
+<code>void DumpRange(string_view message, Iterator begin, Iterator end)</code>
+<code>{</code>
+<code>    println("{}{:n}", message, ranges::subrange(begin, end));</code>
+<code>}</code></pre>
+      <p>
+       With this helper function defined, here are examples on using the set algorithms:
+      </p>
+      <pre id="c20-code-0068"><code>vector&lt;int&gt; vec1, vec2, result;</code>
+<code>println("Enter elements for set 1:");</code>
+<code>populateContainer(vec1);</code>
+<code>println("Enter elements for set 2:");</code>
+<code>populateContainer(vec2);</code>
+<code> </code>
+<span aria-label="819" epub:type="pagebreak" id="Page_819" role="doc-pagebreak"></span><code><span class="color3">// set algorithms require sorted ranges</span></code>
+<code>sort(begin(vec1), end(vec1));</code>
+<code>sort(begin(vec2), end(vec2));</code>
+<code> </code>
+<code>println("Set 1: {:n}", vec1);</code>
+<code>println("Set 2: {:n}", vec2);</code>
+<code> </code>
+<code><b>if (includes(cbegin(vec1), cend(vec1), cbegin(vec2), cend(vec2))) {</b></code>
+<code>    println("The second set is a subset of the first.");</code>
+<code>}</code>
+<code><b>if (includes(cbegin(vec2), cend(vec2), cbegin(vec1), cend(vec1))) {</b></code>
+<code>    println("The first set is a subset of the second");</code>
+<code>}</code>
+<code> </code>
+<code>result.resize(size(vec1) + size(vec2));</code>
+<code><b>auto newEnd { set_union(cbegin(vec1), cend(vec1), cbegin(vec2),</b></code>
+<code>    <b>cend(vec2), begin(result)) };</b></code>
+<code>DumpRange("The union is: ", begin(result), newEnd);</code>
+<code> </code>
+<code><b>newEnd = set_intersection(cbegin(vec1), cend(vec1), cbegin(vec2),</b></code>
+<code>    <b>cend(vec2), begin(result));</b></code>
+<code>DumpRange("The intersection is: ", begin(result), newEnd);</code>
+<code> </code>
+<code><b>newEnd = set_difference(cbegin(vec1), cend(vec1), cbegin(vec2),</b></code>
+<code>    <b>cend(vec2), begin(result));</b></code>
+<code>DumpRange("The difference between set 1 and 2 is: ", begin(result), newEnd);</code>
+<code> </code>
+<code><b>newEnd = set_symmetric_difference(cbegin(vec1), cend(vec1),</b></code>
+<code>    <b>cbegin(vec2), cend(vec2), begin(result));</b></code>
+<code>DumpRange("The symmetric difference is: ", begin(result), newEnd);</code></pre>
+      <p>
+       Here is a sample run of the program:
+      </p>
+      <pre id="c20-code-0069"><code>Enter elements for set 1:</code>
+<code>Enter a number (0 to stop): 5</code>
+<code>Enter a number (0 to stop): 6</code>
+<code>Enter a number (0 to stop): 7</code>
+<code>Enter a number (0 to stop): 8</code>
+<code>Enter a number (0 to stop): 0</code>
+<code>Enter elements for set 2:</code>
+<code>Enter a number (0 to stop): 8</code>
+<code>Enter a number (0 to stop): 9</code>
+<code>Enter a number (0 to stop): 10</code>
+<code>Enter a number (0 to stop): 0</code>
+<code>Set 1: 5, 6, 7, 8</code>
+<code>Set 2: 8, 9, 10</code>
+<code>The union is: 5, 6, 7, 8, 9, 10</code>
+<code>The intersection is: 8</code>
+<code>The difference between set 1 and set 2 is: 5, 6, 7</code>
+<code>The symmetric difference is: 5, 6, 7, 9, 10</code></pre>
+      <p>
+       The
+       <code>
+        merge()
+       </code>
+       algorithm allows you to merge two sorted ranges together, while maintaining the sorted order. The result is a sorted range containing all the elements of both source ranges. It works in linear time. The following parameters are required:
+       <span aria-label="820" epub:type="pagebreak" id="Page_820" role="doc-pagebreak">
+       </span>
+      </p>
+      <ul class="check1" id="c20-list-0005">
+       <li id="c20-li-0015">
+        Start and end iterator of the first source range
+       </li>
+       <li id="c20-li-0016">
+        Start and end iterator of the second source range
+       </li>
+       <li id="c20-li-0017">
+        Start iterator of the destination range
+       </li>
+       <li id="c20-li-0018">
+        Optionally, a comparator callback
+       </li>
+      </ul>
+      <p>
+       Without
+       <code>
+        merge()
+       </code>
+       , you could still achieve the same effect by concatenating the two ranges and applying
+       <code>
+        sort()
+       </code>
+       to the result, but that would be less efficient,
+       <i>
+        O
+       </i>
+       (
+       <i>
+        N
+       </i>
+       log
+       <i>
+        N
+       </i>
+       ) instead of the linear complexity of
+       <code>
+        merge()
+       </code>
+       .
+      </p>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <p id="c20-para-0157">
+          <b>
+           WARNING
+          </b>
+          <i>
+           Always ensure that you supply a big enough destination range to store the result of the merge!
+          </i>
+         </p>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <p>
+       The following example demonstrates
+       <code>
+        merge()
+       </code>
+       :
+      </p>
+      <pre id="c20-code-0070"><code>vector&lt;int&gt; vectorOne, vectorTwo, vectorMerged;</code>
+<code>println("Enter values for first vector:");</code>
+<code>populateContainer(vectorOne);</code>
+<code>println("Enter values for second vector:");</code>
+<code>populateContainer(vectorTwo);</code>
+<code> </code>
+<code><span class="color3">// Sort both containers</span></code>
+<code>sort(begin(vectorOne), end(vectorOne));</code>
+<code>sort(begin(vectorTwo), end(vectorTwo));</code>
+<code> </code>
+<code><span class="color3">// Make sure the destination vector is large enough to hold the values</span></code>
+<code><span class="color3">// from both source vectors.</span></code>
+<code>vectorMerged.resize(size(vectorOne) + size(vectorTwo));</code>
+<code> </code>
+<code><b>merge(cbegin(vectorOne), cend(vectorOne),</b></code>
+<code>      <b>cbegin(vectorTwo), cend(vectorTwo), begin(vectorMerged));</b></code>
+<code> </code>
+<code>println("Merged vector: {:n}", vectorMerged);</code></pre>
+     </section>
+     <section>
+      <span id="c20-sec-0052">
+      </span>
+      <h3 id="head-3-446">
+       Minimum/Maximum Algorithms
+      </h3>
+      <p id="c20-para-0159">
+       The
+       <code>
+        min()
+       </code>
+       and
+       <code>
+        max()
+       </code>
+       algorithms compare two or more elements of any type using
+       <code>
+        operator&lt;
+       </code>
+       or a user-supplied binary predicate, returning a reference-to-
+       <code>
+        const
+       </code>
+       to the smallest or largest element, respectively. The
+       <code>
+        minmax()
+       </code>
+       algorithm returns a pair containing the minimum and maximum of two or more elements. These algorithms do not work with common ranges or ranges.
+      </p>
+      <p id="c20-para-0160">
+       The
+       <code>
+        min_element()
+       </code>
+       and
+       <code>
+        max_element()
+       </code>
+       algorithms work with common ranges and return an iterator to the smallest or largest element in a range, respectively. The
+       <code>
+        minmax_element()
+       </code>
+       algorithm also works with a common range and returns a pair containing iterators to the smallest and largest element in a range.
+      </p>
+      <p>
+       The following program gives some examples:
+      </p>
+      <pre id="c20-code-0071"><code>int x { 4 }, y { 5 };</code>
+<code>println("x is {} and y is {}", x, y);</code>
+<span aria-label="821" epub:type="pagebreak" id="Page_821" role="doc-pagebreak"></span><code>println("Max is {}", <b>max(x, y)</b>);</code>
+<code>println("Min is {}", <b>min(x, y)</b>);</code>
+<code> </code>
+<code><span class="color3">// Using max() and min() on more than two values.</span></code>
+<code>int x1 { 2 }, x2 { 9 }, x3 { 3 }, x4 { 12 };</code>
+<code>println("Max of 4 elements is {}", <b>max({ x1, x2, x3, x4 })</b>);</code>
+<code>println("Min of 4 elements is {}", <b>min({ x1, x2, x3, x4 })</b>);</code>
+<code> </code>
+<code><span class="color3">// Using minmax().</span></code>
+<code>auto p2 { <b>minmax({ x1, x2, x3, x4 })</b> }; <span class="color3">// p2 is of type pair&lt;int, int&gt;.</span></code>
+<code>println("Minmax of 4 elements is &lt;{},{}&gt;", p2.first, p2.second);</code>
+<code> </code>
+<code><span class="color3">// Using minmax() + structured bindings.</span></code>
+<code>auto [min1, max1] { <b>minmax({ x1, x2, x3, x4 })</b> };</code>
+<code>println("Minmax of 4 elements is &lt;{},{}&gt;", min1, max1);</code>
+<code> </code>
+<code><span class="color3">// Using minmax_element() + structured bindings.</span></code>
+<code>vector values { 11, 33, 22 };</code>
+<code>auto [min2, max2] { <b>minmax_element(cbegin(values), cend(values))</b> };</code>
+<code>println("minmax_element() result: &lt;{},{}&gt;", *min2, *max2);</code></pre>
+      <p>
+       Here is the program output:
+      </p>
+      <pre id="c20-code-0072"><code>x is 4 and y is 5</code>
+<code>Max is 5</code>
+<code>Min is 4</code>
+<code>Max of 4 elements is 12</code>
+<code>Min of 4 elements is 2</code>
+<code>Minmax of 4 elements is &lt;2,12&gt;</code>
+<code>Minmax of 4 elements is &lt;2,12&gt;</code>
+<code>minmax_element() result: &lt;11,33&gt;</code></pre>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <p id="c20-para-0164">
+          <b>
+           NOTE
+          </b>
+          <i>
+           Sometimes you might encounter non-standard macros to find the minimum and maximum. For example, the GNU C Library (glibc) has macros
+           <code>
+            MIN()
+           </code>
+           and
+          </i>
+          <code>
+           MAX()
+          </code>
+          <i>
+           <i>
+            ,
+            <i>
+             while the
+            </i>
+           </i>
+          </i>
+          <code>
+           Windows.h
+          </code>
+          <i>
+           <i>
+            <i>
+             header file defines
+            </i>
+           </i>
+          </i>
+          <code>
+           min()
+          </code>
+          <i>
+           <i>
+            <i>
+             and
+            </i>
+           </i>
+          </i>
+          <code>
+           max()
+          </code>
+          <i>
+           <i>
+            <i>
+             macros. Because these are macros, they have the potential to evaluate one of their arguments twice, whereas
+            </i>
+           </i>
+          </i>
+          <code>
+           std::min()
+          </code>
+          <i>
+           <i>
+            <i>
+             and
+            </i>
+           </i>
+          </i>
+          <code>
+           std::max()
+          </code>
+          <i>
+           <i>
+            <i>
+             evaluate each argument exactly once. Make sure you always use the C++ versions,
+            </i>
+           </i>
+          </i>
+          <code>
+           std::min()
+          </code>
+          <i>
+           <i>
+            <i>
+             and
+            </i>
+           </i>
+          </i>
+          <code>
+           std::max()
+          </code>
+          <i>
+           <i>
+            .
+           </i>
+          </i>
+         </p>
+         <p>
+          <i>
+           Even worse, such
+          </i>
+          <code>
+           min()
+          </code>
+          <i>
+           <i>
+            <i>
+             and
+            </i>
+           </i>
+          </i>
+          <code>
+           max()
+          </code>
+          <i>
+           <i>
+            <i>
+             macros might interfere with using
+            </i>
+           </i>
+          </i>
+          <code>
+           std::min()
+          </code>
+          <i>
+           <i>
+            <i>
+             and
+            </i>
+           </i>
+          </i>
+          <code>
+           std::max()
+          </code>
+          <i>
+           . In that case, there are three workarounds:
+          </i>
+         </p>
+         <ul class="check4" id="c20-list-0006">
+          <li id="c20-li-0019">
+           Use
+           <code>
+            #undef min
+           </code>
+           and
+           <code>
+            #undef max
+           </code>
+           after having included the problematic header, e.g.,
+           <code>
+            Windows.h
+           </code>
+           .
+          </li>
+          <li id="c20-li-0020">
+           Add a
+           <code>
+            #define NOMINMAX
+           </code>
+           before you include
+           <code>
+            Windows.h
+           </code>
+           .
+          </li>
+          <li id="c20-li-0021">
+           Use an extra set of parentheses for
+           <code>
+            std::min()
+           </code>
+           and
+           <code>
+            std::max()
+           </code>
+           , as follows:
+          </li>
+         </ul>
+         <pre id="c20-code-0073"><code>    auto maxValue { <b>(std::max)</b>(1, 2) };</code></pre>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <p>
+       <span aria-label="822" epub:type="pagebreak" id="Page_822" role="doc-pagebreak">
+       </span>
+       <code>
+        std::clamp()
+       </code>
+       is a little helper function, defined in
+       <code>
+        &lt;algorithm&gt;
+       </code>
+       , that you can use to make sure that a value (
+       <i>
+        v
+       </i>
+       ) is between a given minimum (
+       <i>
+        lo
+       </i>
+       ) and maximum (
+       <i>
+        hi
+       </i>
+       ). It returns a reference to
+       <i>
+        lo
+       </i>
+       if
+       <i>
+        v
+       </i>
+       &lt;
+       <i>
+        lo
+       </i>
+       , returns a reference to
+       <i>
+        hi
+       </i>
+       if
+       <i>
+        v
+       </i>
+       &gt;
+       <i>
+        hi
+       </i>
+       , and otherwise returns a reference to
+       <i>
+        v
+       </i>
+       . Here is an example:
+      </p>
+      <pre id="c20-code-0074"><code>println("{}", clamp(-3, 1, 10));</code>
+<code>println("{}", clamp(3, 1, 10));</code>
+<code>println("{}", clamp(22, 1, 10));</code></pre>
+      <p>
+       The output is as follows:
+      </p>
+      <pre id="c20-code-0075"><code>1</code>
+<code>3</code>
+<code>10</code></pre>
+     </section>
+     <section>
+      <span id="c20-sec-0054">
+      </span>
+      <h3 id="head-3-447">
+       Parallel Algorithms
+      </h3>
+      <p id="c20-para-0168">
+       C++ supports executing more than 60 Standard Library iterator-based algorithms in parallel to improve their performance. Examples include
+       <code>
+        std::for_each()
+       </code>
+       ,
+       <code>
+        all_of()
+       </code>
+       ,
+       <code>
+        copy()
+       </code>
+       ,
+       <code>
+        count_if()
+       </code>
+       ,
+       <code>
+        find()
+       </code>
+       ,
+       <code>
+        replace()
+       </code>
+       ,
+       <code>
+        search()
+       </code>
+       ,
+       <code>
+        sort()
+       </code>
+       ,
+       <code>
+        transform()
+       </code>
+       , and many more.
+      </p>
+      <p>
+       Algorithms that support parallel execution have an optional
+       <i>
+        execution policy
+       </i>
+       as their first parameter. The execution policy allows you to specify whether an algorithm is allowed to be vectorized and/or executed in parallel. When a compiler vectorizes code, it replaces several CPU instructions with a single
+       <i>
+        vector CPU instruction
+       </i>
+       . A vector instruction performs some operation on multiple pieces of data with a single hardware instruction. These are also known as
+       <i>
+        single instruction multiple data
+       </i>
+       (SIMD) instructions. There are four standard execution policy types, and corresponding global instances of those types, all defined in
+       <code>
+        &lt;execution&gt;
+       </code>
+       in the
+       <code>
+        std::execution
+       </code>
+       namespace:
+      </p>
+      <table border="1">
+       <thead>
+        <tr>
+         <th class="left bgcolor2" scope="col">
+          EXECUTION POLICY TYPE
+         </th>
+         <th class="left bgcolor2" scope="col">
+          GLOBAL INSTANCE
+         </th>
+         <th class="left bgcolor2" scope="col">
+          DESCRIPTION
+         </th>
+        </tr>
+       </thead>
+       <tbody>
+        <tr>
+         <td class="left bgcolor3">
+          <span class="forecolor1">
+           sequenced_policy
+          </span>
+         </td>
+         <td class="left bgcolor3">
+          <span class="forecolor1">
+           seq
+          </span>
+         </td>
+         <td class="left bgcolor3">
+          The algorithm is not allowed to parallelize or vectorize its execution.
+         </td>
+        </tr>
+        <tr>
+         <td class="left bgcolor3">
+          <span class="forecolor1">
+           parallel_policy
+          </span>
+         </td>
+         <td class="left bgcolor3">
+          <span class="forecolor1">
+           par
+          </span>
+         </td>
+         <td class="left bgcolor3">
+          The algorithm is allowed to parallelize but not vectorize its execution.
+         </td>
+        </tr>
+        <tr>
+         <td class="left bgcolor3">
+          <span class="forecolor1">
+           parallel_unsequenced_policy
+          </span>
+         </td>
+         <td class="left bgcolor3">
+          <span class="forecolor1">
+           par_unseq
+          </span>
+         </td>
+         <td class="left bgcolor3">
+          The algorithm is allowed to parallelize and vectorize its execution. It's also allowed to migrate its execution across threads.
+         </td>
+        </tr>
+        <tr>
+         <td class="left bgcolor3">
+          <span class="forecolor1">
+           unsequenced_policy
+          </span>
+         </td>
+         <td class="left bgcolor3">
+          <span class="forecolor1">
+           unseq
+          </span>
+         </td>
+         <td class="left bgcolor3">
+          The algorithm is allowed to vectorize but not parallelize its execution.
+         </td>
+        </tr>
+       </tbody>
+      </table>
+      <p id="c20-para-0170">
+       A Standard Library implementation is free to add additional execution policies.
+      </p>
+      <p>
+       Let's look at how you can specify an execution policy for an algorithm. Here is an example of sorting the contents of a
+       <code>
+        vector
+       </code>
+       using a parallel policy:
+      </p>
+      <pre id="c20-code-0076"><code>sort(execution::par, begin(values), end(values));</code></pre>
+      <p>
+       <span aria-label="823" epub:type="pagebreak" id="Page_823" role="doc-pagebreak">
+       </span>
+      </p>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <p id="c20-para-0173">
+          <b>
+           WARNING
+          </b>
+          <i>
+           Callbacks passed to parallel algorithms are not allowed to throw any uncaught exceptions. Doing so will trigger a call to
+          </i>
+          <code>
+           std::terminate()
+          </code>
+          <i>
+           <i>
+            <i>
+             which terminates the application
+            </i>
+            .
+           </i>
+          </i>
+         </p>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <p id="c20-para-0174">
+       For algorithms executing with
+       <code>
+        parallel_unsequenced_policy
+       </code>
+       or
+       <code>
+        unsequenced_policy
+       </code>
+       , function calls to callbacks are allowed to get interleaved; that is, they are unsequenced. This helps the compiler to vectorize the code. However, this also means there are a lot of restrictions on what a function callback can do. For example, it cannot allocate/deallocate memory, acquire mutexes, use non-lock-free
+       <code>
+        std::atomic
+       </code>
+       s (see
+       <a href="c27.xhtml">
+        Chapter 27
+       </a>
+       , “Multithreaded Programming with C++”), and more. For the other standard policies, the function calls are sequenced, but in an indeterminate sequence. Such policies do not impose restrictions on what the function callbacks can do.
+      </p>
+      <p id="c20-para-0175">
+       Parallel algorithms do not take any measures to prevent data races and deadlocks, so it is your responsibility to avoid them when executing an algorithm in parallel. Data race and deadlock prevention are discussed in detail in
+       <a href="c27.xhtml">
+        Chapter 27
+       </a>
+       in the context of multithreaded programming.
+      </p>
+      <p id="c20-para-0176">
+       Parallel overloads of algorithms are not
+       <code>
+        constexpr
+       </code>
+       , even if the non-parallel overloads are.
+      </p>
+      <p>
+       The return type of some of the parallel overloads of algorithms can be slightly different compared to the non-parallel overloads. For example, the non-parallel overload of
+       <code>
+        for_each()
+       </code>
+       returns the supplied callback, while the parallel overload does not return anything. Consult your favorite Standard Library Reference for a complete overview of all algorithms, including their parameter and return types, for both the parallel and non-parallel overloads.
+      </p>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <p id="c20-para-0178">
+          <b>
+           NOTE
+          </b>
+          <i>
+           When working with large datasets or when you have to perform a large amount of work on each individual element in a dataset, use the parallel overloads of algorithms to increase performance
+          </i>
+          .
+         </p>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <p id="c20-para-0179">
+       Keep in mind, though, that using a parallel overload of an algorithm does not guarantee that its execution will be faster compared to a non-parallel overload. For example, when processing a small number of elements, a parallel overload might actually be slower due to the overhead that parallelization brings with it. Another example is when your container does not support random access iterators. To decide whether to use a parallel or a sequential overload for a specific use case, you must profile both and pick the most performant one.
+       <a href="c29.xhtml">
+        Chapter 29
+       </a>
+       , “Writing Efficient C++,” discusses profiling.
+      </p>
+     </section>
+     <section>
+      <span id="c20-sec-0057">
+      </span>
+      <h3 id="head-3-448">
+       Numerical Processing Algorithms
+      </h3>
+      <p id="c20-para-0180">
+       You've already seen an example of one numerical processing algorithm:
+       <code>
+        accumulate()
+       </code>
+       . The following sections give examples of some more numerical algorithms.
+      </p>
+      <span aria-label="824" epub:type="pagebreak" id="Page_824" role="doc-pagebreak">
+      </span>
+      <section>
+       <span id="c20-sec-0058">
+       </span>
+       <h4 id="head-4-329">
+        iota
+       </h4>
+       <p>
+        The
+        <code>
+         iota()
+        </code>
+        algorithm, defined in
+        <code>
+         &lt;numeric&gt;
+        </code>
+        , generates a sequence of values in a specified range starting with a specified value and applying
+        <code>
+         operator++
+        </code>
+        to generate each successive value. The following example shows how to use this algorithm on a
+        <code>
+         vector
+        </code>
+        of integers, but it works on any element type that implements
+        <code>
+         operator++
+        </code>
+        :
+       </p>
+       <pre id="c20-code-0077"><code>vector&lt;int&gt; values(10);</code>
+<code><b>iota(begin(values), end(values), 5);</b></code>
+<code>println("{:n}", values);</code></pre>
+       <p>
+        The output is as follows:
+       </p>
+       <pre id="c20-code-0078"><code>5, 6, 7, 8, 9, 10, 11, 12, 13, 14</code></pre>
+      </section>
+      <section>
+       <span id="c20-sec-0059">
+       </span>
+       <h4 id="head-4-330">
+        Reduce Algorithms
+       </h4>
+       <p id="c20-para-0183">
+        The Standard Library has four
+        <i>
+         reduce algorithms
+        </i>
+        :
+        <code>
+         accumulate()
+        </code>
+        ,
+        <code>
+         reduce()
+        </code>
+        ,
+        <code>
+         inner_product()
+        </code>
+        , and
+        <code>
+         transform_reduce()
+        </code>
+        , all defined in
+        <code>
+         &lt;numeric&gt;
+        </code>
+        . The
+        <code>
+         accumulate()
+        </code>
+        algorithm is discussed earlier in this chapter. All reduce algorithms repeatedly apply an operator to combine two elements of a given range or two given ranges, until only one value remains. These are also called
+        <i>
+         accumulate
+        </i>
+        ,
+        <i>
+         aggregate
+        </i>
+        ,
+        <i>
+         compress
+        </i>
+        ,
+        <i>
+         inject
+        </i>
+        , or
+        <i>
+         fold
+        </i>
+        algorithms.
+       </p>
+       <section>
+        <span id="c20-sec-0060">
+        </span>
+        <h5 id="head-5-135">
+         reduce
+        </h5>
+        <p id="c20-para-0184">
+         <code>
+          std::accumulate()
+         </code>
+         is one of the few algorithms that does not support parallel execution. Instead, you need to use
+         <code>
+          std::reduce()
+         </code>
+         to calculate a generalized sum with the option to execute it in parallel.
+        </p>
+        <p>
+         For example, the following code calculates the same sum twice, once with
+         <code>
+          accumulate()
+         </code>
+         and once with
+         <code>
+          reduce()
+         </code>
+         . The latter runs a parallel and vectorized version and thus can be much faster on big input ranges. They both require a begin and end iterator of the range, and an initial value, 0 in this example.
+        </p>
+        <pre id="c20-code-0079"><code>vector values { 1, 3, 6, 4, 6, 9 };</code>
+<code><b>int result1 { accumulate(cbegin(values), cend(values), 0) };</b></code>
+<code><b>int result2 { reduce(execution::par_unseq, cbegin(values), cend(values), 0) };</b></code></pre>
+        <p>
+         In general, both
+         <code>
+          accumulate()
+         </code>
+         and
+         <code>
+          reduce()
+         </code>
+         calculate the following sum for a range of elements [
+         <i>
+          x
+         </i>
+         <sub>
+          0
+         </sub>
+         ,
+         <i>
+          x
+         </i>
+         <sub>
+          n
+         </sub>
+         ), with a given initial value
+         <i>
+          Init
+         </i>
+         , and a given binary operator Ѳ:
+        </p>
+        <ul class="none" id="c20-list-1001">
+         <li id="c20-li-2001">
+          Init Ѳ
+          <i>
+           x
+          </i>
+          <sub>
+           0
+          </sub>
+          Ѳ
+          <i>
+           x
+          </i>
+          <sub>
+           1
+          </sub>
+          Ѳ … Ѳ
+          <i>
+           x
+          </i>
+          <sub>
+           n−1
+          </sub>
+         </li>
+        </ul>
+        <p id="c20-para-0188">
+         By default, the binary operator for
+         <code>
+          accumulate()
+         </code>
+         is
+         <code>
+          operator+
+         </code>
+         , and for
+         <code>
+          reduce()
+         </code>
+         it is
+         <code>
+          std::plus
+         </code>
+         .
+        </p>
+       </section>
+       <section>
+        <span id="c20-sec-0061">
+        </span>
+        <h5 id="head-5-136">
+         inner_product
+        </h5>
+        <p>
+         <code>
+          inner_product()
+         </code>
+         calculates the inner product of two sequences. For example, the inner product in the following example is calculated as
+         <code>
+          (1*9)+(2*8)+(3*7)+(4*6)
+         </code>
+         , which is 70:
+        </p>
+        <pre id="c20-code-0080"><code>vector v1 { 1, 2, 3, 4 };</code>
+<code>vector v2 { 9, 8, 7, 6 };</code>
+<code><b>println("{}", inner_product(cbegin(v1), cend(v1), cbegin(v2), 0));</b></code></pre>
+        <p id="c20-para-0190">
+         <span aria-label="825" epub:type="pagebreak" id="Page_825" role="doc-pagebreak">
+         </span>
+         <code>
+          inner_product()
+         </code>
+         can accept two additional parameters, which are the two binary operators used in the calculation, by default
+         <code>
+          operator+
+         </code>
+         and
+         <code>
+          operator*
+         </code>
+         .
+        </p>
+        <p id="c20-para-0191">
+         <code>
+          inner_product()
+         </code>
+         is another algorithm that does not support parallel execution. If parallel execution is required, use
+         <code>
+          transform_reduce()
+         </code>
+         , discussed next.
+        </p>
+       </section>
+       <section>
+        <span id="c20-sec-0062">
+        </span>
+        <h5 id="head-5-137">
+         transform_reduce
+        </h5>
+        <p>
+         <code>
+          transform_reduce()
+         </code>
+         supports parallel execution and can be executed on a single range of elements or on two ranges. In its first version, it calculates the following sum for a range of elements [
+         <i>
+          x
+         </i>
+         <sub>
+          0
+         </sub>
+         ,
+         <i>
+          x
+         </i>
+         <sub>
+          n
+         </sub>
+         ), with a given initial value
+         <i>
+          Init
+         </i>
+         , a given unary function
+         <i>
+          f
+         </i>
+         , and a given binary operator Ѳ,
+         <code>
+          std::plus
+         </code>
+         by default:
+        </p>
+        <ul class="none" id="c20-list-7001">
+         <li id="c20-li-8001">
+          Init Ѳ
+          <i>
+           f
+          </i>
+          (
+          <i>
+           x
+          </i>
+          <sub>
+           0
+          </sub>
+          ) Ѳ
+          <i>
+           f
+          </i>
+          (
+          <i>
+           x
+          </i>
+          <sub>
+           1
+          </sub>
+          ) Ѳ … Ѳ
+          <i>
+           f
+          </i>
+          (
+          <i>
+           x
+          </i>
+          <sub>
+           n−1
+          </sub>
+          )
+         </li>
+        </ul>
+        <p id="c20-para-0194">
+         When executing on two ranges, it behaves the same as
+         <code>
+          inner_product()
+         </code>
+         , except by default it uses the binary operators
+         <code>
+          std::plus
+         </code>
+         and
+         <code>
+          std::multiplies
+         </code>
+         , respectively, instead of
+         <code>
+          operator+
+         </code>
+         and
+         <code>
+          operator*
+         </code>
+         .
+        </p>
+       </section>
+      </section>
+      <section>
+       <span id="c20-sec-0063">
+       </span>
+       <h4 id="head-4-331">
+        Scan Algorithms
+       </h4>
+       <p id="c20-para-0195">
+        <i>
+         Scan algorithms
+        </i>
+        are also called
+        <i>
+         prefix sum
+        </i>
+        ,
+        <i>
+         cumulative sum
+        </i>
+        , or
+        <i>
+         partial sum
+        </i>
+        algorithms. The result of such an algorithm applied to a range is another range containing sums of the elements of the source range.
+       </p>
+       <p id="c20-para-0196">
+        There are five scan algorithms:
+        <code>
+         exclusive_scan()
+        </code>
+        ,
+        <code>
+         inclusive_scan()
+        </code>
+        /
+        <code>
+         partial_sum()
+        </code>
+        ,
+        <code>
+         transform_exclusive_scan()
+        </code>
+        , and
+        <code>
+         transform_inclusive_scan()
+        </code>
+        , all defined in
+        <code>
+         &lt;numeric&gt;
+        </code>
+        .
+       </p>
+       <p>
+        The following table shows which sums [
+        <i>
+         y
+        </i>
+        <sub>
+         0
+        </sub>
+        ,
+        <i>
+         y
+        </i>
+        <sub>
+         n
+        </sub>
+        ) are calculated by
+        <code>
+         exclusive_scan()
+        </code>
+        and by
+        <code>
+         inclusive_scan()
+        </code>
+        /
+        <code>
+         partial_sum()
+        </code>
+        for a range of elements [
+        <i>
+         x
+        </i>
+        <sub>
+         0
+        </sub>
+        ,
+        <i>
+         x
+        </i>
+        <sub>
+         n
+        </sub>
+        ), with a given initial value
+        <i>
+         Init
+        </i>
+        (0 for
+        <code>
+         partial_sum()
+        </code>
+        ), and a given binary operator Ѳ:
+       </p>
+       <table border="1">
+        <thead>
+         <tr>
+          <th class="left bgcolor2" scope="col">
+           EXCLUSIVE_SCAN()
+          </th>
+          <th class="left bgcolor2" scope="col">
+           INCLUSIVE_SCAN()/PARTIAL_SUM()
+          </th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="left bgcolor3">
+           <i>
+            y
+           </i>
+           <sub>
+            0
+           </sub>
+           = Init
+           <br/>
+           <i>
+            y
+           </i>
+           <sub>
+            1
+           </sub>
+           = Init Ѳ
+           <i>
+            x
+           </i>
+           <sub>
+            0
+           </sub>
+           <br/>
+           <i>
+            y
+           </i>
+           <sub>
+            2
+           </sub>
+           = Init Ѳ
+           <i>
+            x
+           </i>
+           <sub>
+            0
+           </sub>
+           Ѳ
+           <i>
+            x
+           </i>
+           <sub>
+            1
+           </sub>
+           <br/>
+           …
+           <br/>
+           <i>
+            y
+           </i>
+           <sub>
+            n-1
+           </sub>
+           = Init Ѳ
+           <i>
+            x
+           </i>
+           <sub>
+            0
+           </sub>
+           Ѳ
+           <i>
+            x
+           </i>
+           <sub>
+            1
+           </sub>
+           Ѳ … Ѳ
+           <i>
+            x
+           </i>
+           <sub>
+            n-2
+           </sub>
+          </td>
+          <td class="left bgcolor3">
+           <i>
+            y
+           </i>
+           <sub>
+            0
+           </sub>
+           = Init Ѳ
+           <i>
+            x
+           </i>
+           <sub>
+            0
+           </sub>
+           <br/>
+           <i>
+            y
+           </i>
+           <sub>
+            1
+           </sub>
+           = Init Ѳ
+           <i>
+            x
+           </i>
+           <sub>
+            0
+           </sub>
+           Ѳ
+           <i>
+            x
+           </i>
+           <sub>
+            1
+           </sub>
+           <br/>
+           …
+           <br/>
+           <i>
+            y
+           </i>
+           <sub>
+            n-1
+           </sub>
+           = Init Ѳ
+           <i>
+            x
+           </i>
+           <sub>
+            0
+           </sub>
+           Ѳ
+           <i>
+            x
+           </i>
+           <sub>
+            1
+           </sub>
+           Ѳ … Ѳ
+           <i>
+            x
+           </i>
+           <sub>
+            n-1
+           </sub>
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p id="c20-para-0205">
+        <code>
+         transform_exclusive_scan()
+        </code>
+        and
+        <code>
+         transform_inclusive_scan()
+        </code>
+        both first apply a unary function to the elements before calculating the generalized sum, similar to how
+        <code>
+         transform_reduce()
+        </code>
+        applies a unary function to the elements before reducing.
+       </p>
+       <p id="c20-para-0206">
+        Note that these scan algorithms, except
+        <code>
+         partial_sum()
+        </code>
+        , can accept an optional execution policy to parallelize their execution. The order of evaluation is non-deterministic, while it is guaranteed left to right for
+        <code>
+         partial_sum()
+        </code>
+        and
+        <code>
+         accumulate()
+        </code>
+        . That's also the reason why
+        <code>
+         partial_sum()
+        </code>
+        and
+        <code>
+         accumulate()
+        </code>
+        cannot be parallelized.
+       </p>
+      </section>
+     </section>
+     <span aria-label="826" epub:type="pagebreak" id="Page_826" role="doc-pagebreak">
+     </span>
+     <section>
+      <span id="c20-sec-0064">
+      </span>
+      <h3 id="head-3-449">
+       Constrained Algorithms
+      </h3>
+      <p id="c20-para-0207">
+       Most of the algorithms have constrained variants in the
+       <code>
+        std::ranges
+       </code>
+       namespace. Consult your favorite Standard Library reference to find out exactly which constrained algorithms are available. These algorithms are also defined in
+       <code>
+        &lt;algorithm&gt;
+       </code>
+       and
+       <code>
+        &lt;numeric&gt;
+       </code>
+       , but unlike the equivalent unconstrained algorithms in the
+       <code>
+        std
+       </code>
+       namespace, the constrained variants use concepts (see
+       <a href="c12.xhtml">
+        Chapter 12
+       </a>
+       ) to constrain their template type parameters. This means you get better error messages from your compiler if you pass invalid arguments. For example, the
+       <code>
+        sort()
+       </code>
+       algorithm requires random-access iterators. Passing a pair of
+       <code>
+        std::list
+       </code>
+       iterators as arguments to
+       <code>
+        std::sort()
+       </code>
+       can result in a bunch of cryptic errors from your compiler. With the constrained
+       <code>
+        ranges::sort()
+       </code>
+       algorithm, the compiler tells you that the passed iterators are not random access.
+      </p>
+      <p>
+       Another benefit of these constrained algorithms is that they work on a sequence of elements given as either a
+       <i>
+        begin and end iterator pair
+       </i>
+       , or as a
+       <i>
+        range
+       </i>
+       . Additionally, they can support projections. Ranges and projections are discussed in
+       <a href="c17.xhtml">
+        Chapter 17
+       </a>
+       .
+      </p>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <p id="c20-para-0209">
+          <b>
+           NOTE
+          </b>
+          <i>
+           Constrained algorithms do not support parallel execution yet, so they do not accept a parallel execution policy as an argument
+          </i>
+          .
+         </p>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <p id="c20-para-0210">
+       Let's look at a few of these constrained algorithms in action.
+      </p>
+      <section>
+       <span id="c20-sec-0066">
+       </span>
+       <h4 id="head-4-332">
+        Constrained find
+       </h4>
+       <p>
+        As with all constrained algorithms, the
+        <code>
+         std::ranges::find()
+        </code>
+        constrained algorithm can be called with a pair of iterators or with a range as argument. Calling it with an iterator pair works the same way as the unconstrained
+        <code>
+         std::find()
+        </code>
+        :
+       </p>
+       <pre id="c20-code-0081"><code>vector values {1, 2, 3};</code>
+<code><b>auto result { ranges::find(cbegin(values), cend(values), 2) };</b></code>
+<code>if (result != cend(values)) { println("{}", *result); }</code></pre>
+       <p>
+        However, if you want to apply an algorithm on
+        <i>
+         all
+        </i>
+        elements of a container, as is often the case, it's rather tedious to always have to specify a begin/end iterator pair to define your sequence. With ranges support, you can just specify a range with a single argument. The previous call to
+        <code>
+         find()
+        </code>
+        can be written more readable and less error prone as follows:
+       </p>
+       <pre id="c20-code-0082"><code><b>auto result { ranges::find(values, 2) };</b></code></pre>
+      </section>
+      <section>
+       <span id="c20-sec-0067">
+       </span>
+       <h4 id="head-4-333">
+        Constrained generate
+       </h4>
+       <p>
+        Here is another example, this time using the constrained
+        <code>
+         std::ranges::generate()
+        </code>
+        algorithm. The code first creates a lambda expression that simply returns a next number. Then it creates a
+        <code>
+         vector
+        </code>
+        of 10 integers and uses the
+        <code>
+         generate()
+        </code>
+        algorithm together with the
+        <code>
+         nextNumber
+        </code>
+        lambda expression to fill the
+        <code>
+         vector
+        </code>
+        with increasing integers. The contents of the
+        <code>
+         vector
+        </code>
+        are printed to the console, followed by four more invocations of the
+        <code>
+         nextNumber
+        </code>
+        lambda expression.
+       </p>
+       <pre id="c20-code-0083"><code>auto nextNumber { [counter = 0] () mutable { return ++counter; } };</code>
+<code>vector&lt;int&gt; values(10);</code>
+<span aria-label="827" epub:type="pagebreak" id="Page_827" role="doc-pagebreak"></span><code><b>ranges::generate(values, nextNumber);</b></code>
+<code>println("Vector contains {:n}", values);</code>
+<code>print("Four more next numbers: ");</code>
+<code>for (unsigned i { 0 }; i &lt; 4; ++i) { print("{}, ", nextNumber()); }</code></pre>
+       <p>
+        The output is as follows:
+       </p>
+       <pre id="c20-code-0084"><code>Vector contains 1, 2, 3, 4, 5, 6, 7, 8, 9, 10</code>
+<code>Four more next numbers: 1, 2, 3, 4,</code></pre>
+       <p>
+        As the output demonstrates,
+        <code>
+         generate()
+        </code>
+        makes a copy of the lambda expression. This can be avoided using
+        <code>
+         std::ref()
+        </code>
+        , as explained earlier in this chapter, to pass a reference to the lambda expression instead of making a copy:
+       </p>
+       <pre id="c20-code-0085"><code>ranges::generate(values, <b>ref(nextNumber)</b>);</code></pre>
+       <p>
+        The output now is:
+       </p>
+       <pre id="c20-code-0086"><code>Vector contains 1, 2, 3, 4, 5, 6, 7, 8, 9, 10</code>
+<code>Four more next numbers: 11, 12, 13, 14,</code></pre>
+      </section>
+      <section>
+       <span id="c20-sec-0068">
+       </span>
+       <h4 id="head-4-334">
+        Constrained for_each
+       </h4>
+       <p>
+        The following example demonstrates using the
+        <code>
+         std::ranges::for_each()
+        </code>
+        algorithm on a filtered view created with
+        <code>
+         std::ranges::views::filter
+        </code>
+        (defined in
+        <code>
+         &lt;ranges&gt;
+        </code>
+        ). Only the even values from the
+        <code>
+         vector
+        </code>
+        are kept in the view. This filtered view is subsequently passed to
+        <code>
+         for_each()
+        </code>
+        , which multiplies the values by 10. Outputting the contents of the
+        <code>
+         vector
+        </code>
+        confirms that only the even values in the
+        <code>
+         vector
+        </code>
+        have been multiplied.
+       </p>
+       <pre id="c20-code-0087"><code>vector values { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };</code>
+<code>println("Before: {:n}", values);</code>
+<code><b>ranges::for_each(values | views::filter([](int value) { return value % 2 == 0; }),</b></code>
+<code>    <b>[](int&amp; value) { value *= 10; });</b></code>
+<code>println("After:  {:n}", values);</code></pre>
+       <p>
+        The output is as follows:
+       </p>
+       <pre id="c20-code-0088"><code>Before: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10</code>
+<code>After:  1, 20, 3, 40, 5, 60, 7, 80, 9, 100</code></pre>
+      </section>
+      <section>
+       <span id="c20-sec-0069">
+       </span>
+       <h4 id="head-4-335">
+        <img alt="C++23" src="../images\images/icon1.png"/>
+        Constrained-Only Algorithms
+       </h4>
+       <p id="c20-para-0220">
+        C++23 introduces new algorithms that are available only as constrained algorithms. They are all defined in the
+        <code>
+         std::ranges
+        </code>
+        namespace. These include the non-modifying sequence algorithms
+        <code>
+         contains()
+        </code>
+        ,
+        <code>
+         contains_subrange()
+        </code>
+        ,
+        <code>
+         starts_with()
+        </code>
+        ,
+        <code>
+         ends_with()
+        </code>
+        ,
+        <code>
+         find_last()
+        </code>
+        ,
+        <code>
+         find_last_if()
+        </code>
+        , and
+        <code>
+         find_last_if_not()
+        </code>
+        , and the fold algorithms
+        <code>
+         fold_left()
+        </code>
+        ,
+        <code>
+         fold_left_first()
+        </code>
+        ,
+        <code>
+         fold_right()
+        </code>
+        ,
+        <code>
+         fold_right_last()
+        </code>
+        ,
+        <code>
+         fold_left_with_iter()
+        </code>
+        , and
+        <code>
+         fold_left_first_with_iter()
+        </code>
+        .
+       </p>
+       <p>
+        Here is an example of some of the non-modifying sequence algorithms:
+       </p>
+       <pre id="c20-code-0089"><code>vector values { 11, 22, 33, 44, 55 };</code>
+<code>vector v { 11, 22 };</code>
+<code>println("{} contains 33 = {}", values, <b>ranges::contains(values, 33)</b>);</code>
+<code>println("{} contains {} = {}", values, v, <b>ranges::contains_subrange(values, v)</b>);</code>
+<code>println("{} starts with {} = {}", values, v, <b>ranges::starts_with(values, v)</b>);</code></pre>
+       <p>
+        <span aria-label="828" epub:type="pagebreak" id="Page_828" role="doc-pagebreak">
+        </span>
+        This produces the following output:
+       </p>
+       <pre id="c20-code-0090"><code>[11, 22, 33, 44, 55] contains 33 = true</code>
+<code>[11, 22, 33, 44, 55] contains [11, 22] = true</code>
+<code>[11, 22, 33, 44, 55] starts with [11, 22] = true</code></pre>
+       <p>
+        The following is an example of two of the folding algorithms.
+        <code>
+         fold_left()
+        </code>
+        and
+        <code>
+         fold_right()
+        </code>
+        accept an initial value as one of their arguments, while
+        <code>
+         fold_left_first()
+        </code>
+        uses the first element in a given range as the starting value, and
+        <code>
+         fold_right_last()
+        </code>
+        uses the last element in a given range as the starting value. The example demonstrates the difference between a left and a right fold. The
+        <code>
+         fold_left_first()
+        </code>
+        and
+        <code>
+         fold_right_last()
+        </code>
+        algorithms return an
+        <code>
+         optional
+        </code>
+        , so
+        <code>
+         value_or()
+        </code>
+        is used to handle an empty result.
+       </p>
+       <pre id="c20-code-0091"><code>vector values { 500.0, 10.0, 2.0 };</code>
+<code>auto foldedLeft { <b>ranges::fold_left_first(values, divides&lt;&gt;{})</b> };</code>
+<code>auto foldedRight { <b>ranges::fold_right_last(values, divides&lt;&gt;{})</b> };</code>
+<code>println("foldedLeft = {}", foldedLeft.value_or(0.0));</code>
+<code>println("foldedRight = {}", foldedRight.value_or(0.0));</code></pre>
+       <p>
+        The output is:
+       </p>
+       <pre id="c20-code-0092"><code>foldedLeft = 25</code>
+<code>foldedRight = 100</code></pre>
+       <p id="c20-para-0225">
+        The left fold operation calculates ((500.0 / 10.0) / 2.0), while the right fold operation calculates (500.0 / (10.0 / 2.0)).
+       </p>
+       <p id="c20-para-0226">
+        See your favorite Standard Library reference for more details on all these constrained algorithms.
+       </p>
+      </section>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-219">
+     <span id="c20-sec-0070">
+     </span>
+     <h2 id="head-2-219">
+      SUMMARY
+     </h2>
+     <p id="c20-para-0227">
+      This chapter provided coding examples for a selection of Standard Library algorithms. It also showed you that combining these algorithms with lambda expressions allows you to write elegant and easy-to-understand code. Together with the previous chapters, I hope you gained an appreciation for the usefulness and the power of the Standard Library containers and algorithms.
+     </p>
+     <p id="c20-para-0228">
+      The following chapters continue the discussion of other C++ Standard Library functionality.
+      <a href="c21.xhtml">
+       Chapter 21
+      </a>
+      discusses regular expressions.
+      <a href="c22.xhtml">
+       Chapter 22
+      </a>
+      explains the date and time support.
+      <a href="c23.xhtml">
+       Chapter 23
+      </a>
+      shows how to generate random numbers.
+      <a href="c24.xhtml">
+       Chapter 24
+      </a>
+      covers a number of additional vocabulary types that are available for you to use. Finally,
+      <a href="c25.xhtml">
+       Chapter 25
+      </a>
+      gives a taste of some more advanced features, such as allocators and how to write your own Standard Library–compliant algorithms and containers.
+     </p>
+    </section>
+    <section aria-labelledby="head-2-220">
+     <span id="c20-sec-0071">
+     </span>
+     <h2 id="head-2-220">
+      EXERCISES
+     </h2>
+     <p id="c20-para-0229">
+      By solving the following exercises, you can practice the material discussed in this chapter. Solutions to all exercises are available with the code download on the book's website at
+      <code>
+       <a href="http://www.wiley.com/go/proc++6e">
+        www.wiley.com/go/proc++6e
+       </a>
+      </code>
+      . However, if you are stuck on an exercise, first reread parts of this chapter to try to find an answer yourself before looking at the solution from the website.
+     </p>
+     <span aria-label="829" epub:type="pagebreak" id="Page_829" role="doc-pagebreak">
+     </span>
+     <section>
+      <span id="c20-exsec-0001">
+      </span>
+      <ol class="none">
+       <li id="c20-ex-0001">
+        <b>
+         <b>
+          Exercise 20-1:
+         </b>
+        </b>
+        Use your favorite Standard Library Reference to look up the parameters for the
+        <code>
+         ranges::fill()
+        </code>
+        algorithm. Ask the user for a number, and then use
+        <code>
+         fill()
+        </code>
+        to fill a
+        <code>
+         vector
+        </code>
+        of 10 integers with the given number. Write the contents of the
+        <code>
+         vector
+        </code>
+        to the standard output for verification. Provide a second solution using the
+        <code>
+         std::fill()
+        </code>
+        algorithm.
+       </li>
+       <li id="c20-ex-0002">
+        <b>
+         <b>
+          Exercise 20-2:
+         </b>
+        </b>
+        Look back at the “Permutation Algorithms” section in
+        <a href="c16.xhtml">
+         Chapter 16
+        </a>
+        , and then use a Standard Library Reference to figure out their parameters. Write a program that asks the user to enter a few numbers, and then use one of the permutation algorithms to print out all possible permutations of those numbers. Provide two solutions, one using only constrained algorithms and a second using legacy, unconstrained algorithms.
+       </li>
+       <li id="c20-ex-0003">
+        <b>
+         <b>
+          Exercise 20-3:
+         </b>
+        </b>
+        Write a function called
+        <code>
+         trim()
+        </code>
+        that removes all whitespace at the beginning and end of a given string and returns the result. Use only constrained algorithms. Tip: to check if a character
+        <code>
+         c
+        </code>
+        is a whitespace character, you can use
+        <code>
+         std::isspace(c)
+        </code>
+        , defined in
+        <code>
+         &lt;cctype&gt;
+        </code>
+        . It returns a non-zero value if
+        <code>
+         c
+        </code>
+        is a whitespace character, 0 otherwise. Test your implementation with several strings in your
+        <code>
+         main()
+        </code>
+        function.
+       </li>
+       <li id="c20-ex-0004">
+        <b>
+         <b>
+          Exercise 20-4:
+         </b>
+        </b>
+        Use a constrained algorithm to create a
+        <code>
+         vector
+        </code>
+        containing the numbers 1 to 20. Then, using a single constrained algorithm, copy all even and odd numbers to
+        <code>
+         evens
+        </code>
+        and
+        <code>
+         odds
+        </code>
+        containers without doing any space reservation on those containers, and, still with this single algorithm call, make sure the even numbers are in ascending sequence, while the odd numbers are in descending sequence. Carefully choose the type for the
+        <code>
+         evens
+        </code>
+        and
+        <code>
+         odds
+        </code>
+        containers. Hint: maybe there is something in
+        <a href="c17.xhtml">
+         Chapter 17
+        </a>
+        that you could use.
+       </li>
+       <li id="c20-ex-0005">
+        <b>
+         <b>
+          Exercise 20-5:
+         </b>
+        </b>
+        The solution for Exercise 20-3 uses only constrained algorithms. Can you do the same using only legacy, unconstrained algorithms?
+       </li>
+      </ol>
+     </section>
+    </section>
+   </section>
+  </div>
+ </body>
+</html>

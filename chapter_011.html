@@ -1,0 +1,4666 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html>
+<html epub:prefix="z3998: http://www.daisy.org/z3998/2012/vocab/structure/#" lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+ <head>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   2Working with Strings and String Views
+  </title>
+ </head>
+ <body>
+  <div class="navigation">
+   <a class="nav-button" href="chapter_010.html">
+    ← Previous
+   </a>
+   <a class="nav-button" href="index.html">
+    Table of Contents
+   </a>
+   <a class="nav-button" href="chapter_012.html">
+    Next →
+   </a>
+  </div>
+  <div class="chapter-content">
+   <section aria-labelledby="c02_1" epub:type="chapter" role="doc-chapter">
+    <header>
+     <h1 id="c02_1">
+      <span aria-label="87" epub:type="pagebreak" id="Page_87" role="doc-pagebreak">
+      </span>
+      <span id="c02">
+      </span>
+      <span class="chapterNumber">
+       2
+      </span>
+      <br/>
+      <span class="chapterTitle">
+       Working with Strings and String Views
+      </span>
+     </h1>
+    </header>
+    <section aria-label="chapter opening">
+     <span id="c02-sec-0001">
+     </span>
+     <section>
+      <aside>
+       <div class="top hr">
+        <hr/>
+       </div>
+       <section class="feature3">
+        <h3>
+         WHAT'S IN THIS CHAPTER?
+        </h3>
+        <ul class="check3" id="c02-list-0001">
+         <li id="c02-li-0001">
+          The differences between C-style strings and C++ strings
+         </li>
+         <li id="c02-li-0002">
+          Details of the C++
+          <code>
+           std::string
+          </code>
+          class
+         </li>
+         <li id="c02-li-0003">
+          Why you should use
+          <code>
+           std::string_view
+          </code>
+         </li>
+         <li id="c02-li-0004">
+          What raw string literals are
+         </li>
+         <li id="c02-li-0005">
+          How to produce formatted text
+         </li>
+         <li id="c02-li-0006">
+          How to format entire ranges of elements to a string
+         </li>
+        </ul>
+        <div class="bottom hr">
+         <hr/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <section>
+      <aside>
+       <div class="top hr">
+        <hr/>
+       </div>
+       <section class="feature3">
+        <span id="c02-fea-0001">
+        </span>
+        <h3 id="head-2-58">
+         WILEY.COM DOWNLOADS FOR THIS CHAPTER
+        </h3>
+        <p id="c02-para-0003">
+         Please note all the code examples for this chapter are available as a part of the chapter's code download on this book's website at
+         <code>
+          <a href="http://www.wiley.com/go/proc++6e">
+           www.wiley.com/go/proc++6e
+          </a>
+         </code>
+         on the Download Code tab.
+        </p>
+        <div class="bottom hr">
+         <hr/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <p id="c02-para-0004">
+      Every program that you write will use strings of some kind. With the old C language, there is not much choice but to use a dumb null-terminated character array to represent a string. Unfortunately, doing so can cause a lot of problems, such as buffer overflows, which can result in security vulnerabilities. The C++ Standard Library includes a safe and easy-to-use
+      <code>
+       std::string
+      </code>
+      class that does not have these disadvantages.
+     </p>
+     <p id="c02-para-0005">
+      Because strings are so important, this chapter, early in the book, discusses them in more detail.
+     </p>
+    </section>
+    <span aria-label="88" epub:type="pagebreak" id="Page_88" role="doc-pagebreak">
+    </span>
+    <section aria-labelledby="head-2-59">
+     <span id="c02-sec-0004">
+     </span>
+     <h2 id="head-2-59">
+      DYNAMIC STRINGS
+     </h2>
+     <p id="c02-para-0006">
+      Strings in languages that have supported them as first-class objects tend to have a number of attractive features, such as being able to expand to any size or to have substrings extracted or replaced. In other languages, such as C, strings were almost an afterthought; there wasn't a really good string data type, just fixed arrays of bytes. The C string library was nothing more than a collection of rather primitive functions without even bounds checking. C++ provides a string type as a first-class data type. Before discussing what C++ provides for strings, let's take a quick look at C-style strings first.
+     </p>
+     <section>
+      <span id="c02-sec-0005">
+      </span>
+      <h3 id="head-3-100">
+       C-Style Strings
+      </h3>
+      <p id="c02-para-0007">
+       In the C language, strings are represented as an array of characters. The last character of a string is a null character (
+       <code>
+        \0
+       </code>
+       ) so that code operating on the string can determine where it ends. This null character is officially known as
+       <code>
+        NUL
+       </code>
+       , spelled with one L, not two.
+       <code>
+        NUL
+       </code>
+       is not the same as the
+       <code>
+        NULL
+       </code>
+       pointer. Even though C++ provides a better string abstraction, it is important to understand the C technique for strings because they still arise in C++ programming. One of the most common situations is where a C++ program has to call a C-based interface in some third-party library or as part of interfacing to the operating system.
+      </p>
+      <p id="c02-para-0008">
+       By far, the most common mistake that programmers make with C strings is that they forget to allocate space for the
+       <code>
+        \0
+       </code>
+       character. For example, the string
+       <code>
+        "hello"
+       </code>
+       appears to be five characters long, but six characters worth of space are needed in memory to store the value, as shown in
+       <a href="#c02-fig-0001" id="R_c02-fig-0001">
+        Figure 2.1
+       </a>
+       .
+      </p>
+      <figure>
+       <img alt="A table of one row and six columns. The title is my string. The columns include h, e, l, I, o, and forward slash 0." class="center" src="../images\images/c02f001.png"/>
+       <figcaption>
+        <p>
+         <span class="figureLabel">
+          <a href="#R_c02-fig-0001" id="c02-fig-0001" role="doc-backlink">
+           <b>
+            FIGURE 2.1
+           </b>
+          </a>
+         </span>
+        </p>
+       </figcaption>
+      </figure>
+      <p>
+       C++ contains several functions from the C language that operate on strings. These functions are defined in
+       <code>
+        &lt;cstring&gt;
+       </code>
+       . As a general rule of thumb, these functions do not handle memory allocation. For example, the
+       <code>
+        strcpy()
+       </code>
+       function takes two strings as parameters. It copies the second string onto the first, whether it fits or not. The following code attempts to build a wrapper around
+       <code>
+        strcpy()
+       </code>
+       that allocates the correct amount of memory and returns the result, instead of taking in an already allocated string. This initial attempt will turn out to be wrong! It uses the
+       <code>
+        strlen()
+       </code>
+       function to obtain the length of the string. The caller is responsible for freeing the memory allocated by
+       <code>
+        copyString()
+       </code>
+       .
+      </p>
+      <pre id="c02-code-0001"><code>char* copyString(const char* str)</code>
+<code>{</code>
+<code>    char* result { new char[strlen(str)] };  // BUG! Off by one!</code>
+<code>    strcpy(result, str);</code>
+<code>    return result;</code>
+<code>}</code></pre>
+      <p>
+       The
+       <code>
+        copyString()
+       </code>
+       function as written is incorrect. The
+       <code>
+        strlen()
+       </code>
+       function returns the length of the string, not the amount of memory needed to hold it. For the string
+       <code>
+        "hello"
+       </code>
+       ,
+       <code>
+        strlen()
+       </code>
+       returns 5, not 6. The proper way to allocate memory for a string is to add 1 to the amount of space needed for the actual characters. It seems a bit unnatural to have +1 all over the place. Unfortunately, that's how it works, so keep this in mind when you work with C-style strings. The correct implementation is as follows:
+      </p>
+      <pre id="c02-code-0002"><code>char* copyString(const char* str)</code>
+<code>{</code>
+<code>    <b>char* result { new char[strlen(str) + 1] };</b></code>
+<span aria-label="89" epub:type="pagebreak" id="Page_89" role="doc-pagebreak"></span><code>    strcpy(result, str);</code>
+<code>    return result;</code>
+<code>}</code></pre>
+      <p>
+       One way to remember that
+       <code>
+        strlen()
+       </code>
+       returns only the number of actual characters in the string is to consider what would happen if you were allocating space for a string made up of several other strings. For example, if your function took in three strings and returned a string that was the concatenation of all three, how big would it be? To hold exactly enough space, it would be the length of all three strings added together, plus one space for the trailing
+       <code>
+        \0
+       </code>
+       character. If
+       <code>
+        strlen()
+       </code>
+       included the
+       <code>
+        \0
+       </code>
+       in the length of the string, the allocated memory would be too big. The following code uses the
+       <code>
+        strcpy()
+       </code>
+       and
+       <code>
+        strcat()
+       </code>
+       functions to perform this operation. The
+       <code>
+        cat
+       </code>
+       in
+       <code>
+        strcat()
+       </code>
+       stands for
+       <i>
+        concatenate
+       </i>
+       .
+      </p>
+      <pre id="c02-code-0003"><code>char* appendStrings(const char* str1, const char* str2, const char* str3)</code>
+<code>{</code>
+<code>    char* result { new char[strlen(str1) + strlen(str2) + strlen(str3) + 1] };</code>
+<code>    strcpy(result, str1);</code>
+<code>    strcat(result, str2);</code>
+<code>    strcat(result, str3);</code>
+<code>    return result;</code>
+<code>}</code></pre>
+      <p>
+       The
+       <code>
+        sizeof()
+       </code>
+       operator in C and C++ can be used to get the size of a certain data type or variable. For example,
+       <code>
+        sizeof(char)
+       </code>
+       returns 1 because a
+       <code>
+        char
+       </code>
+       has a size of 1 byte. However, in the context of C-style strings,
+       <code>
+        sizeof()
+       </code>
+       is not the same as
+       <code>
+        strlen()
+       </code>
+       . You should never use
+       <code>
+        sizeof()
+       </code>
+       to try to get the size of a string. It returns different sizes depending on how the C-style string is stored. If it is stored as a
+       <code>
+        char[]
+       </code>
+       , then
+       <code>
+        sizeof()
+       </code>
+       returns the actual memory used by the string, including the
+       <code>
+        \0
+       </code>
+       character, as in this example:
+      </p>
+      <pre id="c02-code-0004"><code>char text1[] { "abcdef" };</code>
+<code>size_t s1 { sizeof(text1) };  <span class="color3">// is 7</span></code>
+<code>size_t s2 { strlen(text1) };  <span class="color3">// is 6</span></code></pre>
+      <p>
+       However, if the C-style string is stored as a
+       <code>
+        char*
+       </code>
+       , then
+       <code>
+        sizeof()
+       </code>
+       returns the size of a pointer!
+      </p>
+      <pre id="c02-code-0005"><code>const char* text2 { "abcdef" };</code>
+<code>size_t s3 { sizeof(text2) };  <span class="color3">// is platform-dependent</span></code>
+<code>size_t s4 { strlen(text2) };  <span class="color3">// is 6</span></code></pre>
+      <p id="c02-para-0014">
+       Here,
+       <code>
+        s3
+       </code>
+       will be 4 when compiled in 32-bit mode, and 8 when compiled in 64-bit mode because it is returning the size of a
+       <code>
+        const char*
+       </code>
+       , which is a pointer.
+      </p>
+      <p>
+       A complete list of functions to operate on C-style strings can be found in the
+       <code>
+        &lt;cstring&gt;
+       </code>
+       header file.
+      </p>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <p id="c02-para-0016">
+          <b>
+           WARNING
+          </b>
+          <i>
+           When you use the C-style string functions with Microsoft Visual Studio, the compiler is likely to give you security-related warnings or even errors about these functions being deprecated. You can eliminate these warnings by using other C Standard Library functions, such as
+          </i>
+          <code>
+           strcpy_s()
+          </code>
+          <i>
+           or
+          </i>
+          <code>
+           strcat_s()
+          </code>
+          <i>
+           , which are part of the “secure C library” standard (ISO/IEC TR 24731). However, the best solution is to switch to the C++
+          </i>
+          <code>
+           std::string
+          </code>
+          <i>
+           class, discussed in the upcoming “The C++ std::string Class” section, but first a bit more on string literals.
+          </i>
+         </p>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+     </section>
+     <span aria-label="90" epub:type="pagebreak" id="Page_90" role="doc-pagebreak">
+     </span>
+     <section>
+      <span id="c02-sec-0007">
+      </span>
+      <h3 id="head-3-101">
+       String Literals
+      </h3>
+      <p>
+       You've probably seen strings written in a C++ program with quotes around them. For example, the following code outputs the string
+       <code>
+        hello
+       </code>
+       by including the string itself, not a variable that contains it:
+      </p>
+      <pre id="c02-code-0006"><code>println("hello");</code></pre>
+      <p id="c02-para-0018">
+       In the preceding line,
+       <code>
+        "hello"
+       </code>
+       is a
+       <i>
+        string literal
+       </i>
+       because it is written as a value, not a variable. String literals are actually stored in a read-only part of memory. This allows the compiler to optimize memory usage by reusing references to equivalent string literals. That is, even if your program uses the string literal
+       <code>
+        "hello"
+       </code>
+       500 times, the compiler is allowed to optimize memory by creating just one instance of
+       <code>
+        hello
+       </code>
+       in memory. This is called
+       <i>
+        literal pooling
+       </i>
+       .
+      </p>
+      <p>
+       String literals can be
+       <i>
+        assigned
+       </i>
+       to variables, but because string literals are in a read-only part of memory and because of the possibility of literal pooling, assigning them to variables can be risky. The C++ standard officially says that string literals are of type “array of
+       <i>
+        n
+       </i>
+       <code>
+        const char
+       </code>
+       ”; however, for backward compatibility with older non-
+       <code>
+        const
+       </code>
+       -aware code, some compilers do not force you to assign a string literal to a variable of type
+       <code>
+        const char*
+       </code>
+       . They let you assign a string literal to a
+       <code>
+        char*
+       </code>
+       without
+       <code>
+        const
+       </code>
+       , and the program will work fine unless you attempt to change the string. Generally, the behavior of modifying string literals is undefined. It could, for example, cause a crash, it could keep working with seemingly inexplicable side effects, the modification could silently be ignored, or it could just work; it all depends on your compiler. For example, the following code exhibits undefined behavior:
+      </p>
+      <pre id="c02-code-0007"><code>char* ptr { "hello" };       <span class="color3">// Assign the string literal to a variable.</span></code>
+<code>ptr[1] = 'a';                <span class="color3">// Undefined behavior!</span></code></pre>
+      <p>
+       A much safer way to code is to use a pointer to
+       <code>
+        const
+       </code>
+       characters when referring to string literals. The following code contains the same bug, but because it assigned the literal to a
+       <code>
+        const char*
+       </code>
+       , the compiler catches the attempt to write to read-only memory:
+      </p>
+      <pre id="c02-code-0008"><code>const char* ptr { "hello" }; <span class="color3">// Assign the string literal to a variable.</span></code>
+<code>ptr[1] = 'a';                <span class="color3">// Error! Attempts to write to read-only memory</span></code></pre>
+      <p>
+       You can also use a string literal as an initial value for a character array (
+       <code>
+        char[]
+       </code>
+       ). In this case, the compiler creates an array that is big enough to hold the string and copies the string to this array. The compiler does not put the literal in read-only memory and does not do any literal pooling.
+      </p>
+      <pre id="c02-code-0009"><code>char arr[] { "hello" }; <span class="color3">// Compiler takes care of creating appropriate sized</span></code>
+<code>                        <span class="color3">// character array arr.</span></code>
+<code>arr[1] = 'a';           <span class="color3">// The contents can be modified.</span></code></pre>
+      <section>
+       <span id="c02-sec-0008">
+       </span>
+       <h4 id="head-4-59">
+        Raw String Literals
+       </h4>
+       <p>
+        <i>
+         Raw string literals
+        </i>
+        are string literals that can span multiple lines of code, don't require escaping of embedded double quotes, and process escape sequences like
+        <code>
+         \t
+        </code>
+        and
+        <code>
+         \n
+        </code>
+        as normal text and not as escape sequences. Escape sequences are discussed in
+        <a href="c01.xhtml">
+         Chapter 1
+        </a>
+        , “A Crash Course in C++ and the Standard Library.” For example, if you write the following with a normal string literal, you will get a compilation error because the string contains non-escaped double quotes:
+       </p>
+       <pre id="c02-code-0010"><code>println("Hello "World"!");    <span class="color3">// Error!</span></code></pre>
+       <p>
+        <span aria-label="91" epub:type="pagebreak" id="Page_91" role="doc-pagebreak">
+        </span>
+        Normally you have to escape the double quotes as follows:
+       </p>
+       <pre id="c02-code-0011"><code>println("Hello \"World\"!");</code></pre>
+       <p>
+        With a raw string literal, you can avoid the need to escape the quotes. A raw string literal starts with
+        <code>
+         R"(
+        </code>
+        and ends with
+        <code>
+         )"
+        </code>
+        :
+       </p>
+       <pre id="c02-code-0012"><code>println(R"(Hello "World"!)");</code></pre>
+       <p>
+        If you need a string consisting of multiple lines, without raw string literals, you need to embed
+        <code>
+         \n
+        </code>
+        escape sequences in your string where you want to start a new line. Here's an example:
+       </p>
+       <pre id="c02-code-0013"><code>println("Line 1\nLine 2");</code></pre>
+       <p>
+        The output is as follows:
+       </p>
+       <pre id="c02-code-0014"><code>Line 1</code>
+<code>Line 2</code></pre>
+       <p>
+        With a raw string literal, instead of using
+        <code>
+         \n
+        </code>
+        escape sequences to start new lines, you can simply press Enter to start real physical new lines in your source code as follows. The output is the same as the previous code snippet using the embedded
+        <code>
+         \n
+        </code>
+        .
+       </p>
+       <pre id="c02-code-0015"><code>println(R"(Line 1</code>
+<code>Line 2)");</code></pre>
+       <p>
+        Escape sequences are ignored in raw string literals. For example, in the following raw string literal, the
+        <code>
+         \t
+        </code>
+        escape sequence is not replaced with a tab character but is kept as the sequence of a backslash followed by the letter
+        <code>
+         t
+        </code>
+        :
+       </p>
+       <pre id="c02-code-0016"><code>println(R"(Is the following a tab character? \t)");</code></pre>
+       <p>
+        This outputs the following:
+       </p>
+       <pre id="c02-code-0017"><code>Is the following a tab character? \t</code></pre>
+       <p>
+        Because a raw string literal ends with
+        <code>
+         )"
+        </code>
+        , you cannot embed a
+        <code>
+         )"
+        </code>
+        in your string using this syntax. For example, the following string is not valid because it contains the
+        <code>
+         )"
+        </code>
+        sequence in the middle of the string:
+       </p>
+       <pre id="c02-code-0018"><code>println(R"(Embedded )" characters)");    <span class="color3">// Error!</span></code></pre>
+       <p>
+        If you need embedded
+        <code>
+         )"
+        </code>
+        characters, you need to use the extended raw string literal syntax, which is as follows:
+       </p>
+       <pre id="c02-code-0019"><code>R"d-char-sequence(r-char-sequence)d-char-sequence"</code></pre>
+       <p id="c02-para-0032">
+        The
+        <code>
+         r-char-sequence
+        </code>
+        is the actual raw string. The
+        <code>
+         d-char-sequence
+        </code>
+        is an optional delimiter sequence, which should be the same at the beginning and at the end of the raw string literal. This delimiter sequence can have at most 16 characters. You should choose this delimiter sequence as a sequence that will not appear in the middle of your raw string literal.
+       </p>
+       <p>
+        The previous example can be rewritten using a unique delimiter sequence as follows:
+       </p>
+       <pre id="c02-code-0020"><code>println(R"-(Embedded )" characters)-");</code></pre>
+       <p id="c02-para-0034">
+        Raw string literals make it easier to work with database querying strings, regular expressions, file paths, and so on. Regular expressions are discussed in
+        <a href="c21.xhtml">
+         Chapter 21
+        </a>
+        , “String Localization and Regular Expressions.”
+       </p>
+      </section>
+     </section>
+     <span aria-label="92" epub:type="pagebreak" id="Page_92" role="doc-pagebreak">
+     </span>
+     <section>
+      <span id="c02-sec-0009">
+      </span>
+      <h3 id="head-3-102">
+       The C++ std::string Class
+      </h3>
+      <p id="c02-para-0035">
+       C++ provides a much-improved implementation of the concept of a string as part of the Standard Library. In C++,
+       <code>
+        std::string
+       </code>
+       is a class (actually an instantiation of the
+       <code>
+        std::basic_string
+       </code>
+       class template) that supports many of the same functionalities as the
+       <code>
+        &lt;cstring&gt;
+       </code>
+       functions, but that takes care of memory allocations for you. The
+       <code>
+        string
+       </code>
+       class is defined in
+       <code>
+        &lt;string&gt;
+       </code>
+       and lives in the
+       <code>
+        std
+       </code>
+       namespace. It has already been introduced in the previous chapter, but now it's time to take a closer look at it.
+      </p>
+      <section>
+       <span id="c02-sec-0010">
+       </span>
+       <h4 id="head-4-60">
+        What Is Wrong with C-Style Strings?
+       </h4>
+       <p>
+        To understand the necessity of the C++
+        <code>
+         string
+        </code>
+        class, consider the advantages and disadvantages of C-style strings.
+       </p>
+       <p class="listHead">
+        <b>
+         Advantages:
+        </b>
+       </p>
+       <ul class="check1">
+        <li id="c02-li-0007">
+         They are simple, making use of the underlying basic character type and array structure.
+        </li>
+        <li id="c02-li-0008">
+         They are lightweight, taking up only the memory that they need if used properly.
+        </li>
+        <li id="c02-li-0009">
+         They are low level, so you can easily manipulate and copy them as raw memory.
+        </li>
+        <li id="c02-li-0010">
+         If you're a C programmer—why learn something new?
+        </li>
+       </ul>
+       <p class="listHead">
+        <b>
+         Disadvantages:
+        </b>
+       </p>
+       <ul class="check1">
+        <li id="c02-li-0011">
+         They require incredible efforts to simulate a first-class string data type.
+        </li>
+        <li id="c02-li-0012">
+         They are unforgiving and susceptible to difficult-to-find memory bugs.
+        </li>
+        <li id="c02-li-0013">
+         They don't leverage the object-oriented nature of C++.
+        </li>
+        <li id="c02-li-0014">
+         They require knowledge of their underlying representation on the part of the programmer.
+        </li>
+       </ul>
+       <p id="c02-para-0037">
+        The preceding lists were carefully constructed to make you think that perhaps there is a better way. As you'll learn, C++
+        <code>
+         string
+        </code>
+        s solve all the problems of C-style strings and render most of the arguments about the advantages of C strings over a first-class data type irrelevant.
+       </p>
+      </section>
+      <section>
+       <span id="c02-sec-0011">
+       </span>
+       <h4 id="head-4-61">
+        Using the std::string Class
+       </h4>
+       <p id="c02-para-0038">
+        Even though
+        <code>
+         string
+        </code>
+        is a class, you can almost always treat it as if it were a built-in type. In fact, the more you think of it that way, the better off you are. Through the magic of operator overloading, C++
+        <code>
+         string
+        </code>
+        s are much easier to use than C-style strings. The next two sections start the discussion by demonstrating how operator overloading makes it easy to concatenate and compare
+        <code>
+         string
+        </code>
+        s. Subsequent sections discuss how C++
+        <code>
+         string
+        </code>
+        s handle memory, their compatibility with C-style strings, and some of the built-in operations you can perform on
+        <code>
+         string
+        </code>
+        s.
+       </p>
+       <section>
+        <span id="c02-sec-0012">
+        </span>
+        <h5 id="head-5-17">
+         Concatenating Strings
+        </h5>
+        <p>
+         The
+         <code>
+          +
+         </code>
+         operator is redefined for
+         <code>
+          string
+         </code>
+         s to mean “string concatenation.” The following code produces
+         <code>
+          1234
+         </code>
+         :
+        </p>
+        <pre id="c02-code-0021"><code>string a { "12" };</code>
+<code>string b { "34" };</code>
+<code>string c { a + b };    <span class="color3">// c is "1234"</span></code></pre>
+        <p>
+         <span aria-label="93" epub:type="pagebreak" id="Page_93" role="doc-pagebreak">
+         </span>
+         The
+         <code>
+          +=
+         </code>
+         operator is also overloaded to allow you to easily append a string:
+        </p>
+        <pre id="c02-code-0022"><code>a += b;    <span class="color3">// a is "1234"</span></code></pre>
+       </section>
+       <section>
+        <span id="c02-sec-0013">
+        </span>
+        <h5 id="head-5-18">
+         Comparing Strings
+        </h5>
+        <p>
+         Another problem with C strings is that you cannot use
+         <code>
+          ==
+         </code>
+         to compare them. Suppose you have the following two strings:
+        </p>
+        <pre id="c02-code-0023"><code>char* a { "12" };</code>
+<code>char b[] { "12" };</code></pre>
+        <p>
+         Writing a comparison as follows always returns
+         <code>
+          false
+         </code>
+         , because it compares the pointer values, not the contents of the strings:
+        </p>
+        <pre id="c02-code-0024"><code>if (a == b) { <span class="color3">/* … */</span> }</code></pre>
+        <p id="c02-para-0043">
+         Note that C arrays and pointers are related. You can think of C arrays, like the
+         <code>
+          b
+         </code>
+         array in the example, as pointers to the first element in the array.
+         <a href="c07.xhtml">
+          Chapter 7
+         </a>
+         , “Memory Management,” goes deeper in on the array-pointer duality.
+        </p>
+        <p>
+         To compare C strings, you have to write something like so:
+        </p>
+        <pre id="c02-code-0025"><code>if (strcmp(a, b) == 0) { <span class="color3">/* … */</span> }</code></pre>
+        <p id="c02-para-0045">
+         Furthermore, there is no way to use
+         <code>
+          &lt;
+         </code>
+         ,
+         <code>
+          &lt;=
+         </code>
+         ,
+         <code>
+          &gt;=
+         </code>
+         , or
+         <code>
+          &gt;
+         </code>
+         to compare C strings, so
+         <code>
+          strcmp()
+         </code>
+         performs a three-way comparison, returning a value less than 0, 0, or a value greater than 0, depending on the lexicographic ordering relationship of the strings. This results in clumsy and hard-to-read code, which is also error-prone.
+        </p>
+        <p>
+         With C++
+         <code>
+          string
+         </code>
+         s, comparison operators (
+         <code>
+          ==
+         </code>
+         ,
+         <code>
+          !=
+         </code>
+         ,
+         <code>
+          &lt;
+         </code>
+         , and so on) are all overloaded to work on the actual characters of the
+         <code>
+          string
+         </code>
+         . For example:
+        </p>
+        <pre id="c02-code-0026"><code>string a { "Hello" };</code>
+<code>string b { "World" };</code>
+<code>println("'{}' &lt; '{}' = {}", a, b, a &lt; b);  <span class="color3">// 'Hello' &lt; 'World' = true</span></code>
+<code>println("'{}' &gt; '{}' = {}", a, b, a &gt; b);  <span class="color3">// 'Hello' &gt; 'World' = false</span></code></pre>
+        <p>
+         The C++
+         <code>
+          string
+         </code>
+         class additionally provides a
+         <code>
+          compare()
+         </code>
+         member function that behaves like
+         <code>
+          strcmp()
+         </code>
+         and has a similar return type. Here is an example:
+        </p>
+        <pre id="c02-code-0027"><code>string a { "12" };</code>
+<code>string b { "34" };</code>
+<code> </code>
+<code>auto result { a.compare(b) };</code>
+<code>if (result &lt; 0) { println("less"); }</code>
+<code>if (result &gt; 0) { println("greater"); }</code>
+<code>if (result == 0) { println("equal"); }</code></pre>
+        <p>
+         Just as with
+         <code>
+          strcmp()
+         </code>
+         , this is cumbersome to use. You need to remember the exact meaning of the return value. Furthermore, since the return value is just an integer, it is easy to forget the meaning of this integer and to write the following wrong code to compare for equality:
+        </p>
+        <pre id="c02-code-0028"><code>if (a.compare(b)) { println("equal"); }</code></pre>
+        <p id="c02-para-0049">
+         <span aria-label="94" epub:type="pagebreak" id="Page_94" role="doc-pagebreak">
+         </span>
+         <code>
+          compare()
+         </code>
+         returns 0 for equality, anything else for non-equality. So, this line of code does the opposite of what it was intended to do; that is, it outputs “equal” for non-equal strings! If you just want to check whether two
+         <code>
+          string
+         </code>
+         s are equal, do not use
+         <code>
+          compare()
+         </code>
+         , but simply
+         <code>
+          ==
+         </code>
+         .
+        </p>
+        <p>
+         Since C++20, this is improved with the three-way comparison operator, introduced in
+         <a href="c01.xhtml">
+          Chapter 1
+         </a>
+         . The
+         <code>
+          string
+         </code>
+         class has full support for this operator. Here's an example:
+        </p>
+        <pre id="c02-code-0029"><code>auto result { a &lt;=&gt; b };</code>
+<code>if (is_gt(result)) { println("greater"); }</code>
+<code>if (is_lt(result)) { println("less"); }</code>
+<code>if (is_eq(result)) { println("equal"); }</code></pre>
+       </section>
+       <section>
+        <span id="c02-sec-0014">
+        </span>
+        <h5 id="head-5-19">
+         Memory Handling
+        </h5>
+        <p>
+         As the following code shows, when
+         <code>
+          string
+         </code>
+         operations require extending the
+         <code>
+          string
+         </code>
+         , the memory requirements are automatically handled by the
+         <code>
+          string
+         </code>
+         class, so memory overruns are a thing of the past. This code snippet also demonstrates that individual characters can be accessed with the square brackets operator,
+         <code>
+          []
+         </code>
+         , just as with C-style strings.
+        </p>
+        <pre id="c02-code-0030"><code>string myString { "hello" };</code>
+<code>myString += ", there";</code>
+<code>string myOtherString { myString };</code>
+<code>if (myString == myOtherString) {</code>
+<code>    myOtherString[0] = 'H';</code>
+<code>}</code>
+<code>println("{}", myString);</code>
+<code>println("{}", myOtherString);</code></pre>
+        <p>
+         The output of this code is shown here:
+        </p>
+        <pre id="c02-code-0031"><code>hello, there</code>
+<code>Hello, there</code></pre>
+        <p id="c02-para-0053">
+         There are several things to note in this example. One point is that there are no memory leaks even though strings are allocated and resized in a few places. All of these
+         <code>
+          string
+         </code>
+         objects are created as stack variables. While the
+         <code>
+          string
+         </code>
+         class certainly has a bunch of allocating and resizing to do, the
+         <code>
+          string
+         </code>
+         destructors clean up this memory when
+         <code>
+          string
+         </code>
+         objects go out of scope. How exactly destructors work is explained in detail in
+         <a href="c08.xhtml">
+          Chapter 8
+         </a>
+         , “Gaining Proficiency with Classes and Objects.”
+        </p>
+        <p id="c02-para-0054">
+         Another point to note is that the operators work the way you want them to work. For example, the
+         <code>
+          =
+         </code>
+         operator copies the strings, which is most likely what you want. If you are used to working with array-based strings, this will be either refreshingly liberating for you or somewhat confusing. Don't worry—once you learn to trust the
+         <code>
+          string
+         </code>
+         class to do the right thing, life gets so much easier.
+        </p>
+       </section>
+       <section>
+        <span id="c02-sec-0015">
+        </span>
+        <h5 id="head-5-20">
+         Compatibility with C-Style Strings
+        </h5>
+        <p id="c02-para-0055">
+         For compatibility, you can use the
+         <code>
+          c_str()
+         </code>
+         member function on a
+         <code>
+          string
+         </code>
+         to get a
+         <code>
+          const char
+         </code>
+         pointer, representing a C-style string. However, the returned
+         <code>
+          const
+         </code>
+         pointer becomes invalid whenever the
+         <code>
+          string
+         </code>
+         has to perform any memory reallocation or when the
+         <code>
+          string
+         </code>
+         object is destroyed. You should call the member function just before using the result so that it accurately reflects the current contents of the
+         <code>
+          string
+         </code>
+         , and you must never return the result of
+         <code>
+          c_str()
+         </code>
+         called on a stack-based
+         <code>
+          string
+         </code>
+         object from a function.
+        </p>
+        <p id="c02-para-0056">
+         <span aria-label="95" epub:type="pagebreak" id="Page_95" role="doc-pagebreak">
+         </span>
+         There is also a
+         <code>
+          data()
+         </code>
+         member function that, up until C++14, always returned a
+         <code>
+          const char*
+         </code>
+         just as
+         <code>
+          c_str()
+         </code>
+         . Starting with C++17, however,
+         <code>
+          data()
+         </code>
+         returns a
+         <code>
+          char*
+         </code>
+         when called on a non-
+         <code>
+          const
+         </code>
+         string.
+        </p>
+       </section>
+       <section>
+        <span id="c02-sec-0016">
+        </span>
+        <h5 id="head-5-21">
+         Operations on Strings
+        </h5>
+        <p>
+         The
+         <code>
+          string
+         </code>
+         class supports quite a few additional operations. The following list highlights a few. Consult a Standard Library Reference (see
+         <a href="b02.xhtml">
+          Appendix B
+         </a>
+         , “Annotated Bibliography”) for a complete list of all supported operations that can be performed on
+         <code>
+          string
+         </code>
+         objects.
+        </p>
+        <ul class="check1" id="c02-list-0004">
+         <li id="c02-li-0015">
+          <code>
+           substr(pos,len)
+          </code>
+          : Returns the substring that starts at a given position and has a given length
+         </li>
+         <li id="c02-li-0016">
+          <code>
+           find(str)
+          </code>
+          : Returns the position where a given substring is found, or
+          <code>
+           string::npos
+          </code>
+          if not found
+         </li>
+         <li id="c02-li-0017">
+          <code>
+           replace(pos,len,str)
+          </code>
+          : Replaces part of a string (given by a position and a length) with another string
+         </li>
+         <li id="c02-li-0018">
+          <code>
+           starts_with(str)
+          </code>
+          /
+          <code>
+           ends_with(str)
+          </code>
+          : Returns
+          <code>
+           true
+          </code>
+          if a string starts/ends with a given substring
+         </li>
+         <li id="c02-li-0019">
+          <img alt="C++23" src="../images\images/icon1.png"/>
+          <code>
+           contains(str)
+          </code>
+          /
+          <code>
+           contains(ch)
+          </code>
+          : Returns
+          <code>
+           true
+          </code>
+          if a
+          <code>
+           string
+          </code>
+          contains another
+          <code>
+           string
+          </code>
+          or character
+         </li>
+        </ul>
+        <p>
+         Here is a small code snippet that shows some of these operations in action:
+        </p>
+        <pre id="c02-code-0032"><code>string strHello { "Hello!!" };</code>
+<code>string strWorld { "The World…" };</code>
+<code>auto position { strHello.find("!!") };</code>
+<code>if (position != string::npos) {</code>
+<code>    <span class="color3">// Found the "!!" substring, now replace it.</span></code>
+<code>    strHello.replace(position, 2, strWorld.substr(3, 6));</code>
+<code>}</code>
+<code>println("{}", strHello);</code>
+<code><span class="color3">// Test contains().</span></code>
+<code>string toFind { "World" };</code>
+<code>println("{}", strWorld.contains(toFind));</code>
+<code>println("{}", strWorld.contains('.'));</code>
+<code>println("{}", strWorld.contains("Hello"));</code></pre>
+        <p>
+         The output is as follows:
+        </p>
+        <pre id="c02-code-0033"><code>Hello World</code>
+<code>true</code>
+<code>true</code>
+<code>false</code></pre>
+        <p id="c02-para-0062">
+         <img alt="C++23" src="../images\images/icon1.png"/>
+         Before C++23, it was possible to construct a
+         <code>
+          string
+         </code>
+         object by passing
+         <code>
+          nullptr
+         </code>
+         to its constructor. This would then result in undefined behavior at run time. Starting with C++23, trying to construct a
+         <code>
+          string
+         </code>
+         from
+         <code>
+          nullptr
+         </code>
+         results in a compilation error.
+        </p>
+       </section>
+      </section>
+      <section>
+       <span id="c02-sec-0017">
+       </span>
+       <h4 id="head-4-62">
+        std::string Literals
+       </h4>
+       <p>
+        A string literal in source code is usually interpreted as a
+        <code>
+         const char*
+        </code>
+        or a
+        <code>
+         const char[]
+        </code>
+        . You can use the standard literal
+        <code>
+         s
+        </code>
+        to interpret a string literal as an
+        <code>
+         std::string
+        </code>
+        instead.
+       </p>
+       <pre id="c02-code-0034"><span aria-label="96" epub:type="pagebreak" id="Page_96" role="doc-pagebreak"></span><code>auto string1 { "Hello World" };    <span class="color3">// string1 is a const char*.</span></code>
+<code>auto&amp; string2 { "Hello World" };   <span class="color3">// string2 is a const char[12].</span></code>
+<code>auto string3 { "Hello World"s };   <span class="color3">// string3 is an std::string.</span></code></pre>
+       <p>
+        The standard literal
+        <code>
+         s
+        </code>
+        is defined in the
+        <code>
+         std::literals::string_literals
+        </code>
+        namespace. However, both the
+        <code>
+         string_literals
+        </code>
+        and
+        <code>
+         literals
+        </code>
+        namespaces are
+        <i>
+         inline namespaces
+        </i>
+        . As such, you have the following options to make those string literals available to your code:
+       </p>
+       <pre id="c02-code-0035"><code>using namespace std;</code>
+<code>using namespace std::literals;</code>
+<code>using namespace std::string_literals;</code>
+<code>using namespace std::literals::string_literals;</code></pre>
+       <p>
+        Basically, everything that is declared in an inline namespace is automatically available in the parent namespace. To define an inline namespace yourself, you use the
+        <code>
+         inline
+        </code>
+        keyword. For example, the
+        <code>
+         string_literals
+        </code>
+        inline namespace is defined as follows:
+       </p>
+       <pre id="c02-code-0036"><code>namespace std {</code>
+<code>    inline namespace literals {</code>
+<code>        inline namespace string_literals {</code>
+<code>            <span class="color3">// …</span></code>
+<code>        }</code>
+<code>    }</code>
+<code>}</code></pre>
+      </section>
+      <section>
+       <span id="c02-sec-0018">
+       </span>
+       <h4 id="head-4-63">
+        CTAD with std::vector and Strings
+       </h4>
+       <p>
+        <a href="c01.xhtml">
+         Chapter 1
+        </a>
+        explains that
+        <code>
+         std::vector
+        </code>
+        supports class template argument deduction (CTAD), allowing the compiler to automatically deduce the type of a
+        <code>
+         vector
+        </code>
+        based on an initializer list. You have to be careful when using CTAD for a
+        <code>
+         vector
+        </code>
+        of strings. Take the following declaration of a
+        <code>
+         vector
+        </code>
+        , for example:
+       </p>
+       <pre id="c02-code-0037"><code>vector names { "John", "Sam", "Joe" };</code></pre>
+       <p id="c02-para-0067">
+        The deduced type will be
+        <code>
+         vector&lt;const char*&gt;
+        </code>
+        , not
+        <code>
+         vector&lt;string&gt;
+        </code>
+        ! This is an easy mistake to make and can lead to some strange behavior of your code, or even crashes, depending on what you do with the
+        <code>
+         vector
+        </code>
+        afterward.
+       </p>
+       <p>
+        If you want a
+        <code>
+         vector&lt;string&gt;
+        </code>
+        , then use
+        <code>
+         std::string
+        </code>
+        literals as explained in the previous section. Note the
+        <code>
+         s
+        </code>
+        behind each string literal in the following example:
+       </p>
+       <pre id="c02-code-0038"><code>vector names { "John"s, "Sam"s, "Joe"s };</code></pre>
+      </section>
+     </section>
+     <section>
+      <span id="c02-sec-0019">
+      </span>
+      <h3 id="head-3-103">
+       Numeric Conversions
+      </h3>
+      <p id="c02-para-0069">
+       The C++ Standard Library provides both high-level and low-level numeric conversion functions, explained in the upcoming sections.
+      </p>
+      <section>
+       <span id="c02-sec-0020">
+       </span>
+       <h4 id="head-4-64">
+        High-Level Numeric Conversions
+       </h4>
+       <p id="c02-para-0070">
+        The
+        <code>
+         std
+        </code>
+        namespace includes a number of helper functions, defined in
+        <code>
+         &lt;string&gt;
+        </code>
+        , that make it easy to convert numerical values into
+        <code>
+         string
+        </code>
+        s or
+        <code>
+         string
+        </code>
+        s into numerical values.
+       </p>
+       <span aria-label="97" epub:type="pagebreak" id="Page_97" role="doc-pagebreak">
+       </span>
+       <section>
+        <span id="c02-sec-0021">
+        </span>
+        <h5 id="head-5-22">
+         Converting to Strings
+        </h5>
+        <p>
+         The following functions are available to convert numerical values into
+         <code>
+          string
+         </code>
+         s, where
+         <i>
+          <code>
+           T
+          </code>
+         </i>
+         can be (
+         <code>
+          unsigned
+         </code>
+         )
+         <code>
+          int
+         </code>
+         , (
+         <code>
+          unsigned
+         </code>
+         )
+         <code>
+          long
+         </code>
+         , (
+         <code>
+          unsigned
+         </code>
+         )
+         <code>
+          long long
+         </code>
+         ,
+         <code>
+          float
+         </code>
+         ,
+         <code>
+          double
+         </code>
+         , or
+         <code>
+          long double
+         </code>
+         . All of these functions create and return a new
+         <code>
+          string
+         </code>
+         object and manage all necessary memory allocations.
+        </p>
+        <pre id="c02-code-0039"><code>string to_string(<i>T</i> val);</code></pre>
+        <p>
+         These functions are straightforward to use. For example, the following code converts a
+         <code>
+          long double
+         </code>
+         value into a
+         <code>
+          string
+         </code>
+         :
+        </p>
+        <pre id="c02-code-0040"><code>long double d { 3.14L };</code>
+<code>string s { to_string(d) };  <span class="color3">// s contains 3.140000</span></code></pre>
+       </section>
+       <section>
+        <span id="c02-sec-0022">
+        </span>
+        <h5 id="head-5-23">
+         Converting from Strings
+        </h5>
+        <p>
+         Converting in the other direction is done by the following set of functions, also defined in the
+         <code>
+          std
+         </code>
+         namespace. In these prototypes,
+         <code>
+          str
+         </code>
+         is the
+         <code>
+          string
+         </code>
+         that you want to convert,
+         <code>
+          pos
+         </code>
+         is a pointer that receives the index of the first unconverted character, and
+         <code>
+          base
+         </code>
+         is the mathematical base that should be used during conversion. The
+         <code>
+          pos
+         </code>
+         pointer can be
+         <code>
+          nullptr
+         </code>
+         , in which case it is ignored. These functions ignore leading whitespace, throw
+         <code>
+          invalid_argument
+         </code>
+         if no conversion could be performed, and throw
+         <code>
+          out_of_range
+         </code>
+         if the converted value is outside the range of the return type.
+        </p>
+        <pre id="c02-code-0041"><code>int stoi(const string&amp; str, size_t *pos = nullptr, int base = 10);</code>
+<code>long stol(const string&amp; str, size_t *pos = nullptr, int base = 10);</code>
+<code>unsigned long stoul(const string&amp; str, size_t *pos = nullptr, int base = 10);</code>
+<code>long long stoll(const string&amp; str, size_t *pos = nullptr, int base = 10);</code>
+<code>unsigned long long stoull(const string&amp; str, size_t *pos = nullptr, int base = 10);</code>
+<code>float stof(const string&amp; str, size_t *pos = nullptr);</code>
+<code>double stod(const string&amp; str, size_t *pos = nullptr);</code>
+<code>long double stold(const string&amp; str, size_t *pos = nullptr);</code></pre>
+        <p>
+         Here is an example:
+        </p>
+        <pre id="c02-code-0042"><code>const string toParse { "   123USD" };</code>
+<code>size_t index { 0 };</code>
+<code>int value { stoi(toParse, &amp;index) };</code>
+<code>println("Parsed value: {}", value);</code>
+<code>println("First non-parsed character: '{}'", toParse[index]);</code></pre>
+        <p>
+         The output is as follows:
+        </p>
+        <pre id="c02-code-0043"><code>Parsed value: 123</code>
+<code>First non-parsed character: 'U'</code></pre>
+        <p>
+         <code>
+          stoi()
+         </code>
+         ,
+         <code>
+          stol()
+         </code>
+         ,
+         <code>
+          stoul()
+         </code>
+         ,
+         <code>
+          stoll()
+         </code>
+         , and
+         <code>
+          stoull()
+         </code>
+         accept integral values and have a parameter called
+         <code>
+          base
+         </code>
+         , which specifies the base in which the given integral value is expressed. A base of 10, the default, assumes the usual decimal numbers, 0–9, while a base of 16 assumes hexadecimal numbers. If the base is set to 0, the function automatically figures out the base of the given number as follows:
+        </p>
+        <ul class="check1" id="c02-list-0006">
+         <li id="c02-li-0020">
+          If the number starts with
+          <code>
+           0x
+          </code>
+          or
+          <code>
+           0X
+          </code>
+          , it is parsed as a hexadecimal number.
+         </li>
+         <li id="c02-li-0021">
+          If the number starts with
+          <code>
+           0
+          </code>
+          , it is parsed as an octal number.
+         </li>
+         <li id="c02-li-0022">
+          Otherwise, it is parsed as a decimal number.
+         </li>
+        </ul>
+       </section>
+      </section>
+      <span aria-label="98" epub:type="pagebreak" id="Page_98" role="doc-pagebreak">
+      </span>
+      <section>
+       <span id="c02-sec-0023">
+       </span>
+       <h4 id="head-4-65">
+        Low-Level Numeric Conversions
+       </h4>
+       <p id="c02-para-0077">
+        The standard also provides a number of lower-level numerical conversion functions, all defined in
+        <code>
+         &lt;charconv&gt;
+        </code>
+        . These functions do not perform any memory allocations and do not work directly with
+        <code>
+         std::string
+        </code>
+        s, but instead they use raw buffers provided by the caller. Additionally, they are tuned for high performance and are locale-independent (see
+        <a href="c21.xhtml">
+         Chapter 21
+        </a>
+        for details on locales). The end result is that these functions can be orders of magnitude faster than other higher-level numerical conversion functions. These functions are also designed for
+        <i>
+         perfect round-tripping
+        </i>
+        , which means that serializing a numerical value to a string representation followed by deserializing the resulting string back to a numerical value results in the exact same value as the original one.
+       </p>
+       <p id="c02-para-0078">
+        You should use these functions if you want highly performant, perfect round-tripping, locale-independent conversions, for example to serialize/deserialize numerical data to/from human-readable formats such as JSON, XML, and so on.
+       </p>
+       <section>
+        <span id="c02-sec-0024">
+        </span>
+        <h5 id="head-5-24">
+         Converting to Strings
+        </h5>
+        <p>
+         For converting integers to characters, the following set of functions is available:
+        </p>
+        <pre id="c02-code-0044"><code>to_chars_result to_chars(char* first, char* last, <i>IntegerT</i> value, int base = 10);</code></pre>
+        <p>
+         Here,
+         <i>
+          <code>
+           IntegerT
+          </code>
+         </i>
+         can be any signed or unsigned integer type or
+         <code>
+          char
+         </code>
+         . The result is of type
+         <code>
+          to_chars_result
+         </code>
+         , a type defined as follows:
+        </p>
+        <pre id="c02-code-0045"><code>struct to_chars_result {</code>
+<code>    char* ptr;</code>
+<code>    errc ec;</code>
+<code>};</code></pre>
+        <p id="c02-para-0081">
+         The
+         <code>
+          ptr
+         </code>
+         member is either equal to the one-past-the-end pointer of the written characters if the conversion was successful or equal to
+         <code>
+          last
+         </code>
+         if the conversion failed (in which case
+         <code>
+          ec == errc::value_too_large
+         </code>
+         ). If
+         <code>
+          ec
+         </code>
+         is equal to a default constructed
+         <code>
+          errc
+         </code>
+         , then the conversion was successful.
+        </p>
+        <p>
+         Here is an example of its use:
+        </p>
+        <pre id="c02-code-0046"><code>const size_t BufferSize { 50 };</code>
+<code>string out(BufferSize, ' '); <span class="color3">// A string of BufferSize space characters.</span></code>
+<code>auto result { to_chars(out.data(), out.data() + out.size(), 12345) };</code>
+<code>if (result.ec == errc{}) { println("{}", out); <span class="color3">/* Conversion successful. */</span> }</code></pre>
+        <p>
+         Using structured bindings introduced in
+         <a href="c01.xhtml">
+          Chapter 1
+         </a>
+         , you can write it as follows:
+        </p>
+        <pre id="c02-code-0047"><code>string out(BufferSize, ' '); <span class="color3">// A string of BufferSize space characters.</span></code>
+<code>auto [ptr, error] { to_chars(out.data(), out.data() + out.size(), 12345) };</code>
+<code>if (error == errc{}) { println("{}", out); <span class="color3">/* Conversion successful. */</span> }</code></pre>
+        <p>
+         Similarly, the following set of conversion functions is available for floating-point types:
+        </p>
+        <pre id="c02-code-0048"><code>to_chars_result to_chars(char* first, char* last, <i>FloatT</i> value);</code>
+<code>to_chars_result to_chars(char* first, char* last, <i>FloatT</i> value,</code>
+<code>                         chars_format format);</code>
+<code>to_chars_result to_chars(char* first, char* last, <i>FloatT</i> value,</code>
+<code>                         chars_format format, int precision);</code></pre>
+        <p>
+         <span aria-label="99" epub:type="pagebreak" id="Page_99" role="doc-pagebreak">
+         </span>
+         Here,
+         <i>
+          <code>
+           FloatT
+          </code>
+         </i>
+         can be any floating-point type, e.g.,
+         <code>
+          float
+         </code>
+         ,
+         <code>
+          double
+         </code>
+         , or
+         <code>
+          long double
+         </code>
+         . Formatting can be specified with a combination of
+         <code>
+          chars_format
+         </code>
+         flags.
+        </p>
+        <pre id="c02-code-0049"><code>enum class chars_format {</code>
+<code>    scientific,                  <span class="color3">// Style: (-)d.ddde±dd</span></code>
+<code>    fixed,                       <span class="color3">// Style: (-)ddd.ddd</span></code>
+<code>    hex,                         <span class="color3">// Style: (-)h.hhhp±d (Note: no 0x!)</span></code>
+<code>    general = fixed | scientific <span class="color3">// See next paragraph.</span></code>
+<code>};</code></pre>
+        <p>
+         The default format is
+         <code>
+          chars_format::general
+         </code>
+         , which causes
+         <code>
+          to_chars()
+         </code>
+         to convert the floating-point value to a decimal notation in the style of
+         <i>
+          (-)ddd.ddd
+         </i>
+         or to a decimal exponent notation in the style of
+         <i>
+          (-)d.ddde±dd
+         </i>
+         , whichever results in the shortest representation with at least one digit before the decimal point (if present). If a format but no precision is specified, the precision is automatically determined to result in the shortest possible representation for the given format, with a maximum precision of six digits. Here is an example:
+        </p>
+        <pre id="c02-code-0050"><code>double value { 0.314 };</code>
+<code>string out(BufferSize, ' '); <span class="color3">// A string of BufferSize space characters.</span></code>
+<code>auto [ptr, error] { to_chars(out.data(), out.data() + out.size(), value) };</code>
+<code>if (error == errc{}) { println("{}", out); <span class="color3">/* Conversion successful. */</span> }</code></pre>
+       </section>
+       <section>
+        <span id="c02-sec-0025">
+        </span>
+        <h5 id="head-5-25">
+         Converting from Strings
+        </h5>
+        <p>
+         For the opposite conversion—that is, converting character sequences into numerical values—the following set of functions is available
+         <a aria-describedby="c02-note-0001" epub:type="noteref" href="#c02-note-0001" id="R_c02-note-0001" role="doc-noteref">
+          <sup>
+           1
+          </sup>
+         </a>
+         :
+        </p>
+        <pre id="c02-code-0051"><code>from_chars_result from_chars(const char* first, const char* last, <i>IntegerT</i>&amp; value,</code>
+<code>                             int base = 10);</code>
+<code>from_chars_result from_chars(const char* first, const char* last, <i>FloatT</i>&amp; value,</code>
+<code>                             chars_format format = chars_format::general);</code></pre>
+        <p>
+         Here,
+         <code>
+          from_chars_result
+         </code>
+         is a type defined as follows:
+        </p>
+        <pre id="c02-code-0052"><code>struct from_chars_result {</code>
+<code>    const char* ptr;</code>
+<code>    errc ec;</code>
+<code>};</code></pre>
+        <p id="c02-para-0089">
+         The
+         <code>
+          ptr
+         </code>
+         member of the result type is a pointer to the first character that was not converted, or it equals
+         <code>
+          last
+         </code>
+         if all characters were successfully converted. If none of the characters could be converted,
+         <code>
+          ptr
+         </code>
+         equals
+         <code>
+          first
+         </code>
+         , and the value of the error code will be
+         <code>
+          errc::invalid_argument
+         </code>
+         . If the parsed value is too large to be representable by the given type, the value of the error code will be
+         <code>
+          errc::result_out_of_range
+         </code>
+         . Note that
+         <code>
+          from_chars()
+         </code>
+         does not skip any leading whitespace.
+        </p>
+        <p>
+         The perfect round-tripping feature of
+         <code>
+          to_chars()
+         </code>
+         and
+         <code>
+          from_chars()
+         </code>
+         can be demonstrated as follows:
+        </p>
+        <pre id="c02-code-0053"><code>double value1 { 0.314 };</code>
+<code>string out(BufferSize, ' '); <span class="color3">// A string of BufferSize space characters.</span></code>
+<code>auto [ptr1, error1] { to_chars(out.data(), out.data() + out.size(), value1) };</code>
+<code>if (error1 == errc{}) { println("{}", out); <span class="color3">/* Conversion successful. */</span> }</code>
+<code> </code>
+<span aria-label="100" epub:type="pagebreak" id="Page_100" role="doc-pagebreak"></span><code>double value2;</code>
+<code>auto [ptr2, error2] { from_chars(out.data(), out.data() + out.size(), value2) };</code>
+<code>if (error2 == errc{}) {</code>
+<code>    if (value1 == value2) {</code>
+<code>        println("Perfect roundtrip");</code>
+<code>    } else {</code>
+<code>        println("No perfect roundtrip?!?");</code>
+<code>    }</code>
+<code>}</code></pre>
+       </section>
+      </section>
+     </section>
+     <section>
+      <span id="c02-sec-0026">
+      </span>
+      <h3 id="head-3-104">
+       The std::string_view Class
+      </h3>
+      <p id="c02-para-0091">
+       Before C++17, there was always a dilemma of choosing the parameter type for a function that accepted a read-only string. Should it be a
+       <code>
+        const char*
+       </code>
+       ? In that case, if a client had an
+       <code>
+        std::string
+       </code>
+       available, they had to call
+       <code>
+        c_str()
+       </code>
+       or
+       <code>
+        data()
+       </code>
+       on it to get a
+       <code>
+        const char*
+       </code>
+       . Even worse, the function would lose the nice object-oriented aspects of
+       <code>
+        string
+       </code>
+       and all its nice helper member functions. Maybe the parameter could instead be a
+       <code>
+        const string&amp;
+       </code>
+       ? In that case, you always needed a
+       <code>
+        string
+       </code>
+       . If you passed a string literal, for example, the compiler silently created a temporary
+       <code>
+        string
+       </code>
+       object that contained a copy of your string literal and passed a reference to that object to your function, so there was a bit of overhead. Sometimes people would write multiple overloads of the same function—one that accepted a
+       <code>
+        const char*
+       </code>
+       and another that accepted a
+       <code>
+        const string&amp;
+       </code>
+       —but that was obviously a less-than-elegant solution.
+      </p>
+      <p id="c02-para-0092">
+       Since C++17, all those problems are solved with the introduction of the
+       <code>
+        std::string_view
+       </code>
+       class, which is an instantiation of the
+       <code>
+        std::basic_string_view
+       </code>
+       class template, and defined in
+       <code>
+        &lt;string_view&gt;
+       </code>
+       . A
+       <code>
+        string_view
+       </code>
+       is basically a drop-in replacement for
+       <code>
+        const string&amp;
+       </code>
+       but without the overhead. It never copies strings! A
+       <code>
+        string_view
+       </code>
+       provides a read-only view of a string and supports an interface similar to
+       <code>
+        string
+       </code>
+       , including the
+       <code>
+        contains()
+       </code>
+       member function introduced in C++23. One exception is the absence of
+       <code>
+        c_str()
+       </code>
+       , but
+       <code>
+        data()
+       </code>
+       is available. On the other hand,
+       <code>
+        string_view
+       </code>
+       does add the member functions
+       <code>
+        remove_prefix(size_t)
+       </code>
+       and
+       <code>
+        remove_suffix(size_t)
+       </code>
+       , which shrink a string by advancing the starting pointer by a given offset or by moving the end pointer backward by a given offset. Just like for
+       <code>
+        string
+       </code>
+       , starting with C++23, constructing a
+       <code>
+        string_view
+       </code>
+       from
+       <code>
+        nullptr
+       </code>
+       results in a compilation error.
+      </p>
+      <p>
+       If you know how to use
+       <code>
+        std::string
+       </code>
+       , then using a
+       <code>
+        string_view
+       </code>
+       is straightforward, as the following example code demonstrates. The
+       <code>
+        extractExtension()
+       </code>
+       function extracts and returns from a given filename the extension including the dot character. Note that
+       <code>
+        string_view
+       </code>
+       s are usually passed by value because they are extremely cheap to copy. They just contain a pointer to, and the length of, a string. The
+       <code>
+        rfind()
+       </code>
+       member function searches a string for another given string or character starting from the back. The
+       <code>
+        substr()
+       </code>
+       member function called on a
+       <code>
+        string_view
+       </code>
+       returns a
+       <code>
+        string_view
+       </code>
+       , which is passed to a
+       <code>
+        string
+       </code>
+       constructor to convert it to a
+       <code>
+        string
+       </code>
+       and then returned from the function.
+      </p>
+      <pre id="c02-code-0054"><code>string extractExtension(string_view filename)</code>
+<code>{</code>
+<code>    <span class="color3">// Return a copy of the extension.</span></code>
+<code>    return string { filename.substr(filename.rfind('.')) };</code>
+<code>}</code></pre>
+      <p>
+       <span aria-label="101" epub:type="pagebreak" id="Page_101" role="doc-pagebreak">
+       </span>
+       This function can be used with all kinds of different strings:
+      </p>
+      <pre id="c02-code-0055"><code>string filename { R"(c:\temp\my file.ext)" };</code>
+<code>println("C++ string: {}", extractExtension(filename));</code>
+<code> </code>
+<code>const char* cString { R"(c:\temp\my file.ext)" };</code>
+<code>println("C string: {}", extractExtension(cString));</code>
+<code> </code>
+<code>println("Literal: {}", extractExtension(R"(c:\temp\my file.ext)"));</code></pre>
+      <p id="c02-para-0095">
+       There is not a single copy of the argument being made in all these calls to
+       <code>
+        extractExtension()
+       </code>
+       . The
+       <code>
+        filename
+       </code>
+       parameter of the
+       <code>
+        extractExtension()
+       </code>
+       function is just a pointer and a length. This is all very efficient.
+      </p>
+      <p>
+       There is also a
+       <code>
+        string_view
+       </code>
+       constructor that accepts any raw buffer and a length. This can be used to construct a
+       <code>
+        string_view
+       </code>
+       out of a string buffer that is not
+       <code>
+        NUL
+       </code>
+       (
+       <code>
+        \0
+       </code>
+       ) terminated. It is also useful when you do have a
+       <code>
+        NUL
+       </code>
+       -terminated string buffer, but you already know the length of the string, so the
+       <code>
+        string_view
+       </code>
+       constructor does not need to count the number of characters again. Here is an example:
+      </p>
+      <pre id="c02-code-0056"><code>const char* raw { <span class="color3">/* … */</span> };</code>
+<code>size_t length { <span class="color3">/* … */</span> };</code>
+<code>println("Raw: {}", extractExtension(<b>{ raw, length }</b>));</code></pre>
+      <p>
+       The last line can also be written more explicitly as follows:
+      </p>
+      <pre id="c02-code-0057"><code>println("Raw: {}", extractExtension(<b>string_view { raw, length }</b>));</code></pre>
+      <p>
+       Finally, you can also construct a
+       <code>
+        string_view
+       </code>
+       from a common range, which is a range based on iterators and, since C++23, from a modern range. Iterators, common ranges, and modern ranges are discussed in
+       <a href="c17.xhtml">
+        Chapter 17
+       </a>
+       , “Understanding Iterators and the Ranges Library.”
+      </p>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <p id="c02-para-0099">
+          <b>
+           NOTE
+          </b>
+          <i>
+           Use an
+          </i>
+          <code>
+           std::string_view
+          </code>
+          <i>
+           instead of
+          </i>
+          <code>
+           const string&amp;
+          </code>
+          <i>
+           or
+          </i>
+          <code>
+           const char*
+          </code>
+          <i>
+           whenever a function requires a read-only string as one of its parameters.
+          </i>
+         </p>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <p>
+       You cannot implicitly construct a
+       <code>
+        string
+       </code>
+       from a
+       <code>
+        string_view
+       </code>
+       . This is prohibited to prevent accidentally copying the string in a
+       <code>
+        string_view
+       </code>
+       , as constructing a
+       <code>
+        string
+       </code>
+       from a
+       <code>
+        string_view
+       </code>
+       always involves copying the data. To convert a
+       <code>
+        string_view
+       </code>
+       to a
+       <code>
+        string
+       </code>
+       , use an explicit
+       <code>
+        string
+       </code>
+       constructor. That is exactly what the
+       <code>
+        return
+       </code>
+       statement in
+       <code>
+        extractExtension()
+       </code>
+       does:
+      </p>
+      <pre id="c02-code-0058"><code>return <b>string</b> { filename.substr(filename.rfind('.')) };</code></pre>
+      <p>
+       For the same reason, you cannot concatenate a
+       <code>
+        string
+       </code>
+       and a
+       <code>
+        string_view
+       </code>
+       . The following code does not compile:
+      </p>
+      <pre id="c02-code-0059"><code>string str { "Hello" };</code>
+<code>string_view sv { " world" };</code>
+<code>auto result { str + sv };  <span class="color3">// Error, does not compile!</span></code></pre>
+      <p>
+       <span aria-label="102" epub:type="pagebreak" id="Page_102" role="doc-pagebreak">
+       </span>
+       Instead, convert the
+       <code>
+        string_view
+       </code>
+       to a
+       <code>
+        string
+       </code>
+       using a
+       <code>
+        string
+       </code>
+       constructor:
+      </p>
+      <pre id="c02-code-0060"><code>auto result1 { str + <b>string</b> { sv } };</code></pre>
+      <p>
+       Or, use
+       <code>
+        append()
+       </code>
+       :
+      </p>
+      <pre id="c02-code-0061"><code>string result2 { str };</code>
+<code>result2.append(sv.data(), sv.size());</code></pre>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <p id="c02-para-0105">
+          <b>
+           WARNING
+          </b>
+          <i>
+           Functions returning a string should return a
+          </i>
+          <code>
+           const string&amp;
+          </code>
+          <i>
+           or a
+          </i>
+          <code>
+           string
+          </code>
+          <i>
+           , but not a
+          </i>
+          <code>
+           string_view
+          </code>
+          <i>
+           . Returning a
+          </i>
+          <code>
+           string_view
+          </code>
+          <i>
+           would introduce the risk of invalidating the returned
+          </i>
+          <code>
+           string_view
+          </code>
+          <i>
+           if, for example, the string to which it refers needs to reallocate.
+          </i>
+         </p>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <p id="c02-para-0106">
+          <b>
+           WARNING
+          </b>
+          <i>
+           Storing a
+          </i>
+          <code>
+           const string&amp;
+          </code>
+          <i>
+           or a
+          </i>
+          <code>
+           string_view
+          </code>
+          <i>
+           as a data member of a class requires you to make sure the string to which they refer stays alive for the duration of the object's lifetime. It's strongly recommended to store an
+          </i>
+          <code>
+           std::string
+          </code>
+          <i>
+           instead.
+          </i>
+         </p>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <section>
+       <span id="c02-sec-0030">
+       </span>
+       <h4 id="head-4-66">
+        std::string_view and Temporary Strings
+       </h4>
+       <p>
+        A
+        <code>
+         string_view
+        </code>
+        should not be used to store a view of a temporary string. Take the following example:
+       </p>
+       <pre id="c02-code-0062"><code>string s { "Hello" };</code>
+<code>string_view sv { s + " World!" };</code>
+<code>println("{}", sv);</code></pre>
+       <p>
+        This code snippet has undefined behavior, i.e., what happens when running this code depends on your compiler and compiler settings. It might crash, it might print “ello World!” (without the letter
+        <i>
+         H
+        </i>
+        ), and so on. Why is this undefined behavior? The initializer expression for the
+        <code>
+         sv string_
+        </code>
+        view results in a temporary string with the “Hello World!” contents. The
+        <code>
+         string_view
+        </code>
+        then stores a pointer to this temporary string. At the end of the second line of code, this temporary string is destroyed, leaving the
+        <code>
+         string_view
+        </code>
+        with a dangling pointer.
+       </p>
+       <section>
+        <aside>
+         <div class="top hr">
+          <hr/>
+         </div>
+         <section class="feature1">
+          <p id="c02-para-0109">
+           <b>
+            WARNING
+           </b>
+           <i>
+            Never use
+           </i>
+           <code>
+            std::string_view
+           </code>
+           <i>
+            to store a view of temporary strings.
+           </i>
+          </p>
+          <div class="bottom hr">
+           <hr/>
+          </div>
+         </section>
+        </aside>
+       </section>
+      </section>
+      <section>
+       <span id="c02-sec-0032">
+       </span>
+       <h4 id="head-4-67">
+        std::string_view Literals
+       </h4>
+       <p>
+        You can use the standard literal
+        <code>
+         sv
+        </code>
+        to interpret a string literal as an
+        <code>
+         std::string_view
+        </code>
+        . Here's an example:
+       </p>
+       <pre id="c02-code-0063"><code>auto sv { "My string_view"sv };</code></pre>
+       <p>
+        <span aria-label="103" epub:type="pagebreak" id="Page_103" role="doc-pagebreak">
+        </span>
+        The standard literal
+        <code>
+         sv
+        </code>
+        requires one of the following
+        <code>
+         using
+        </code>
+        directives:
+       </p>
+       <pre id="c02-code-0064"><code>using namespace std::literals::string_view_literals;</code>
+<code>using namespace std::string_view_literals;</code>
+<code>using namespace std::literals;</code>
+<code>using namespace std;</code></pre>
+      </section>
+     </section>
+     <section>
+      <span id="c02-sec-0033">
+      </span>
+      <h3 id="head-3-105">
+       Nonstandard Strings
+      </h3>
+      <p id="c02-para-0112">
+       There are several reasons why many C++ programmers don't use C++-style strings. Some programmers simply aren't aware of the
+       <code>
+        string
+       </code>
+       type because it was not always part of the C++ specification. Others have discovered over the years that the C++
+       <code>
+        string
+       </code>
+       doesn't provide the behavior they need or dislike the fact that
+       <code>
+        std::string
+       </code>
+       is totally agnostic about the character encoding and so have developed their own string type.
+       <a href="c21.xhtml">
+        Chapter 21
+       </a>
+       returns to the topic of character encodings.
+      </p>
+      <p>
+       Perhaps the most common reason is that development frameworks and operating systems tend to have their own way of representing strings, such as the
+       <code>
+        CString
+       </code>
+       class in the Microsoft MFC framework. Often, this is for backward compatibility or to address legacy issues. When starting a project in C++, it is important to decide ahead of time how your group will represent strings. Some things are for sure:
+      </p>
+      <ul class="check1" id="c02-list-0007">
+       <li id="c02-li-0023">
+        You should never pick the C-style string representation.
+       </li>
+       <li id="c02-li-0024">
+        You can standardize on the string functionality available in the framework you are using, such as the built-in string features of MFC, Qt, and so on.
+       </li>
+       <li id="c02-li-0025">
+        If you use
+        <code>
+         std::string
+        </code>
+        for your strings, then use
+        <code>
+         std::string_view
+        </code>
+        to pass read-only strings to functions; otherwise, see if your framework has support for something similar like
+        <code>
+         string_view
+        </code>
+        s.
+       </li>
+      </ul>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-60">
+     <span id="c02-sec-0034">
+     </span>
+     <h2 id="head-2-60">
+      FORMATTING AND PRINTING STRINGS
+     </h2>
+     <p>
+      Up until C++20, formatting of strings was usually done with C-style functions like
+      <code>
+       printf()
+      </code>
+      or with C++ I/O streams such as
+      <code>
+       std::cout
+      </code>
+      :
+     </p>
+     <ul class="check1" id="c02-list-0008">
+      <li id="c02-li-0026">
+       C-style functions:
+       <ul class="check1" id="c02-list-0009">
+        <li id="c02-li-0027">
+         Not recommended because they are not type safe and are not extensible to support your own custom types
+        </li>
+        <li id="c02-li-0028">
+         Easy to read because of separation of format string and arguments, and hence easy to translate to different languages
+        </li>
+        <li id="c02-li-0029">
+         For example:
+        </li>
+       </ul>
+      </li>
+     </ul>
+     <pre id="c02-code-0065"><code>printf("x has value %d and y has value %d.\n", x, y);</code></pre>
+     <ul class="check1" id="c02-list-0010">
+      <li id="c02-li-0030">
+       C++ I/O streams:
+       <ul class="check1" id="c02-list-0011">
+        <li id="c02-li-0031">
+         Recommended (before C++20) because they are type safe and extensible
+        </li>
+        <li id="c02-li-0032">
+         <span aria-label="104" epub:type="pagebreak" id="Page_104" role="doc-pagebreak">
+         </span>
+         Harder to read because the strings and arguments are intertwined, and hence harder to translate
+        </li>
+        <li id="c02-li-0033">
+         For example:
+        </li>
+       </ul>
+      </li>
+     </ul>
+     <pre id="c02-code-0066"><code>cout &lt;&lt; "x has value " &lt;&lt; x &lt;&lt; " and y has value " &lt;&lt; y &lt;&lt; '.' &lt;&lt; endl;</code></pre>
+     <p>
+      C++20 introduced
+      <code>
+       std::format()
+      </code>
+      , defined in
+      <code>
+       &lt;format&gt;
+      </code>
+      , to format strings. It basically combines all advantages of the C-style functions and the C++ I/O streams. It's a type-safe and extensible formatting mechanism. For example:
+     </p>
+     <pre id="c02-code-0067"><code>cout &lt;&lt; format("x has value {} and y has value {}.", x, y) &lt;&lt; endl;</code></pre>
+     <p>
+      C++23 makes it even easier with the introduction of
+      <code>
+       std::print()
+      </code>
+      and
+      <code>
+       println()
+      </code>
+      . For example:
+     </p>
+     <pre id="c02-code-0068"><code>println("x has value {} and y has value {}.", x, y);</code></pre>
+     <p>
+      Additionally,
+      <code>
+       std::print()
+      </code>
+      and
+      <code>
+       println()
+      </code>
+      have better support for writing UTF-8 Unicode text to Unicode-compliant consoles. Unicode is discussed in
+      <a href="c21.xhtml">
+       Chapter 21
+      </a>
+      , but here's a quick example:
+     </p>
+     <pre id="c02-code-0069"><code>println("こんにちは世界");</code></pre>
+     <p>
+      This correctly prints the string “こんにちは世界”, which is Japanese for “Hello World,” to the console.
+      <a aria-describedby="c02-note-0002" epub:type="noteref" href="#c02-note-0002" id="R_c02-note-0002" role="doc-noteref">
+       <sup>
+        2
+       </sup>
+      </a>
+      If you try to print this string using C++ I/O streams as follows, depending on your console settings, the output can be something garbled such as “πüôπéôπü½πüíπü»Σ╕ûτòî”:
+     </p>
+     <pre id="c02-code-0070"><code>cout &lt;&lt; "こんにちは世界" &lt;&lt; endl;</code></pre>
+     <p>
+      Thanks to the Unicode support, you can even print emojis. The following prints a smiley if your output console properly supports Unicode. Using
+      <code>
+       cout
+      </code>
+      for this would likely result in garbled output.
+     </p>
+     <pre id="c02-code-0071"><code>println("😀");</code></pre>
+     <p id="c02-para-0123">
+      <code>
+       std::print()
+      </code>
+      and
+      <code>
+       println()
+      </code>
+      are now the recommended ways to write text to the console; thus, they're used throughout all the examples in this book. They are type safe, are extensible to support user types, are easy to read, support Unicode output, support localization to different languages, and so on. On top of all those benefits, the performance of
+      <code>
+       print()
+      </code>
+      and
+      <code>
+       println()
+      </code>
+      is also much better compared to doing the same using C++ I/O streams directly, even though, underneath,
+      <code>
+       print()
+      </code>
+      and
+      <code>
+       println()
+      </code>
+      are still using such streams.
+     </p>
+     <section>
+      <span id="c02-sec-0035">
+      </span>
+      <h3 id="head-3-106">
+       Format Strings
+      </h3>
+      <p id="c02-para-0124">
+       <code>
+        std::format()
+       </code>
+       ,
+       <code>
+        print()
+       </code>
+       , and
+       <code>
+        println()
+       </code>
+       use a
+       <i>
+        format string
+       </i>
+       , a string specifying how the given arguments must be formatted in the output string. Its basic form is introduced in the previous chapter and already used throughout examples. Now it's time to look at how powerful these format strings really are.
+      </p>
+      <p id="c02-para-0125">
+       The format string is usually the first argument to
+       <code>
+        format()
+       </code>
+       ,
+       <code>
+        print()
+       </code>
+       , and
+       <code>
+        println()
+       </code>
+       . A format string can contain a set of curly brackets,
+       <code>
+        {}
+       </code>
+       , which represent a
+       <i>
+        replacement field
+       </i>
+       . You can have as many replacement fields as you need. Subsequent arguments to
+       <code>
+        format()
+       </code>
+       ,
+       <code>
+        print()
+       </code>
+       , and
+       <code>
+        println()
+       </code>
+       <span aria-label="105" epub:type="pagebreak" id="Page_105" role="doc-pagebreak">
+       </span>
+       are values that are used to fill in those replacement fields. If you need the
+       <code>
+        {
+       </code>
+       and
+       <code>
+        }
+       </code>
+       characters in the output, then you need to escape them as
+       <code>
+        {{
+       </code>
+       or
+       <code>
+        }}
+       </code>
+       .
+      </p>
+      <p>
+       Up to now, replacement fields have always been empty sets of curly brackets,
+       <code>
+        {}
+       </code>
+       , but that is just the start. Inside those curly brackets can be a string in the format
+       <code>
+        [index][:specifier]
+       </code>
+       :
+      </p>
+      <ul class="check1" id="c02-list-0012">
+       <li id="c02-li-0034">
+        The optional
+        <code>
+         index
+        </code>
+        is an
+        <i>
+         argument index
+        </i>
+        , discussed in the next section.
+       </li>
+       <li id="c02-li-0035">
+        The optional
+        <code>
+         specifier
+        </code>
+        is a
+        <i>
+         format specifier
+        </i>
+        to stipulate how a value must be formatted in the output and explained in detail in the “Format Specifiers” section.
+       </li>
+      </ul>
+      <p>
+       Passing a format string to
+       <code>
+        format()
+       </code>
+       ,
+       <code>
+        print()
+       </code>
+       , and
+       <code>
+        println()
+       </code>
+       is mandatory. For example, you cannot directly print a value as follows:
+      </p>
+      <pre id="c02-code-0072"><code>int x { 42 };</code>
+<code>println(x);</code></pre>
+      <p>
+       Instead, you can write the following:
+      </p>
+      <pre id="c02-code-0073"><code>println("{}", x);</code></pre>
+      <p>
+       You also cannot print a single newline by just writing the following:
+      </p>
+      <pre id="c02-code-0074"><code>println();</code></pre>
+      <p>
+       Instead, use this:
+      </p>
+      <pre id="c02-code-0075"><code>println("");</code></pre>
+     </section>
+     <section>
+      <span id="c02-sec-0036">
+      </span>
+      <h3 id="head-3-107">
+       Argument Indices
+      </h3>
+      <p id="c02-para-0131">
+       You can either omit the
+       <code>
+        index
+       </code>
+       from all replacement fields or specify, for all replacement fields, the zero-based index of one of the values passed to
+       <code>
+        format()
+       </code>
+       ,
+       <code>
+        print()
+       </code>
+       , or
+       <code>
+        println()
+       </code>
+       as second and subsequent arguments that should be used for a replacement field. You are allowed to use a certain
+       <code>
+        index
+       </code>
+       multiple times if you want to output that value multiple times. If
+       <code>
+        index
+       </code>
+       is omitted, the values passed as second and subsequent arguments are used in their given order for all replacement fields.
+      </p>
+      <p>
+       The following call to
+       <code>
+        println()
+       </code>
+       omits explicit indices in the replacement fields:
+      </p>
+      <pre id="c02-code-0076"><code>int n { 42 };</code>
+<code>println("Read {} bytes from {}", n, "file1.txt");</code></pre>
+      <p>
+       You can specify manual indices as follows:
+      </p>
+      <pre id="c02-code-0077"><code>println("Read <b>{0}</b> bytes from <b>{1}</b>", n, "file1.txt");</code></pre>
+      <p>
+       Mixing manual indices and automatic indices is not allowed. The following uses an invalid format string:
+      </p>
+      <pre id="c02-code-0078"><code>println("Read <b>{0}</b> bytes from <b>{}</b>", n, "file1.txt");</code></pre>
+      <p>
+       The order of the formatted values in the output string can be changed without having to change the actual order of the arguments
+       <code>
+       </code>
+       . This is a useful feature if you want to translate strings in your software. Certain languages have different ordering within their sentences. For example, the previous format string can be translated to Chinese as follows. In Chinese, the order of the replacement fields
+       <span aria-label="106" epub:type="pagebreak" id="Page_106" role="doc-pagebreak">
+       </span>
+       in the sentence is reversed, but thanks to the use of
+       <i>
+        argument indices
+       </i>
+       in the format string, the order of the arguments to
+       <code>
+        println()
+       </code>
+       remains unchanged.
+      </p>
+      <pre id="c02-code-0079"><code>println("从<b>{1}</b>中读取<b>{0}</b>个字节。", <b>n, "file1.txt"</b>);</code></pre>
+     </section>
+     <section>
+      <span id="c02-sec-0037">
+      </span>
+      <h3 id="head-3-108">
+       Printing to Different Destinations
+      </h3>
+      <p>
+       Up to now, every call to
+       <code>
+        print()
+       </code>
+       and
+       <code>
+        println()
+       </code>
+       had a format string as the first argument, followed by a number of additional arguments. For example:
+      </p>
+      <pre id="c02-code-0080"><code>println("x has value {} and y has value {}.", x, y);</code></pre>
+      <p id="c02-para-0137">
+       This prints the string to the standard output stream, the same stream as
+       <code>
+        std::cout
+       </code>
+       .
+      </p>
+      <p>
+       As
+       <a href="c01.xhtml">
+        Chapter 1
+       </a>
+       explains, there's also
+       <code>
+        std::cerr
+       </code>
+       , which streams to the standard error console. You can use
+       <code>
+        print()
+       </code>
+       and
+       <code>
+        println()
+       </code>
+       to print to the error console as follows:
+      </p>
+      <pre id="c02-code-0081"><code>println(<b>cerr,</b> "x has value {} and y has value {}.", x, y);</code></pre>
+     </section>
+     <section>
+      <span id="c02-sec-0038">
+      </span>
+      <h3 id="head-3-109">
+       <img alt="C++23" src="../images\images/icon1.png"/>
+       Compile-Time Verification of Format Strings
+      </h3>
+      <p>
+       As of C++23, the format string for
+       <code>
+        format()
+       </code>
+       ,
+       <a aria-describedby="c02-note-0003" epub:type="noteref" href="#c02-note-0003" id="R_c02-note-0003" role="doc-noteref">
+        <sup>
+         3
+        </sup>
+       </a>
+       <code>
+        print()
+       </code>
+       , and
+       <code>
+        println()
+       </code>
+       must be a compile-time constant so that the compiler can check at compile time whether there are any syntax errors in the format string. That means the following does not compile:
+      </p>
+      <pre id="c02-code-0082"><code>string s { "Hello World!" };</code>
+<code><b>println(s);</b>   <span class="color3">// Error! Does not compile.</span></code></pre>
+      <p>
+       The error produced is compiler dependent and unfortunately, at the time of this writing, rather cryptic and not always immediately helpful in pinpointing the exact cause of the error. For example, here is the error from the Microsoft Visual C++ 2022 compiler:
+      </p>
+      <pre id="c02-code-0083"><code>error C7595: 'std::basic_format_string&lt;char&gt;::basic_format_string': call to immediate function is not a constant expression</code></pre>
+      <p>
+       The correct use is as follows:
+      </p>
+      <pre id="c02-code-0084"><code>string s { "Hello World!" };</code>
+<code><b>println("{}", s);</b></code></pre>
+      <p>
+       <code>
+        constexpr
+       </code>
+       format strings are naturally also allowed as those are compile-time constants.
+       <a href="c09.xhtml">
+        Chapter 9
+       </a>
+       , “Mastering Classes and Objects,” discusses the
+       <code>
+        constexpr
+       </code>
+       keyword in detail.
+      </p>
+      <pre id="c02-code-0085"><code>constexpr auto formatString { "Value: {}" };</code>
+<code>println(formatString, 11);  <span class="color3">// Value: 11</span></code></pre>
+      <section>
+       <span id="c02-sec-0039">
+       </span>
+       <h4 id="head-4-68">
+        Non-Compile-Time Constant Format Strings
+       </h4>
+       <p>
+        The fact that format strings must be compile-time constants can be a bit cumbersome when you need to localize/translate format strings for different languages. In such a scenario, you can use
+        <code>
+         std::vprint_unicode()
+        </code>
+        or
+        <code>
+         std::vprint_nonunicode()
+        </code>
+        instead of
+        <code>
+         std::print()
+        </code>
+        . It's a little bit harder to use, though. You cannot just pass the arguments as you do with
+        <code>
+         print()
+        </code>
+        , but you need to
+        <span aria-label="107" epub:type="pagebreak" id="Page_107" role="doc-pagebreak">
+        </span>
+        use
+        <code>
+         std::make_format_args()
+        </code>
+        to do so. Here's an example:
+       </p>
+       <pre id="c02-code-0086"><code>enum class Language { English, Dutch };</code>
+<code> </code>
+<code>string_view GetLocalizedFormat(Language language)</code>
+<code>{</code>
+<code>    switch (language) {</code>
+<code>        case Language::English: return "Numbers: {0} and {1}.";</code>
+<code>        case Language::Dutch:   return "Getallen: {0} en {1}.";</code>
+<code>    }</code>
+<code>}</code>
+<code> </code>
+<code>int main()</code>
+<code>{</code>
+<code>    Language language { Language::English };</code>
+<code>    vprint_unicode(GetLocalizedFormat(language), make_format_args(1, 2));</code>
+<code>    println("");</code>
+<code>    language = Language::Dutch;</code>
+<code>    vprint_unicode(GetLocalizedFormat(language), make_format_args(1, 2));</code>
+<code>}</code></pre>
+       <p>
+        The output is:
+       </p>
+       <pre id="c02-code-0087"><code>Numbers: 1 and 2.</code>
+<code>Getallen: 1 en 2.</code></pre>
+       <p>
+        The following call using
+        <code>
+         print()
+        </code>
+        does not compile as it requires a compile-time constant format string:
+       </p>
+       <pre id="c02-code-0088"><code>print(GetLocalizedFormat(language), 1, 2);</code></pre>
+      </section>
+      <section>
+       <span id="c02-sec-0040">
+       </span>
+       <h4 id="head-4-69">
+        Handling Errors in Non-Compile-Time Constant Format Strings
+       </h4>
+       <p>
+        When format strings are verified at run time, instead of at compile time,
+        <code>
+         std::format_error
+        </code>
+        exceptions are thrown for any format string error. As explained earlier, functions such as
+        <code>
+         std::format()
+        </code>
+        ,
+        <code>
+         print()
+        </code>
+        , and
+        <code>
+         println()
+        </code>
+        never throw such exceptions as the format strings are all verified at compile time. However, functions such as
+        <code>
+         std::vformat()
+        </code>
+        and
+        <code>
+         vprint_unicode()
+        </code>
+        (see the previous section) don't require the format string to be constant and hence don't verify them at compile time but at run time. These functions might throw
+        <code>
+         format_error
+        </code>
+        exceptions. Here is an example:
+       </p>
+       <pre id="c02-code-0089"><code>try {</code>
+<code>    vprint_unicode("An integer: {5}", make_format_args(42));</code>
+<code>} catch (const format_error&amp; caught_exception) {</code>
+<code>    println("{}", caught_exception.what()); <span class="color3">// "Argument not found."</span></code>
+<code>}</code></pre>
+       <p id="c02-para-0148">
+        Now, let's investigate how powerful format specifiers really are.
+       </p>
+      </section>
+     </section>
+     <section>
+      <span id="c02-sec-0041">
+      </span>
+      <h3 id="head-3-110">
+       Format Specifiers
+      </h3>
+      <p id="c02-para-0149">
+       As mentioned earlier, a format string can contain replacement fields delimited by curly brackets. Inside those curly brackets can be a string in the format
+       <code>
+        [index][:specifier]
+       </code>
+       . This section discusses the format specifier part of the replacement field.
+       <code>
+        index
+       </code>
+       is discussed earlier.
+      </p>
+      <p>
+       <span aria-label="108" epub:type="pagebreak" id="Page_108" role="doc-pagebreak">
+       </span>
+       A
+       <i>
+        format specifier
+       </i>
+       is used to manipulate how a value is formatted in the output. A format specifier is prefixed with a colon,
+       <code>
+        :
+       </code>
+       . The general form of a format specifier is as follows:
+      </p>
+      <pre id="c02-code-0090"><code>[[fill]align][sign][#][0][width][.precision][L][type]</code></pre>
+      <p id="c02-para-0151">
+       All parts between square brackets are optional. The individual specifier parts are discussed in the next subsections.
+      </p>
+      <section>
+       <span id="c02-sec-0042">
+       </span>
+       <h4 id="head-4-70">
+        width
+       </h4>
+       <p id="c02-para-0152">
+        The
+        <code>
+         width
+        </code>
+        specifies the minimum width of the field into which the given value should be formatted. This can also be another set of curly brackets, in which case it's called a
+        <i>
+         dynamic width
+        </i>
+        . If an index is specified in the curly brackets, for example
+        <code>
+         {3}
+        </code>
+        , the value for the dynamic width is taken from the argument with the given index. Otherwise, if no index is specified, for example
+        <code>
+         {}
+        </code>
+        , the width is taken from the next argument in the list of arguments.
+       </p>
+       <p>
+        Here are some examples:
+       </p>
+       <pre id="c02-code-0091"><code>int i { 42 };</code>
+<code>println("|{:5}|", i);       <span class="color3">// |   42|</span></code>
+<code>println("|{:{}}|", i, 7);   <span class="color3">// |     42|</span></code>
+<code>println("|{1:{0}}|", 7, i); <span class="color3">// |     42|</span></code></pre>
+      </section>
+      <section>
+       <span id="c02-sec-0043">
+       </span>
+       <h4 id="head-4-71">
+        [fill]align
+       </h4>
+       <p>
+        The
+        <code>
+         [fill]align
+        </code>
+        part optionally says what character to use as a fill character, followed by how a value should be aligned in its field:
+       </p>
+       <ul class="check1" id="c02-list-0013">
+        <li id="c02-li-0036">
+         <code>
+          &lt;
+         </code>
+         means left alignment (default for non-integers and non-floating-point numbers).
+        </li>
+        <li id="c02-li-0037">
+         <code>
+          &gt;
+         </code>
+         means right alignment (default for integers and floating-point numbers).
+        </li>
+        <li id="c02-li-0038">
+         <code>
+          ^
+         </code>
+         means center alignment.
+        </li>
+       </ul>
+       <p id="c02-para-0155">
+        The fill character is inserted into the output to make sure the field in the output reaches the desired minimum width specified by the
+        <code>
+         [width]
+        </code>
+        part of the specifier. If no
+        <code>
+         [width]
+        </code>
+        is specified, then
+        <code>
+         [fill]align
+        </code>
+        has no effect.
+       </p>
+       <p id="c02-para-0156">
+        When using center alignment, the same number of fill characters is on the left and on the right of the formatted value. If the total number of fill characters is odd, then the extra fill character is added on the right.
+       </p>
+       <p>
+        Here are some examples:
+       </p>
+       <pre id="c02-code-0092"><code>int i { 42 };</code>
+<code>println("|{:7}|", i);     <span class="color3">// |     42|</span></code>
+<code>println("|{:&lt;7}|", i);    <span class="color3">// |42     |</span></code>
+<code>println("|{:_&gt;7}|", i);   <span class="color3">// |_____42|</span></code>
+<code>println("|{:_^7}|", i);   <span class="color3">// |__42___|</span></code></pre>
+       <p>
+        The following is an interesting trick to output a character a specific number of times. Instead of typing a string literal yourself containing the correct number of characters, you specify the number of characters you need explicitly in the format specifier:
+       </p>
+       <pre id="c02-code-0093"><code>println("|{:=&gt;16}|", ""); <span class="color3">// |================|</span></code></pre>
+      </section>
+      <span aria-label="109" epub:type="pagebreak" id="Page_109" role="doc-pagebreak">
+      </span>
+      <section>
+       <span id="c02-sec-0044">
+       </span>
+       <h4 id="head-4-72">
+        sign
+       </h4>
+       <p>
+        The
+        <code>
+         sign
+        </code>
+        part can be one of the following:
+       </p>
+       <ul class="check1" id="c02-list-0014">
+        <li id="c02-li-0039">
+         <code>
+          -
+         </code>
+         means to only display the sign for negative numbers (default).
+        </li>
+        <li id="c02-li-0040">
+         <code>
+          +
+         </code>
+         means to display the sign for negative and positive numbers.
+        </li>
+        <li id="c02-li-0041">
+         <code>
+          space
+         </code>
+         means that a minus sign should be used for negative numbers, and a space for positive numbers.
+        </li>
+       </ul>
+       <p>
+        Here are some examples:
+       </p>
+       <pre id="c02-code-0094"><code>int i { 42 };</code>
+<code>println("|{:&lt;5}|", i);   <span class="color3">// |42   |</span></code>
+<code>println("|{:&lt;+5}|", i);  <span class="color3">// |+42  |</span></code>
+<code>println("|{:&lt; 5}|", i);  <span class="color3">// | 42  |</span></code>
+<code>println("|{:&lt; 5}|", -i); <span class="color3">// |-42  |</span></code></pre>
+      </section>
+      <section>
+       <span id="c02-sec-0045">
+       </span>
+       <h4 id="head-4-73">
+        #
+       </h4>
+       <p id="c02-para-0161">
+        The
+        <code>
+         #
+        </code>
+        part enables the
+        <i>
+         alternate formatting
+        </i>
+        rules. If enabled for integral types, and hexadecimal, binary, or octal number formatting is specified as well, then the alternate format inserts a 0x, 0X, 0b, 0B, or 0 in front of the formatted number. If enabled for floating-point types, the alternate format will always output a decimal separator, even if no digits follow it.
+       </p>
+       <p id="c02-para-0162">
+        The following two sections give examples with alternate formatting.
+       </p>
+      </section>
+      <section>
+       <span id="c02-sec-0046">
+       </span>
+       <h4 id="head-4-74">
+        type
+       </h4>
+       <p>
+        The
+        <code>
+         type
+        </code>
+        specifies the type a given value must be formatted in. There are several options:
+       </p>
+       <ul class="check1" id="c02-list-0015">
+        <li id="c02-li-0042">
+         <b>
+          Integer types:
+         </b>
+         <code>
+          b
+         </code>
+         (binary),
+         <code>
+          B
+         </code>
+         (binary, but with
+         <code>
+          0B
+         </code>
+         instead of
+         <code>
+          0b
+         </code>
+         if
+         <code>
+          #
+         </code>
+         is specified),
+         <code>
+          d
+         </code>
+         (decimal),
+         <code>
+          o
+         </code>
+         (octal),
+         <code>
+          x
+         </code>
+         (hexadecimal with lowercase
+         <code>
+          a
+         </code>
+         ,
+         <code>
+          b
+         </code>
+         ,
+         <code>
+          c
+         </code>
+         ,
+         <code>
+          d
+         </code>
+         ,
+         <code>
+          e
+         </code>
+         ,
+         <code>
+          f
+         </code>
+         ),
+         <code>
+          X
+         </code>
+         (hexadecimal with uppercase
+         <code>
+          A
+         </code>
+         ,
+         <code>
+          B
+         </code>
+         ,
+         <code>
+          C
+         </code>
+         ,
+         <code>
+          D
+         </code>
+         ,
+         <code>
+          E
+         </code>
+         ,
+         <code>
+          F
+         </code>
+         , and if
+         <code>
+          #
+         </code>
+         is specified, with
+         <code>
+          0X
+         </code>
+         instead of
+         <code>
+          0x
+         </code>
+         ). If
+         <code>
+          type
+         </code>
+         is unspecified,
+         <code>
+          d
+         </code>
+         is used for integer types.
+        </li>
+        <li id="c02-li-0043">
+         <b>
+          Floating-point types:
+         </b>
+         The following floating-point formats are supported. The result of scientific, fixed, general, and hexadecimal formatting is the same as discussed earlier in this chapter for
+         <code>
+          std::chars_format::scientific
+         </code>
+         ,
+         <code>
+          fixed
+         </code>
+         ,
+         <code>
+          general
+         </code>
+         , and
+         <code>
+          hex
+         </code>
+         .
+         <ul class="check1" id="c02-list-0016">
+          <li id="c02-li-0044">
+           <code>
+            e
+           </code>
+           ,
+           <code>
+            E
+           </code>
+           : Scientific notation with either small
+           <code>
+            e
+           </code>
+           or capital
+           <code>
+            E
+           </code>
+           as the representation of the exponent, formatted with either a given precision or 6 if no precision is specified.
+          </li>
+          <li id="c02-li-0045">
+           <code>
+            f
+           </code>
+           ,
+           <code>
+            F
+           </code>
+           : Fixed notation formatted with either a given precision or 6 if no precision is specified.
+          </li>
+          <li id="c02-li-0046">
+           <code>
+            g
+           </code>
+           ,
+           <code>
+            G
+           </code>
+           : General notation automatically chooses a representation without an exponent (fixed format) or with an exponent (small
+           <code>
+            e
+           </code>
+           or capital
+           <code>
+            E
+           </code>
+           ), formatted with either a given precision or 6 if no precision is specified.
+          </li>
+          <li id="c02-li-0047">
+           <code>
+            a
+           </code>
+           ,
+           <code>
+            A
+           </code>
+           : Hexadecimal notation with either lowercase letters (
+           <code>
+            a
+           </code>
+           ) or uppercase letters (
+           <code>
+            A
+           </code>
+           )
+          </li>
+          <li id="c02-li-0048">
+           If
+           <code>
+            type
+           </code>
+           is unspecified,
+           <code>
+            g
+           </code>
+           is used for floating-point types.
+          </li>
+         </ul>
+        </li>
+        <li id="c02-li-0049">
+         <span aria-label="110" epub:type="pagebreak" id="Page_110" role="doc-pagebreak">
+         </span>
+         <b>
+          Booleans:
+         </b>
+         <code>
+          s
+         </code>
+         (outputs
+         <code>
+          true
+         </code>
+         or
+         <code>
+          false
+         </code>
+         in textual form),
+         <code>
+          b
+         </code>
+         ,
+         <code>
+          B
+         </code>
+         ,
+         <code>
+          c
+         </code>
+         ,
+         <code>
+          d
+         </code>
+         ,
+         <code>
+          o
+         </code>
+         ,
+         <code>
+          x
+         </code>
+         ,
+         <code>
+          X
+         </code>
+         (outputs
+         <code>
+          1
+         </code>
+         or
+         <code>
+          0
+         </code>
+         in integer form). If
+         <code>
+          type
+         </code>
+         is unspecified,
+         <code>
+          s
+         </code>
+         is used for Boolean types.
+        </li>
+        <li id="c02-li-0050">
+         <b>
+          Characters:
+         </b>
+         <code>
+          c
+         </code>
+         (character is copied to output),
+         <code>
+          ?
+         </code>
+         (escaped character is copied to output; see section “
+         <a href="#c02-sec-0050">
+          Formatting Escaped Characters and Strings
+         </a>
+         ”),
+         <code>
+          b
+         </code>
+         ,
+         <code>
+          B
+         </code>
+         ,
+         <code>
+          d
+         </code>
+         ,
+         <code>
+          o
+         </code>
+         ,
+         <code>
+          x
+         </code>
+         ,
+         <code>
+          X
+         </code>
+         (integer representation). If
+         <code>
+          type
+         </code>
+         is unspecified,
+         <code>
+          c
+         </code>
+         is used for character types.
+        </li>
+        <li id="c02-li-0051">
+         <b>
+          String:
+         </b>
+         <code>
+          s
+         </code>
+         (string is copied to output),
+         <code>
+          ?
+         </code>
+         (escaped string is copied to output; see section “
+         <a href="#c02-sec-0050">
+          Formatting Escaped Characters and Strings
+         </a>
+         ”). If
+         <code>
+          type
+         </code>
+         is unspecified,
+         <code>
+          s
+         </code>
+         is used for string types.
+        </li>
+        <li id="c02-li-0052">
+         <b>
+          Pointers:
+         </b>
+         <code>
+          p
+         </code>
+         (hexadecimal notation of the pointer prefixed with
+         <code>
+          0x
+         </code>
+         ). If
+         <code>
+          type
+         </code>
+         is unspecified,
+         <code>
+          p
+         </code>
+         is used for pointer types. Only pointers of type
+         <code>
+          void*
+         </code>
+         can be formatted. Other pointer types must first be converted to type
+         <code>
+          void*
+         </code>
+         , for example using
+         <code>
+          static_cast&lt;void*&gt;(myPointer)
+         </code>
+         .
+        </li>
+       </ul>
+       <p>
+        Here are some examples with an integral type:
+       </p>
+       <pre id="c02-code-0095"><code>int i { 42 };</code>
+<code>println("|{:10d}|", i);   <span class="color3">// |        42|</span></code>
+<code>println("|{:10b}|", i);   <span class="color3">// |    101010|</span></code>
+<code>println("|{:#10b}|", i);  <span class="color3">// |  0b101010|</span></code>
+<code>println("|{:10X}|", i);   <span class="color3">// |        2A|</span></code>
+<code>println("|{:#10X}|", i);  <span class="color3">// |      0X2A|</span></code></pre>
+       <p>
+        Here is an example with a string type:
+       </p>
+       <pre id="c02-code-0096"><code>string s { "ProCpp" };</code>
+<code>println("|{:_^10}|", s); <span class="color3">// |__ProCpp__|</span></code></pre>
+       <p id="c02-para-0167">
+        Examples with floating-point types are given in the next section on precision.
+       </p>
+      </section>
+      <section>
+       <span id="c02-sec-0047">
+       </span>
+       <h4 id="head-4-75">
+        precision
+       </h4>
+       <p id="c02-para-0168">
+        The
+        <code>
+         precision
+        </code>
+        can be used only for floating-point and string types. It is specified as a dot followed by the number of decimal digits to output for floating-point types, or the number of characters to output for strings. The number of digits for floating-point types includes all digits, including the ones before the decimal separator, unless fixed floating-point notation (
+        <code>
+         f
+        </code>
+        or
+        <code>
+         F
+        </code>
+        ) is used, in which case
+        <code>
+         precision
+        </code>
+        is the number of digits after the decimal point.
+       </p>
+       <p id="c02-para-0169">
+        Just as with
+        <code>
+         width
+        </code>
+        ,
+        <code>
+         precision
+        </code>
+        can also be another set of curly brackets, in which case it's called a
+        <i>
+         dynamic precision
+        </i>
+        . The precision is then taken either from the next argument in the list of arguments or from the argument with given index.
+       </p>
+       <p>
+        Here are some examples using a floating-point type:
+       </p>
+       <pre id="c02-code-0097"><code>double d { 3.1415 / 2.3 };</code>
+<code>println("|{:12g}|", d);                         <span class="color3">// |     1.36587|</span></code>
+<code>println("|{:12.2}|", d);                        <span class="color3">// |         1.4|</span></code>
+<code>println("|{:12e}|", d);                         <span class="color3">// |1.365870e+00|</span></code>
+<code> </code>
+<code>int width { 12 };</code>
+<code>int precision { 3 };</code>
+<code>println("|{2:{0}.{1}f}|", width, precision, d); <span class="color3">// |       1.366|</span></code>
+<code>println("|{2:{0}.{1}}|", width, precision, d);  <span class="color3">// |        1.37|</span></code></pre>
+      </section>
+      <span aria-label="111" epub:type="pagebreak" id="Page_111" role="doc-pagebreak">
+      </span>
+      <section>
+       <span id="c02-sec-0048">
+       </span>
+       <h4 id="head-4-76">
+        0
+       </h4>
+       <p id="c02-para-0171">
+        The
+        <code>
+         0
+        </code>
+        part of the specifier means that, for numeric values, zeros are inserted into the formatted value to reach the desired minimum width specified by the
+        <code>
+         [width]
+        </code>
+        part of the specifier (see earlier). These zeros are inserted at the front of the numeric value, but after any sign, and after any 0x, 0X, 0b, or 0B prefix. The
+        <code>
+         0
+        </code>
+        specifier is ignored if an alignment is specified.
+       </p>
+       <p>
+        Here are some examples:
+       </p>
+       <pre id="c02-code-0098"><code>int i { 42 };</code>
+<code>println("|{:06d}|", i);   <span class="color3">// |000042|</span></code>
+<code>println("|{:+06d}|", i);  <span class="color3">// |+00042|</span></code>
+<code>println("|{:06X}|", i);   <span class="color3">// |00002A|</span></code>
+<code>println("|{:#06X}|", i);  <span class="color3">// |0X002A|</span></code></pre>
+      </section>
+      <section>
+       <span id="c02-sec-0049">
+       </span>
+       <h4 id="head-4-77">
+        L
+       </h4>
+       <p id="c02-para-0173">
+        The optional
+        <code>
+         L
+        </code>
+        specifier enables locale-specific formatting. This option is valid only for arithmetic types, such as integers, floating-point types, and Booleans. When used with integers, the
+        <code>
+         L
+        </code>
+        option specifies that the locale-specific digit group separator character must be used. For floating-point types, it means to use the locale-specific digit group and decimal separator characters. For Boolean types output in textual form, it means to use the locale-specific representation of
+        <code>
+         true
+        </code>
+        and
+        <code>
+         false
+        </code>
+        .
+       </p>
+       <p>
+        When using the
+        <code>
+         L
+        </code>
+        specifier, you have to pass an
+        <code>
+         std::locale
+        </code>
+        instance as the first parameter to
+        <code>
+         std::format()
+        </code>
+        . This works only with
+        <code>
+         format()
+        </code>
+        , not with
+        <code>
+         print()
+        </code>
+        and
+        <code>
+         println()
+        </code>
+        . Here is an example that formats a floating-point number using the
+        <code>
+         nl
+        </code>
+        locale:
+       </p>
+       <pre id="c02-code-0099"><code>float f { 1.2f };</code>
+<code>cout &lt;&lt; format(std::locale{ "nl" }, "|{:Lg}|\n", f);  <span class="color3">// |1,2|</span></code></pre>
+       <p id="c02-para-0175">
+        Locales are discussed in
+        <a href="c21.xhtml">
+         Chapter 21
+        </a>
+        .
+       </p>
+      </section>
+     </section>
+     <section>
+      <span id="c02-sec-0050">
+      </span>
+      <h3 id="head-3-111">
+       <img alt="C++23" src="../images\images/icon1.png"/>
+       Formatting Escaped Characters and Strings
+      </h3>
+      <p id="c02-para-0177">
+       C++23 allows you to format escaped strings and characters by using the
+       <code>
+        ?
+       </code>
+       type specifier. This use case does not occur often, but it can be helpful for logging and debugging purposes. The output resembles how you write string and character literals in your code: they start and end with double or single quotes, and they use escaped character sequences. The following table shows what the output is of certain characters when using escaped formatting:
+      </p>
+      <table border="1">
+       <thead>
+        <tr>
+         <th class="left bgcolor2" scope="col">
+          CHARACTER
+         </th>
+         <th class="left bgcolor2" scope="col">
+          ESCAPED OUTPUT
+         </th>
+        </tr>
+       </thead>
+       <tbody>
+        <tr>
+         <td class="left bor1 bgcolor3">
+          Horizontal tab
+         </td>
+         <td class="left bor1 bgcolor3">
+          <code>
+           \t
+          </code>
+         </td>
+        </tr>
+        <tr>
+         <td class="left bor1 bgcolor3">
+          New line
+         </td>
+         <td class="left bor1 bgcolor3">
+          <code>
+           \n
+          </code>
+         </td>
+        </tr>
+        <tr>
+         <td class="left bor1 bgcolor3">
+          Carriage return
+         </td>
+         <td class="left bor1 bgcolor3">
+          <code>
+           \r
+          </code>
+         </td>
+        </tr>
+        <tr>
+         <td class="left bor1 bgcolor3">
+          Backslash
+         </td>
+         <td class="left bor1 bgcolor3">
+          <code>
+           \\
+          </code>
+         </td>
+        </tr>
+        <tr>
+         <td class="left bor1 bgcolor3">
+          Double quote
+         </td>
+         <td class="left bor1 bgcolor3">
+          <code>
+           \"
+          </code>
+         </td>
+        </tr>
+        <tr>
+         <td class="left bor1 bgcolor3">
+          Single quote
+         </td>
+         <td class="left bor1 bgcolor3">
+          <code>
+           \'
+          </code>
+         </td>
+        </tr>
+       </tbody>
+      </table>
+      <p id="c02-para-0179">
+       <span aria-label="112" epub:type="pagebreak" id="Page_112" role="doc-pagebreak">
+       </span>
+       The escaping of double quotes happens only when the output is a double-quoted string, while the escaping of single quotes happens only when the output is a single-quoted character. The escaped output of unprintable characters is
+       <code>
+        \u{hex-code-point}
+       </code>
+       .
+      </p>
+      <p>
+       Here are some examples:
+      </p>
+      <pre id="c02-code-0100"><code>println("|{:?}|", "Hello\tWorld!\n");  <span class="color3">// |Hello\tWorld!\n|</span></code>
+<code>println("|{:?}|", "\"");               <span class="color3">// |"\""|</span></code>
+<code>println("|{:?}|", '\'');               <span class="color3">// |'\''|</span></code>
+<code>println("|{:?}|", '"');                <span class="color3">// |'"'|</span></code></pre>
+     </section>
+     <section>
+      <span id="c02-sec-0051">
+      </span>
+      <h3 id="head-3-112">
+       <img alt="C++23" src="../images\images/icon1.png"/>
+       Formatting Ranges
+      </h3>
+      <p id="c02-para-0182">
+       <a href="c01.xhtml">
+        Chapter 1
+       </a>
+       introduces the
+       <code>
+        std::vector
+       </code>
+       ,
+       <code>
+        array
+       </code>
+       , and
+       <code>
+        pair
+       </code>
+       containers to store multiple elements of data.
+       <a href="c18.xhtml">
+        Chapter 18
+       </a>
+       , “Standard Library Containers,” introduces quite a few additional containers provided by the Standard Library. Starting with C++23, it's possible to directly format such ranges of elements. For ranges such as
+       <code>
+        vector
+       </code>
+       s and
+       <code>
+        array
+       </code>
+       s, the output, by default, is surrounded by square brackets and individual elements are separated by commas. If the elements of the range are strings, their output is escaped by default.
+      </p>
+      <p>
+       The formatting of ranges can be controlled using nested format specifiers. The general form is as follows:
+      </p>
+      <pre id="c02-code-0101"><code>[[fill]align][width][n][range-type][:range-underlying-spec]</code></pre>
+      <p id="c02-para-0184">
+       Everything between square brackets is optional. As with other format specifiers,
+       <code>
+        fill
+       </code>
+       specifies a fill character,
+       <code>
+        align
+       </code>
+       specifies the alignment of the output, and
+       <code>
+        width
+       </code>
+       specifies the width of the output field. If
+       <code>
+        n
+       </code>
+       is specified, the output will not contain the opening and closing brackets of the range. The
+       <code>
+        range-type
+       </code>
+       can be one of the following:
+      </p>
+      <table border="1">
+       <thead>
+        <tr>
+         <th class="left bgcolor2" scope="col">
+          RANGE-TYPE
+         </th>
+         <th class="left bgcolor2" scope="col">
+          DESCRIPTION
+         </th>
+        </tr>
+       </thead>
+       <tbody>
+        <tr>
+         <td class="left bor1 bgcolor3">
+          <code>
+           m
+          </code>
+         </td>
+         <td class="left bor1 bgcolor3">
+          Available only for
+          <code>
+           pair
+          </code>
+          s and
+          <code>
+           tuple
+          </code>
+          s with two elements. By default, these are surrounded by parentheses and separated by commas. If
+          <code>
+           m
+          </code>
+          is specified, they are not surrounded by any type of brackets, and the two elements are separated by
+          <code>
+           ": "
+          </code>
+          .
+         </td>
+        </tr>
+        <tr>
+         <td class="left bor1 bgcolor3">
+          <code>
+           s
+          </code>
+         </td>
+         <td class="left bor1 bgcolor3">
+          Formats the range as a string (cannot be combined with
+          <code>
+           n
+          </code>
+          or a
+          <code>
+           range-underlying-spec
+          </code>
+          ).
+         </td>
+        </tr>
+        <tr>
+         <td class="left bor1 bgcolor3">
+          <code>
+           ?s
+          </code>
+         </td>
+         <td class="left bor1 bgcolor3">
+          Formats the range as an escaped string (cannot be combined with
+          <code>
+           n
+          </code>
+          or a
+          <code>
+           range-underlying-spec
+          </code>
+          ).
+         </td>
+        </tr>
+       </tbody>
+      </table>
+      <p id="c02-para-0186">
+       The
+       <code>
+        range-underlying-spec
+       </code>
+       is an optional format specifier for the individual elements of the range. Range specifiers can be nested multiple levels deep. If the elements are again ranges (e.g., a
+       <code>
+        vector
+       </code>
+       of
+       <code>
+        vector
+       </code>
+       s), then the
+       <code>
+        range-underlying-spec
+       </code>
+       is another range format specifier, and so on.
+      </p>
+      <p>
+       Let's look at some examples. First, let's format a
+       <code>
+        vector
+       </code>
+       of numbers:
+      </p>
+      <pre id="c02-code-0102"><code>vector values { 11, 22, 33 };</code>
+<span aria-label="113" epub:type="pagebreak" id="Page_113" role="doc-pagebreak"></span><code>println("{}", values);         <span class="color3">// [11, 22, 33]</span></code>
+<code>println("{:n}", values);       <span class="color3">// 11, 22, 33</span></code></pre>
+      <p>
+       If you want to replace the starting and ending square brackets, you can combine the
+       <code>
+        n
+       </code>
+       specifier with surrounding the format specifier with your own starting and ending characters. For example, the following surrounds the output with curly brackets instead. Curly brackets that you want to appear in the output need to be escaped as
+       <code>
+        {{
+       </code>
+       and
+       <code>
+        }}
+       </code>
+       .
+      </p>
+      <pre id="c02-code-0103"><code>println("{{{:n}}}", values);   <span class="color3">// {11, 22, 33}</span></code></pre>
+      <p>
+       The following provides a format specifier for the entire range. For both, the range is output in the center of a field that is 16 characters wide with
+       <code>
+        *
+       </code>
+       as a fill character. For the second, the
+       <code>
+        n
+       </code>
+       specifies that the opening and closing brackets should be omitted:
+      </p>
+      <pre id="c02-code-0104"><code>println("{:*^16}", values);    <span class="color3">// **[11, 22, 33]**</span></code>
+<code>println("{:*^16n}", values);   <span class="color3">// ***11, 22, 33***</span></code></pre>
+      <p>
+       The following does not provide an explicit specifier for the entire range, but it does specify how individual elements are to be formatted. In this case, the individual elements are output in the center of a field that's six characters wide with
+       <code>
+        *
+       </code>
+       as a fill character:
+      </p>
+      <pre id="c02-code-0105"><code>println("{::*^6}", values);    <span class="color3">// [**11**, **22**, **33**]</span></code></pre>
+      <p>
+       This can again be combined with the
+       <code>
+        n
+       </code>
+       specifier:
+      </p>
+      <pre id="c02-code-0106"><code>println("{:n:*^6}", values);   <span class="color3">// **11**, **22**, **33**</span></code></pre>
+      <p>
+       Here are some examples formatting a
+       <code>
+        vector
+       </code>
+       of
+       <code>
+        string
+       </code>
+       s:
+      </p>
+      <pre id="c02-code-0107"><code>vector strings { "Hello"s, "World!\t2023"s };</code>
+<code>println("{}", strings);        <span class="color3">// ["Hello", "World!\t2023"]</span></code>
+<code>println("{:}", strings);       <span class="color3">// ["Hello", "World!\t2023"]</span></code>
+<code>println("{::}", strings);      <span class="color3">// [Hello, World!    2023]</span></code>
+<code>println("{:n:}", strings);     <span class="color3">// Hello, World!    2023</span></code></pre>
+      <p>
+       If you have a
+       <code>
+        vector
+       </code>
+       of characters, you can format them as individual characters, or you can consider the entire
+       <code>
+        vector
+       </code>
+       as a string using the
+       <code>
+        s
+       </code>
+       or
+       <code>
+        ?s
+       </code>
+       range type:
+      </p>
+      <pre id="c02-code-0108"><code>vector chars { 'W', 'o', 'r', 'l', 'd', '\t', '!' };</code>
+<code>println("{}", chars);          <span class="color3">// ['W', 'o', 'r', 'l', 'd', '\t', '!']</span></code>
+<code>println("{::#x}", chars);      <span class="color3">// [0x57, 0x6f, 0x72, 0x6c, 0x64, 0x9, 0x21]</span></code>
+<code>println("{:s}", chars);        <span class="color3">// World    !</span></code>
+<code>println("{:?s}", chars);       <span class="color3">// "World\t!"</span></code></pre>
+      <p>
+       Here are some examples of outputting a
+       <code>
+        pair
+       </code>
+       . By default, a
+       <code>
+        pair
+       </code>
+       is surrounded by parentheses instead of square brackets, and the two elements are separated by a comma. Using the
+       <code>
+        n
+       </code>
+       specifier removes the opening and closing parentheses. The
+       <code>
+        m
+       </code>
+       specifier also removes the parentheses and separates the elements with
+       <code>
+        ": "
+       </code>
+       .
+      </p>
+      <pre id="c02-code-0109"><code>pair p { 11, 22 };</code>
+<code>println("{}", p);              <span class="color3">// (11, 22)</span></code>
+<code>println("{:n}", p);            <span class="color3">// 11, 22</span></code>
+<code>println("{:m}", p);            <span class="color3">// 11: 22</span></code></pre>
+      <p>
+       Finally, here are some examples of outputting a
+       <code>
+        vector
+       </code>
+       of
+       <code>
+        vector
+       </code>
+       s:
+      </p>
+      <pre id="c02-code-0110"><code>vector&lt;vector&lt;int&gt;&gt; vv { {11, 22}, {33, 44, 55} };</code>
+<span aria-label="114" epub:type="pagebreak" id="Page_114" role="doc-pagebreak"></span><code>println("{}", vv);             <span class="color3">// [[11, 22], [33, 44, 55]]</span></code>
+<code>println("{:n}", vv);           <span class="color3">// [11, 22], [33, 44, 55]</span></code>
+<code>println("{:n:n}", vv);         <span class="color3">// 11, 22, 33, 44, 55</span></code>
+<code>println("{:n:n:*^4}", vv);     <span class="color3">// *11*, *22*, *33*, *44*, *55*</span></code></pre>
+     </section>
+     <section>
+      <span id="c02-sec-0052">
+      </span>
+      <h3 id="head-3-113">
+       Support for Custom Types
+      </h3>
+      <p>
+       The formatting library can be extended to add support for custom types. This involves writing a specialization of the
+       <code>
+        std::formatter
+       </code>
+       class template containing two member function templates:
+       <code>
+        parse()
+       </code>
+       and
+       <code>
+        format()
+       </code>
+       . I know, at this point in the book, you will not understand all the syntax in this example yet, as it uses all of the following techniques:
+      </p>
+      <ul class="check1" id="c02-list-0017">
+       <li id="c02-li-0053">
+        <code>
+         constexpr
+        </code>
+        functions, discussed in
+        <a href="c09.xhtml">
+         Chapter 9
+        </a>
+       </li>
+       <li id="c02-li-0054">
+        Template specialization, member function templates, and abbreviated function template syntax, explained in
+        <a href="c12.xhtml">
+         Chapter 12
+        </a>
+        “Writing Generic Code with Templates”
+       </li>
+       <li id="c02-li-0055">
+        Exceptions, discussed in
+        <a href="c14.xhtml">
+         Chapter 14
+        </a>
+        , “Handling Errors”
+       </li>
+       <li id="c02-li-0056">
+        Iterators, discussed in
+        <a href="c17.xhtml">
+         Chapter 17
+        </a>
+        , “Understanding Iterators and the Ranges Library”
+       </li>
+      </ul>
+      <p id="c02-para-0197">
+       Still, for completeness and to give you a taste of what is possible, let's see how you will be able to implement a custom
+       <code>
+        formatter
+       </code>
+       once you advance further in the book, at which point you can come back to this example.
+      </p>
+      <p>
+       Suppose you have the following class to store a key-value pair:
+      </p>
+      <pre id="c02-code-0111"><code>class KeyValue</code>
+<code>{</code>
+<code>    public:</code>
+<code>        KeyValue(string_view key, int value) : m_key { key }, m_value { value } {}</code>
+<code> </code>
+<code>        const string&amp; getKey() const { return m_key; }</code>
+<code>        int getValue() const { return m_value; }</code>
+<code> </code>
+<code>    private:</code>
+<code>        string m_key;</code>
+<code>        int m_value { 0 };</code>
+<code>};</code></pre>
+      <p>
+       A custom
+       <code>
+        formatter
+       </code>
+       for
+       <code>
+        KeyValue
+       </code>
+       objects can be implemented by writing the following class template specialization. This
+       <code>
+        KeyValue
+       </code>
+       formatter supports:
+      </p>
+      <ul class="check1" id="c02-list-0018">
+       <li id="c02-li-0057">
+        Custom format specifiers:
+        <code>
+         {:k}
+        </code>
+        outputs only the key,
+        <code>
+         {:v}
+        </code>
+        outputs only the value, and
+        <code>
+         {:b}
+        </code>
+        and
+        <code>
+         {}
+        </code>
+        output both key and value.
+       </li>
+       <li id="c02-li-0058">
+        Nested format specifiers: These specify optional formats for the key and or the value. The syntax is as follows:
+        <code>
+         {:b:
+         <i>
+          KeyFormat
+         </i>
+         :
+         <i>
+          ValueFormat
+         </i>
+         }
+        </code>
+        .
+       </li>
+      </ul>
+      <pre id="c02-code-0112"><code>template &lt;&gt;</code>
+<code>class std::formatter&lt;KeyValue&gt;</code>
+<code>{</code>
+<code>    public:</code>
+<code>        constexpr auto parse(auto&amp; context)</code>
+<code>        {</code>
+<span aria-label="115" epub:type="pagebreak" id="Page_115" role="doc-pagebreak"></span><code>            string keyFormat, valueFormat;</code>
+<code>            size_t numberOfParsedColons { 0 };</code>
+<code>            auto iter { begin(context) };</code>
+<code>            for (; iter != end(context); ++iter) {</code>
+<code>                if (*iter == '}') { break; }</code>
+<code> </code>
+<code>                if (numberOfParsedColons == 0) { <span class="color3">// Parsing output type</span></code>
+<code>                    switch (*iter) {</code>
+<code>                        case 'k': case 'K':      <span class="color3">// {:k format specifier</span></code>
+<code>                            m_outputType = OutputType::KeyOnly;       break;</code>
+<code>                        case 'v': case 'V':      <span class="color3">// {:v format specifier</span></code>
+<code>                            m_outputType = OutputType::ValueOnly;     break;</code>
+<code>                        case 'b': case 'B':      <span class="color3">// {:b format specifier</span></code>
+<code>                            m_outputType = OutputType::KeyAndValue;   break;</code>
+<code>                        case ':':</code>
+<code>                            ++numberOfParsedColons;   break;</code>
+<code>                        default:</code>
+<code>                            throw format_error { "Invalid KeyValue format." };</code>
+<code>                    }</code>
+<code>                } else if (numberOfParsedColons == 1) { <span class="color3">// Parsing key format</span></code>
+<code>                    if (*iter == ':') { ++numberOfParsedColons; }</code>
+<code>                    else { keyFormat += *iter; }</code>
+<code>                } else if (numberOfParsedColons == 2) { <span class="color3">// Parsing value format</span></code>
+<code>                    valueFormat += *iter;</code>
+<code>                }</code>
+<code>            }</code>
+<code>            <span class="color3">// Validate key format specifier.</span></code>
+<code>            if (!keyFormat.empty()) {</code>
+<code>                format_parse_context keyFormatterContext { keyFormat };</code>
+<code>                m_keyFormatter.parse(keyFormatterContext);</code>
+<code>            }</code>
+<code>            <span class="color3">// Validate value format specifier.</span></code>
+<code>            if (!valueFormat.empty()) {</code>
+<code>                format_parse_context valueFormatterContext { valueFormat };</code>
+<code>                m_valueFormatter.parse(valueFormatterContext);</code>
+<code>            }</code>
+<code>            if (iter != end(context) &amp;&amp; *iter != '}') {</code>
+<code>                throw format_error { "Invalid KeyValue format." };</code>
+<code>            }</code>
+<code>            return iter;</code>
+<code>        }</code>
+<code> </code>
+<code>        auto format(const KeyValue&amp; kv, auto&amp; ctx) const</code>
+<code>        {</code>
+<code>            switch (m_outputType) {</code>
+<code>                using enum OutputType;</code>
+<code>                case KeyOnly:</code>
+<code>                    ctx.advance:to(m_keyFormatter.format(kv.getKey(), ctx));</code>
+<code>                    break;</code>
+<code>                case ValueOnly:</code>
+<code>                    ctx.advance:to(m_valueFormatter.format(kv.getValue(), ctx));</code>
+<code>                    break;</code>
+<code>                default:</code>
+<code>                    ctx.advance:to(m_keyFormatter.format(kv.getKey(), ctx));</code>
+<code>                    ctx.advance:to(format_to(ctx.out(), " - "));</code>
+<span aria-label="116" epub:type="pagebreak" id="Page_116" role="doc-pagebreak"></span><code>                    ctx.advance:to(m_valueFormatter.format(kv.getValue(), ctx));</code>
+<code>                    break;</code>
+<code>            }</code>
+<code>            return ctx.out();</code>
+<code>        }</code>
+<code>    private:</code>
+<code>        enum class OutputType { KeyOnly, ValueOnly, KeyAndValue };</code>
+<code>        OutputType m_outputType { OutputType::KeyAndValue };</code>
+<code>        formatter&lt;string&gt; m_keyFormatter;</code>
+<code>        formatter&lt;int&gt; m_valueFormatter;</code>
+<code>};</code></pre>
+      <p id="c02-para-0200">
+       The
+       <code>
+        parse()
+       </code>
+       member function is responsible for parsing the format specifier given as a character range [
+       <code>
+        begin(context)
+       </code>
+       ,
+       <code>
+        end(context)
+       </code>
+       ). It stores the result of the parsing in data members of the
+       <code>
+        formatter
+       </code>
+       class and returns an iterator pointing to the character after the end of the parsed format specifier string. Two of the data members are
+       <code>
+        m_keyFormatter
+       </code>
+       of type
+       <code>
+        formatter&lt;string&gt;
+       </code>
+       and
+       <code>
+        m_valueFormatter
+       </code>
+       of type
+       <code>
+        formatter&lt;int&gt;
+       </code>
+       to handle parsing the
+       <i>
+        <code>
+         KeyFormat
+        </code>
+       </i>
+       and
+       <i>
+        <code>
+         ValueFormat
+        </code>
+       </i>
+       parts, respectively, of the format specifier.
+      </p>
+      <p id="c02-para-0201">
+       The
+       <code>
+        format()
+       </code>
+       member function formats the value given as first argument according to the format specification parsed by
+       <code>
+        parse()
+       </code>
+       , writes the result to
+       <code>
+        ctx.out()
+       </code>
+       , and returns an iterator to the end of the output. The function uses
+       <code>
+        std::format_to()
+       </code>
+       , which is similar to
+       <code>
+        std::format()
+       </code>
+       , except that it accepts an output iterator indicating where the output should be written to.
+      </p>
+      <p>
+       The
+       <code>
+        KeyValue
+       </code>
+       formatter can be tested as follows:
+      </p>
+      <pre id="c02-code-0113"><code>const size_t len { 34 }; <span class="color3">// Label field length</span></code>
+<code>KeyValue kv { "Key 1", 255 };</code>
+<code>println("{:&gt;{}} <b>{}</b>",   "Default:", len, kv);</code>
+<code>println("{:&gt;{}} <b>{:k}</b>", "Key only:", len, kv);</code>
+<code>println("{:&gt;{}} <b>{:v}</b>", "Value only:", len, kv);</code>
+<code>println("{:&gt;{}} <b>{:b}</b>", "Key and value with default format:", len, kv);</code>
+<code>println("{:&gt;{}} <b>{:k:*^11}</b>",     "Key only with special format:", len, kv);</code>
+<code>println("{:&gt;{}} <b>{:v::#06X}</b>",    "Value only with special format:", len, kv);</code>
+<code>println("{:&gt;{}} <b>{::*^11:#06X}</b>", "Key and value with special format:", len, kv);</code>
+<code>try {</code>
+<code>    auto formatted { vformat("{:cd}", make_format_args(kv)) };</code>
+<code>    println("{}", formatted);</code>
+<code>} catch (const format_error&amp; caught_exception) {</code>
+<code>    println("{}", caught_exception.what());</code>
+<code>}</code></pre>
+      <p>
+       The output is as follows:
+      </p>
+      <pre id="c02-code-0114"><code>                          Default: Key 1 - 255</code>
+<code>                         Key only: Key 1</code>
+<code>                       Value only: 255</code>
+<code>Key and value with default format: Key 1 - 255</code>
+<code>     Key only with special format: ***Key 1***</code>
+<code>   Value only with special format: 0X00FF</code>
+<code>Key and value with special format: ***Key 1*** - 0X00FF</code>
+<code>Invalid KeyValue format.</code></pre>
+      <p id="c02-para-0204">
+       <span aria-label="117" epub:type="pagebreak" id="Page_117" role="doc-pagebreak">
+       </span>
+       As an exercise, you could add support for a different separator symbol between the key and the value. With custom formatters, the possibilities are endless, and everything is type safe!
+      </p>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-61">
+     <span id="c02-sec-0053">
+     </span>
+     <h2 id="head-2-61">
+      SUMMARY
+     </h2>
+     <p id="c02-para-0205">
+      This chapter discussed the C++
+      <code>
+       string
+      </code>
+      and
+      <code>
+       string_view
+      </code>
+      classes and what their benefits are compared to plain old C-style character arrays. It also explained how a number of helper functions make it easier to convert numerical values into
+      <code>
+       string
+      </code>
+      s and vice versa, and it introduced the concept of raw string literals.
+     </p>
+     <p id="c02-para-0206">
+      The chapter finished with a discussion of the string formatting library, used throughout examples in this book. It is a powerful mechanism to format strings with fine-grained control over how the formatted output should look.
+     </p>
+     <p id="c02-para-0207">
+      The next chapter discusses guidelines for good coding style, including code documentation, decomposition, naming, code formatting, and other tips.
+     </p>
+    </section>
+    <section aria-labelledby="head-2-62">
+     <span id="c02-sec-0054">
+     </span>
+     <h2 id="head-2-62">
+      EXERCISES
+     </h2>
+     <p id="c02-para-0208">
+      By solving the following exercises, you can practice the material discussed in this chapter. Solutions to all exercises are available with the code download on the book's website at
+      <code>
+       <a href="http://www.wiley.com/go/proc++6e">
+        www.wiley.com/go/proc++6e
+       </a>
+      </code>
+      . However, if you are stuck on an exercise, first reread parts of this chapter to try to find an answer yourself before looking at the solution from the website.
+     </p>
+     <section>
+      <span id="c02-exsec-0001">
+      </span>
+      <ol class="none">
+       <li id="c02-ex-0001">
+        <b>
+         Exercise 2-1:
+        </b>
+        Write a program that asks the user for two strings and then prints them out in alphabetical order, using the three-way comparison operator. To ask the user for a string, you can use the
+        <code>
+         std::cin
+        </code>
+        stream, briefly introduced in
+        <a href="c01.xhtml">
+         Chapter 1
+        </a>
+        .
+        <a href="c13.xhtml">
+         Chapter 13
+        </a>
+        , “Demystifying C++ I/O,” explains input and output in detail, but for now, here is how to read in a string from the console. To terminate the line, just press Enter.
+        <pre id="c02-code-0115"><code>std::string s;</code>
+<code>getline(cin, s1);</code></pre>
+       </li>
+       <li id="c02-ex-0002">
+        <b>
+         Exercise 2-2:
+        </b>
+        Write a program that asks the user for a source string (= haystack), a string to find in the source string (= needle), and a replacement string. Write a function with three parameters—the haystack, needle, and replacement string—that returns a copy of the haystack with all needles replaced with the replacement string. Use only
+        <code>
+         std::string
+        </code>
+        , no
+        <code>
+         string_view
+        </code>
+        . What kind of parameter types will you use and why? Call this function from
+        <code>
+         main()
+        </code>
+        and print out all the strings for verification.
+       </li>
+       <li id="c02-ex-0003">
+        <b>
+         Exercise 2-3:
+        </b>
+        Modify the program from Exercise 2-2 and use
+        <code>
+         std::string_view
+        </code>
+        on as many places as reasonable.
+       </li>
+       <li id="c02-ex-0004">
+        <b>
+         Exercise 2-4:
+        </b>
+        Write a program that asks the user to enter an unknown number of floating-point numbers and stores all numbers in a
+        <code>
+         vector
+        </code>
+        . Each number should be entered followed by a new line. Stop asking for more numbers when the user inputs the number 0. To read a floating-point number from the console, use
+        <code>
+         cin
+        </code>
+        in the same way it was used in
+        <a href="c01.xhtml">
+         Chapter 1
+        </a>
+        <span aria-label="118" epub:type="pagebreak" id="Page_118" role="doc-pagebreak">
+        </span>
+        to input integer values. Format all numbers in a table with a couple of columns where each column outputs the number in a different format. Each row in the table corresponds to one of the inputted numbers.
+       </li>
+       <li id="c02-ex-0005">
+        <b>
+         Exercise 2-5:
+        </b>
+        Write a program that asks the user to enter an unknown number of words. Stop the input when the user enters
+        <code>
+         *
+        </code>
+        . Store all the individual words in a
+        <code>
+         vector
+        </code>
+        . You can input individual words using the following:
+        <pre id="c02-code-0116"><code>std::string word;</code>
+<code>cin&gt;&gt; word;</code></pre>
+        <p class="listPara1" id="c02-para-0216">
+         When the input is finished, calculate the length of the longest word. Finally, output all the words in columns, five on a row. The width of the columns is based on the longest word. Output the words centered within their column, and separate the columns with the
+         <code>
+          |
+         </code>
+         character.
+        </p>
+       </li>
+      </ol>
+     </section>
+    </section>
+   </section>
+   <section aria-labelledby="c02_2" class="notesSet" role="doc-endnotes">
+    <h2 id="c02_2">
+     NOTES
+    </h2>
+    <ol class="notesList">
+     <li class="noteEntry">
+      <a href="#R_c02-note-0001" id="c02-note-0001" role="doc-backlink">
+       1
+      </a>
+      Starting with C++23, the integer overloads of
+      <code>
+       to_chars()
+      </code>
+      and
+      <code>
+       from_chars()
+      </code>
+      are marked as
+      <code>
+       constexpr
+      </code>
+      . This means that they can be evaluated at compile time in other
+      <code>
+       constexpr
+      </code>
+      functions and classes. See
+      <a href="c09.xhtml">
+       Chapter 9
+      </a>
+      , “Mastering Classes and Objects,” for a discussion of
+      <code>
+       constexpr
+      </code>
+      .
+     </li>
+     <li class="noteEntry">
+      <a href="#R_c02-note-0002" id="c02-note-0002" role="doc-backlink">
+       2
+      </a>
+      To compile source code containing Unicode characters, you might need to pass a compiler switch. For Visual C++, you must pass the
+      <code>
+       /utf-8
+      </code>
+      compiler switch. For GCC, use the command line option -finput-charset=UTF-8. Clang assumes all files are UTF-8 by default. Check your compiler documentation.
+     </li>
+     <li class="noteEntry">
+      <a href="#R_c02-note-0003" id="c02-note-0003" role="doc-backlink">
+       3
+      </a>
+      This is a breaking change for std::format(). Prior to C++23, the format string for format() was not enforced to be a compile-time constant.
+     </li>
+    </ol>
+   </section>
+  </div>
+ </body>
+</html>

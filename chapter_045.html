@@ -1,0 +1,2353 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html>
+<html epub:prefix="z3998: http://www.daisy.org/z3998/2012/vocab/structure/#" lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+ <head>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   32Incorporating Design Techniques and Frameworks
+  </title>
+ </head>
+ <body>
+  <div class="navigation">
+   <a class="nav-button" href="chapter_044.html">
+    ← Previous
+   </a>
+   <a class="nav-button" href="index.html">
+    Table of Contents
+   </a>
+   <a class="nav-button" href="chapter_046.html">
+    Next →
+   </a>
+  </div>
+  <div class="chapter-content">
+   <section aria-labelledby="c32_1" epub:type="chapter" role="doc-chapter">
+    <header>
+     <h1 id="c32_1">
+      <span aria-label="1155" epub:type="pagebreak" id="Page_1155" role="doc-pagebreak">
+      </span>
+      <span id="c32">
+      </span>
+      <span class="chapterNumber">
+       32
+      </span>
+      <br/>
+      <span class="chapterTitle">
+       Incorporating Design Techniques and Frameworks
+      </span>
+     </h1>
+    </header>
+    <section aria-label="chapter opening">
+     <span id="c32-sec-0001">
+     </span>
+     <section>
+      <aside>
+       <div class="top hr">
+        <hr/>
+       </div>
+       <section class="feature3">
+        <h3>
+         WHAT'S IN THIS CHAPTER?
+        </h3>
+        <ul class="check3" id="c32-list-0001">
+         <li id="c32-li-0001">
+          An overview of C++ language features that are common, but for which you might have forgotten the syntax
+         </li>
+         <li id="c32-li-0002">
+          What RAII is and why it is a powerful concept
+         </li>
+         <li id="c32-li-0003">
+          What the double dispatch technique is and how to use it
+         </li>
+         <li id="c32-li-0004">
+          Various techniques to implement and use mixin classes
+         </li>
+         <li id="c32-li-0005">
+          What frameworks are
+         </li>
+         <li id="c32-li-0006">
+          The model-view-controller paradigm
+         </li>
+        </ul>
+        <div class="bottom hr">
+         <hr/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <section>
+      <aside>
+       <div class="top hr">
+        <hr/>
+       </div>
+       <section class="feature3">
+        <span id="c32-fea-0001">
+        </span>
+        <h3 id="head-2-317">
+         WILEY.COM DOWNLOADS FOR THIS CHAPTER
+        </h3>
+        <span id="c32-sec-0003">
+        </span>
+        <p id="c32-para-0004">
+         Please note that all the code examples for this chapter are available as part of this chapter's code download on the book's website at
+         <code>
+          <a href="http://www.wiley.com/go/proc++6e">
+           www.wiley.com/go/proc++6e
+          </a>
+         </code>
+         on the Download Code tab.
+        </p>
+        <div class="bottom hr">
+         <hr/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <p id="c32-para-0005">
+      One of the major themes of this book has been the adoption of reusable techniques and patterns. As a programmer, you tend to face similar problems repeatedly. With an arsenal of diverse approaches, you can save yourself time by applying the proper technique or pattern to a given problem.
+     </p>
+     <p id="c32-para-0006">
+      This chapter is about
+      <i>
+       design techniques
+      </i>
+      , while the next chapter is about
+      <i>
+       design patterns
+      </i>
+      . Both represent standard approaches for solving particular problems; however, design techniques are specific to C++, whereas design patterns are less language-specific. Often, a design technique
+      <span aria-label="1156" epub:type="pagebreak" id="Page_1156" role="doc-pagebreak">
+      </span>
+      aims to overcome an annoying feature or language deficiency. Other times, a design technique is a piece of code that you use in many different programs to solve a common C++ problem.
+     </p>
+     <p>
+      Design techniques are C++ idioms that aren't necessarily built-in parts of the language but are nonetheless frequently used. The first part of this chapter covers the language features in C++ that are common, but for which you might have forgotten the syntax. This material is a review, but it is a useful reference tool when the syntax escapes you. The topics covered include the following:
+     </p>
+     <ul class="check1" id="c32-list-0002">
+      <li id="c32-li-0007">
+       Starting a class from scratch
+      </li>
+      <li id="c32-li-0008">
+       Extending a class by deriving from it
+      </li>
+      <li id="c32-li-0009">
+       Writing a lambda expression
+      </li>
+      <li id="c32-li-0010">
+       Implementing the copy-and-swap idiom
+      </li>
+      <li id="c32-li-0011">
+       Throwing and catching exceptions
+      </li>
+      <li id="c32-li-0012">
+       Defining a class template
+      </li>
+      <li id="c32-li-0013">
+       Constraining class and function template parameters
+      </li>
+      <li id="c32-li-0014">
+       Writing to a file
+      </li>
+      <li id="c32-li-0015">
+       Reading from a file
+      </li>
+     </ul>
+     <p>
+      The second part of this chapter focuses on higher-level techniques that build upon C++ language features. These techniques offer a better way to accomplish everyday programming tasks. Topics include the following:
+     </p>
+     <ul class="check1" id="c32-list-0003">
+      <li id="c32-li-0016">
+       Resource Acquisition Is Initialization (RAII)
+      </li>
+      <li id="c32-li-0017">
+       The double dispatch technique
+      </li>
+      <li id="c32-li-0018">
+       Mixin classes
+      </li>
+     </ul>
+     <p id="c32-para-0009">
+      The chapter concludes with an introduction to frameworks, a coding technique that greatly eases the development of large applications.
+     </p>
+    </section>
+    <section aria-labelledby="head-2-318">
+     <span id="c32-sec-0004">
+     </span>
+     <h2 id="head-2-318">
+      “I CAN NEVER REMEMBER HOW TO…”
+     </h2>
+     <p id="c32-para-0010">
+      <a href="c01.xhtml">
+       Chapter 1
+      </a>
+      , “A Crash Course in C++ and the Standard Library,” explains that the C++ standard specification is more than 2,000 pages long. The standard defines a lot of keywords and a very large number of language features. It is impossible to memorize it all. Even C++ experts need to look things up sometimes. With that in mind, this section presents examples of coding techniques that are used in almost all C++ programs. When you remember the concept but forgot the syntax, turn to the following sections for a refresher.
+     </p>
+     <section>
+      <span id="c32-sec-0005">
+      </span>
+      <h3 id="head-3-566">
+       …Write a Class
+      </h3>
+      <p>
+       Don't remember how to get started? No problem—here is the definition of a
+       <code>
+        Simple
+       </code>
+       class defined in a module interface file:
+      </p>
+      <pre id="c32-code-0001"><span aria-label="1157" epub:type="pagebreak" id="Page_1157" role="doc-pagebreak"></span><code>export module simple;</code>
+<code> </code>
+<code><span class="color3">// A simple class that illustrates class definition syntax.</span></code>
+<code>export class Simple</code>
+<code>{</code>
+<code>    public:</code>
+<code>        Simple();                              <span class="color3">// Constructor</span></code>
+<code>        virtual ~Simple() = default;           <span class="color3">// Defaulted virtual destructor</span></code>
+<code> </code>
+<code>        <span class="color3">// Disallow copy construction and copy assignment.</span></code>
+<code>        Simple(const Simple&amp; src) = delete;</code>
+<code>        Simple&amp; operator=(const Simple&amp; rhs) = delete;</code>
+<code> </code>
+<code>        <span class="color3">// Explicitly default move constructor and move assignment operator.</span></code>
+<code>        Simple(Simple&amp;&amp; src) = default;</code>
+<code>        Simple&amp; operator=(Simple&amp;&amp; rhs) = default;</code>
+<code> </code>
+<code>        virtual void publicMemberFunction();   <span class="color3">// Public member function</span></code>
+<code>        int m_publicInteger;                   <span class="color3">// Public data member</span></code>
+<code> </code>
+<code>    protected:</code>
+<code>        virtual void protectedMemberFunction();<span class="color3">// Protected member function</span></code>
+<code>        int m_protectedInteger { 41 };         <span class="color3">// Protected data member</span></code>
+<code> </code>
+<code>    private:</code>
+<code>        virtual void privateMemberFunction();  <span class="color3">// Private member function</span></code>
+<code>        int m_privateInteger { 42 };           <span class="color3">// Private data member</span></code>
+<code>        static constexpr int Constant { 2 };   <span class="color3">// Private constant</span></code>
+<code>        static inline int ms_staticInt { 3 };  <span class="color3">// Private static data member</span></code>
+<code>};</code></pre>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <p id="c32-para-0013">
+          <b>
+           NOTE
+          </b>
+          <i>
+           This class definition shows some things that are possible but not recommended. In your own class definitions, you should avoid having
+          </i>
+          <code>
+           public
+          </code>
+          <i>
+           or
+          </i>
+          <code>
+           protected
+          </code>
+          <i>
+           data members. A class should encapsulate its data; hence, you should make data members
+          </i>
+          <code>
+           private
+          </code>
+          <i>
+           and provide
+          </i>
+          <code>
+           public
+          </code>
+          <i>
+           or
+          </i>
+          <code>
+           protected
+          </code>
+          <i>
+           getter and setter member functions.
+          </i>
+         </p>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <p id="c32-para-0014">
+       As explained in
+       <a href="c10.xhtml">
+        Chapter 10
+       </a>
+       , “Discovering Inheritance Techniques,” if your class is meant to be a base class for other classes, you must make at least your destructor
+       <code>
+        virtual
+       </code>
+       . It's allowed to leave the destructor non-
+       <code>
+        virtual
+       </code>
+       , but then I recommend to mark the class as
+       <code>
+        final
+       </code>
+       so that no other classes can derive from it. If you only want to make your destructor
+       <code>
+        virtual
+       </code>
+       but you don't need any code inside the destructor, then you can explicitly default it, as in the
+       <code>
+        Simple
+       </code>
+       class example.
+      </p>
+      <p id="c32-para-0015">
+       This example also demonstrates that you can explicitly delete or default special member functions. The copy constructor and copy assignment operator are deleted to prevent unintentional copying, while the move constructor and move assignment operator are explicitly defaulted.
+      </p>
+      <p>
+       Next, here is the module implementation file:
+      </p>
+      <pre id="c32-code-0002"><code>module simple;</code>
+<code> </code>
+<code>Simple::Simple() : m_publicInteger { 40 }</code>
+<span aria-label="1158" epub:type="pagebreak" id="Page_1158" role="doc-pagebreak"></span><code>{</code>
+<code>    <span class="color3">// Implementation of constructor</span></code>
+<code>}</code>
+<code> </code>
+<code>void Simple::publicMemberFunction() { <span class="color3">/* Implementation */</span> }</code>
+<code>void Simple::protectedMemberFunction() { <span class="color3">/* Implementation */</span> }</code>
+<code>void Simple::privateMemberFunction() { <span class="color3">/* Implementation */</span> }</code></pre>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <p id="c32-para-0018">
+          <b>
+           NOTE
+          </b>
+          <i>
+           Class member function definitions can also appear directly in the module interface file as demonstrated in the next section. You are not required to split a class up into a module interface file and a module implementation file
+          </i>
+          .
+         </p>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <p id="c32-para-0019">
+       <a href="c08.xhtml">
+        Chapters 8
+       </a>
+       , “Gaining Proficiency with Classes and Objects,” and
+       <a href="c09.xhtml">
+        9
+       </a>
+       , “Mastering Classes and Objects,” provide all the details for writing your own classes.
+      </p>
+     </section>
+     <section>
+      <span id="c32-sec-0008">
+      </span>
+      <h3 id="head-3-567">
+       …Derive from an Existing Class
+      </h3>
+      <p>
+       To derive from an existing class, you declare a new class that is an extension of another class. Here is the definition for a class called
+       <code>
+        DerivedSimple
+       </code>
+       , deriving from
+       <code>
+        Simple
+       </code>
+       , and defined in a
+       <code>
+        derived_simple
+       </code>
+       module:
+      </p>
+      <pre id="c32-code-0003"><code>export module derived_simple;</code>
+<code> </code>
+<code>export import simple;</code>
+<code> </code>
+<code><span class="color3">// A class derived from the Simple class.</span></code>
+<code>export class DerivedSimple : public Simple</code>
+<code>{</code>
+<code>    public:</code>
+<code>        DerivedSimple() : Simple{} <span class="color3">// Constructor</span></code>
+<code>        { <span class="color3">/* Implementation of constructor */</span> }</code>
+<code> </code>
+<code>        void publicMemberFunction() override <span class="color3">// Overridden member function</span></code>
+<code>        {</code>
+<code>            <span class="color3">// Implementation of overridden member function</span></code>
+<code>            Simple::publicMemberFunction(); <span class="color3">// Access the base class implementation</span></code>
+<code>        }</code>
+<code> </code>
+<code>        virtual void anotherMemberFunction() <span class="color3">// New member function</span></code>
+<code>        { <span class="color3">/* Implementation of new member function */</span> }</code>
+<code>};</code></pre>
+      <p id="c32-para-0021">
+       Consult
+       <a href="c10.xhtml">
+        Chapter 10
+       </a>
+       for details on inheritance techniques.
+      </p>
+     </section>
+     <section>
+      <span id="c32-sec-0009">
+      </span>
+      <h3 id="head-3-568">
+       …Write a Lambda Expression
+      </h3>
+      <p>
+       Lambda expressions allow you to write small anonymous inline functions. They are especially powerful in combination with the C++ Standard Library algorithms. The following code snippet shows an example. It uses the
+       <code>
+        count_if()
+       </code>
+       algorithm and a lambda expression to count the number of even
+       <span aria-label="1159" epub:type="pagebreak" id="Page_1159" role="doc-pagebreak">
+       </span>
+       values in a
+       <code>
+        vector
+       </code>
+       . Additionally, the lambda expression captures the
+       <code>
+        callCount
+       </code>
+       variable by reference from its enclosing scope to keep track of the number of times it gets called.
+      </p>
+      <pre id="c32-code-0004"><code>vector values { 1, 2, 3, 4, 5, 6, 7, 8, 9 };</code>
+<code>int callCount { 0 };</code>
+<code>auto evenCount { ranges::count_if(values,</code>
+<code>    [&amp;callCount](int value) {</code>
+<code>        ++callCount;</code>
+<code>        return value % 2 == 0;</code>
+<code>    })</code>
+<code>};</code>
+<code>println("There are {} even elements in the vector.", evenCount);</code>
+<code>println("Lambda was called {} times.", callCount);</code></pre>
+      <p id="c32-para-0023">
+       <a href="c19.xhtml">
+        Chapter 19
+       </a>
+       , “Function Pointers, Function Objects, and Lambda Expressions,” discusses lambda expressions in detail.
+      </p>
+     </section>
+     <section>
+      <span id="c32-sec-0010">
+      </span>
+      <h3 id="head-3-569">
+       …Use the Copy-and-Swap Idiom
+      </h3>
+      <p id="c32-para-0024">
+       The copy-and-swap idiom is discussed in detail in
+       <a href="c09.xhtml">
+        Chapter 9
+       </a>
+       . It's an idiom to implement a possibly throwing operation on an object with a strong exception-safety guarantee, that is, all-or-nothing. You simply create a copy of the object, modify that copy (can be a complex algorithm, possibly throwing exceptions), and finally, when no exceptions have been thrown, swap the copy with the original object using a non-throwing
+       <code>
+        swap()
+       </code>
+       . An assignment operator is an example of an operation for which you can use the copy-and-swap idiom. Your assignment operator first makes a local copy of the source object and then swaps this copy with the current object using only a non-throwing
+       <code>
+        swap()
+       </code>
+       implementation.
+      </p>
+      <p>
+       Here is a concise example of the copy-and-swap idiom used for a copy assignment operator. The class defines a copy constructor, a copy assignment operator, and a
+       <code>
+        swap()
+       </code>
+       member function marked as
+       <code>
+        noexcept
+       </code>
+       .
+      </p>
+      <pre id="c32-code-0005"><code>export module copy_and_swap;</code>
+<code> </code>
+<code>export class CopyAndSwap final</code>
+<code>{</code>
+<code>    public:</code>
+<code>        CopyAndSwap() = default;</code>
+<code>        ~CopyAndSwap();                                 <span class="color3">// Destructor</span></code>
+<code> </code>
+<code>        CopyAndSwap(const CopyAndSwap&amp; src);            <span class="color3">// Copy constructor</span></code>
+<code>        CopyAndSwap&amp; operator=(const CopyAndSwap&amp; rhs); <span class="color3">// Copy assignment operator</span></code>
+<code> </code>
+<code>        void swap(CopyAndSwap&amp; other) noexcept; <span class="color3">// noexcept swap() member function</span></code>
+<code> </code>
+<code>    private:</code>
+<code>        <span class="color3">// Private data members…</span></code>
+<code>};</code>
+<code><span class="color3">// Standalone noexcept swap() function</span></code>
+<code>export void swap(CopyAndSwap&amp; first, CopyAndSwap&amp; second) noexcept;</code></pre>
+      <p>
+       <span aria-label="1160" epub:type="pagebreak" id="Page_1160" role="doc-pagebreak">
+       </span>
+       Here are the implementations:
+      </p>
+      <pre id="c32-code-0006"><code>CopyAndSwap::~CopyAndSwap() { <span class="color3">/* Implementation of destructor. */</span> }</code>
+<code> </code>
+<code>CopyAndSwap::CopyAndSwap(const CopyAndSwap&amp; src)</code>
+<code>{</code>
+<code>    <span class="color3">// This copy constructor can first delegate to a non-copy constructor</span></code>
+<code>    <span class="color3">// if any resource allocations have to be done. See the Spreadsheet</span></code>
+<code>    <span class="color3">// implementation in <a href="c09.xhtml">Chapter 9</a> for an example.</span></code>
+<code> </code>
+<code>    <span class="color3">// Make a copy of all data members…</span></code>
+<code>}</code>
+<code> </code>
+<code>void swap(CopyAndSwap&amp; first, CopyAndSwap&amp; second) noexcept</code>
+<code>{</code>
+<code>    first.swap(second);</code>
+<code>}</code>
+<code> </code>
+<code>void CopyAndSwap::swap(CopyAndSwap&amp; other) noexcept</code>
+<code>{</code>
+<code>    using std::swap;</code>
+<code> </code>
+<code>    <span class="color3">// Swap each data member, for example:</span></code>
+<code>    <span class="color3">// swap(m_data, other.m_data);</span></code>
+<code>}</code>
+<code> </code>
+<code>CopyAndSwap&amp; CopyAndSwap::operator=(const CopyAndSwap&amp; rhs)</code>
+<code>{</code>
+<code>    <span class="color3">// Copy-and-swap idiom.</span></code>
+<code>    auto copy { rhs };  <span class="color3">// Do all the work in a temporary instance.</span></code>
+<code>    swap(copy);         <span class="color3">// Commit the work with only non-throwing operations.</span></code>
+<code>    return *this;</code>
+<code>}</code></pre>
+      <p id="c32-para-0027">
+       Consult
+       <a href="c09.xhtml">
+        Chapter 9
+       </a>
+       for a more detailed discussion.
+      </p>
+     </section>
+     <section>
+      <span id="c32-sec-0011">
+      </span>
+      <h3 id="head-3-570">
+       …Throw and Catch Exceptions
+      </h3>
+      <p>
+       If you've been working on a team that doesn't use exceptions (for shame!) or if you've gotten used to Java-style exceptions, the C++ syntax may escape you. Here's a refresher that uses the built-in exception class
+       <code>
+        std::runtime_error
+       </code>
+       . In most larger programs, you will write your own exception classes.
+      </p>
+      <pre id="c32-code-0007"><code>import std;</code>
+<code>using namespace std;</code>
+<code>void throwIf(bool should)</code>
+<code>{</code>
+<code>    if (should) {</code>
+<code>        throw runtime_error { "Here's my exception" };</code>
+<code>    }</code>
+<code>}</code>
+<code> </code>
+<code>int main()</code>
+<code>{</code>
+<code>    try {</code>
+<span aria-label="1161" epub:type="pagebreak" id="Page_1161" role="doc-pagebreak"></span><code>        throwIf(false); <span class="color3">// Doesn't throw.</span></code>
+<code>        throwIf(true);  <span class="color3">// Throws.</span></code>
+<code>    } catch (const runtime_error&amp; e) {</code>
+<code>        println(cerr, "Caught exception: {}", e.what());</code>
+<code>        return 1;</code>
+<code>    }</code>
+<code>}</code></pre>
+      <p id="c32-para-0029">
+       <a href="c14.xhtml">
+        Chapter 14
+       </a>
+       , “Handling Errors,” discusses exceptions in more detail.
+      </p>
+     </section>
+     <section>
+      <span id="c32-sec-0012">
+      </span>
+      <h3 id="head-3-571">
+       …Write a Class Template
+      </h3>
+      <p>
+       Template syntax can be confusing. The most forgotten piece of the template puzzle is that code that uses a class template needs to be able to see the class template definition as well as the member function implementations. The same holds for function templates. One technique to accomplish this is to simply put the class member function implementations directly in the interface file containing the class template definition. The following example demonstrates this and implements a class template that wraps a reference to an object and includes a getter. Here is the module interface file:
+      </p>
+      <pre id="c32-code-0008"><code>export module simple_wrapper;</code>
+<code> </code>
+<code>export template &lt;typename T&gt;</code>
+<code>class SimpleWrapper</code>
+<code>{</code>
+<code>    public:</code>
+<code>        explicit SimpleWrapper(T&amp; object) : m_object { object } { }</code>
+<code>        T&amp; get() const { return m_object; }</code>
+<code>    private:</code>
+<code>        T&amp; m_object;</code>
+<code>};</code></pre>
+      <p>
+       The code can be tested as follows:
+      </p>
+      <pre id="c32-code-0009"><code>import simple_wrapper;</code>
+<code>import std;</code>
+<code>using namespace std;</code>
+<code> </code>
+<code>int main()</code>
+<code>{</code>
+<code>    <span class="color3">// Try wrapping an integer.</span></code>
+<code>    int i { 7 };</code>
+<code>    SimpleWrapper intWrapper { i };  <span class="color3">// Using CTAD.</span></code>
+<code>    <span class="color3">// Or without class template argument deduction (CTAD).</span></code>
+<code>    SimpleWrapper&lt;int&gt; intWrapper2 { i }; </code>
+<code>    i = 2;</code>
+<code>    println("wrapped value is {}", intWrapper.get());</code>
+<code>    println("wrapped value is {}", intWrapper2.get());</code>
+<code> </code>
+<code>    <span class="color3">// Try wrapping a string.</span></code>
+<code>    string str { "test" };</code>
+<code>    SimpleWrapper stringWrapper { str };</code>
+<code>    str += "!";</code>
+<code>    println("wrapped value is {}", stringWrapper.get());</code>
+<code>}</code></pre>
+      <p id="c32-para-0032">
+       <span aria-label="1162" epub:type="pagebreak" id="Page_1162" role="doc-pagebreak">
+       </span>
+       Details about templates can be found in
+       <a href="c12.xhtml">
+        Chapter 12
+       </a>
+       , “Writing Generic Code with Templates,” and
+       <a href="c26.xhtml">
+        Chapter 26
+       </a>
+       , “Advanced Templates.”
+      </p>
+     </section>
+     <section>
+      <span id="c32-sec-0013">
+      </span>
+      <h3 id="head-3-572">
+       …Constrain Template Parameters
+      </h3>
+      <p>
+       With concepts, you can put constraints on template parameters of class and function templates. For example, the following code snippet constrains the template type parameter
+       <code>
+        T
+       </code>
+       of the
+       <code>
+        SimpleWrapper
+       </code>
+       class template from the previous section to be either a floating-point or an integral type. Specifying a type for
+       <code>
+        T
+       </code>
+       that does not satisfy these constraints will cause a compilation error.
+      </p>
+      <pre id="c32-code-0010"><code>import std;</code>
+<code> </code>
+<code>export template &lt;typename T&gt; requires (std::floating_point&lt;T&gt; || std::integral&lt;T&gt;)</code>
+<code>class SimpleWrapper</code>
+<code>{</code>
+<code>    public:</code>
+<code>        explicit SimpleWrapper(T&amp; object) : m_object { object } { }</code>
+<code>        T&amp; get() const { return m_object; }</code>
+<code>    private:</code>
+<code>        T&amp; m_object;</code>
+<code>};</code></pre>
+      <p id="c32-para-0034">
+       <a href="c12.xhtml">
+        Chapter 12
+       </a>
+       explains concepts in detail.
+      </p>
+     </section>
+     <section>
+      <span id="c32-sec-0014">
+      </span>
+      <h3 id="head-3-573">
+       …Write to a File
+      </h3>
+      <p>
+       The following program outputs a message to a file and then reopens the file and appends another message. Additional details can be found in
+       <a href="c13.xhtml">
+        Chapter 13
+       </a>
+       , “Demystifying C++ I/O.”
+      </p>
+      <pre id="c32-code-0011"><code>import std;</code>
+<code>using namespace std;</code>
+<code> </code>
+<code>int main()</code>
+<code>{</code>
+<code>    ofstream outputFile { "FileWrite.out" };</code>
+<code>    if (outputFile.fail()) {</code>
+<code>        println(cerr, "Unable to open file for writing.");</code>
+<code>        return 1;</code>
+<code>    }</code>
+<code>    outputFile &lt;&lt; "Hello!" &lt;&lt; endl;</code>
+<code>    outputFile.close();</code>
+<code> </code>
+<code>    ofstream appendFile { "FileWrite.out", ios_base::app };</code>
+<code>    if (appendFile.fail()) {</code>
+<code>        println(cerr, "Unable to open file for appending.");</code>
+<code>        return 2;</code>
+<code>    }</code>
+<code>    appendFile &lt;&lt; "World!" &lt;&lt; endl;</code>
+<code>}</code></pre>
+     </section>
+     <section>
+      <span id="c32-sec-0015">
+      </span>
+      <h3 id="head-3-574">
+       …Read from a File
+      </h3>
+      <p>
+       Details for file input are discussed in
+       <a href="c13.xhtml">
+        Chapter 13
+       </a>
+       . Here is a quick sample program for file reading basics. It reads the file written by the program in the previous section and outputs it one whitespace-separated token at a time.
+      </p>
+      <pre id="c32-code-0012"><span aria-label="1163" epub:type="pagebreak" id="Page_1163" role="doc-pagebreak"></span><code>import std;</code>
+<code>using namespace std;</code>
+<code> </code>
+<code>int main()</code>
+<code>{</code>
+<code>    ifstream inputFile { "FileWrite.out" };</code>
+<code>    if (inputFile.fail()) {</code>
+<code>        println(cerr, "Unable to open file for reading.");</code>
+<code>        return 1;</code>
+<code>    }</code>
+<code> </code>
+<code>    string nextToken;</code>
+<code>    while (inputFile &gt;&gt; nextToken) {</code>
+<code>        println("Token: {}", nextToken);</code>
+<code>    }</code>
+<code>}</code></pre>
+      <p>
+       The following reads an entire text file with a single call to
+       <code>
+        getline()
+       </code>
+       . This doesn't work with binary files, as they might contain
+       <code>
+        \0
+       </code>
+       characters in their contents.
+      </p>
+      <pre id="c32-code-0013"><code>string fileContents;</code>
+<code>getline(inputFile, fileContents, '\0');</code>
+<code>println("{}", fileContents);</code></pre>
+      <p>
+       An alternative is to use an
+       <code>
+        istreambuf_iterator
+       </code>
+       (see
+       <a href="c17.xhtml">
+        Chapter 17
+       </a>
+       , “Understanding Iterators and the Ranges Library”):
+      </p>
+      <pre id="c32-code-0014"><code>string fileContents {</code>
+<code>    istreambuf_iterator&lt;char&gt; { inputFile },</code>
+<code>    istreambuf_iterator&lt;char&gt; { }</code>
+<code>};</code>
+<code>println("{}", fileContents);</code></pre>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-319">
+     <span id="c32-sec-0016">
+     </span>
+     <h2 id="head-2-319">
+      THERE MUST BE A BETTER WAY
+     </h2>
+     <p id="c32-para-0039">
+      As you read this paragraph, thousands of C++ programmers throughout the world are solving problems that have already been solved. Someone in a cubicle in San Jose is writing a smart pointer implementation from scratch that uses reference counting. A young programmer on a Mediterranean island is designing a class hierarchy that could benefit immensely from the use of mixin classes.
+     </p>
+     <p id="c32-para-0040">
+      As a professional C++ programmer, you ought to spend less of your time reinventing the wheel and more of your time adapting reusable concepts in new ways. This section gives some examples of general-purpose approaches that you can apply directly to your own programs or customize for your needs.
+     </p>
+     <section>
+      <span id="c32-sec-0017">
+      </span>
+      <h3 id="head-3-575">
+       Resource Acquisition Is Initialization
+      </h3>
+      <p id="c32-para-0041">
+       <i>
+        Resource acquisition is initialization
+       </i>
+       (RAII) is a simple yet powerful concept. It is used to acquire ownership of some resources and to automatically free these acquired resources when an RAII instance goes out of scope. Both initialization and destruction happen at a deterministic point in time. Basically, the constructor of a new RAII instance
+       <i>
+        acquires ownership
+       </i>
+       of a certain resource and
+       <i>
+        initializes
+       </i>
+       the instance with that resource, which is why it's called
+       <i>
+        resource acquisition is initialization
+       </i>
+       . The destructor automatically frees the acquired resource when the RAII instance is destroyed.
+      </p>
+      <p>
+       <span aria-label="1164" epub:type="pagebreak" id="Page_1164" role="doc-pagebreak">
+       </span>
+       Here is an example of a
+       <code>
+        File
+       </code>
+       RAII class that safely wraps a C-style file handle (
+       <code>
+        std::FILE
+       </code>
+       ) and automatically closes the file when the RAII instance goes out of scope. The RAII class also provides
+       <code>
+        get()
+       </code>
+       ,
+       <code>
+        release()
+       </code>
+       , and
+       <code>
+        reset()
+       </code>
+       member functions that behave similarly to the same member functions on certain Standard Library classes, such as
+       <code>
+        std::unique_ptr
+       </code>
+       . RAII classes usually disallow copy construction and copy assignment; hence, this implementation deletes those members.
+      </p>
+      <pre id="c32-code-0015"><code>import std;</code>
+<code> </code>
+<code>class File final</code>
+<code>{</code>
+<code>    public:</code>
+<code>        explicit File(std::FILE* file) : m_file { file } { }</code>
+<code>        ~File() { reset(); }</code>
+<code> </code>
+<code>        <span class="color3">// Prevent copy construction and copy assignment.</span></code>
+<code>        File(const File&amp; src) = delete;</code>
+<code>        File&amp; operator=(const File&amp; rhs) = delete;</code>
+<code> </code>
+<code>        <span class="color3">// Allow move construction.</span></code>
+<code>        File(File&amp;&amp; src) noexcept : m_file { std::exchange(src.m_file, nullptr) }</code>
+<code>        {</code>
+<code>        }</code>
+<code> </code>
+<code>        <span class="color3">// Allow move assignment.</span></code>
+<code>        File&amp; operator=(File&amp;&amp; rhs) noexcept</code>
+<code>        {</code>
+<code>            if (this != &amp;rhs) {</code>
+<code>                reset();</code>
+<code>                m_file = std::exchange(rhs.m_file, nullptr);</code>
+<code>            }</code>
+<code>            return *this;</code>
+<code>        }</code>
+<code> </code>
+<code>        <span class="color3">// get(), release(), and reset()</span></code>
+<code>        std::FILE* get() const noexcept { return m_file; }</code>
+<code> </code>
+<code>        [[nodiscard]] std::FILE* release() noexcept</code>
+<code>        {</code>
+<code>            return std::exchange(m_file, nullptr);</code>
+<code>        }</code>
+<code> </code>
+<code>        void reset(std::FILE* file = nullptr) noexcept</code>
+<code>        {</code>
+<code>            if (m_file) { std::fclose(m_file); }</code>
+<code>            m_file = file;</code>
+<code>        }</code>
+<code> </code>
+<code>    private:</code>
+<code>        std::FILE* m_file { nullptr };</code>
+<code>};</code></pre>
+      <p>
+       It can be used as follows:
+      </p>
+      <pre id="c32-code-0016"><code>File myFile { std::fopen("input.txt", "r") };</code></pre>
+      <p id="c32-para-0044">
+       <span aria-label="1165" epub:type="pagebreak" id="Page_1165" role="doc-pagebreak">
+       </span>
+       As soon as the
+       <code>
+        myFile
+       </code>
+       instance goes out of scope, its destructor is called, and the file is automatically closed.
+      </p>
+      <p>
+       There is one important pitfall with using RAII classes that you need to be aware of. You can accidentally write a statement that you think is properly creating an RAII instance within a certain scope, but that is instead creating a temporary object, which is immediately destroyed when that statement has finished executing. For example, the following statement correctly uses the
+       <code>
+        File
+       </code>
+       RAII class:
+      </p>
+      <pre id="c32-code-0017"><code>File <b>myFile</b> { std::fopen("input.txt", "r") };</code></pre>
+      <p>
+       However, you could accidentally forget to give the RAII instance a name as follows:
+      </p>
+      <pre id="c32-code-0018"><code>File { std::fopen("input.txt", "r") };</code></pre>
+      <p>
+       This statement creates a temporary
+       <code>
+        File
+       </code>
+       instance, which is immediately destroyed at the end of the statement. This does not trigger any warning or error from the compiler. To avoid this, you should mark the constructor of RAII classes with the
+       <code>
+        [[nodiscard]]
+       </code>
+       attribute. For example:
+      </p>
+      <pre id="c32-code-0019"><code>[[nodiscard]] explicit File(std::FILE* file) : m_file{ file } { }</code></pre>
+      <p>
+       With this change, creating a
+       <code>
+        File
+       </code>
+       instance without giving it a name triggers a compiler warning such as the following:
+      </p>
+      <pre id="c32-code-0020"><code>warning C4834: discarding return value of function with 'nodiscard' attribute </code></pre>
+      <p>
+       Of course, with the
+       <code>
+        File
+       </code>
+       RAII class, you probably will never forget to give it a name as you most likely will want to do something with the opened file. However, sometimes you need to create an instance of an RAII class in a certain scope, without having to directly interact any further with that created instance, e.g., mutex locks. Let's look at such an example using an RAII class from the Standard Library,
+       <code>
+        std::unique_lock
+       </code>
+       (see
+       <a href="c27.xhtml">
+        Chapter 27
+       </a>
+       , “Multithreaded Programming with C++”). The following code snippet shows proper use of a
+       <code>
+        unique_lock
+       </code>
+       . I'm initially not using the uniform initialization syntax to initialize the
+       <code>
+        unique_lock
+       </code>
+       but will get back to this in the subsequent discussion.
+      </p>
+      <pre id="c32-code-0021"><code>class Foo</code>
+<code>{</code>
+<code>    public:</code>
+<code>        void setData()</code>
+<code>        {</code>
+<code>            <b>unique_lock&lt;mutex&gt; lock(m_mutex);</b></code>
+<code>            <span class="color3">// …</span></code>
+<code>        }</code>
+<code>    private:</code>
+<code>        mutex m_mutex;</code>
+<code>};</code></pre>
+      <p id="c32-para-0050">
+       The
+       <code>
+        setData()
+       </code>
+       member function uses the
+       <code>
+        unique_lock
+       </code>
+       RAII class to construct a local
+       <code>
+        lock
+       </code>
+       object that locks the
+       <code>
+        m_mutex
+       </code>
+       data member and automatically unlocks that mutex at the end of the function.
+      </p>
+      <p>
+       However, because you do not directly use the
+       <code>
+        lock
+       </code>
+       variable after it has been defined, it is easy to make the following mistake:
+      </p>
+      <pre id="c32-code-0022"><code>unique_lock&lt;mutex&gt;(m_mutex);</code></pre>
+      <p>
+       In this code, you accidentally forgot to give the
+       <code>
+        unique_lock
+       </code>
+       a name. This compiles, but it does not do what you intended it to do! It actually declares a local variable called
+       <code>
+        m_mutex
+       </code>
+       (hiding the
+       <span aria-label="1166" epub:type="pagebreak" id="Page_1166" role="doc-pagebreak">
+       </span>
+       <code>
+        m_mutex
+       </code>
+       data member) and initializes it with a call to the
+       <code>
+        unique_lock
+       </code>
+       's default constructor. The result is that the
+       <code>
+        m_mutex
+       </code>
+       data member is
+       <i>
+        not
+       </i>
+       locked! The compiler will give a warning, though, if the warning level is set high enough. Something along the lines of:
+      </p>
+      <pre id="c32-code-0023"><code>warning C4458: declaration of 'm_mutex' hides class member</code></pre>
+      <p>
+       If you use uniform initialization syntax as follows, the compiler doesn't generate the “hiding class member” warning, but it also does not do what you want. The following creates a temporary lock on
+       <code>
+        m_mutex
+       </code>
+       , but since it's temporary, the lock is immediately released at the end of this statement.
+      </p>
+      <pre id="c32-code-0024"><code>unique_lock&lt;mutex&gt; { m_mutex };</code></pre>
+      <p id="c32-para-0054">
+       Recently, some compilers actually do mark the
+       <code>
+        unique_lock
+       </code>
+       constructors with
+       <code>
+        [[nodiscard]]
+       </code>
+       , just as I recommended with the
+       <code>
+        File
+       </code>
+       RAII example. One such compiler is Visual C++ 2022. If you use such a compiler, the previous statement generates a warning about the fact that the return value of the constructor is discarded.
+      </p>
+      <p>
+       Additionally, you could make a typo in the name passed as argument, for example as follows:
+      </p>
+      <pre id="c32-code-0025"><code>unique_lock&lt;mutex&gt;(m);</code></pre>
+      <p>
+       Here you forgot to give a name for the lock, and you made a typo in the name of the argument. This code simply declares a local variable called
+       <code>
+        m
+       </code>
+       and initializes it with the default constructor of
+       <code>
+        unique_lock
+       </code>
+       . The compiler does not even generate a warning, unless maybe a warning that
+       <code>
+        m
+       </code>
+       is an unreferenced local variable. In this case, though, if you would use uniform initialization syntax as follows, then the compiler issues an error complaining about an undeclared identifier
+       <code>
+        m
+       </code>
+       :
+      </p>
+      <pre id="c32-code-0026"><code>unique_lock&lt;mutex&gt; { m };</code></pre>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <p id="c32-para-0058">
+          <b>
+           WARNING
+          </b>
+          <i>
+           Make sure you always name your RAII instances! Additionally, I recommend not to include a default constructor in an RAII class. That avoids some of the issues discussed here
+          </i>
+          .
+         </p>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+     </section>
+     <section>
+      <span id="c32-sec-0019">
+      </span>
+      <h3 id="head-3-576">
+       Double Dispatch
+      </h3>
+      <p id="c32-para-0059">
+       <i>
+        Double dispatch
+       </i>
+       is a technique that adds an extra dimension to the concept of polymorphism. As described in
+       <a href="c05.xhtml">
+        Chapter 5
+       </a>
+       , “Designing with Classes,” polymorphism lets the program determine behavior based on types at run time. For example, you could have an
+       <code>
+        Animal
+       </code>
+       class with a
+       <code>
+        move()
+       </code>
+       member function. All
+       <code>
+        Animal
+       </code>
+       s move, but they differ in terms of
+       <i>
+        how
+       </i>
+       they move. The
+       <code>
+        move()
+       </code>
+       member function is defined for every derived class of
+       <code>
+        Animal
+       </code>
+       so that the appropriate member function can be called, or can be dispatched to, for the appropriate animal at run time without knowing the type of the animal at compile time.
+       <a href="c10.xhtml">
+        Chapter 10
+       </a>
+       explains how to use virtual member functions to implement this run-time polymorphism.
+      </p>
+      <p id="c32-para-0060">
+       Sometimes, however, you need a member function to behave according to the run-time type of two objects, instead of just one. For example, suppose you want to add a member function to the
+       <code>
+        Animal
+       </code>
+       class that returns
+       <code>
+        true
+       </code>
+       if the animal eats another animal, and
+       <code>
+        false
+       </code>
+       otherwise. The decision is based on two factors: the type of animal doing the eating and the type of animal being eaten. Unfortunately, C++ provides no language mechanism to choose a behavior based on the run-time type of more
+       <span aria-label="1167" epub:type="pagebreak" id="Page_1167" role="doc-pagebreak">
+       </span>
+       than one object. Virtual member functions alone are insufficient for modeling this scenario because they determine a member function, or behavior, depending on the run-time type of only the receiving object.
+      </p>
+      <p>
+       Some object-oriented languages provide the ability to choose a member function at run time based on the run-time types of two or more objects. They call this feature
+       <i>
+        multimethods
+       </i>
+       . In C++ there is no core language feature to support multimethods, but you can use the
+       <i>
+        double dispatch
+       </i>
+       technique, which provides a way to make functions virtual for more than one object.
+      </p>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <p id="c32-para-0062">
+          <b>
+           NOTE
+          </b>
+          <i>
+           Double dispatch is really a special case of multiple dispatch, in which a behavior is chosen depending on the run-time types of two or more objects. In practice, double dispatch, which chooses a behavior based on the run-time types of exactly two objects, is usually sufficient
+          </i>
+          .
+         </p>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <section>
+       <span id="c32-sec-0021">
+       </span>
+       <h4 id="head-4-435">
+        Attempt #1: Brute Force
+       </h4>
+       <p>
+        The most straightforward way to implement a member function whose behavior depends on the run-time types of two different objects is to take the perspective of one of the objects and use a series of
+        <code>
+         if
+        </code>
+        /
+        <code>
+         else
+        </code>
+        constructs to check the type of the other. For example, you could implement a member function called
+        <code>
+         eats()
+        </code>
+        in each class derived from
+        <code>
+         Animal
+        </code>
+        that takes the other animal as a parameter. The member function is declared pure virtual in the base class as follows:
+       </p>
+       <pre id="c32-code-0027"><code>class Animal</code>
+<code>{</code>
+<code>    public:</code>
+<code>        virtual bool eats(const Animal&amp; prey) const = 0;</code>
+<code>};</code></pre>
+       <p>
+        Each derived class implements the
+        <code>
+         eats()
+        </code>
+        member function and returns the appropriate value based on the type of the parameter. The implementation of
+        <code>
+         eats()
+        </code>
+        for several derived classes follows. Note that the
+        <code>
+         TRex
+        </code>
+        avoids any
+        <code>
+         if
+        </code>
+        statements because—according to the author—a T-rex, like any carnivorous dinosaur, eats anything.
+       </p>
+       <pre id="c32-code-0028"><code>bool Bear::eats(const Animal&amp; prey) const</code>
+<code>{</code>
+<code>    if (typeid(prey) == typeid(Fish)) { return true; }</code>
+<code>    return false;</code>
+<code>}</code>
+<code> </code>
+<code>bool Fish::eats(const Animal&amp; prey) const</code>
+<code>{</code>
+<code>    if (typeid(prey) == typeid(Fish)) { return true; }</code>
+<code>    return false;</code>
+<code>}</code>
+<code> </code>
+<code>bool TRex::eats(const Animal&amp; prey) const</code>
+<code>{</code>
+<code>    return true;</code>
+<code>}</code></pre>
+       <p>
+        <span aria-label="1168" epub:type="pagebreak" id="Page_1168" role="doc-pagebreak">
+        </span>
+        This brute-force approach works, and it's probably the most straightforward technique for a small number of classes. However, there are several reasons why you might want to avoid this approach.
+       </p>
+       <ul class="check1" id="c32-list-0004">
+        <li id="c32-li-0019">
+         Object-oriented programming (OOP) purists often frown upon explicitly querying the type of an object because it implies a design that is lacking a proper object-oriented structure.
+        </li>
+        <li id="c32-li-0020">
+         As the number of types grows, such code can become messy and repetitive.
+        </li>
+        <li id="c32-li-0021">
+         This approach does not force derived classes to consider new types. For example, if you added a
+         <code>
+          Donkey
+         </code>
+         , the
+         <code>
+          Bear
+         </code>
+         class would continue to compile but would return
+         <code>
+          false
+         </code>
+         when told to eat a
+         <code>
+          Donkey
+         </code>
+         , even though everybody knows that bears eat donkeys. A bear would refuse to eat a donkey because there is no
+         <code>
+          else if
+         </code>
+         statement checking explicitly for
+         <code>
+          Donkey
+         </code>
+         s.
+        </li>
+       </ul>
+      </section>
+      <section>
+       <span id="c32-sec-0022">
+       </span>
+       <h4 id="head-4-436">
+        Attempt #2: Single Polymorphism with Overloading
+       </h4>
+       <p>
+        You could attempt to use polymorphism with overloading to circumvent all of the cascading
+        <code>
+         if
+        </code>
+        /
+        <code>
+         else
+        </code>
+        constructs. Instead of giving each class a single
+        <code>
+         eats()
+        </code>
+        member function that takes an
+        <code>
+         Animal
+        </code>
+        reference, why not overload the member function for each derived class of
+        <code>
+         Animal
+        </code>
+        ? The base class definition would look like this:
+       </p>
+       <pre id="c32-code-0029"><code>class Animal</code>
+<code>{</code>
+<code>    public:</code>
+<code>        virtual bool eats(const Bear&amp;) const = 0;</code>
+<code>        virtual bool eats(const Fish&amp;) const = 0;</code>
+<code>        virtual bool eats(const TRex&amp;) const = 0;</code>
+<code>};</code></pre>
+       <p>
+        Because the member functions are pure virtual in the base class, each derived class is forced to implement the behavior for every other type of
+        <code>
+         Animal
+        </code>
+        . For example, the
+        <code>
+         Bear
+        </code>
+        class contains the following member functions:
+       </p>
+       <pre id="c32-code-0030"><code>class Bear : public Animal</code>
+<code>{</code>
+<code>    public:</code>
+<code>        bool eats(const Bear&amp;) const override { return false; }</code>
+<code>        bool eats(const Fish&amp;) const override { return true; }</code>
+<code>        bool eats(const TRex&amp;) const override { return false; }</code>
+<code>};</code></pre>
+       <p>
+        This approach initially appears to work, but it really solves only half of the problem. To call the proper
+        <code>
+         eats()
+        </code>
+        member function on an
+        <code>
+         Animal
+        </code>
+        , the compiler needs to know the compile-time type of the animal being eaten. A call such as the following will be successful because the compile-time types of both the animal that eats and the animal that is eaten are known:
+       </p>
+       <pre id="c32-code-0031"><code>Bear myBear;</code>
+<code>Fish myFish;</code>
+<code>println("Bear eats fish? {}", myBear.eats(myFish));</code></pre>
+       <p>
+        The missing piece is that the solution is polymorphic in only one direction. You can access
+        <code>
+         myBear
+        </code>
+        through an
+        <code>
+         Animal
+        </code>
+        reference, and the correct member function will be called:
+       </p>
+       <pre id="c32-code-0032"><code>Animal&amp; animalRef { myBear };</code>
+<code>println("Bear eats fish? {}", animalRef.eats(myFish));</code></pre>
+       <p>
+        <span aria-label="1169" epub:type="pagebreak" id="Page_1169" role="doc-pagebreak">
+        </span>
+        However, the reverse is not true. If you pass an
+        <code>
+         Animal
+        </code>
+        reference to the
+        <code>
+         eats()
+        </code>
+        member function, you will get a compilation error because there is no
+        <code>
+         eats()
+        </code>
+        member function that takes an
+        <code>
+         Animal
+        </code>
+        . The compiler cannot determine, at compile time, which version to call. The following example does not compile:
+       </p>
+       <pre id="c32-code-0033"><code>Animal&amp; animalRef { myFish };</code>
+<code>println("Bear eats fish? {}",</code>
+<code>    myBear.eats(animalRef)); <span class="color3">// BUG! No member function Bear::eats(Animal&amp;)</span></code></pre>
+       <p id="c32-para-0071">
+        Because the compiler needs to know which overloaded version of the
+        <code>
+         eats()
+        </code>
+        member function is going to be called at compile time, this solution is not truly polymorphic. It would not work, for example, if you were iterating over an array of
+        <code>
+         Animal
+        </code>
+        references and passing each one to a call to
+        <code>
+         eats()
+        </code>
+        .
+       </p>
+      </section>
+      <section>
+       <span id="c32-sec-0023">
+       </span>
+       <h4 id="head-4-437">
+        Attempt #3: Double Dispatch
+       </h4>
+       <p id="c32-para-0072">
+        The
+        <i>
+         double dispatch
+        </i>
+        technique is a truly polymorphic solution to the multiple-type problem. In C++, polymorphism is achieved by overriding member functions in derived classes. At run time, member functions are called based on the actual type of the object. The preceding single polymorphic attempt didn't work because it attempted to use polymorphism to determine which overloaded version of a member function to call instead of using it to determine on which class to call the member function.
+       </p>
+       <p>
+        To begin, focus on a single derived class, perhaps the
+        <code>
+         Bear
+        </code>
+        class. The class needs a member function with the following declaration:
+       </p>
+       <pre id="c32-code-0034"><code>bool eats(const Animal&amp; prey) const override;</code></pre>
+       <p>
+        The key to double dispatch is to determine the result based on a member function call on the argument. Suppose that the
+        <code>
+         Animal
+        </code>
+        class has a member function called
+        <code>
+         eatenBy()
+        </code>
+        , which takes an
+        <code>
+         Animal
+        </code>
+        reference as a parameter. This member function returns
+        <code>
+         true
+        </code>
+        if the current
+        <code>
+         Animal
+        </code>
+        gets eaten by the one passed in. With such a member function, the definition of
+        <code>
+         eats()
+        </code>
+        becomes simple:
+       </p>
+       <pre id="c32-code-0035"><code>bool Bear::eats(const Animal&amp; prey) const</code>
+<code>{</code>
+<code>    return prey.eatenBy(*this);</code>
+<code>}</code></pre>
+       <p id="c32-para-0075">
+        At first, it looks like this solution adds another layer of member function calls to the single polymorphic member function. After all, each derived class still has to implement a version of
+        <code>
+         eatenBy()
+        </code>
+        for every derived class of
+        <code>
+         Animal
+        </code>
+        . However, there is a key difference. Polymorphism is occurring twice! When you call the
+        <code>
+         eats()
+        </code>
+        member function on an
+        <code>
+         Animal
+        </code>
+        , polymorphism determines whether you are calling
+        <code>
+         Bear::eats()
+        </code>
+        ,
+        <code>
+         Fish::eats()
+        </code>
+        , or one of the others. When you call
+        <code>
+         eatenBy()
+        </code>
+        , polymorphism again determines which class's version of the member function to call. It calls
+        <code>
+         eatenBy()
+        </code>
+        on the run-time type of the
+        <code>
+         prey
+        </code>
+        object. Note that the run-time type of
+        <code>
+         *this
+        </code>
+        is always the same as the compile-time type so that the compiler can call the correct overloaded version of
+        <code>
+         eatenBy()
+        </code>
+        for the argument (in this case
+        <code>
+         Bear
+        </code>
+        ).
+       </p>
+       <p>
+        The following are the class definitions for the
+        <code>
+         Animal
+        </code>
+        hierarchy using double dispatch. The forward class declarations are necessary because the base class uses references to the derived classes. Note that each
+        <code>
+         Animal
+        </code>
+        -derived class implements the
+        <code>
+         eats()
+        </code>
+        member function in the same way, but it cannot be factored up into the base class. The reason is that if you attempt to do so, the compiler won't know
+        <span aria-label="1170" epub:type="pagebreak" id="Page_1170" role="doc-pagebreak">
+        </span>
+        which overloaded version of the
+        <code>
+         eatenBy()
+        </code>
+        member function to call because
+        <code>
+         *this
+        </code>
+        would be an
+        <code>
+         Animal
+        </code>
+        , not a particular derived class. Member function overload resolution is determined according to the compile-time type of the object, not its run-time type.
+       </p>
+       <pre id="c32-code-0036"><code><span class="color3">// Forward declarations.</span></code>
+<code>class Fish;</code>
+<code>class Bear;</code>
+<code>class TRex;</code>
+<code> </code>
+<code>class Animal</code>
+<code>{</code>
+<code>    public:</code>
+<code>        virtual bool eats(const Animal&amp; prey) const = 0;</code>
+<code> </code>
+<code>        virtual bool eatenBy(const Bear&amp;) const = 0;</code>
+<code>        virtual bool eatenBy(const Fish&amp;) const = 0;</code>
+<code>        virtual bool eatenBy(const TRex&amp;) const = 0;</code>
+<code>};</code>
+<code> </code>
+<code>class Bear : public Animal</code>
+<code>{</code>
+<code>    public:</code>
+<code>        bool eats(const Animal&amp; prey) const override{ return prey.eatenBy(*this); }</code>
+<code> </code>
+<code>        bool eatenBy(const Bear&amp;) const override { return false; }</code>
+<code>        bool eatenBy(const Fish&amp;) const override { return false; }</code>
+<code>        bool eatenBy(const TRex&amp;) const override { return true; }</code>
+<code>};</code>
+<code> </code>
+<code>class Fish : public Animal</code>
+<code>{</code>
+<code>    public:</code>
+<code>        bool eats(const Animal&amp; prey) const override{ return prey.eatenBy(*this); }</code>
+<code> </code>
+<code>        bool eatenBy(const Bear&amp;) const override { return true; }</code>
+<code>        bool eatenBy(const Fish&amp;) const override { return true; }</code>
+<code>        bool eatenBy(const TRex&amp;) const override { return true; }</code>
+<code>};</code>
+<code> </code>
+<code>class TRex : public Animal</code>
+<code>{</code>
+<code>    public:</code>
+<code>        bool eats(const Animal&amp; prey) const override{ return prey.eatenBy(*this); }</code>
+<code> </code>
+<code>        bool eatenBy(const Bear&amp;) const override { return false; }</code>
+<code>        bool eatenBy(const Fish&amp;) const override { return false; }</code>
+<code>        bool eatenBy(const TRex&amp;) const override { return true; }</code>
+<code>};</code></pre>
+       <p id="c32-para-0077">
+        Double dispatch is a concept that takes a bit of getting used to. I suggest playing with this code to familiarize yourself with the concept and its implementation.
+       </p>
+      </section>
+     </section>
+     <span aria-label="1171" epub:type="pagebreak" id="Page_1171" role="doc-pagebreak">
+     </span>
+     <section>
+      <span id="c32-sec-0024">
+      </span>
+      <h3 id="head-3-577">
+       Mixin Classes
+      </h3>
+      <p>
+       <a href="c05.xhtml">
+        Chapters 5
+       </a>
+       and
+       <a href="c06.xhtml">
+        6
+       </a>
+       , “Designing for Reuse,” introduce mixin classes. They answer the question, “What else is this class able to do?” and the answer often ends with “-able.” Examples are
+       <code>
+        Clickable
+       </code>
+       ,
+       <code>
+        Drawable
+       </code>
+       ,
+       <code>
+        Printable
+       </code>
+       ,
+       <code>
+        Lovable
+       </code>
+       , and so on. Mixin classes are a way that you can add functionality to a class without committing to a full
+       <i>
+        is-a
+       </i>
+       relationship. There are several techniques to implement mixin classes in C++. This section looks at the following:
+      </p>
+      <ul class="check1" id="c32-list-0005">
+       <li id="c32-li-0022">
+        Using multiple inheritance
+       </li>
+       <li id="c32-li-0023">
+        Using class templates
+       </li>
+       <li id="c32-li-0024">
+        Using CRTP
+       </li>
+       <li id="c32-li-0025">
+        Using CRTP and “deducing
+        <code>
+         this
+        </code>
+        ”
+       </li>
+      </ul>
+      <section>
+       <span id="c32-sec-0025">
+       </span>
+       <h4 id="head-4-438">
+        Using Multiple Inheritance
+       </h4>
+       <p id="c32-para-0079">
+        This section examines how to design, implement, and use a mixin class using the multiple inheritance technique.
+       </p>
+       <section>
+        <span id="c32-sec-0026">
+        </span>
+        <h5 id="head-5-189">
+         Designing a Mixin Class
+        </h5>
+        <p id="c32-para-0080">
+         Mixin classes contain actual code that can be reused by other classes. A single mixin class implements a well-defined piece of functionality. For example, you might have a mixin class called
+         <code>
+          Playable
+         </code>
+         that is mixed into certain types of media objects. The mixin class could, for example, contain most of the code to communicate with the computer's sound drivers. By mixing in the class, the media object would get that functionality for free.
+        </p>
+        <p id="c32-para-0081">
+         When designing a mixin class, you need to consider what behavior you are adding and whether it belongs in the object hierarchy or in a separate class. Using the previous example, if all media classes are playable, the base class should derive from
+         <code>
+          Playable
+         </code>
+         instead of mixing the
+         <code>
+          Playable
+         </code>
+         class into all of the derived classes. If only certain media classes are playable and they are scattered throughout the hierarchy, a mixin class makes sense.
+        </p>
+        <p id="c32-para-0082">
+         One of the cases where mixin classes are particularly useful is when you have classes organized into a hierarchy on one axis, but they also contain similarities on another axis. For example, consider a war simulation game played on a grid. Each grid location can contain an
+         <code>
+          Item
+         </code>
+         with attack and defense capabilities and other characteristics. Some items, such as a
+         <code>
+          Castle
+         </code>
+         , are stationary. Others, such as a
+         <code>
+          Knight
+         </code>
+         or
+         <code>
+          FloatingCastle
+         </code>
+         , can move throughout the grid. When initially designing the object hierarchy, you might end up with something like
+         <a href="#c32-fig-0001" id="R_c32-fig-0001">
+          Figure 32.1
+         </a>
+         , which organizes the classes according to their attack and defense capabilities.
+        </p>
+        <p id="c32-para-0083">
+         The hierarchy in
+         <a href="#c32-fig-0001">
+          Figure 32.1
+         </a>
+         ignores the movement functionality that certain classes contain. Building your hierarchy around movement would result in a structure similar to
+         <a href="#c32-fig-0002" id="R_c32-fig-0002">
+          Figure 32.2
+         </a>
+         .
+        </p>
+        <p id="c32-para-0084">
+         Of course, the design of
+         <a href="#c32-fig-0002">
+          Figure 32.2
+         </a>
+         throws away all the organization of
+         <a href="#c32-fig-0001">
+          Figure 32.1
+         </a>
+         . What's a good object-oriented programmer to do?
+        </p>
+        <p id="c32-para-0085">
+         Assuming that you go with the first hierarchy, organized around attackers and defenders, you need some way to work movement into the equation. One possibility is that, even though only a portion of the derived classes support movement, you
+         <i>
+          could
+         </i>
+         add a
+         <code>
+          move()
+         </code>
+         member function to the
+         <code>
+          Item
+         </code>
+         base class. The default implementation would do nothing, but certain derived classes would override
+         <code>
+          move()
+         </code>
+         to actually change their location on the grid.
+        </p>
+        <figure>
+         <img alt="A hierarchy chart illustrates the top of the chart is an item. Under item, there are two categories. 1. Defender. 2. Attacker. The defender category branches into barrier and castle, with the castle further branching into a floating castle." class="center" src="../images\images/c32f001.png"/>
+         <figcaption>
+          <p>
+           <span class="figureLabel">
+            <a href="#R_c32-fig-0001" id="c32-fig-0001" role="doc-backlink">
+             <b>
+              FIGURE 32.1
+             </b>
+            </a>
+           </span>
+          </p>
+         </figcaption>
+        </figure>
+        <figure>
+         <img alt="A flowchart illustrates the top of the chart is an item. Under item, there are two categories such as nonmover and mover. The nonmover category branches into turret, castle, and barrier. The mover category branches include. 1. Knight. 2. Floatingcastle. 3. Superknight." class="center" src="../images\images/c32f002.png"/>
+         <figcaption>
+          <p>
+           <span class="figureLabel">
+            <a href="#R_c32-fig-0002" id="c32-fig-0002" role="doc-backlink">
+             <b>
+              FIGURE 32.2
+             </b>
+            </a>
+           </span>
+          </p>
+         </figcaption>
+        </figure>
+        <p id="c32-para-0086">
+         <span aria-label="1172" epub:type="pagebreak" id="Page_1172" role="doc-pagebreak">
+         </span>
+         Another approach is to write a
+         <code>
+          Movable
+         </code>
+         mixin class. The elegant hierarchy from
+         <a href="#c32-fig-0001">
+          Figure 32.1
+         </a>
+         could be preserved, but certain classes in the hierarchy would derive from
+         <code>
+          Movable
+         </code>
+         in addition to their parent.
+         <a href="#c32-fig-0003" id="R_c32-fig-0003">
+          Figure 32.3
+         </a>
+         shows this design.
+        </p>
+        <figure>
+         <img alt="A flowchart illustrates the item. Under item, three categories. Include defender, movable, and attacker. The defender category branches into barrier, castle, and floating castle. The attacker category branches into a knight, a super knight, and a turret." class="center" src="../images\images/c32f003.png"/>
+         <figcaption>
+          <p>
+           <span class="figureLabel">
+            <a href="#R_c32-fig-0003" id="c32-fig-0003" role="doc-backlink">
+             <b>
+              FIGURE 32.3
+             </b>
+            </a>
+           </span>
+          </p>
+         </figcaption>
+        </figure>
+        <p id="c32-para-0087">
+         Yet another approach is to flatten the hierarchy and don't use run time polymorphism at all. Instead, you can use static polymorphism and/or type-erasure whenever you need to deal polymorphically with a subset of your types. These approaches are not further discussed in this text.
+        </p>
+       </section>
+       <span aria-label="1173" epub:type="pagebreak" id="Page_1173" role="doc-pagebreak">
+       </span>
+       <section>
+        <span id="c32-sec-0027">
+        </span>
+        <h5 id="head-5-190">
+         Implementing a Mixin Class
+        </h5>
+        <p>
+         Writing a mixin class is no different from writing a normal class. In fact, it's usually much simpler. Using the earlier war simulation, the
+         <code>
+          Movable
+         </code>
+         mixin class might look as follows:
+        </p>
+        <pre id="c32-code-0037"><code>class Movable</code>
+<code>{</code>
+<code>    public:</code>
+<code>        virtual void move() { <span class="color3">/* Implementation to move an item… */</span> }</code>
+<code>};</code></pre>
+        <p id="c32-para-0089">
+         This
+         <code>
+          Movable
+         </code>
+         mixin class implements the actual code to move an item on the grid. It also provides a type for
+         <code>
+          Item
+         </code>
+         s that can be moved. This allows you to create, for example, an array of all movable items without knowing or caring what actual derived class of
+         <code>
+          Item
+         </code>
+         they belong to.
+        </p>
+       </section>
+       <section>
+        <span id="c32-sec-0028">
+        </span>
+        <h5 id="head-5-191">
+         Using a Mixin Class
+        </h5>
+        <p>
+         The code for using a mixin class is syntactically equivalent to multiple inheritance. In addition to deriving from your parent class in the main hierarchy, you also derive from the mixin class. Here's an example:
+        </p>
+        <pre id="c32-code-0038"><code>class FloatingCastle : public Castle, public Movable { <span class="color3">/* … */</span> };</code></pre>
+        <p id="c32-para-0091">
+         This
+         <i>
+          mixes in
+         </i>
+         the functionality provided by the
+         <code>
+          Movable
+         </code>
+         mixin class into the
+         <code>
+          FloatingCastle
+         </code>
+         class. Now you have a class that exists in the most logical place in the hierarchy, but still shares commonality with objects elsewhere in the hierarchy.
+        </p>
+       </section>
+      </section>
+      <section>
+       <span id="c32-sec-0029">
+       </span>
+       <h4 id="head-4-439">
+        Using Class Templates
+       </h4>
+       <p id="c32-para-0092">
+        A second option to implement a mixin class in C++ is to make the mixin class itself a class template accepting a template type parameter and then deriving itself from that type.
+       </p>
+       <p>
+        <a href="c06.xhtml">
+         Chapter 6
+        </a>
+        explains the mechanism for implementing a
+        <code>
+         SelfDrivable
+        </code>
+        mixin class template that can then be used to create self-drivable cars and trucks. Now that you are fluent in class templates (
+        <a href="c12.xhtml">
+         Chapters 12
+        </a>
+        and
+        <a href="c26.xhtml">
+         26
+        </a>
+        ), the
+        <code>
+         SelfDrivable
+        </code>
+        mixin example from
+        <a href="c06.xhtml">
+         Chapter 6
+        </a>
+        should hold no surprises anymore. The mixin class is defined as follows:
+       </p>
+       <pre id="c32-code-0039"><code>template &lt;typename T&gt;</code>
+<code>class SelfDrivable : public T { <span class="color3">/* … */</span> };</code></pre>
+       <p>
+        If you then have a
+        <code>
+         Car
+        </code>
+        and a
+        <code>
+         Truck
+        </code>
+        class, you can easily define a self-drivable car and truck as follows:
+       </p>
+       <pre id="c32-code-0040"><code>SelfDrivable&lt;Car&gt; selfDrivingCar;</code>
+<code>SelfDrivable&lt;Truck&gt; selfDrivingTruck;</code></pre>
+       <p id="c32-para-0095">
+        This way, functionality can be added to existing classes,
+        <code>
+         Car
+        </code>
+        and
+        <code>
+         Truck
+        </code>
+        , without having to modify those classes at all.
+       </p>
+       <p>
+        Here is a complete example:
+       </p>
+       <pre id="c32-code-0041"><code>template &lt;typename T&gt;</code>
+<code>class SelfDrivable : public T</code>
+<code>{</code>
+<code>    public:</code>
+<span aria-label="1174" epub:type="pagebreak" id="Page_1174" role="doc-pagebreak"></span><code>        void drive() { this-&gt;setSpeed(1.2); }</code>
+<code>};</code>
+<code> </code>
+<code>class Car</code>
+<code>{</code>
+<code>    public:</code>
+<code>        void setSpeed(double speed) { println("Car speed set to {}.", speed); }</code>
+<code>};</code>
+<code> </code>
+<code>class Truck</code>
+<code>{</code>
+<code>    public:</code>
+<code>        void setSpeed(double speed) { println("Truck speed set to {}.", speed); }</code>
+<code>};</code>
+<code> </code>
+<code>int main()</code>
+<code>{</code>
+<code>    SelfDrivable&lt;Car&gt; car;</code>
+<code>    SelfDrivable&lt;Truck&gt; truck;</code>
+<code>    car.drive();</code>
+<code>    truck.drive();</code>
+<code>}</code></pre>
+      </section>
+      <section>
+       <span id="c32-sec-0030">
+       </span>
+       <h4 id="head-4-440">
+        Using CRTP
+       </h4>
+       <p id="c32-para-0097">
+        Another technique to implement a mixin class in C++ is to use the
+        <i>
+         curiously recurring template pattern
+        </i>
+        (CRTP).
+       </p>
+       <p>
+        The mixin class itself is again a class template, but this time it accepts a template type parameter representing the type of a derived class and doesn't inherit itself from any other class. In the implementation a
+        <code>
+         static_cast()
+        </code>
+        is required to cast
+        <code>
+         this
+        </code>
+        to the type of the derived class.
+       </p>
+       <pre id="c32-code-0042"><code>template &lt;typename Derived&gt;</code>
+<code>class SelfDrivable</code>
+<code>{</code>
+<code>    public:</code>
+<code>        void drive()</code>
+<code>        {</code>
+<code>            auto&amp; self { static_cast&lt;Derived&amp;&gt;(*this) };</code>
+<code>            self.setSpeed(1.2);</code>
+<code>        }</code>
+<code>};</code></pre>
+       <p>
+        Concrete classes, such as
+        <code>
+         Car
+        </code>
+        and
+        <code>
+         Truck
+        </code>
+        , then inherit from
+        <code>
+         SelfDrivable
+        </code>
+        and pass their own type as the template type argument for
+        <code>
+         SelfDrivable
+        </code>
+        .
+       </p>
+       <pre id="c32-code-0043"><code>class Car <b>: public SelfDrivable&lt;Car&gt;</b></code>
+<code>{</code>
+<code>    public:</code>
+<code>        void setSpeed(double speed) { println("Car speed set to {}.", speed); }</code>
+<code>};</code>
+<code> </code>
+<code>class Truck <b>: public SelfDrivable&lt;Truck&gt;</b></code>
+<code>{<span aria-label="1175" epub:type="pagebreak" id="Page_1175" role="doc-pagebreak"></span></code>
+<code>    public:</code>
+<code>        void setSpeed(double speed) { println("Truck speed set to {}.", speed); }</code>
+<code>};</code></pre>
+       <p>
+        These can be used as follows:
+       </p>
+       <pre id="c32-code-0044"><code>Car car;</code>
+<code>Truck truck;</code>
+<code>car.drive();</code>
+<code>truck.drive();</code></pre>
+      </section>
+      <section>
+       <span id="c32-sec-0031">
+       </span>
+       <h4 id="head-4-441">
+        <img alt="C++23" src="../images\images/icon1.png"/>
+        Using CRTP and Deducing this
+       </h4>
+       <p>
+        The implementation of
+        <code>
+         SelfDrivable::drive()
+        </code>
+        in the previous CRTP example requires a
+        <code>
+         static_cast()
+        </code>
+        to get access to the correct derived type. Thanks to the C++23 “deducing
+        <code>
+         this
+        </code>
+        ” feature, the
+        <code>
+         SelfDrivable
+        </code>
+        class can be implemented more elegantly as follows using an explicit object parameter. In this implementation, the
+        <code>
+         SelfDrivable
+        </code>
+        mixin class is no longer a class template, but
+        <code>
+         SelfDrivable::drive()
+        </code>
+        is now a member function template. The parameter annotated with
+        <code>
+         this
+        </code>
+        is known as an explicit object parameter (see
+        <a href="c08.xhtml">
+         Chapter 8
+        </a>
+        , “Gaining Proficiency with Classes and Objects”).
+       </p>
+       <pre id="c32-code-0045"><code>class SelfDrivable</code>
+<code>{</code>
+<code>    public:</code>
+<code>        void drive(<b>this auto&amp; self</b>) { self.setSpeed(1.2); }</code>
+<code>};</code></pre>
+       <p>
+        <code>
+         Car
+        </code>
+        and
+        <code>
+         Truck
+        </code>
+        then simply derive from
+        <code>
+         SelfDrivable
+        </code>
+        :
+       </p>
+       <pre id="c32-code-0046"><code>class Car <b>: public SelfDrivable</b> { <span class="color3">/* Same as before */</span> };</code>
+<code>class Truck <b>: public SelfDrivable</b> { <span class="color3">/* Same as before */</span> };</code></pre>
+      </section>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-320">
+     <span id="c32-sec-0032">
+     </span>
+     <h2 id="head-2-320">
+      OBJECT-ORIENTED FRAMEWORKS
+     </h2>
+     <p id="c32-para-0104">
+      When graphical operating systems first came on the scene in the 1980s, procedural programming was the norm. At the time, writing a GUI application usually involved manipulating complex data structures and passing them to OS-provided functions. For example, to draw a rectangle in a window, you might have had to populate a
+      <code>
+       Window
+      </code>
+      struct with the appropriate information and pass it to a
+      <code>
+       drawRect()
+      </code>
+      function.
+     </p>
+     <p id="c32-para-0105">
+      As object-oriented programming (OOP) grew in popularity, programmers looked for a way to apply the OOP paradigm to GUI development. The result is known as an
+      <i>
+       object-oriented framework
+      </i>
+      . In general, a framework is a set of classes that are used collectively to provide an object-oriented interface to some underlying functionality. By frameworks, programmers usually mean large class libraries that are used for general application development. However, a framework can really represent functionality of any size. If you write a suite of classes that provides database functionality for your application, those classes could be considered a framework.
+     </p>
+     <span aria-label="1176" epub:type="pagebreak" id="Page_1176" role="doc-pagebreak">
+     </span>
+     <section>
+      <span id="c32-sec-0033">
+      </span>
+      <h3 id="head-3-578">
+       Working with Frameworks
+      </h3>
+      <p id="c32-para-0106">
+       The defining characteristic of a framework is that it provides its own set of techniques and patterns. Frameworks usually require a bit of learning to get started with because they have their own mental model. Before you can work with a large application framework, such as the Microsoft Foundation Classes (MFC), you need to understand its view of the world.
+      </p>
+      <p id="c32-para-0107">
+       Frameworks vary greatly in their abstract ideas and in their actual implementation. Many frameworks are built on top of legacy procedural APIs, which may affect various aspects of their design. Other frameworks are written from the ground up with object-oriented design in mind. Some frameworks might ideologically oppose certain aspects of the C++ language. For example, a framework could consciously shun the notion of multiple inheritance.
+      </p>
+      <p id="c32-para-0108">
+       When you start working with a new framework, your first task is to find out what makes it tick. To what design principles does it subscribe? What mental model are its developers trying to convey? What aspects of the language does it use extensively? These are all vital questions, even though they may sound like things that you'll pick up along the way. If you fail to understand the design, model, or language features of the framework, you will quickly get into situations where you overstep the bounds of the framework.
+      </p>
+      <p id="c32-para-0109">
+       An understanding of the framework's design will also make it possible for you to extend it. For example, if the framework omits a feature, such as support for printing, you could write your own printing classes using the same model as the framework. By doing so, you retain a consistent model for your application, and you have code that can be reused by other applications.
+      </p>
+      <p id="c32-para-0110">
+       Additionally, a framework might use certain specific data types. For example, the MFC framework uses the
+       <code>
+        CString
+       </code>
+       data type to represent strings, instead of using the Standard Library
+       <code>
+        std::string
+       </code>
+       class. This does not mean you have to switch to the data types provided by the framework for your entire code base. Instead, you could convert the data types on the boundaries between the framework code and the rest of your code.
+      </p>
+     </section>
+     <section>
+      <span id="c32-sec-0034">
+      </span>
+      <h3 id="head-3-579">
+       The Model-View-Controller Paradigm
+      </h3>
+      <p id="c32-para-0111">
+       As I mentioned earlier, frameworks vary in their approaches to object-oriented design. One common paradigm is known as
+       <i>
+        model-view-controller
+       </i>
+       (MVC). This paradigm models the notion that many applications commonly deal with a set of data, one or more views on that data, and manipulation of the data.
+      </p>
+      <p>
+       In MVC, a set of data is called the
+       <i>
+        model
+       </i>
+       . In a race car simulator, the model would keep track of various statistics, such as the current speed of the car and the amount of damage it has sustained. In practice, the model often takes the form of a class with many getters and setters. The class definition for the model of the race car might look as follows:
+      </p>
+      <pre id="c32-code-0047"><code>class RaceCar</code>
+<code>{</code>
+<code>    public:</code>
+<code>        RaceCar();</code>
+<code>        virtual ~RaceCar() = default;</code>
+<code> </code>
+<code>        virtual double getSpeed() const;</code>
+<span aria-label="1177" epub:type="pagebreak" id="Page_1177" role="doc-pagebreak"></span><code>        virtual void setSpeed(double speed);</code>
+<code> </code>
+<code>        virtual double getDamageLevel() const;</code>
+<code>        virtual void setDamageLevel(double damage);</code>
+<code>    private:</code>
+<code>        double m_speed { 0.0 };</code>
+<code>        double m_damageLevel { 0.0 };</code>
+<code>};</code></pre>
+      <p id="c32-para-0113">
+       A
+       <i>
+        view
+       </i>
+       is a particular visualization of the model. For example, there could be two views on a
+       <code>
+        RaceCar
+       </code>
+       . The first view could be a graphical view of the car, and the second could be a graph that shows the level of damage over time. The important point is that both views are operating on the same data—they are different ways of looking at the same information. This is one of the main advantages of the MVC paradigm: by keeping data separated from its display, you can keep your code more organized and easily create additional views.
+      </p>
+      <p id="c32-para-0114">
+       The final piece to the MVC paradigm is the
+       <i>
+        controller
+       </i>
+       . The controller is the piece of code that changes the model in response to some event. For example, when the driver of the race car simulator runs into a concrete barrier, the controller instructs the model to bump up the car's damage level and reduce its speed. The controller can also manipulate the view. For example, when the user scrolls a scrollbar in the user interface, the controller instructs the view to scroll its content.
+      </p>
+      <p id="c32-para-0115">
+       The three components of MVC interact in a feedback loop. Actions are handled by the controller, which adjusts the model and/or views. If the model changes, it notifies the views to update themselves.
+       <a href="#c32-fig-0004" id="R_c32-fig-0004">
+        Figure 32.4
+       </a>
+       shows this interaction.
+      </p>
+      <figure>
+       <img alt="A flowchart illustrates four main components. Include user, view, controller, and model. The user interacts with the view and controller. The view displays data to the user and updates the model. The controller manipulates both the view and the model." class="center" src="../images\images/c32f004.png"/>
+       <figcaption>
+        <p>
+         <span class="figureLabel">
+          <a href="#R_c32-fig-0004" id="c32-fig-0004" role="doc-backlink">
+           <b>
+            FIGURE 32.4
+           </b>
+          </a>
+         </span>
+        </p>
+       </figcaption>
+      </figure>
+      <p id="c32-para-0116">
+       The model-view-controller paradigm has gained widespread support within many popular frameworks. Even nontraditional applications, such as web applications, are moving in the direction of MVC because it enforces a clear separation between data, the manipulation of data, and the displaying of data.
+      </p>
+      <p id="c32-para-0117">
+       The MVC pattern has evolved into several different variants, such as model-view-presenter (MVP), model-view-adapter (MVA), model-view-viewmodel (MVVM), and so on.
+      </p>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-321">
+     <span id="c32-sec-0035">
+     </span>
+     <h2 id="head-2-321">
+      SUMMARY
+     </h2>
+     <p id="c32-para-0118">
+      In this chapter, you've read about some of the common techniques that professional C++ programmers use consistently in their projects. As you advance as a software developer, you will undoubtedly form your own collection of reusable classes and libraries. Discovering design techniques opens the
+      <span aria-label="1178" epub:type="pagebreak" id="Page_1178" role="doc-pagebreak">
+      </span>
+      door to developing and using
+      <i>
+       patterns
+      </i>
+      , which are higher-level reusable constructs. You will experience the many applications of patterns next in
+      <a href="c33.xhtml">
+       Chapter 33
+      </a>
+      , “Applying Design Patterns.”
+     </p>
+    </section>
+    <section aria-labelledby="head-2-322">
+     <span id="c32-sec-0036">
+     </span>
+     <h2 id="head-2-322">
+      EXERCISES
+     </h2>
+     <p id="c32-para-0119">
+      By solving the following exercises, you can practice the material discussed in this chapter. Solutions to all exercises are available with the code download on the book's website at
+      <code>
+       <a href="http://www.wiley.com/go/proc++6e">
+        www.wiley.com/go/proc++6e
+       </a>
+      </code>
+      . However, if you are stuck on an exercise, first reread parts of this chapter to try to find an answer yourself before looking at the solution from the website.
+     </p>
+     <section>
+      <span id="c32-exsec-0001">
+      </span>
+      <ol class="none">
+       <li id="c32-ex-0001">
+        <b>
+         Exercise 32-1:
+        </b>
+        Write an RAII class template,
+        <code>
+         Pointer&lt;T&gt;
+        </code>
+        , that can store a pointer to a
+        <code>
+         T
+        </code>
+        and automatically deletes the memory when such an RAII instance goes out of scope. Provide a
+        <code>
+         reset()
+        </code>
+        and
+        <code>
+         release()
+        </code>
+        member function, and an overloaded
+        <code>
+         operator*
+        </code>
+        .
+       </li>
+       <li id="c32-ex-0002">
+        <b>
+         Exercise 32-2:
+        </b>
+        Modify your class template from Exercise 32-1 so that it throws an exception if the argument given to the constructor is
+        <code>
+         nullptr
+        </code>
+        .
+       </li>
+       <li id="c32-ex-0003">
+        <b>
+         Exercise 32-3:
+        </b>
+        Take your solution from Exercise 32-2 and add a member function template called
+        <code>
+         assign()
+        </code>
+        with a template type parameter
+        <code>
+         E
+        </code>
+        . The function should accept an argument of type
+        <code>
+         E
+        </code>
+        and assign this argument to the data to which the wrapped pointer is pointing. Add a constraint to the member function template to make sure type
+        <code>
+         E
+        </code>
+        is in fact assignable to an lvalue of type
+        <code>
+         T
+        </code>
+        .
+       </li>
+       <li id="c32-ex-0004">
+        <b>
+         Exercise 32-4:
+        </b>
+        Write a lambda expression returning the sum of two arguments. Both arguments must be of the same type. The lambda expression should work with all kind of data types, such as integral types, floating-point types, and even
+        <code>
+         std::string
+        </code>
+        s. Try out your lambda expression by calculating the sum of 11 and 22, 1.1 and 2.2, and “Hello ” and “world!”
+       </li>
+      </ol>
+     </section>
+    </section>
+   </section>
+  </div>
+ </body>
+</html>

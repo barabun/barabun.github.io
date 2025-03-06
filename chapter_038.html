@@ -1,0 +1,4838 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html>
+<html epub:prefix="z3998: http://www.daisy.org/z3998/2012/vocab/structure/#" lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+ <head>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   26Advanced Templates
+  </title>
+ </head>
+ <body>
+  <div class="navigation">
+   <a class="nav-button" href="chapter_037.html">
+    ← Previous
+   </a>
+   <a class="nav-button" href="index.html">
+    Table of Contents
+   </a>
+   <a class="nav-button" href="chapter_039.html">
+    Next →
+   </a>
+  </div>
+  <div class="chapter-content">
+   <section aria-labelledby="c26_1" epub:type="chapter" role="doc-chapter">
+    <header>
+     <h1 id="c26_1">
+      <span aria-label="945" epub:type="pagebreak" id="Page_945" role="doc-pagebreak">
+      </span>
+      <span id="c26">
+      </span>
+      <span class="chapterNumber">
+       26
+      </span>
+      <br/>
+      <span class="chapterTitle">
+       Advanced Templates
+      </span>
+     </h1>
+    </header>
+    <section aria-label="chapter opening">
+     <span id="c26-sec-0001">
+     </span>
+     <section>
+      <aside>
+       <div class="top hr">
+        <hr/>
+       </div>
+       <section class="feature3">
+        <h3>
+         WHAT'S IN THIS CHAPTER?
+        </h3>
+        <ul class="check3" id="c26-list-0001">
+         <li id="c26-li-0001">
+          The different kinds of template parameters
+         </li>
+         <li id="c26-li-0002">
+          How to use partial specialization
+         </li>
+         <li id="c26-li-0003">
+          How to write recursive templates
+         </li>
+         <li id="c26-li-0004">
+          How to write variadic templates
+         </li>
+         <li id="c26-li-0005">
+          How to write type-safe variable argument functions using variadic templates
+         </li>
+         <li id="c26-li-0006">
+          What
+          <code>
+           constexpr if
+          </code>
+          statements are
+         </li>
+         <li id="c26-li-0007">
+          What fold-expressions are and how to use them
+         </li>
+         <li id="c26-li-0008">
+          What metaprogramming is and how to use it
+         </li>
+         <li id="c26-li-0009">
+          What type traits are and what they can be used for
+         </li>
+         <li id="c26-li-0010">
+          What SFINAE means
+         </li>
+        </ul>
+        <div class="bottom hr">
+         <hr/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <section>
+      <aside>
+       <div class="top hr">
+        <hr/>
+       </div>
+       <section class="feature3">
+        <span id="c26-fea-0001">
+        </span>
+        <h3 id="head-2-258">
+         WILEY.COM DOWNLOADS FOR THIS CHAPTER
+        </h3>
+        <span id="c26-sec-0003">
+        </span>
+        <p id="c26-para-0004">
+         Please note that all the code examples for this chapter are available as part of this chapter's code download on the book's website at
+         <code>
+          <a href="http://www.wiley.com/go/proc++6e">
+           www.wiley.com/go/proc++6e
+          </a>
+         </code>
+         on the Download Code tab.
+        </p>
+        <div class="bottom hr">
+         <hr/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <p id="c26-para-0005">
+      <a href="c12.xhtml">
+       Chapter 12
+      </a>
+      , “Writing Generic Code with Templates,” covers the most widely used features of class and function templates. If you are interested in only a basic knowledge of templates so that you can better understand how the Standard Library works, or perhaps write your own simple class and function templates, you can skip this chapter on advanced templates. However, if templates interest you and you want to uncover their full power, continue reading this chapter to learn some obscure, but fascinating, details.
+     </p>
+    </section>
+    <span aria-label="946" epub:type="pagebreak" id="Page_946" role="doc-pagebreak">
+    </span>
+    <section aria-labelledby="head-2-259">
+     <span id="c26-sec-0004">
+     </span>
+     <h2 id="head-2-259">
+      MORE ABOUT TEMPLATE PARAMETERS
+     </h2>
+     <p id="c26-para-0006">
+      There are three kinds of template parameters: template type parameters, non-type template parameters, and template template parameters. So far, you've seen examples of type and non-type parameters (in
+      <a href="c12.xhtml">
+       Chapter 12
+      </a>
+      ), but not template template parameters. There are also some tricky aspects to both type and non-type parameters that are not covered in
+      <a href="c12.xhtml">
+       Chapter 12
+      </a>
+      . This section goes deeper into all three types of template parameters.
+     </p>
+     <section>
+      <span id="c26-sec-0005">
+      </span>
+      <h3 id="head-3-479">
+       More About Template Type Parameters
+      </h3>
+      <p>
+       Template type parameters are the main purpose of templates. You can declare as many type parameters as you want. For example, you could add to the grid template from
+       <a href="c12.xhtml">
+        Chapter 12
+       </a>
+       a second type parameter specifying a container on which to build the grid. The Standard Library defines several parametrized container classes, including
+       <code>
+        vector
+       </code>
+       and
+       <code>
+        deque
+       </code>
+       . The original
+       <code>
+        Grid
+       </code>
+       class uses a
+       <code>
+        vector
+       </code>
+       to store the elements of a grid. A user of the
+       <code>
+        Grid
+       </code>
+       class might want to use a
+       <code>
+        deque
+       </code>
+       instead. With another template type parameter, you can allow the user to specify whether they want the underlying container to be a
+       <code>
+        vector
+       </code>
+       or a
+       <code>
+        deque
+       </code>
+       . The
+       <code>
+        Grid
+       </code>
+       implementation requires the underlying container to support random access. It also uses the
+       <code>
+        resize()
+       </code>
+       member function of the container and the container's
+       <code>
+        value_type
+       </code>
+       type alias. A concept (see
+       <a href="c12.xhtml">
+        Chapter 12
+       </a>
+       ) is used to enforce that the provided container type supports these operations. Here is the concept and the class template definition with the additional template type parameter. Changes are highlighted.
+      </p>
+      <pre id="c26-code-0001"><code><b>template &lt;typename Container&gt;</b></code>
+<code><b>concept GridContainerType =</b> </code>
+<code>    <b>std::ranges::random_access_range&lt;Container&gt; &amp;&amp;</b></code>
+<code>    <b>requires(Container c) {</b></code>
+<code>        <b>typename Container::value_type;</b></code>
+<code>        <b>c.resize(1);</b></code>
+<code>    <b>};</b></code>
+<code> </code>
+<code><b>export template &lt;typename T, GridContainerType Container&gt;</b></code>
+<code>class Grid</code>
+<code>{</code>
+<code>    public:</code>
+<code>        explicit Grid(std::size_t width = DefaultWidth,</code>
+<code>            std::size_t height = DefaultHeight);</code>
+<code>        virtual ˜Grid() = default;</code>
+<code> </code>
+<code>        <span class="color3">// Explicitly default a copy constructor and assignment operator.</span></code>
+<code>        Grid(const Grid&amp; src) = default;</code>
+<code>        Grid&amp; operator=(const Grid&amp; rhs) = default;</code>
+<code> </code>
+<code>        <span class="color3">// Explicitly default a move constructor and assignment operator.</span></code>
+<code>        Grid(Grid&amp;&amp; src) = default;</code>
+<code>        Grid&amp; operator=(Grid&amp;&amp; rhs) = default;</code>
+<code> </code>
+<code>        <b>typename Container::value_type&amp; at(std::size_t x, std::size_t y);</b></code>
+<code>        <b>const typename Container::value_type&amp; at(</b></code>
+<code>           <b>std::size_t x, std::size_t y) const;</b></code>
+<code> </code>
+<span aria-label="947" epub:type="pagebreak" id="Page_947" role="doc-pagebreak"></span><code>        std::size_t getHeight() const { return m_height; }</code>
+<code>        std::size_t getWidth() const { return m_width; }</code>
+<code> </code>
+<code>        static constexpr std::size_t DefaultWidth { 10 };</code>
+<code>        static constexpr std::size_t DefaultHeight { 10 };</code>
+<code> </code>
+<code>    private:</code>
+<code>        void verifyCoordinate(std::size_t x, std::size_t y) const;</code>
+<code> </code>
+<code>        <b>Container m_cells;</b></code>
+<code>        std::size_t m_width { 0 }, m_height { 0 };</code>
+<code>};</code></pre>
+      <p>
+       This template now has two parameters:
+       <code>
+        T
+       </code>
+       and
+       <code>
+        Container
+       </code>
+       . Thus, wherever you previously referred to
+       <code>
+        Grid&lt;T&gt;
+       </code>
+       , you must now refer to
+       <code>
+        Grid&lt;T, Container&gt;
+       </code>
+       .
+      </p>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <p id="c26-para-0009">
+          <b>
+           NOTE
+          </b>
+          <i>
+           Technically, in this implementation of the
+          </i>
+          <code>
+           Grid
+          </code>
+          <i>
+           class template, you could remove the
+          </i>
+          <code>
+           T
+          </code>
+          <i>
+           template type parameter because the implementation doesn't need it; it only uses the
+          </i>
+          <code>
+           Container
+          </code>
+          <i>
+           parameter. However, please bear with me, as the next section builds further on this example to make it more user friendly.
+          </i>
+         </p>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <p id="c26-para-0010">
+       The
+       <code>
+        m_cells
+       </code>
+       data member is now of type
+       <code>
+        Container
+       </code>
+       instead of
+       <code>
+        vector&lt;optional&lt;T&gt;&gt;
+       </code>
+       . Each
+       <code>
+        Container
+       </code>
+       type has a type alias called
+       <code>
+        value_type
+       </code>
+       . This is verified with the
+       <code>
+        GridContainerType
+       </code>
+       concept. Inside the
+       <code>
+        Grid
+       </code>
+       class template definition and its member function definitions, you get access to this
+       <code>
+        value_type
+       </code>
+       type name using the scope resolution operator:
+       <code>
+        Container::value_type
+       </code>
+       . However, since
+       <code>
+        Container
+       </code>
+       is a template type parameter,
+       <code>
+        Container::value_type
+       </code>
+       is a
+       <i>
+        dependent type name
+       </i>
+       . Usually, a compiler won't treat dependent names as names of types, and this can lead to some rather cryptic compiler error messages. To make sure the compiler does interpret it as the name of a type, you need to prefix it with the
+       <code>
+        typename
+       </code>
+       keyword, as in
+       <code>
+        typename Container::value_type
+       </code>
+       . This is what is done for the return type of the
+       <code>
+        at()
+       </code>
+       member functions; their return type is the type of the elements that is stored inside the given container type, which is
+       <code>
+        typename Container::value_type
+       </code>
+       .
+      </p>
+      <p>
+       Here is the constructor definition:
+      </p>
+      <pre id="c26-code-0002"><code><b>template &lt;typename T, GridContainerType Container&gt;</b></code>
+<code><b>Grid&lt;T, Container&gt;::Grid(std::size_t width, std::size_t height)</b></code>
+<code>    : m_width { width }, m_height { height }</code>
+<code>{</code>
+<code>    m_cells.resize(m_width * m_height);</code>
+<code>}</code></pre>
+      <p>
+       Here are the implementations of the remaining member functions:
+      </p>
+      <pre id="c26-code-0003"><code><b>template &lt;typename T, GridContainerType Container&gt;</b></code>
+<code><b>void Grid&lt;T, Container&gt;::verifyCoordinate(std::size_t x, std::size_t y) const</b></code>
+<code>{</code>
+<code>    if (x &gt;= m_width) {</code>
+<code>        throw std::out_of_range {</code>
+<code>            std::format("x ({}) must be less than width ({}).", x, m_width) };</code>
+<code>    }</code>
+<span aria-label="948" epub:type="pagebreak" id="Page_948" role="doc-pagebreak"></span><code>    if (y&gt;= m_height) {</code>
+<code>        throw std::out_of_range {</code>
+<code>            std::format("y ({}) must be less than height ({}).", y, m_height) };</code>
+<code>    }</code>
+<code>}</code>
+<code> </code>
+<code><b>template &lt;typename T, GridContainerType Container&gt;</b></code>
+<code><b>const typename Container::value_type&amp;</b></code>
+<code>    <b>Grid&lt;T, Container&gt;::at(std::size_t x, std::size_t y) const</b></code>
+<code>{</code>
+<code>    verifyCoordinate(x, y);</code>
+<code>    return m_cells[x + y * m_width];</code>
+<code>}</code>
+<code> </code>
+<code><b>template &lt;typename T, GridContainerType Container&gt;</b></code>
+<code><b>typename Container::value_type&amp;</b></code>
+<code>    <b>Grid&lt;T, Container&gt;::at(std::size_t x, std::size_t y)</b></code>
+<code>{</code>
+<code>    <b>return const_cast&lt;typename Container::value_type&amp;&gt;(</b></code>
+<code>        <b>std::as_const(*this).at(x, y));</b></code>
+<code>}</code></pre>
+      <p>
+       Now you can instantiate and use
+       <code>
+        Grid
+       </code>
+       objects like this:
+      </p>
+      <pre id="c26-code-0004"><code>Grid&lt;int, vector&lt;optional&lt;int&gt;&gt;&gt; myIntVectorGrid;</code>
+<code>Grid&lt;int, deque&lt;optional&lt;int&gt;&gt;&gt; myIntDequeGrid;</code>
+<code> </code>
+<code>myIntVectorGrid.at(3, 4) = 5;</code>
+<code>println("{}", myIntVectorGrid.at(3, 4).value_or(0));</code>
+<code> </code>
+<code>myIntDequeGrid.at(1, 2) = 3;</code>
+<code>println("{}", myIntDequeGrid.at(1, 2).value_or(0));</code>
+<code> </code>
+<code>Grid&lt;int, vector&lt;optional&lt;int&gt;&gt;&gt; grid2 { myIntVectorGrid };</code>
+<code>grid2 = myIntVectorGrid;</code></pre>
+      <p>
+       You could try to instantiate the
+       <code>
+        Grid
+       </code>
+       class template with
+       <code>
+        double
+       </code>
+       for the
+       <code>
+        Container
+       </code>
+       template type parameter:
+      </p>
+      <pre id="c26-code-0005"><code>Grid&lt;int, double&gt; test; <span class="color3">// WILL NOT COMPILE</span></code></pre>
+      <p id="c26-para-0015">
+       This line does not compile. The compiler complains that the type
+       <code>
+        double
+       </code>
+       does not satisfy the constraints of the concept associated with the
+       <code>
+        Container
+       </code>
+       template type parameter.
+      </p>
+      <p>
+       Just as with function parameters, you can give template parameters default values. For example, you might want to say that the default container for a
+       <code>
+        Grid
+       </code>
+       is a
+       <code>
+        vector
+       </code>
+       . The class template definition then looks like this:
+      </p>
+      <pre id="c26-code-0006"><code><b>export template &lt;typename T,</b></code>
+<code>    <b>GridContainerType Container = std::vector&lt;std::optional&lt;T&gt;&gt;&gt;</b></code>
+<code>class Grid</code>
+<code>{</code>
+<code>    <span class="color3">// Everything else is the same as before.</span></code>
+<code>};</code></pre>
+      <p>
+       <span aria-label="949" epub:type="pagebreak" id="Page_949" role="doc-pagebreak">
+       </span>
+       You can use the type
+       <code>
+        T
+       </code>
+       from the first template type parameter as the argument to the
+       <code>
+        optional
+       </code>
+       template in the default value for the second template type parameter. The C++ syntax requires that you do not repeat the default value in the template header line for member function definitions. With this default argument, clients can now instantiate a
+       <code>
+        Grid
+       </code>
+       and optionally specify an underlying container. Here are some examples:
+      </p>
+      <pre id="c26-code-0007"><code>Grid&lt;int, deque&lt;optional&lt;int&gt;&gt;&gt; myDequeGrid;</code>
+<code>Grid&lt;int, vector&lt;optional&lt;int&gt;&gt;&gt; myVectorGrid;</code>
+<code>Grid&lt;int&gt; myVectorGrid2 { myVectorGrid };</code></pre>
+      <p id="c26-para-0018">
+       This approach is used by the Standard Library. The
+       <code>
+        stack
+       </code>
+       ,
+       <code>
+        queue
+       </code>
+       ,
+       <code>
+        priority_queue
+       </code>
+       ,
+       <code>
+        flat_(multi)set
+       </code>
+       , and
+       <code>
+        flat_(multi)map
+       </code>
+       class templates all take a
+       <code>
+        Container
+       </code>
+       template type parameter, with a default value, specifying the underlying container.
+      </p>
+     </section>
+     <section>
+      <span id="c26-sec-0007">
+      </span>
+      <h3 id="head-3-480">
+       Introducing Template Template Parameters
+      </h3>
+      <p>
+       There is one problem with the
+       <code>
+        Container
+       </code>
+       parameter in the previous section. When you instantiate the class template, you write something like this:
+      </p>
+      <pre id="c26-code-0008"><code>Grid&lt;int, vector&lt;optional&lt;int&gt;&gt;&gt; myIntGrid;</code></pre>
+      <p>
+       Note the repetition of the
+       <code>
+        int
+       </code>
+       type. You must specify that it's the element type both of the
+       <code>
+        Grid
+       </code>
+       and of the
+       <code>
+        optional
+       </code>
+       inside the
+       <code>
+        vector
+       </code>
+       . What if you wrote this instead:
+      </p>
+      <pre id="c26-code-0009"><code>Grid&lt;int, vector&lt;optional&lt;SpreadsheetCell&gt;&gt;&gt; myIntGrid;</code></pre>
+      <p>
+       that wouldn't work very well. It would be nice to be able to write the following, so that you couldn't make that mistake:
+      </p>
+      <pre id="c26-code-0010"><code>Grid&lt;int, vector&gt; myIntGrid;</code></pre>
+      <p id="c26-para-0022">
+       The
+       <code>
+        Grid
+       </code>
+       class template should be able to figure out that it wants a
+       <code>
+        vector
+       </code>
+       of
+       <code>
+        optional
+       </code>
+       s of
+       <code>
+        int
+       </code>
+       s. The compiler won't allow you to pass that argument to a normal type parameter, though, because
+       <code>
+        vector
+       </code>
+       by itself is not a type but a template.
+      </p>
+      <p id="c26-para-0023">
+       If you want to take a template as a template type parameter, you must use a special kind of parameter called a
+       <i>
+        template template parameter
+       </i>
+       . Specifying a template template parameter is sort of like specifying a function pointer parameter in a normal function. Function pointer types include the return type and parameter types of a function. Similarly, when you specify a template template parameter, the full specification of the template template parameter includes the parameters to that template.
+      </p>
+      <p>
+       For example, containers such as
+       <code>
+        vector
+       </code>
+       and
+       <code>
+        deque
+       </code>
+       have a template parameter list that looks something like the following. The
+       <code>
+        E
+       </code>
+       parameter is the element type. The
+       <code>
+        Allocator
+       </code>
+       parameter is covered in
+       <a href="c25.xhtml">
+        Chapter 25
+       </a>
+       , “Customizing and Extending the Standard Library.”
+      </p>
+      <pre id="c26-code-0011"><code>template &lt;typename E, typename Allocator = std::allocator&lt;E&gt;&gt;</code>
+<code>class vector { <span class="color3">/* Vector definition */</span> };</code></pre>
+      <p>
+       To pass such a container as a template template parameter, all you have to do is copy and paste the declaration of the class template (in this example,
+       <code>
+        template &lt;typename E, typename Allocator = std::allocator&lt;E&gt;&gt; class vector
+       </code>
+       ) and replace the class name (
+       <code>
+        vector
+       </code>
+       ) with your parameter name (
+       <code>
+        Container
+       </code>
+       ). Given the preceding template specification, here is the class template definition for
+       <code>
+        Grid
+       </code>
+       that takes a container template as its second template parameter:
+      </p>
+      <pre id="c26-code-0012"><span aria-label="950" epub:type="pagebreak" id="Page_950" role="doc-pagebreak"></span><code><b>export template &lt;typename T,</b></code>
+<code>  <b>template &lt;typename E, typename Allocator = std::allocator&lt;E&gt;&gt; class Container</b></code>
+<code>    <b>= std::vector&gt;</b></code>
+<code>class Grid</code>
+<code>{</code>
+<code>    public:</code>
+<code>        <span class="color3">// Omitted code that is the same as before.</span></code>
+<code>        <b>std::optional&lt;T&gt;&amp; at(std::size_t x, std::size_t y);</b></code>
+<code>        <b>const std::optional&lt;T&gt;&amp; at(std::size_t x, std::size_t y) const;</b></code>
+<code>        <span class="color3">// Omitted code that is the same as before.</span></code>
+<code>    private:</code>
+<code>        void verifyCoordinate(std::size_t x, std::size_t y) const;</code>
+<code> </code>
+<code>        <b>Container&lt;std::optional&lt;T&gt;&gt; m_cells;</b></code>
+<code>        std::size_t m_width { 0 }, m_height { 0 };</code>
+<code>};</code></pre>
+      <p id="c26-para-0026">
+       What is going on here? The first template parameter is the same as before: the element type
+       <code>
+        T
+       </code>
+       . The second template parameter is now a template itself for a container such as
+       <code>
+        vector
+       </code>
+       or
+       <code>
+        deque
+       </code>
+       . As you saw earlier, this “template type” must take two parameters: an element type
+       <code>
+        E
+       </code>
+       and an allocator type. The name of this parameter in the
+       <code>
+        Grid
+       </code>
+       template is
+       <code>
+        Container
+       </code>
+       (as before). The default value is now
+       <code>
+        vector
+       </code>
+       , instead of
+       <code>
+        vector&lt;T&gt;
+       </code>
+       , because the
+       <code>
+        Container
+       </code>
+       parameter is now a template instead of an actual type.
+      </p>
+      <p>
+       The syntax rule for a template template parameter, more generically, is this:
+      </p>
+      <pre id="c26-code-0013"><code>template &lt;…, template &lt;TemplateTypeParams&gt; class ParameterName, …&gt;</code></pre>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <p id="c26-para-0029">
+          <b>
+           NOTE
+          </b>
+          <i>
+           You can also use the
+          </i>
+          <code>
+           typename
+          </code>
+          <i>
+           keyword instead of
+          </i>
+          <code>
+           class
+          </code>
+          <i>
+           , as in the following example:
+          </i>
+         </p>
+         <pre id="c26-code-0014"><code>template &lt;…, template &lt;Params&gt; <b>typename</b> ParameterName, …&gt;</code></pre>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <p>
+       Instead of using
+       <code>
+        Container
+       </code>
+       by itself in the code, you must specify
+       <code>
+        Container&lt;std::optional&lt;T&gt;&gt;
+       </code>
+       as the container type. For example, the declaration of
+       <code>
+        m_cells
+       </code>
+       is now as follows:
+      </p>
+      <pre id="c26-code-0015"><code>Container&lt;std::optional&lt;T&gt;&gt; m_cells;</code></pre>
+      <p>
+       The member function definitions don't need to change, except that you must change the template headers, for example:
+      </p>
+      <pre id="c26-code-0016"><code><b>template &lt;typename T,</b></code>
+<code>  <b>template &lt;typename E, typename Allocator = std::allocator&lt;E&gt;&gt; class Container&gt;</b></code>
+<code>void Grid&lt;T, Container&gt;::verifyCoordinate(std::size_t x, std::size_t y) const</code>
+<code>{</code>
+<code>    <span class="color3">// Same implementation as before…</span></code>
+<code>}</code></pre>
+      <p>
+       This
+       <code>
+        Grid
+       </code>
+       class template can be used as follows:
+      </p>
+      <pre id="c26-code-0017"><code>Grid&lt;int, vector&gt; myGrid;</code>
+<code>myGrid.at(1, 2) = 3;</code>
+<code>println("{}", myGrid.at(1, 2).value_or(0));</code>
+<span aria-label="951" epub:type="pagebreak" id="Page_951" role="doc-pagebreak"></span><code>Grid&lt;int, vector&gt; myGrid2 { myGrid };</code>
+<code>Grid&lt;int, deque&gt; myDequeGrid;</code></pre>
+      <p id="c26-para-0034">
+       This section demonstrated that you can pass templates as type parameters to other templates. However, the syntax looks a bit convoluted, and it is. I recommend avoiding template template parameters. In fact, the Standard Library itself never uses template template parameters.
+      </p>
+     </section>
+     <section>
+      <span id="c26-sec-0009">
+      </span>
+      <h3 id="head-3-481">
+       More About Non-type Template Parameters
+      </h3>
+      <p>
+       You might want to allow the user to specify a default element used to initialize each cell in the grid. Here is a perfectly reasonable approach to implement this goal. It uses the zero-initialization syntax,
+       <code>
+        T{}
+       </code>
+       , as the default value for the second template parameter.
+      </p>
+      <pre id="c26-code-0018"><code><b>export template &lt;typename T, T DEFAULT = T{}&gt;</b></code>
+<code>class Grid { <span class="color3">/* Identical as before. */</span> };</code></pre>
+      <p>
+       This definition is legal. You can use the type
+       <code>
+        T
+       </code>
+       from the first parameter as the type for the second parameter. You can use this initial value for
+       <code>
+        T
+       </code>
+       to initialize each cell in the grid:
+      </p>
+      <pre id="c26-code-0019"><code><b>template &lt;typename T, T DEFAULT&gt;</b></code>
+<code><b>Grid&lt;T, DEFAULT&gt;::Grid(std::size_t width, std::size_t height)</b></code>
+<code>    : m_width { width }, m_height { height }</code>
+<code>{</code>
+<code>    m_cells.resize(m_width * m_height, <b>DEFAULT</b>);</code>
+<code>}</code></pre>
+      <p>
+       The other member function definitions stay the same, except that you must add the second template parameter to the template headers, and all the instances of
+       <code>
+        Grid&lt;T&gt;
+       </code>
+       become
+       <code>
+        Grid&lt;T, DEFAULT&gt;
+       </code>
+       . After making those changes, you can instantiate grids with an initial value for all the elements:
+      </p>
+      <pre id="c26-code-0020"><code>Grid&lt;int&gt; myIntGrid;       <span class="color3">// Initial value is int{}, i.e., 0</span></code>
+<code>Grid&lt;int, 10&gt; myIntGrid2;  <span class="color3">// Initial value is 10</span></code></pre>
+      <p>
+       The initial value can be any integer you want. However, suppose that you try to create a
+       <code>
+        Grid
+       </code>
+       for
+       <code>
+        SpreadsheetCell
+       </code>
+       s as follows:
+      </p>
+      <pre id="c26-code-0021"><code>SpreadsheetCell defaultCell;</code>
+<code>Grid&lt;SpreadsheetCell, defaultCell&gt; mySpreadsheet; <span class="color3">// WILL NOT COMPILE</span></code></pre>
+      <p>
+       The second line leads to a compilation error because the value of the template parameter
+       <code>
+        DEFAULT
+       </code>
+       must be known at compile time; the value of
+       <code>
+        defaultCell
+       </code>
+       can't be known until run time, so it is not an acceptable value for
+       <code>
+        DEFAULT
+       </code>
+       .
+      </p>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <p id="c26-para-0040">
+          <b>
+           WARNING
+          </b>
+          <i>
+           Up until C++20, non-type template parameters cannot be objects, or even
+          </i>
+          <code>
+           double
+          </code>
+          s
+          <i>
+          </i>
+          or
+          <i>
+          </i>
+          <code>
+           float
+          </code>
+          s
+          <i>
+           . They are restricted to integral types,
+          </i>
+          <code>
+           enum
+          </code>
+          s
+          <i>
+           , pointers, and references. Since C++20, these restrictions are relaxed a bit and it is now allowed to have non-type template parameters of floating-point types, and even certain class types. However, such class types have a lot of restrictions, not further discussed in this book. Suffice to say, the
+          </i>
+          <code>
+           SpreadsheetCell
+          </code>
+          <i>
+           class does not adhere to those restrictions.
+          </i>
+         </p>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+     </section>
+    </section>
+    <span aria-label="952" epub:type="pagebreak" id="Page_952" role="doc-pagebreak">
+    </span>
+    <section aria-labelledby="head-2-260">
+     <span id="c26-sec-0011">
+     </span>
+     <h2 id="head-2-260">
+      CLASS TEMPLATE PARTIAL SPECIALIZATION
+     </h2>
+     <p>
+      The
+      <code>
+       const char*
+      </code>
+      class specialization of the
+      <code>
+       Grid
+      </code>
+      class template shown in
+      <a href="c12.xhtml">
+       Chapter 12
+      </a>
+      is called a
+      <i>
+       full class template specialization
+      </i>
+      because it specializes the
+      <code>
+       Grid
+      </code>
+      template for every template parameter. There are no template parameters left in the specialization. That's not the only way you can specialize a class; you can also write a
+      <i>
+       partial class template specialization
+      </i>
+      , in which you specialize some template parameters but not others. For example, recall the basic version of the
+      <code>
+       Grid
+      </code>
+      template with width and height non-type parameters:
+     </p>
+     <pre id="c26-code-0022"><code>export template &lt;typename T, std::size_t WIDTH, std::size_t HEIGHT&gt;</code>
+<code>class Grid</code>
+<code>{</code>
+<code>    public:</code>
+<code>        Grid() = default;</code>
+<code>        virtual ˜Grid() = default;</code>
+<code> </code>
+<code>        <span class="color3">// Explicitly default a copy constructor and assignment operator.</span></code>
+<code>        Grid(const Grid&amp; src) = default;</code>
+<code>        Grid&amp; operator=(const Grid&amp; rhs) = default;</code>
+<code> </code>
+<code>        <span class="color3">// Explicitly default a move constructor and assignment operator.</span></code>
+<code>        Grid(Grid&amp;&amp; src) = default;</code>
+<code>        Grid&amp; operator=(Grid&amp;&amp; rhs) = default;</code>
+<code> </code>
+<code>        std::optional&lt;T&gt;&amp; at(std::size_t x, std::size_t y);</code>
+<code>        const std::optional&lt;T&gt;&amp; at(std::size_t x, std::size_t y) const;</code>
+<code> </code>
+<code>        std::size_t getHeight() const { return HEIGHT; }</code>
+<code>        std::size_t getWidth() const { return WIDTH; }</code>
+<code>    private:</code>
+<code>        void verifyCoordinate(std::size_t x, std::size_t y) const;</code>
+<code> </code>
+<code>        std::optional&lt;T&gt; m_cells[WIDTH][HEIGHT];</code>
+<code>};</code></pre>
+     <p>
+      You can specialize this class template for
+      <code>
+       const char*
+      </code>
+      C-style strings like this:
+     </p>
+     <pre id="c26-code-0023"><code> </code>
+<code><b>export template &lt;std::size_t WIDTH, std::size_t HEIGHT&gt;</b></code>
+<code><b>class Grid&lt;const char*, WIDTH, HEIGHT&gt;</b></code>
+<code>{</code>
+<code>    public:</code>
+<code>        Grid() = default;</code>
+<code>        virtual ˜Grid() = default;</code>
+<code> </code>
+<code>        <span class="color3">// Explicitly default a copy constructor and assignment operator.</span></code>
+<code>        Grid(const Grid&amp; src) = default;</code>
+<code>        Grid&amp; operator=(const Grid&amp; rhs) = default;</code>
+<code> </code>
+<code>        <span class="color3">// Explicitly default a move constructor and assignment operator.</span></code>
+<code>        Grid(Grid&amp;&amp; src) = default;</code>
+<code>        Grid&amp; operator=(Grid&amp;&amp; rhs) = default;</code>
+<code> </code>
+<span aria-label="953" epub:type="pagebreak" id="Page_953" role="doc-pagebreak"></span><code>        <b>std::optional&lt;std::string&gt;&amp; at(std::size_t x, std::size_t y);</b></code>
+<code>        <b>const std::optional&lt;std::string&gt;&amp; at(std::size_t x, std::size_t y) const;</b></code>
+<code> </code>
+<code>        std::size_t getHeight() const { return HEIGHT; }</code>
+<code>        std::size_t getWidth() const { return WIDTH; }</code>
+<code>    private:</code>
+<code>        void verifyCoordinate(std::size_t x, std::size_t y) const;</code>
+<code> </code>
+<code>        <b>std::optional&lt;std::string&gt; m_cells[WIDTH][HEIGHT];</b></code>
+<code>};</code></pre>
+     <p>
+      In this case, you are not specializing all the template parameters. Therefore, your template header looks like this:
+     </p>
+     <pre id="c26-code-0024"><code>export template &lt;std::size_t WIDTH, std::size_t HEIGHT&gt;</code>
+<code>class Grid&lt;const char*, WIDTH, HEIGHT&gt;</code></pre>
+     <p>
+      This class template has only two parameters:
+      <code>
+       WIDTH
+      </code>
+      and
+      <code>
+       HEIGHT
+      </code>
+      . However, you're writing a
+      <code>
+       Grid
+      </code>
+      class for three arguments:
+      <code>
+       T
+      </code>
+      ,
+      <code>
+       WIDTH
+      </code>
+      , and
+      <code>
+       HEIGHT
+      </code>
+      . Thus, your template parameter list contains two parameters, and the explicit
+      <code>
+       Grid&lt;const char*, WIDTH, HEIGHT&gt;
+      </code>
+      contains three arguments. When you instantiate the template, you must still specify three parameters. You can't instantiate the template with only height and width.
+     </p>
+     <pre id="c26-code-0025"><code>Grid&lt;int, 2, 2&gt; myIntGrid;            <span class="color3">// Uses the original Grid</span></code>
+<code>Grid&lt;const char*, 2, 2&gt; myStringGrid; <span class="color3">// Uses the partial specialization</span></code>
+<code>Grid&lt;2, 3&gt; test;                      <span class="color3">// DOES NOT COMPILE! No type specified.</span></code></pre>
+     <p>
+      Yes, the syntax might be confusing. Additionally, in partial specializations, unlike in full specializations, you must include the template header in front of every member function definition, as in the following example:
+     </p>
+     <pre id="c26-code-0026"><code>template &lt;std::size_t WIDTH, std::size_t HEIGHT&gt;</code>
+<code>const std::optional&lt;std::string&gt;&amp;</code>
+<code>    Grid&lt;const char*, WIDTH, HEIGHT&gt;::at(std::size_t x, std::size_t y) const</code>
+<code>{</code>
+<code>    verifyCoordinate(x, y);</code>
+<code>    return m_cells[x][y];</code>
+<code>}</code></pre>
+     <p id="c26-para-0046">
+      You need this template header with two parameters to show that this member function is parameterized on those two parameters. Note that wherever you refer to the full class name, you must use
+      <code>
+       Grid&lt;const char*, WIDTH, HEIGHT&gt;
+      </code>
+      .
+     </p>
+     <p id="c26-para-0047">
+      The previous example does not show the true power of partial specialization. You can write specialized implementations for a subset of possible types without specializing individual types. For example, you can write a specialization of the
+      <code>
+       Grid
+      </code>
+      class template for all pointer types. The copy constructor and assignment operator of this specialization perform deep copies of objects to which pointers point, instead of shallow copies.
+     </p>
+     <p>
+      The following is the class definition, assuming that you're specializing the initial version of
+      <code>
+       Grid
+      </code>
+      with only one template parameter. In this implementation,
+      <code>
+       Grid
+      </code>
+      becomes the owner of supplied data, so it automatically frees the memory when necessary. Copy/move constructors and copy/move assignment
+      <span aria-label="954" epub:type="pagebreak" id="Page_954" role="doc-pagebreak">
+      </span>
+      operators are required. As usual, the copy assignment operator uses the copy-and-swap idiom, and the move assignment operator uses the move-and-swap idiom, as discussed in
+      <a href="c09.xhtml">
+       Chapter 9
+      </a>
+      , “Mastering Classes and Objects,” which requires a
+      <code>
+       noexcept swap()
+      </code>
+      member function.
+     </p>
+     <pre id="c26-code-0027"><code><b>export template &lt;typename U&gt;</b></code>
+<code><b>class Grid&lt;U*&gt;</b></code>
+<code>{</code>
+<code>    public:</code>
+<code>        explicit Grid(std::size_t width = DefaultWidth,</code>
+<code>            std::size_t height = DefaultHeight);</code>
+<code>        virtual ˜Grid() = default;</code>
+<code> </code>
+<code>        <span class="color3">// Copy constructor and copy assignment operator.</span></code>
+<code>        <b>Grid(const Grid&amp; src);</b></code>
+<code>        <b>Grid&amp; operator=(const Grid&amp; rhs);</b></code>
+<code> </code>
+<code>        <span class="color3">// Move constructor and move assignment operator.</span></code>
+<code>        <b>Grid(Grid&amp;&amp; src) noexcept;</b></code>
+<code>        <b>Grid&amp; operator=(Grid&amp;&amp; rhs) noexcept;</b></code>
+<code> </code>
+<code>        <b>void swap(Grid&amp; other) noexcept;</b></code>
+<code> </code>
+<code>        <b>std::unique_ptr&lt;U&gt;&amp; at(std::size_t x, std::size_t y);</b></code>
+<code>        <b>const std::unique_ptr&lt;U&gt;&amp; at(std::size_t x, std::size_t y) const;</b></code>
+<code> </code>
+<code>        std::size_t getHeight() const { return m_height; }</code>
+<code>        std::size_t getWidth() const { return m_width; }</code>
+<code> </code>
+<code>        static constexpr std::size_t DefaultWidth { 10 };</code>
+<code>        static constexpr std::size_t DefaultHeight { 10 };</code>
+<code> </code>
+<code>    private:</code>
+<code>        void verifyCoordinate(std::size_t x, std::size_t y) const;</code>
+<code> </code>
+<code>        <b>std::vector&lt;std::unique_ptr&lt;U&gt;&gt; m_cells;</b></code>
+<code>        std::size_t m_width { 0 }, m_height { 0 };</code>
+<code>};</code></pre>
+     <p>
+      As usual, these two lines are the crux of the matter:
+     </p>
+     <pre id="c26-code-0028"><code>export template &lt;typename U&gt;</code>
+<code>class Grid&lt;U*&gt;</code></pre>
+     <p id="c26-para-0050">
+      This syntax states that this class template is a specialization of the
+      <code>
+       Grid
+      </code>
+      class template for all pointer types. Important to know, when you have an instantiation such as
+      <code>
+       Grid&lt;int*&gt;
+      </code>
+      , then
+      <code>
+       U
+      </code>
+      is
+      <code>
+       int
+      </code>
+      , not
+      <code>
+       int*
+      </code>
+      . That might be a bit unintuitive, but that's the way it works.
+     </p>
+     <p>
+      Here is an example of using this partial specialization:
+     </p>
+     <pre id="c26-code-0029"><code>Grid&lt;int&gt; myIntGrid;        <span class="color3">// Uses the non-specialized grid.</span></code>
+<code>Grid&lt;int*&gt; psGrid { 2, 2 }; <span class="color3">// Uses the partial specialization for pointer types.</span></code>
+<code> </code>
+<code>psGrid.at(0, 0) = make_unique&lt;int&gt;(1);</code>
+<code>psGrid.at(0, 1) = make_unique&lt;int&gt;(2);</code>
+<code>psGrid.at(1, 0) = make_unique&lt;int&gt;(3);</code>
+<code> </code>
+<span aria-label="955" epub:type="pagebreak" id="Page_955" role="doc-pagebreak"></span><code>Grid&lt;int*&gt; psGrid2 { psGrid };</code>
+<code>Grid&lt;int*&gt; psGrid3;</code>
+<code>psGrid3 = psGrid2;</code>
+<code> </code>
+<code>auto&amp; element { psGrid2.at(1, 0) };</code>
+<code>if (element != nullptr) {</code>
+<code>    println("{}", *element);</code>
+<code>    *element = 6;</code>
+<code>}</code>
+<code>println("{}", *psGrid.at(1, 0));  <span class="color3">// psGrid is not modified.</span></code>
+<code>println("{}", *psGrid2.at(1, 0)); <span class="color3">// psGrid2 is modified.</span></code></pre>
+     <p>
+      Here is the output:
+     </p>
+     <pre id="c26-code-0030"><code>3</code>
+<code>3</code>
+<code>6</code></pre>
+     <p>
+      The implementations of the member functions are rather straightforward, except for the copy constructor, which uses the copy constructor of individual elements to make a deep copy of them:
+     </p>
+     <pre id="c26-code-0031"><code>template &lt;typename U&gt;</code>
+<code>Grid&lt;U*&gt;::Grid(const Grid&amp; src)</code>
+<code>    : Grid { src.m_width, src.m_height }</code>
+<code>{</code>
+<code>    <span class="color3">// The ctor-initializer of this constructor delegates first to the</span></code>
+<code>    <span class="color3">// non-copy constructor to allocate the proper amount of memory.</span></code>
+<code> </code>
+<code>    <span class="color3">// The next step is to copy the data.</span></code>
+<code>    for (std::size_t i { 0 }; i &lt; m_cells.size(); ++i) {</code>
+<code>        <span class="color3">// Make a deep copy of the element by using its copy constructor.</span></code>
+<code>        if (src.m_cells[i] != nullptr) {</code>
+<code>            m_cells[i] = std::make_unique&lt;U&gt;(*src.m_cells[i]);</code>
+<code>        }</code>
+<code>    }</code>
+<code>}</code></pre>
+    </section>
+    <section aria-labelledby="head-2-261">
+     <span id="c26-sec-0012">
+     </span>
+     <h2 id="head-2-261">
+      EMULATING FUNCTION PARTIAL SPECIALIZATION WITH OVERLOADING
+     </h2>
+     <p>
+      The C++ standard does not permit partial template specialization of function templates. Instead, you can overload the function template with another function template. As an example, let's look again at the
+      <code>
+       Find()
+      </code>
+      algorithm from
+      <a href="c12.xhtml">
+       Chapter 12
+      </a>
+      . It consists of a generic
+      <code>
+       Find()
+      </code>
+      function template and a non-template overload for
+      <code>
+       const char*
+      </code>
+      s. Here is a reminder:
+     </p>
+     <pre id="c26-code-0032"><code>template &lt;typename T&gt;</code>
+<code>optional&lt;size_t&gt; Find(const T&amp; value, const T* arr, size_t size)</code>
+<code>{</code>
+<code>    for (size_t i { 0 }; i &lt; size; ++i) {</code>
+<code>        if (arr[i] == value) {</code>
+<code>            return i; <span class="color3">// found it; return the index.</span></code>
+<code>        }</code>
+<code>    }</code>
+<code>    return {}; <span class="color3">// failed to find it; return empty optional.</span></code>
+<code>}</code>
+<span aria-label="956" epub:type="pagebreak" id="Page_956" role="doc-pagebreak"></span><code> </code>
+<code>optional&lt;size_t&gt; Find(const char* value, const char** arr, size_t size)</code>
+<code>{</code>
+<code>    for (size_t i { 0 }; i &lt; size; ++i) {</code>
+<code>        if (strcmp(arr[i], value) == 0) {</code>
+<code>            return i; <span class="color3">// found it; return the index.</span></code>
+<code>        }</code>
+<code>    }</code>
+<code>    return {}; <span class="color3">// failed to find it; return empty optional.</span></code>
+<code>}</code></pre>
+     <p>
+      Suppose that you want to customize
+      <code>
+       Find()
+      </code>
+      so that it dereferences pointers to use
+      <code>
+       operator==
+      </code>
+      directly on the objects pointed to. The correct way to implement this behavior is to overload the
+      <code>
+       Find()
+      </code>
+      function template with another, more specialized, function template:
+     </p>
+     <pre id="c26-code-0033"><code>template &lt;typename T&gt;</code>
+<code><b>optional&lt;size_t&gt; Find(T* value, T* const* arr, size_t size)</b></code>
+<code>{</code>
+<code>    for (size_t i { 0 }; i &lt; size; ++i) {</code>
+<code>        <b>if (*arr[i] == *value) {</b></code>
+<code>            return i; <span class="color3">// Found it; return the index.</span></code>
+<code>        }</code>
+<code>    }</code>
+<code>    return {}; <span class="color3">// failed to find it; return empty optional.</span></code>
+<code>}</code></pre>
+     <section>
+      <aside>
+       <div class="top hr">
+        <hr/>
+       </div>
+       <section class="feature1">
+        <p id="c26-para-0057">
+         <b>
+          NOTE
+         </b>
+         <i>
+          Between all overloads, the compiler always chooses the “most specific” one to call. If a non-template overload is just as specific as a function template instantiation, then the compiler prefers the non-template overload
+         </i>
+         .
+        </p>
+        <div class="bottom hr">
+         <hr/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <p>
+      The following code calls
+      <code>
+       Find()
+      </code>
+      several times. The comments say which overload of
+      <code>
+       Find()
+      </code>
+      is called.
+     </p>
+     <pre id="c26-code-0034"><code>optional&lt;size_t&gt; res;</code>
+<code> </code>
+<code>int myInt { 3 }, intArray[] { 1, 2, 3, 4 };</code>
+<code>size_t sizeArray { size(intArray) };</code>
+<code>res = Find(myInt, intArray, sizeArray);    <span class="color3">// calls Find&lt;int&gt; by deduction</span></code>
+<code>res = Find&lt;int&gt;(myInt, intArray, sizeArray); <span class="color3">// calls Find&lt;int&gt; explicitly</span></code>
+<code> </code>
+<code>double myDouble { 5.6 }, doubleArray[] { 1.2, 3.4, 5.7, 7.5 };</code>
+<code>sizeArray = size(doubleArray);</code>
+<code><span class="color3">// calls Find&lt;double&gt; by deduction</span></code>
+<code>res = Find(myDouble, doubleArray, sizeArray);</code>
+<code><span class="color3">// calls Find&lt;double&gt; explicitly</span></code>
+<code>res = Find&lt;double&gt;(myDouble, doubleArray, sizeArray);</code>
+<code> </code>
+<code>const char* word { "two" };</code>
+<code>const char* words[] { "one", "two", "three", "four" };</code>
+<code>sizeArray = size(words);</code>
+<span aria-label="957" epub:type="pagebreak" id="Page_957" role="doc-pagebreak"></span><code><span class="color3">// calls Find&lt;const char*&gt; explicitly</span></code>
+<code>res = Find&lt;const char*&gt;(word, words, sizeArray);</code>
+<code><span class="color3">// calls overloaded Find for const char*s</span></code>
+<code>res = Find(word, words, sizeArray);</code>
+<code> </code>
+<code>int *intPointer { &amp;myInt }, *pointerArray[] { &amp;myInt, &amp;myInt };</code>
+<code>sizeArray = size(pointerArray);</code>
+<code><span class="color3">// calls the overloaded Find for pointers</span></code>
+<code>res = Find(intPointer, pointerArray, sizeArray);</code>
+<code> </code>
+<code>SpreadsheetCell cell1 { 10 };</code>
+<code>SpreadsheetCell cellArray[] { SpreadsheetCell { 4 }, SpreadsheetCell { 10 } };</code>
+<code>sizeArray = size(cellArray);</code>
+<code><span class="color3">// calls Find&lt;SpreadsheetCell&gt; by deduction</span></code>
+<code>res = Find(cell1, cellArray, sizeArray);</code>
+<code><span class="color3">// calls Find&lt;SpreadsheetCell&gt; explicitly</span></code>
+<code>res = Find&lt;SpreadsheetCell&gt;(cell1, cellArray, sizeArray);</code>
+<code> </code>
+<code>SpreadsheetCell *cellPointer { &amp;cell1 };</code>
+<code>SpreadsheetCell *cellPointerArray[] { &amp;cell1, &amp;cell1 };</code>
+<code>sizeArray = size(cellPointerArray);</code>
+<code><span class="color3">// Calls the overloaded Find for pointers</span></code>
+<code>res = Find(cellPointer, cellPointerArray, sizeArray);</code></pre>
+    </section>
+    <section aria-labelledby="head-2-262">
+     <span id="c26-sec-0014">
+     </span>
+     <h2 id="head-2-262">
+      TEMPLATE RECURSION
+     </h2>
+     <p id="c26-para-0059">
+      Templates in C++ provide capabilities that go far beyond the simple class and function templates you have seen so far in this chapter and
+      <a href="c12.xhtml">
+       Chapter 12
+      </a>
+      . One of these capabilities is
+      <i>
+       template recursion
+      </i>
+      . Template recursion is similar to function recursion, in which a function is defined in terms of calling itself with a slightly easier version of the problem. This section first provides a motivation for template recursion and then shows how to implement it.
+     </p>
+     <section>
+      <span id="c26-sec-0015">
+      </span>
+      <h3 id="head-3-482">
+       An N-Dimensional Grid: First Attempt
+      </h3>
+      <p>
+       Up to now, the
+       <code>
+        Grid
+       </code>
+       class template supports only two dimensions, which limits its usefulness. What if you want to write a 3-D tic-tac-toe game or write a math program with four-dimensional matrices? You could, of course, write a templated or non-templated class for each of those dimensions. However, that would repeat a lot of code. Another approach would be to write only a single-dimensional grid. Then, you could create a
+       <code>
+        Grid
+       </code>
+       of any dimension by instantiating the
+       <code>
+        Grid
+       </code>
+       with another
+       <code>
+        Grid
+       </code>
+       as its element type. This
+       <code>
+        Grid
+       </code>
+       element type could itself be instantiated with a
+       <code>
+        Grid
+       </code>
+       as its element type, and so on. Here is the implementation of a
+       <code>
+        OneDGrid
+       </code>
+       class template. It's simply a one-dimensional version of the
+       <code>
+        Grid
+       </code>
+       class template from earlier examples, with the addition of a
+       <code>
+        resize()
+       </code>
+       member function, and the substitution of
+       <code>
+        operator[]
+       </code>
+       for
+       <code>
+        at()
+       </code>
+       . Just as with Standard Library containers such as
+       <code>
+        vector
+       </code>
+       , the
+       <code>
+        operator[]
+       </code>
+       implementation does not perform any bounds checking. For this example,
+       <code>
+        m_elements
+       </code>
+       stores instances of
+       <code>
+        T
+       </code>
+       instead of instances of
+       <code>
+        std::optional&lt;T&gt;
+       </code>
+       .
+      </p>
+      <pre id="c26-code-0035"><code>export template &lt;typename T&gt;</code>
+<code>class OneDGrid final</code>
+<code>{</code>
+<code>    public:</code>
+<span aria-label="958" epub:type="pagebreak" id="Page_958" role="doc-pagebreak"></span><code>        explicit OneDGrid(std::size_t size = DefaultSize) { resize(size); }</code>
+<code> </code>
+<code>        T&amp; operator[](std::size_t x) { return m_elements[x]; }</code>
+<code>        const T&amp; operator[](std::size_t x) const { return m_elements[x]; }</code>
+<code> </code>
+<code>        void resize(std::size_t newSize) { m_elements.resize(newSize); }</code>
+<code>        std::size_t getSize() const { return m_elements.size(); }</code>
+<code> </code>
+<code>        static constexpr std::size_t DefaultSize { 10 };</code>
+<code>    private:</code>
+<code>        std::vector&lt;T&gt; m_elements;</code>
+<code>};</code></pre>
+      <p>
+       With this implementation of
+       <code>
+        OneDGrid
+       </code>
+       , you can create multidimensional grids like this:
+      </p>
+      <pre id="c26-code-0036"><code>OneDGrid&lt;int&gt; singleDGrid;</code>
+<code>OneDGrid&lt;OneDGrid&lt;int&gt;&gt; twoDGrid;</code>
+<code>OneDGrid&lt;OneDGrid&lt;OneDGrid&lt;int&gt;&gt;&gt; threeDGrid;</code>
+<code>singleDGrid[3] = 5;</code>
+<code>twoDGrid[3][3] = 5;</code>
+<code>threeDGrid[3][3][3] = 5;</code></pre>
+      <p id="c26-para-0062">
+       This code works fine, but the declarations are messy. As the next section explains, we can do better.
+      </p>
+     </section>
+     <section>
+      <span id="c26-sec-0016">
+      </span>
+      <h3 id="head-3-483">
+       A Real
+       <i>
+        N
+       </i>
+       -Dimensional Grid
+      </h3>
+      <p>
+       You can use template recursion to write a “real”
+       <i>
+        N
+       </i>
+       -dimensional grid because dimensionality of grids is essentially recursive. You can see that in this declaration:
+      </p>
+      <pre id="c26-code-0037"><code>OneDGrid&lt;OneDGrid&lt;OneDGrid&lt;int&gt;&gt;&gt; threeDGrid;</code></pre>
+      <p>
+       You can think of each nested
+       <code>
+        OneDGrid
+       </code>
+       as a recursive step, with the
+       <code>
+        OneDGrid
+       </code>
+       of
+       <code>
+        int
+       </code>
+       as the base case. In other words, a three-dimensional grid is a single-dimensional grid of single-dimensional grids of single-dimensional grids of
+       <code>
+        int
+       </code>
+       s. Instead of requiring the user to do this recursion, you can write a class template that does it for you. You can then create
+       <i>
+        N
+       </i>
+       -dimensional grids like this:
+      </p>
+      <pre id="c26-code-0038"><code>NDGrid&lt;int, 1&gt; singleDGrid;</code>
+<code>NDGrid&lt;int, 2&gt; twoDGrid;</code>
+<code>NDGrid&lt;int, 3&gt; threeDGrid;</code></pre>
+      <p id="c26-para-0065">
+       The
+       <code>
+        NDGrid
+       </code>
+       class template takes a type for its element and an integer specifying its “dimensionality.” The key insight here is that the element type of the
+       <code>
+        NDGrid
+       </code>
+       is not the element type specified in the template parameter list, but is in fact another
+       <code>
+        NDGrid
+       </code>
+       of dimensionality one less than the current one. In other words, a three-dimensional grid is a
+       <code>
+        vector
+       </code>
+       of two-dimensional grids; the two-dimensional grids are each
+       <code>
+        vector
+       </code>
+       s of one-dimensional grids.
+      </p>
+      <p id="c26-para-0066">
+       With recursion, you need a base case. You can write a partial specialization of
+       <code>
+        NDGrid
+       </code>
+       for dimensionality of 1, in which the element type is not another
+       <code>
+        NDGrid
+       </code>
+       , but is in fact the element type specified by the template parameter.
+      </p>
+      <p id="c26-para-0067">
+       The following shows the
+       <code>
+        NDGrid
+       </code>
+       class template definition and implementation, with highlights showing where it differs from the
+       <code>
+        OneDGrid
+       </code>
+       shown in the previous section. The
+       <code>
+        m_elements
+       </code>
+       data member is now a
+       <code>
+        vector
+       </code>
+       of
+       <code>
+        NDGrid&lt;T, N-1&gt;
+       </code>
+       ; this is the recursive step. Also,
+       <code>
+        operator[]
+       </code>
+       returns a reference to the element type, which is again
+       <code>
+        NDGrid&lt;T, N-1&gt;
+       </code>
+       , not
+       <code>
+        T
+       </code>
+       .
+      </p>
+      <p>
+       <span aria-label="959" epub:type="pagebreak" id="Page_959" role="doc-pagebreak">
+       </span>
+       The trickiest aspect of the implementation, other than the template recursion itself, is appropriately sizing each dimension of the grid. This implementation creates the
+       <i>
+        N
+       </i>
+       -dimensional grid with every dimension of equal size. It's significantly more difficult to specify a separate size for each dimension. A user should have the ability to create a grid with a specified size, such as 20 or 50. Thus, the constructor takes an integer size parameter. The
+       <code>
+        resize()
+       </code>
+       member function is modified to resize
+       <code>
+        m_elements
+       </code>
+       and to initialize each element with
+       <code>
+        NDGrid&lt;T, N-1&gt; { newSize }
+       </code>
+       , which recursively resizes all dimensions of the grid to the new size.
+      </p>
+      <pre id="c26-code-0039"><code><b>export template &lt;typename T, std::size_t N&gt;</b></code>
+<code><b>class NDGrid final</b></code>
+<code>{</code>
+<code>    public:</code>
+<code>        <b>explicit NDGrid(std::size_t size = DefaultSize) { resize(size); }</b></code>
+<code> </code>
+<code>        <b>NDGrid&lt;T, N-1&gt;&amp; operator[](std::size_t x) { return m_elements[x]; }</b></code>
+<code>        <b>const NDGrid&lt;T, N-1&gt;&amp; operator[](std::size_t x) const {</b></code>
+<code>            <b>return m_elements[x]; }</b></code>
+<code> </code>
+<code>        void resize(std::size_t newSize)</code>
+<code>        {</code>
+<code>            <b>m_elements.resize(newSize, NDGrid&lt;T, N-1&gt; { newSize });</b></code>
+<code>        }</code>
+<code> </code>
+<code>        std::size_t getSize() const { return m_elements.size(); }</code>
+<code> </code>
+<code>        static constexpr std::size_t DefaultSize { 10 };</code>
+<code>    private:</code>
+<code>        <b>std::vector&lt;NDGrid&lt;T, N-1&gt;&gt; m_elements;</b></code>
+<code>};</code></pre>
+      <p>
+       The template definition for the base case is a partial specialization for dimension 1. The following shows the definition and implementation. You must rewrite a lot of the code because a specialization never inherits any code from the primary template. Highlights show the differences from the non-specialized
+       <code>
+        NDGrid
+       </code>
+       .
+      </p>
+      <pre id="c26-code-0040"><code><b>export template &lt;typename T&gt;</b></code>
+<code><b>class NDGrid&lt;T, 1&gt; final</b></code>
+<code>{</code>
+<code>    public:</code>
+<code>        explicit NDGrid(std::size_t size = DefaultSize) { resize(size); }</code>
+<code> </code>
+<code>        <b>T&amp; operator[](std::size_t x) { return m_elements[x]; }</b></code>
+<code>        <b>const T&amp; operator[](std::size_t x) const { return m_elements[x]; }</b></code>
+<code> </code>
+<code>        void resize(std::size_t newSize) { m_elements.resize(newSize); }</code>
+<code>        std::size_t getSize() const { return m_elements.size(); }</code>
+<code> </code>
+<code>        static constexpr std::size_t DefaultSize { 10 };</code>
+<code>    private:</code>
+<code>        <b>std::vector&lt;T&gt; m_elements;</b></code>
+<code>};</code></pre>
+      <p id="c26-para-0070">
+       Here the recursion ends: the element type is
+       <code>
+        T
+       </code>
+       , not another template instantiation.
+      </p>
+      <p>
+       <span aria-label="960" epub:type="pagebreak" id="Page_960" role="doc-pagebreak">
+       </span>
+       Now, you can write code like this:
+      </p>
+      <pre id="c26-code-0041"><code>NDGrid&lt;int, 3&gt; my3DGrid { 4 };</code>
+<code>my3DGrid[2][1][2] = 5;</code>
+<code>my3DGrid[1][1][1] = 5;</code>
+<code>println("{}", my3DGrid[2][1][2]);</code></pre>
+      <p id="c26-para-0072">
+       To avoid the code duplication between the primary template and the specialization, you could pull the duplicate code out into a base class and then derive both the primary template and the specialization from that base class; but in this small example, the overhead added by that technique would outweigh the savings.
+      </p>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-263">
+     <span id="c26-sec-0017">
+     </span>
+     <h2 id="head-2-263">
+      VARIADIC TEMPLATES
+     </h2>
+     <p>
+      Normal templates can take only a fixed number of template parameters.
+      <i>
+       Variadic templates
+      </i>
+      can take a variable number of template parameters. For example, the following code defines a template that can accept any number of template parameters, using a
+      <i>
+       parameter pack
+      </i>
+      called
+      <code>
+       Types
+      </code>
+      :
+     </p>
+     <pre id="c26-code-0042"><code>template &lt;typename… Types&gt;</code>
+<code>class MyVariadicTemplate { };</code></pre>
+     <section>
+      <aside>
+       <div class="top hr">
+        <hr/>
+       </div>
+       <section class="feature1">
+        <p id="c26-para-0075">
+         <b>
+          NOTE
+         </b>
+         <i>
+          The three dots following
+         </i>
+         <code>
+          typename
+         </code>
+         <i>
+          are not an error. This is the syntax to define a parameter pack for variadic templates. A parameter pack is something that can accept a variable number of arguments.
+         </i>
+        </p>
+        <div class="bottom hr">
+         <hr/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <p>
+      You can instantiate
+      <code>
+       MyVariadicTemplate
+      </code>
+      with any number of template arguments, as in this example:
+     </p>
+     <pre id="c26-code-0043"><code>MyVariadicTemplate&lt;int&gt; instance1;</code>
+<code>MyVariadicTemplate&lt;string, double, vector&lt;int&gt;&gt; instance2;</code></pre>
+     <p>
+      It can even be instantiated with zero template arguments:
+     </p>
+     <pre id="c26-code-0044"><code>MyVariadicTemplate&lt;&gt; instance3;</code></pre>
+     <p>
+      To disallow instantiating a variadic template with zero template arguments, you can write the template as follows:
+     </p>
+     <pre id="c26-code-0045"><code><b>template &lt;typename T1, typename… Types&gt;</b></code>
+<code>class MyVariadicTemplate { };</code></pre>
+     <p id="c26-para-0079">
+      With this definition, trying to instantiate
+      <code>
+       MyVariadicTemplate
+      </code>
+      with zero template arguments results in a compilation error.
+     </p>
+     <p id="c26-para-0080">
+      It is not possible to directly iterate over the arguments given to a variadic template. The only way you can do this is with the aid of template recursion or fold expressions. The following sections show examples of both.
+     </p>
+     <span aria-label="961" epub:type="pagebreak" id="Page_961" role="doc-pagebreak">
+     </span>
+     <section>
+      <span id="c26-sec-0019">
+      </span>
+      <h3 id="head-3-484">
+       Type-Safe Variable-Length Argument Lists
+      </h3>
+      <p>
+       Variadic templates allow you to create
+       <i>
+        type-safe variable-length
+       </i>
+       argument lists. The following example defines a variadic template called
+       <code>
+        processValues()
+       </code>
+       , allowing it to accept a variable number of arguments with different types in a type-safe manner. The
+       <code>
+        processValues()
+       </code>
+       function processes each value in the variable-length argument list and executes a function called
+       <code>
+        handleValue()
+       </code>
+       for each single argument. This means you have to write an overload of
+       <code>
+        handleValue()
+       </code>
+       for each type that you want to handle—
+       <code>
+        int
+       </code>
+       ,
+       <code>
+        double
+       </code>
+       , and
+       <code>
+        string
+       </code>
+       in this example:
+      </p>
+      <pre id="c26-code-0046"><code>void handleValue(int value) { println("Integer: {}", value); }</code>
+<code>void handleValue(double value) { println("Double: {}", value); }</code>
+<code>void handleValue(const string&amp; value) { println("String: {}", value); }</code>
+<code> </code>
+<code>void processValues() <span class="color3">// Base case to stop recursion</span></code>
+<code>{ <span class="color3">/* Nothing to do in this base case. */</span> }</code>
+<code> </code>
+<code>template &lt;typename T1, typename… Tn&gt;</code>
+<code>void processValues(const T1&amp; arg1, const Tn&amp;… args)</code>
+<code>{</code>
+<code>    handleValue(arg1);</code>
+<code>    processValues(args…);</code>
+<code>}</code></pre>
+      <p id="c26-para-0082">
+       This example demonstrates a double use of the triple dots (
+       <code>
+        …
+       </code>
+       ) operator. This operator appears in three places and has two different meanings. First, it is used after
+       <code>
+        typename
+       </code>
+       in the template parameter list and after type
+       <code>
+        Tn
+       </code>
+       in the function parameter list. In both cases, it denotes a
+       <i>
+        parameter pack
+       </i>
+       . A parameter pack can accept a variable number of arguments.
+      </p>
+      <p>
+       The second use of the
+       <code>
+        …
+       </code>
+       operator is following the parameter name
+       <code>
+        args
+       </code>
+       in the function body. In this case, it means a
+       <i>
+        parameter pack expansion
+       </i>
+       ; the operator
+       <i>
+        unpacks
+       </i>
+       /
+       <i>
+        expands
+       </i>
+       the parameter pack into separate arguments. It basically takes what is on the left side of the operator and repeats it for every template parameter in the pack, separated by commas. Take the following statement:
+      </p>
+      <pre id="c26-code-0047"><code>processValues(args…);</code></pre>
+      <p id="c26-para-0084">
+       This statement expands the
+       <code>
+        args
+       </code>
+       parameter pack into its separate arguments, separated by commas, and then calls the
+       <code>
+        processValues()
+       </code>
+       function with the list of expanded arguments. The template always requires at least one parameter,
+       <code>
+        T1
+       </code>
+       . The act of recursively calling
+       <code>
+        processValues()
+       </code>
+       with
+       <code>
+        args…
+       </code>
+       is that on each call there is one parameter less.
+      </p>
+      <p id="c26-para-0085">
+       Because the implementation of the
+       <code>
+        processValues()
+       </code>
+       function is recursive, you need to have a way to stop the recursion. This is done by implementing a
+       <code>
+        processValues()
+       </code>
+       function that accepts no arguments.
+      </p>
+      <p>
+       You can test the
+       <code>
+        processValues()
+       </code>
+       variadic template as follows:
+      </p>
+      <pre id="c26-code-0048"><code>processValues(1, 2, 3.56, "test", 1.1f);</code></pre>
+      <p>
+       The recursive calls generated by this example are as follows:
+      </p>
+      <pre id="c26-code-0049"><code>processValues(1, 2, 3.56, "test", 1.1f);</code>
+<code>  handleValue(1);</code>
+<span aria-label="962" epub:type="pagebreak" id="Page_962" role="doc-pagebreak"></span><code>  processValues(2, 3.56, "test", 1.1f);</code>
+<code>    handleValue(2);</code>
+<code>    processValues(3.56, "test", 1.1f);</code>
+<code>      handleValue(3.56);</code>
+<code>      processValues("test", 1.1f);</code>
+<code>        handleValue("test");</code>
+<code>        processValues(1.1f);</code>
+<code>          handleValue(1.1f);</code>
+<code>          processValues();</code></pre>
+      <p id="c26-para-0088">
+       It is important to remember that this implementation of variable-length argument lists is fully type-safe. The
+       <code>
+        processValues()
+       </code>
+       function automatically calls the correct
+       <code>
+        handleValue()
+       </code>
+       overload based on the actual type. The compiler will issue an error when you call
+       <code>
+        processValues()
+       </code>
+       with an argument of a certain type for which there is no
+       <code>
+        handleValue()
+       </code>
+       overload defined.
+      </p>
+      <p>
+       You can also use
+       <i>
+        forwarding references
+       </i>
+       , introduced in
+       <a href="c12.xhtml">
+        Chapter 12
+       </a>
+       , in the implementation of
+       <code>
+        processValues()
+       </code>
+       . The following implementation uses forwarding references,
+       <code>
+        T&amp;&amp;
+       </code>
+       , and uses
+       <code>
+        std::forward()
+       </code>
+       for
+       <i>
+        perfect forwarding
+       </i>
+       of all parameters. Perfect forwarding means that if an rvalue is passed to
+       <code>
+        processValues()
+       </code>
+       , it is forwarded as an rvalue reference. If an lvalue is passed, it is forwarded as an lvalue reference.
+      </p>
+      <pre id="c26-code-0050"><code>void processValues() <span class="color3">// Base case to stop recursion</span></code>
+<code>{ <span class="color3">/* Nothing to do in this base case.*/</span> }</code>
+<code> </code>
+<code>template &lt;typename T1, typename… Tn&gt;</code>
+<code>void processValues(T1&amp;&amp; arg1, Tn&amp;&amp;… args)</code>
+<code>{</code>
+<code>    handleValue(forward&lt;T1&gt;(arg1));</code>
+<code>    processValues(forward&lt;Tn&gt;(args)…);</code>
+<code>}</code></pre>
+      <p>
+       There is one statement that needs further explanation:
+      </p>
+      <pre id="c26-code-0051"><code>processValues(forward&lt;Tn&gt;(args)…);</code></pre>
+      <p>
+       The
+       <code>
+        …
+       </code>
+       operator is used to unpack the parameter pack. It uses
+       <code>
+        std::forward()
+       </code>
+       on each individual argument in the pack and separates them with commas. For example, suppose
+       <code>
+        args
+       </code>
+       is a parameter pack with three arguments,
+       <code>
+        a1
+       </code>
+       ,
+       <code>
+        a2
+       </code>
+       , and
+       <code>
+        a3
+       </code>
+       , of three types,
+       <code>
+        A1
+       </code>
+       ,
+       <code>
+        A2
+       </code>
+       , and
+       <code>
+        A3
+       </code>
+       . The expanded call then looks as follows:
+      </p>
+      <pre id="c26-code-0052"><code>processValues(forward&lt;A1&gt;(a1),</code>
+<code>              forward&lt;A2&gt;(a2),</code>
+<code>              forward&lt;A3&gt;(a3));</code></pre>
+      <p>
+       Inside the body of a function using a parameter pack, you can retrieve the number of arguments in the pack using
+       <code>
+        sizeof…(pack)
+       </code>
+       . Notice that this is not doing a pack expansion with
+       <code>
+        …
+       </code>
+       , but is using the special keyword-like syntax
+       <code>
+        sizeof…
+       </code>
+      </p>
+      <pre id="c26-code-0053"><code>int numberOfArguments { sizeof…(args) };</code></pre>
+      <p id="c26-para-0093">
+       A practical example of using variadic templates is to write a secure and type-safe
+       <code>
+        printf()
+       </code>
+       -like function template. This would be a good practice exercise for you to try.
+      </p>
+      <span aria-label="963" epub:type="pagebreak" id="Page_963" role="doc-pagebreak">
+      </span>
+      <section>
+       <span id="c26-sec-0020">
+       </span>
+       <h4 id="head-4-369">
+        constexpr if
+       </h4>
+       <p>
+        <code>
+         constexpr if
+        </code>
+        statements are
+        <code>
+         if
+        </code>
+        statements executed at compile time, not at run time. If a branch of a
+        <code>
+         constexpr if
+        </code>
+        statement is never taken, it is never compiled. Such compile-time decisions can come in handy with variadic templates. For example, the earlier implementation of
+        <code>
+         processValues()
+        </code>
+        requires a base case to stop the recursion (
+        <code>
+         void processValues(){}
+        </code>
+        ). Using
+        <code>
+         constexpr if
+        </code>
+        , such a base case can be avoided. Notice that the feature is officially called
+        <code>
+         constexpr if
+        </code>
+        , but in actual code you write
+        <code>
+         if constexpr
+        </code>
+        .
+       </p>
+       <pre id="c26-code-0054"><code>template &lt;typename T1, typename… Tn&gt;</code>
+<code>void processValues(T1&amp;&amp; arg1, Tn&amp;&amp;… args)</code>
+<code>{</code>
+<code>    handleValue(forward&lt;T1&gt;(arg1));</code>
+<code>    <b>if constexpr (sizeof…(args) &gt; 0) {</b></code>
+<code>        processValues(forward&lt;Tn&gt;(args)…);</code>
+<code>    <b>}</b></code>
+<code>}</code></pre>
+       <p id="c26-para-0095">
+        In this implementation, the recursion stops as soon as the variadic parameter pack,
+        <code>
+         args
+        </code>
+        , becomes empty. The only difference with the previous implementations is that you can no longer call
+        <code>
+         processValues()
+        </code>
+        without any arguments. Doing so results in a compilation error.
+       </p>
+      </section>
+     </section>
+     <section>
+      <span id="c26-sec-0021">
+      </span>
+      <h3 id="head-3-485">
+       Variable Number of Mixin Classes
+      </h3>
+      <p>
+       Parameter packs can be used almost everywhere. For example, the following code uses a parameter pack to define a variable number of mixin classes for
+       <code>
+        MyClass
+       </code>
+       .
+       <a href="c05.xhtml">
+        Chapter 5
+       </a>
+       , “Designing with Classes,” discusses the concept of mixin classes.
+      </p>
+      <pre id="c26-code-0055"><code>class Mixin1</code>
+<code>{</code>
+<code>    public:</code>
+<code>        explicit Mixin1(int i) : m_value { i } {}</code>
+<code>        virtual void mixin1Func() { println("Mixin1: {}", m_value); }</code>
+<code>    private:</code>
+<code>        int m_value;</code>
+<code>};</code>
+<code> </code>
+<code>class Mixin2</code>
+<code>{</code>
+<code>    public:</code>
+<code>        explicit Mixin2(int i) : m_value { i } {}</code>
+<code>        virtual void mixin2Func() { println("Mixin2: {}", m_value); }</code>
+<code>    private:</code>
+<code>        int m_value;</code>
+<code>};</code>
+<code> </code>
+<code>template &lt;typename… Mixins&gt;</code>
+<code>class MyClass : public Mixins…</code>
+<code>{</code>
+<code>    public:</code>
+<code>        explicit MyClass(const Mixins&amp;… mixins) : Mixins { mixins }… {}</code>
+<code>        virtual ˜MyClass() = default;</code>
+<code>};</code></pre>
+      <p>
+       <span aria-label="964" epub:type="pagebreak" id="Page_964" role="doc-pagebreak">
+       </span>
+       This code first defines two mixin classes:
+       <code>
+        Mixin1
+       </code>
+       and
+       <code>
+        Mixin2
+       </code>
+       . They are kept pretty simple for this example. Their constructor accepts an integer, which is stored, and they have a function to print information about a specific instance of the class. The
+       <code>
+        MyClass
+       </code>
+       variadic template uses a parameter pack
+       <code>
+        typename… Mixins
+       </code>
+       to accept a variable number of mixin classes. The class then inherits from all those mixin classes, and the constructor accepts the same number of arguments to initialize each inherited mixin class. Remember that the
+       <code>
+        …
+       </code>
+       expansion operator basically takes what is on the left of the operator and repeats it for every template parameter in the pack, separated by commas. The class can be used as follows:
+      </p>
+      <pre id="c26-code-0056"><code>MyClass&lt;Mixin1, Mixin2&gt; a { Mixin1 { 11 }, Mixin2 { 22 } };</code>
+<code>a.mixin1Func();</code>
+<code>a.mixin2Func();</code>
+<code> </code>
+<code>MyClass&lt;Mixin1&gt; b { Mixin1 { 33 } };</code>
+<code>b.mixin1Func();</code>
+<code><span class="color3">//b.mixin2Func();    // Error: does not compile.</span></code>
+<code> </code>
+<code>MyClass&lt;&gt; c;</code>
+<code><span class="color3">//c.mixin1Func();    // Error: does not compile.</span></code>
+<code><span class="color3">//c.mixin2Func();    // Error: does not compile.</span></code></pre>
+      <p>
+       When you try to call
+       <code>
+        mixin2Func()
+       </code>
+       on
+       <code>
+        b
+       </code>
+       , you will get a compilation error because
+       <code>
+        b
+       </code>
+       is not inheriting from the
+       <code>
+        Mixin2
+       </code>
+       class. The output of this program is as follows:
+      </p>
+      <pre id="c26-code-0057"><code>Mixin1: 11</code>
+<code>Mixin2: 22</code>
+<code>Mixin1: 33</code></pre>
+     </section>
+     <section>
+      <span id="c26-sec-0022">
+      </span>
+      <h3 id="head-3-486">
+       Fold Expressions
+      </h3>
+      <p id="c26-para-0099">
+       C++ supports
+       <i>
+        fold expressions
+       </i>
+       . This makes working with parameter packs in variadic templates much easier. Fold expressions can be used to apply a certain operation to every value of a parameter pack, to reduce all values in a parameter pack to a single value, and more.
+      </p>
+      <p id="c26-para-0100">
+       The following table lists the four types of folds that are supported. In this table, Ѳ can be any of the following operators:
+       <code>
+        + - * / % ^ &amp; | &lt;&lt; &gt;&gt; += -= *= /= %= ^= &amp;= |= &lt;&lt;= &gt;&gt;= = == != &lt; &gt; &lt;= &gt;= &amp;&amp; ||, .* -&gt;*
+       </code>
+       .
+      </p>
+      <table border="1">
+       <tbody>
+        <tr>
+         <td class="left bgcolor2">
+          <b>
+           NAME
+          </b>
+         </td>
+         <td class="left bgcolor2">
+          <b>
+           EXPRESSION
+          </b>
+         </td>
+         <td class="left bgcolor2">
+          <b>
+           IS EXPANDED TO
+          </b>
+         </td>
+        </tr>
+        <tr>
+         <td class="left bgcolor3">
+          <b>
+           Unary right fold
+          </b>
+         </td>
+         <td class="left bgcolor3">
+          (pack Ѳ …)
+         </td>
+         <td class="left bgcolor3">
+          pack
+          <sub>
+           0
+          </sub>
+          Ѳ (… Ѳ (pack
+          <sub>
+           n-1
+          </sub>
+          Ѳ pack
+          <sub>
+           n
+          </sub>
+          ))
+         </td>
+        </tr>
+        <tr>
+         <td class="left bgcolor3">
+          <b>
+           Unary left fold
+          </b>
+         </td>
+         <td class="left bgcolor3">
+          (… Ѳ pack)
+         </td>
+         <td class="left bgcolor3">
+          ((pack
+          <sub>
+           0
+          </sub>
+          Ѳ pack
+          <sub>
+           1
+          </sub>
+          ) Ѳ …) Ѳ pack
+          <sub>
+           n
+          </sub>
+         </td>
+        </tr>
+        <tr>
+         <td class="left bgcolor3">
+          <b>
+           Binary right fold
+          </b>
+         </td>
+         <td class="left bgcolor3">
+          (pack Ѳ … Ѳ Init)
+         </td>
+         <td class="left bgcolor3">
+          pack
+          <sub>
+           0
+          </sub>
+          Ѳ (… Ѳ (pack
+          <sub>
+           n-1
+          </sub>
+          Ѳ (pack
+          <sub>
+           n
+          </sub>
+          Ѳ Init)))
+         </td>
+        </tr>
+        <tr>
+         <td class="left bgcolor3">
+          <b>
+           Binary left fold
+          </b>
+         </td>
+         <td class="left bgcolor3">
+          (Init Ѳ … Ѳ pack)
+         </td>
+         <td class="left bgcolor3">
+          (((Init Ѳ pack
+          <sub>
+           0
+          </sub>
+          ) Ѳ pack
+          <sub>
+           1
+          </sub>
+          ) Ѳ …) Ѳ pack
+          <sub>
+           n
+          </sub>
+         </td>
+        </tr>
+       </tbody>
+      </table>
+      <p>
+       Let's look at some examples. Earlier, the
+       <code>
+        processValue()
+       </code>
+       function template was defined recursively as follows:
+      </p>
+      <pre id="c26-code-0058"><code>void processValues() { <span class="color3">/* Nothing to do in this base case.*/</span> }</code>
+<code> </code>
+<span aria-label="965" epub:type="pagebreak" id="Page_965" role="doc-pagebreak"></span><code>template &lt;typename T1, typename… Tn&gt;</code>
+<code>void processValues(T1&amp;&amp; arg1, Tn&amp;&amp;… args)</code>
+<code>{</code>
+<code>    handleValue(forward&lt;T1&gt;(arg1)); </code>
+<code>    processValues(forward&lt;Tn&gt;(args)…); </code>
+<code>}</code></pre>
+      <p>
+       Because it is defined recursively, it needs a base case to stop the recursion. With fold expressions, this can be implemented with a single function template using a unary right fold over the comma operator:
+      </p>
+      <pre id="c26-code-0059"><code>template &lt;typename… Tn&gt;</code>
+<code>void processValues(Tn&amp;&amp;… args) { (handleValue(forward&lt;Tn&gt;(args)), …); }</code></pre>
+      <p>
+       Basically, the three dots in the function body trigger folding with the comma operator for Ѳ. That line is expanded to call
+       <code>
+        handleValue()
+       </code>
+       for each argument in the parameter pack, and each call to
+       <code>
+        handleValue()
+       </code>
+       is separated by a comma. For example, suppose
+       <code>
+        args
+       </code>
+       is a parameter pack with three arguments,
+       <code>
+        a1
+       </code>
+       ,
+       <code>
+        a2
+       </code>
+       , and
+       <code>
+        a3
+       </code>
+       , of three types,
+       <code>
+        A1
+       </code>
+       ,
+       <code>
+        A2
+       </code>
+       , and
+       <code>
+        A3
+       </code>
+       . The expansion of the unary right fold then becomes as follows:
+      </p>
+      <pre id="c26-code-0060"><code>(handleValue(forward&lt;A1&gt;(a1)),</code>
+<code>    (handleValue(forward&lt;A2&gt;(a2)) , handleValue(forward&lt;A3&gt;(a3))));</code></pre>
+      <p>
+       Here is another example. The
+       <code>
+        printValues()
+       </code>
+       function template writes all its arguments to the console, separated by newlines.
+      </p>
+      <pre id="c26-code-0061"><code>template &lt;typename… Values&gt;</code>
+<code>void printValues(const Values&amp;… values) { (println("{}", values), …); }</code></pre>
+      <p>
+       Suppose that
+       <code>
+        values
+       </code>
+       is a parameter pack with three arguments,
+       <code>
+        v1
+       </code>
+       ,
+       <code>
+        v2
+       </code>
+       , and
+       <code>
+        v3
+       </code>
+       . The expansion of the unary right fold then becomes as follows:
+      </p>
+      <pre id="c26-code-0062"><code>(println("{}", v1), (println("{}", v2), println("{}", v3)));</code></pre>
+      <p>
+       You can call
+       <code>
+        printValues()
+       </code>
+       with as many arguments as you want, for example:
+      </p>
+      <pre id="c26-code-0063"><code>printValues(1, "test", 2.34);</code></pre>
+      <p>
+       In the examples up to now, the folding is done with the comma operator, but it can be used with almost any kind of operator. For example, the following code defines a variadic function template using a binary left fold to calculate the sum of all the values given to it. A binary left fold always requires an
+       <i>
+        Init
+       </i>
+       value (see the overview table earlier). Hence,
+       <code>
+        sumValues()
+       </code>
+       has two template type parameters: a normal one to specify the type of
+       <i>
+        Init
+       </i>
+       , and a parameter pack that can accept 0 or more arguments.
+      </p>
+      <pre id="c26-code-0064"><code>template &lt;typename T, typename… Values&gt;</code>
+<code>auto sumValues(const T&amp; init, const Values&amp;… values)</code>
+<code>{ return (init + … + values);}</code></pre>
+      <p>
+       Suppose that
+       <code>
+        values
+       </code>
+       is a parameter pack with three arguments,
+       <code>
+        v1
+       </code>
+       ,
+       <code>
+        v2
+       </code>
+       , and
+       <code>
+        v3
+       </code>
+       . Here is the expansion of the binary left fold in that case:
+      </p>
+      <pre id="c26-code-0065"><code>return (((init + v1) + v2) + v3);</code></pre>
+      <p>
+       The
+       <code>
+        sumValues()
+       </code>
+       function template can be tested as follows:
+      </p>
+      <pre id="c26-code-0066"><code>println("{}", sumValues(1, 2, 3.3));</code>
+<code>println("{}", sumValues(1));</code></pre>
+      <p>
+       <span aria-label="966" epub:type="pagebreak" id="Page_966" role="doc-pagebreak">
+       </span>
+       The
+       <code>
+        sumValues()
+       </code>
+       function template can also be defined in terms of a unary left fold as follows.
+      </p>
+      <pre id="c26-code-0067"><code>template &lt;typename… Values&gt;</code>
+<code>auto sumValues(const Values&amp;… values) { return (… + values); }</code></pre>
+      <p>
+       Concepts, discussed in
+       <a href="c12.xhtml">
+        Chapter 12
+       </a>
+       , can also be variadic. For example, the
+       <code>
+        sumValues()
+       </code>
+       function template can be constrained so that it can be called only with a set of arguments of the same type:
+      </p>
+      <pre id="c26-code-0068"><code><b>template &lt;typename T, typename… Us&gt;</b></code>
+<code><b>concept SameTypes = (std::same_as&lt;T, Us&gt; &amp;&amp; …);</b></code>
+<code> </code>
+<code>template &lt;typename T, typename… Values&gt;</code>
+<code>    <b>requires SameTypes&lt;T, Values…&gt;</b></code>
+<code>auto sumValues(const T&amp; init, const Values&amp;… values)</code>
+<code>{ return (init + … + values); }</code></pre>
+      <p>
+       Calling this constrained version as follows works fine:
+      </p>
+      <pre id="c26-code-0069"><code>println("{}", sumValues(1.1, 2.2, 3.3)); <span class="color3">// OK: 3 doubles, output is 6.6</span></code>
+<code>println("{}", sumValues(1));             <span class="color3">// OK: 1 integer, output is 1</span></code>
+<code>println("{}", sumValues("a"s, "b"s));    <span class="color3">// OK: 2 strings, output is ab</span></code></pre>
+      <p>
+       However, the following call fails as the argument list contains an integer and two doubles:
+      </p>
+      <pre id="c26-code-0070"><code>println("{}", sumValues(1, 2.2, 3.3));   <span class="color3">// Error</span></code></pre>
+      <p>
+       Parameter packs with zero length are allowed for unary folds, but only in combination with the logical AND (
+       <code>
+        &amp;&amp;
+       </code>
+       ), logical OR (
+       <code>
+        ||
+       </code>
+       ), and comma (
+       <code>
+        ,
+       </code>
+       ) operators. For an empty parameter pack, applying
+       <code>
+        &amp;&amp;
+       </code>
+       to it results in
+       <code>
+        true
+       </code>
+       , applying
+       <code>
+        ||
+       </code>
+       results in
+       <code>
+        false
+       </code>
+       , and applying
+       <code>
+        ,
+       </code>
+       results in
+       <code>
+        void()
+       </code>
+       , i.e., a no-op. For example:
+      </p>
+      <pre id="c26-code-0071"><code>template &lt;typename… Values&gt;</code>
+<code>bool allEven(const Values&amp;… values) { return ((values % 2 == 0) &amp;&amp; …); }</code>
+<code> </code>
+<code>template &lt;typename… Values&gt;</code>
+<code>bool anyEven(const Values&amp;… values) { return ((values % 2 == 0) || …); }</code>
+<code> </code>
+<code>int main()</code>
+<code>{</code>
+<code>    println("{} {} {}", allEven(2,4,6), allEven(2,3), allEven());<span class="color3">//true false true</span></code>
+<code>    println("{} {} {}", anyEven(1,2,3), anyEven(1,3), anyEven());<span class="color3">//true false false</span></code>
+<code>}</code></pre>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-264">
+     <span id="c26-sec-0023">
+     </span>
+     <h2 id="head-2-264">
+      METAPROGRAMMING
+     </h2>
+     <p id="c26-para-0116">
+      This section touches on
+      <i>
+       template metaprogramming
+      </i>
+      . It is a complicated and broad subject, and there are books written about it explaining all the little details. This book doesn't have the space to go into all of these details. Instead, this section explains the most important concepts, with the aid of a couple of examples.
+     </p>
+     <p id="c26-para-0117">
+      The goal of template metaprogramming is to perform some computation at compile time instead of at run time. It is basically a programming language on top of another programming language. The following section starts the discussion with a simple example that calculates the factorial of a number at compile time and makes the result available as a simple constant at run time.
+     </p>
+     <span aria-label="967" epub:type="pagebreak" id="Page_967" role="doc-pagebreak">
+     </span>
+     <section>
+      <span id="c26-sec-0024">
+      </span>
+      <h3 id="head-3-487">
+       Factorial at Compile Time
+      </h3>
+      <p>
+       Template metaprogramming allows you to perform calculations at compile time instead of at run time. The following code is an example that calculates the factorial of a number at compile time. The code uses template recursion, explained earlier in this chapter, which requires a recursive template and a base template to stop the recursion. By mathematical definition, the factorial of 0 is 1, so that is used as the base case.
+      </p>
+      <pre id="c26-code-0072"><code>template &lt;int f&gt;</code>
+<code>class Factorial</code>
+<code>{</code>
+<code>    public:</code>
+<code>        static constexpr unsigned long long value { f * Factorial&lt;f - 1&gt;::value };</code>
+<code>};</code>
+<code> </code>
+<code>template &lt;&gt;</code>
+<code>class Factorial&lt;0&gt;</code>
+<code>{</code>
+<code>    public:</code>
+<code>        static constexpr unsigned long long value { 1 };</code>
+<code>};</code>
+<code> </code>
+<code>int main()</code>
+<code>{</code>
+<code>    println("{}", Factorial&lt;6&gt;::value);</code>
+<code>}</code></pre>
+      <p>
+       This calculates the factorial of 6, mathematically written as 6!, which is 1×2×3×4×5×6 or 720.
+      </p>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <p id="c26-para-0120">
+          <b>
+           NOTE
+          </b>
+          <i>
+           It is important to keep in mind that the factorial calculation is happening at compile time. At run time, you simply access the compile-time calculated value through the
+          </i>
+          <code>
+           value
+          </code>
+          <i>
+           data member, which is just a
+          </i>
+          <code>
+           static
+          </code>
+          <i>
+           constant value.
+          </i>
+         </p>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <p>
+       For this specific example of calculating the factorial of a number at compile time, you don't need to use template metaprogramming. You can implement it as a
+       <code>
+        consteval
+       </code>
+       immediate function as follows, without any templates, though the template implementation still serves as a good example on how to implement recursive templates.
+      </p>
+      <pre id="c26-code-0073"><code>consteval unsigned long long factorial(int f)</code>
+<code>{</code>
+<code>    if (f == 0) { return 1; }</code>
+<code>    else { return f * factorial(f - 1); }</code>
+<code>}</code></pre>
+      <p>
+       You can call
+       <code>
+        factorial()
+       </code>
+       just as you would call any other function, with the difference that the
+       <code>
+        consteval
+       </code>
+       function is guaranteed to be executed at compile time. For example:
+      </p>
+      <pre id="c26-code-0074"><code>println("{}", factorial(6));</code></pre>
+     </section>
+     <span aria-label="968" epub:type="pagebreak" id="Page_968" role="doc-pagebreak">
+     </span>
+     <section>
+      <span id="c26-sec-0026">
+      </span>
+      <h3 id="head-3-488">
+       Loop Unrolling
+      </h3>
+      <p id="c26-para-0123">
+       A second example of template metaprogramming is to unroll loops at compile time instead of executing the loop at run time. Note that
+       <i>
+        loop unrolling
+       </i>
+       should be done only when you really need it, for example in performance critical code. The compiler is usually smart enough to unroll loops that can be unrolled for you.
+      </p>
+      <p>
+       This example again uses template recursion because it needs to do something in a loop at compile time. On each recursion, the
+       <code>
+        Loop
+       </code>
+       class template instantiates itself with
+       <code>
+        i-1
+       </code>
+       . When it hits
+       <code>
+        0
+       </code>
+       , the recursion stops.
+      </p>
+      <pre id="c26-code-0075"><code>template &lt;int i&gt;</code>
+<code>class Loop</code>
+<code>{</code>
+<code>    public:</code>
+<code>        template &lt;typename FuncType&gt;</code>
+<code>        static void run(FuncType func) {</code>
+<code>            Loop&lt;i - 1&gt;::run(func);</code>
+<code>            func(i);</code>
+<code>        }</code>
+<code>};</code>
+<code> </code>
+<code>template &lt;&gt;</code>
+<code>class Loop&lt;0&gt;</code>
+<code>{</code>
+<code>    public:</code>
+<code>        template &lt;typename FuncType&gt;</code>
+<code>        static void run(FuncType <span class="color3">/* func */</span>) { }</code>
+<code>};</code></pre>
+      <p>
+       The
+       <code>
+        Loop
+       </code>
+       template can be used as follows:
+      </p>
+      <pre id="c26-code-0076"><code>void doWork(int i) { println("doWork({})", i); }</code>
+<code> </code>
+<code>int main()</code>
+<code>{</code>
+<code>    Loop&lt;3&gt;::run(doWork);</code>
+<code>}</code></pre>
+      <p>
+       This code causes the compiler to unroll the loop and to call the function
+       <code>
+        doWork()
+       </code>
+       three times in a row. The output of the program is as follows:
+      </p>
+      <pre id="c26-code-0077"><code>doWork(1)</code>
+<code>doWork(2)</code>
+<code>doWork(3)</code></pre>
+     </section>
+     <section>
+      <span id="c26-sec-0027">
+      </span>
+      <h3 id="head-3-489">
+       Printing Tuples
+      </h3>
+      <p id="c26-para-0127">
+       This example uses template metaprogramming to print the individual elements of an
+       <code>
+        std::tuple
+       </code>
+       . Tuples are explained in
+       <a href="c24.xhtml">
+        Chapter 24
+       </a>
+       , “Additional Vocabulary Types.” They allow you to store any number of values, each with its own specific type. A
+       <code>
+        tuple
+       </code>
+       has a fixed size and fixed value types, determined at compile time. However, tuples don't have any built-in mechanism to iterate over their elements. The following example shows how you can use template metaprogramming to iterate over the elements of a
+       <code>
+        tuple
+       </code>
+       at compile time.
+      </p>
+      <p>
+       <span aria-label="969" epub:type="pagebreak" id="Page_969" role="doc-pagebreak">
+       </span>
+       As is often the case with template metaprogramming, this example is again using template recursion. The
+       <code>
+        TuplePrint
+       </code>
+       class template has two template parameters: the
+       <code>
+        tuple
+       </code>
+       type, and an integer, initialized with the size of the tuple. It then recursively instantiates itself in the constructor and decrements the integer on every call. A partial specialization of
+       <code>
+        TuplePrint
+       </code>
+       stops the recursion when this integer hits
+       <code>
+        0
+       </code>
+       . The
+       <code>
+        main()
+       </code>
+       function shows how this
+       <code>
+        TuplePrint
+       </code>
+       class template can be used.
+      </p>
+      <pre id="c26-code-0078"><code>template &lt;typename TupleType, int N&gt;</code>
+<code>class TuplePrint</code>
+<code>{</code>
+<code>    public:</code>
+<code>        explicit TuplePrint(const TupleType&amp; t) {</code>
+<code>            TuplePrint&lt;TupleType, N − 1&gt; tp { t };</code>
+<code>            println("{}", get&lt;N − 1&gt;(t));</code>
+<code>        }</code>
+<code>};</code>
+<code> </code>
+<code>template &lt;typename TupleType&gt;</code>
+<code>class TuplePrint&lt;TupleType, 0&gt;</code>
+<code>{</code>
+<code>    public:</code>
+<code>        explicit TuplePrint(const TupleType&amp;) { }</code>
+<code>};</code>
+<code> </code>
+<code>int main()</code>
+<code>{</code>
+<code>    using MyTuple = tuple&lt;int, string, bool&gt;;</code>
+<code>    MyTuple t1 { 16, "Test", true };</code>
+<code>    TuplePrint&lt;MyTuple, tuple_size&lt;MyTuple&gt;::value&gt; tp { t1 };</code>
+<code>}</code></pre>
+      <p>
+       The
+       <code>
+        TuplePrint
+       </code>
+       statement in
+       <code>
+        main()
+       </code>
+       looks a bit complicated because it requires the exact type and size of the
+       <code>
+        tuple
+       </code>
+       as template arguments. This can be simplified by introducing a helper function template that automatically deduces the template parameters. The simplified implementation is as follows:
+      </p>
+      <pre id="c26-code-0079"><code>template &lt;typename TupleType, int N&gt;</code>
+<code>class TuplePrintHelper</code>
+<code>{</code>
+<code>    public:</code>
+<code>        explicit TuplePrintHelper(const TupleType&amp; t) {</code>
+<code>            TuplePrintHelper&lt;TupleType, N − 1&gt; tp { t };</code>
+<code>            println("{}", get&lt;N − 1&gt;(t));</code>
+<code>        }</code>
+<code>};</code>
+<code> </code>
+<code>template &lt;typename TupleType&gt;</code>
+<code>class TuplePrintHelper&lt;TupleType, 0&gt;</code>
+<code>{</code>
+<code>    public:</code>
+<code>        explicit TuplePrintHelper(const TupleType&amp;) { }</code>
+<code>};</code>
+<code> </code>
+<span aria-label="970" epub:type="pagebreak" id="Page_970" role="doc-pagebreak"></span><code>template &lt;typename T&gt;</code>
+<code>void tuplePrint(const T&amp; t)</code>
+<code>{</code>
+<code>    TuplePrintHelper&lt;T, tuple_size&lt;T&gt;::value&gt; tph { t };</code>
+<code>}</code>
+<code> </code>
+<code>int main()</code>
+<code>{</code>
+<code>    tuple t1 { 16, "Test"s, true };</code>
+<code>    tuplePrint(t1);</code>
+<code>}</code></pre>
+      <p id="c26-para-0130">
+       The first change made here is renaming the original
+       <code>
+        TuplePrint
+       </code>
+       class template to
+       <code>
+        TuplePrintHelper
+       </code>
+       . The code then implements a small function template called
+       <code>
+        tuplePrint()
+       </code>
+       . It accepts the
+       <code>
+        tuple
+       </code>
+       's type as a template type parameter and accepts a reference to the
+       <code>
+        tuple
+       </code>
+       itself as a function parameter. The body of that function instantiates the
+       <code>
+        TuplePrintHelper
+       </code>
+       class template. The
+       <code>
+        main()
+       </code>
+       function shows how to use this simplified version. You don't need to specify the function template parameter because the compiler can deduce this automatically from the supplied argument.
+      </p>
+      <section>
+       <span id="c26-sec-0028">
+       </span>
+       <h4 id="head-4-370">
+        constexpr if
+       </h4>
+       <p>
+        <code>
+         constexpr if
+        </code>
+        , introduced earlier in this chapter, can be used to simplify a lot of template metaprogramming techniques. For example, you can simplify the previous code for printing elements of a
+        <code>
+         tuple
+        </code>
+        using
+        <code>
+         constexpr if
+        </code>
+        , as follows. The template recursion base case is not needed anymore, because the recursion is stopped with the
+        <code>
+         constexpr if
+        </code>
+        statement.
+       </p>
+       <pre id="c26-code-0080"><code>template &lt;typename TupleType, int N&gt;</code>
+<code>class TuplePrintHelper</code>
+<code>{</code>
+<code>    public:</code>
+<code>        explicit TuplePrintHelper(const TupleType&amp; t) {</code>
+<code>            <b>if constexpr (N &gt; 1) {</b></code>
+<code>                <b>TuplePrintHelper&lt;TupleType, N − 1&gt; tp { t };</b></code>
+<code>            <b>}</b></code>
+<code>            println("{}", get&lt;N − 1&gt;(t));</code>
+<code>        }</code>
+<code>};</code>
+<code> </code>
+<code>template &lt;typename T&gt;</code>
+<code>void tuplePrint(const T&amp; t)</code>
+<code>{</code>
+<code>    TuplePrintHelper&lt;T, tuple_size&lt;T&gt;::value&gt; tph { t };</code>
+<code>}</code></pre>
+       <p>
+        Now we can even get rid of the class template itself and replace it with a simple function template called
+        <code>
+         tuplePrintHelper()
+        </code>
+        :
+       </p>
+       <pre id="c26-code-0081"><code>template &lt;typename TupleType, int N&gt;</code>
+<code>void tuplePrintHelper(const TupleType&amp; t)</code>
+<code>{</code>
+<code>    if constexpr (N &gt; 1) {</code>
+<code>        tuplePrintHelper&lt;TupleType, N − 1&gt;(t);</code>
+<code>    }</code>
+<code>    println("{}", get&lt;N − 1&gt;(t));</code>
+<code>}</code>
+<code> </code>
+<span aria-label="971" epub:type="pagebreak" id="Page_971" role="doc-pagebreak"></span><code>template &lt;typename T&gt;</code>
+<code>void tuplePrint(const T&amp; t)</code>
+<code>{</code>
+<code>    tuplePrintHelper&lt;T, tuple_size&lt;T&gt;::value&gt;(t);</code>
+<code>}</code></pre>
+       <p>
+        This can be simplified even more. Both function templates can be combined into one, as follows:
+       </p>
+       <pre id="c26-code-0082"><code>template &lt;typename TupleType, int N = tuple_size&lt;TupleType&gt;::value&gt;</code>
+<code>void tuplePrint(const TupleType&amp; t)</code>
+<code>{</code>
+<code>    if constexpr (N &gt; 1) {</code>
+<code>        tuplePrint&lt;TupleType, N − 1&gt;(t);</code>
+<code>    }</code>
+<code>    println("{}", get&lt;N − 1&gt;(t));</code>
+<code>}</code></pre>
+       <p>
+        It can still be called the same as before:
+       </p>
+       <pre id="c26-code-0083"><code>tuple t1 { 16, "Test"s, true };</code>
+<code>tuplePrint(t1);</code></pre>
+      </section>
+      <section>
+       <span id="c26-sec-0029">
+       </span>
+       <h4 id="head-4-371">
+        Using a Compile-Time Integer Sequence with Folding
+       </h4>
+       <p id="c26-para-0135">
+        C++ supports compile-time integer sequences using
+        <code>
+         std::integer_sequence
+        </code>
+        , defined in
+        <code>
+         &lt;utility&gt;
+        </code>
+        . A common use case with template metaprogramming is to generate a compile-time sequence of indices, that is, an integer sequence of type
+        <code>
+         size_t
+        </code>
+        . For this, a helper
+        <code>
+         std::index_sequence
+        </code>
+        is available. You can use
+        <code>
+         std::make_index_sequence
+        </code>
+        to generate an index sequence of the same length as the length of a given parameter pack.
+       </p>
+       <p>
+        The tuple printer can be implemented using variadic templates, compile-time index sequences, and fold expressions as follows:
+       </p>
+       <pre id="c26-code-0084"><code>template &lt;typename Tuple, size_t… Indices&gt;</code>
+<code>void tuplePrintHelper(const Tuple&amp; t, index_sequence&lt;Indices…&gt;)</code>
+<code>{</code>
+<code>    (println("{}", get&lt;Indices&gt;(t)) , …);</code>
+<code>}</code>
+<code> </code>
+<code>template &lt;typename… Args&gt;</code>
+<code>void tuplePrint(const tuple&lt;Args…&gt;&amp; t)</code>
+<code>{</code>
+<code>    tuplePrintHelper(t, make_index_sequence&lt;sizeof…(Args)&gt;{});</code>
+<code>}</code></pre>
+       <p>
+        It can be called in the same way as before:
+       </p>
+       <pre id="c26-code-0085"><code>tuple t1 { 16, "Test"s, true };</code>
+<code>tuplePrint(t1);</code></pre>
+       <p>
+        With this call, the unary right fold expression in the
+        <code>
+         tuplePrintHelper()
+        </code>
+        function template expands to the following:
+       </p>
+       <pre id="c26-code-0086"><code>((println("{}", get&lt;0&gt;(t)),</code>
+<code> (println("{}", get&lt;1&gt;(t)),</code>
+<code>  println("{}", get&lt;2&gt;(t)))));</code></pre>
+      </section>
+     </section>
+     <span aria-label="972" epub:type="pagebreak" id="Page_972" role="doc-pagebreak">
+     </span>
+     <section>
+      <span id="c26-sec-0030">
+      </span>
+      <h3 id="head-3-490">
+       Type Traits
+      </h3>
+      <p id="c26-para-0139">
+       Type traits allow you to make decisions based on types at compile time. For example, you can verify that a type is derived from another type, is convertible to another type, is integral, and so on. The C++ Standard Library comes with a large selection of type traits. All type traits-related functionality is defined in
+       <code>
+        &lt;type_traits&gt;
+       </code>
+       . Type traits are divided into separate categories. The following list gives a couple of examples of the available type traits in each category. Consult a Standard Library reference (see
+       <a href="b02.xhtml">
+        Appendix B
+       </a>
+       , “Annotated Bibliography”) for a complete list.
+      </p>
+      <table border="1">
+       <tbody>
+        <tr>
+         <td class="left bgcolor3">
+          <ul class="check5" id="c26-list-0002">
+           <li id="c26-li-0011">
+            Primary type categories
+            <ul class="check5" id="c26-list-0003">
+             <li id="c26-li-0012">
+              <code>
+               is_void
+              </code>
+             </li>
+             <li id="c26-li-0013">
+              <code>
+               is_integral
+              </code>
+             </li>
+             <li id="c26-li-0014">
+              <code>
+               is_floating_point
+              </code>
+             </li>
+             <li id="c26-li-0015">
+              <code>
+               is_pointer
+              </code>
+             </li>
+             <li id="c26-li-0016">
+              <code>
+               is_function
+              </code>
+             </li>
+             <li id="c26-li-0032">
+              <code>
+               …
+              </code>
+             </li>
+            </ul>
+           </li>
+           <li id="c26-li-0017">
+            Type properties
+            <ul class="check5" id="c26-list-0004">
+             <li id="c26-li-0018">
+              <code>
+               is_const
+              </code>
+             </li>
+             <li id="c26-li-0019">
+              <code>
+               is_polymorphic
+              </code>
+             </li>
+             <li id="c26-li-0020">
+              <code>
+               is_unsigned
+              </code>
+             </li>
+             <li id="c26-li-0021">
+              <code>
+               is_constructible
+              </code>
+             </li>
+             <li id="c26-li-0022">
+              <code>
+               is_copy_constructible
+              </code>
+             </li>
+             <li id="c26-li-0023">
+              <code>
+               is_move_constructible
+              </code>
+             </li>
+             <li id="c26-li-0024">
+              <code>
+               is_assignable
+              </code>
+             </li>
+             <li id="c26-li-0025">
+              <code>
+               is_trivially_copyable
+              </code>
+             </li>
+             <li id="c26-li-0026">
+              <code>
+               is_swappable
+              </code>
+             </li>
+             <li id="c26-li-0027">
+              <code>
+               is_nothrow_swappable
+              </code>
+             </li>
+             <li id="c26-li-0028">
+              <code>
+               has_virtual_destructor
+              </code>
+             </li>
+             <li id="c26-li-0029">
+              <code>
+               has_unique_object_representations
+              </code>
+             </li>
+             <li id="c26-li-0030">
+              <code>
+               is_scoped_enum*
+              </code>
+             </li>
+             <li id="c26-li-0031">
+              <code>
+               is_implicit_lifetime*
+              </code>
+             </li>
+             <li id="c26-li-1032">
+              <code>
+               …
+              </code>
+             </li>
+            </ul>
+           </li>
+           <li id="c26-li-0033">
+            Property queries
+            <ul class="check5" id="c26-list-0005">
+             <li id="c26-li-0034">
+              <code>
+               alignment_of
+              </code>
+             </li>
+             <li id="c26-li-0035">
+              <code>
+               rank
+              </code>
+             </li>
+             <li id="c26-li-0036">
+              <code>
+               extent
+              </code>
+             </li>
+            </ul>
+           </li>
+          </ul>
+         </td>
+         <td class="left bgcolor3">
+          <ul class="check5" id="c26-list-0009">
+           <li id="c26-li-0046">
+            Composite type categories
+            <ul class="check5" id="c26-list-0010">
+             <li id="c26-li-0047">
+              <code>
+               is_arithmetic
+              </code>
+             </li>
+             <li id="c26-li-0048">
+              <code>
+               is_reference
+              </code>
+             </li>
+             <li id="c26-li-0049">
+              <code>
+               is_object
+              </code>
+             </li>
+             <li id="c26-li-0050">
+              <code>
+               is_scalar
+              </code>
+             </li>
+             <li id="c26-li-0051">
+              <code>
+               …
+              </code>
+             </li>
+            </ul>
+           </li>
+           <li id="c26-li-0052">
+            Type relationships
+            <ul class="check5" id="c26-list-0011">
+             <li id="c26-li-0053">
+              <code>
+               is_same
+              </code>
+             </li>
+             <li id="c26-li-0054">
+              <code>
+               is_base_of
+              </code>
+             </li>
+             <li id="c26-li-0055">
+              <code>
+               is_convertible
+              </code>
+             </li>
+             <li id="c26-li-0056">
+              <code>
+               is_invocable
+              </code>
+             </li>
+             <li id="c26-li-0057">
+              <code>
+               is_nothrow_invocable
+              </code>
+             </li>
+             <li id="c26-li-1051">
+              <code>
+               <?span Start cssStyle="font-family:monospace"??>
+               …
+              </code>
+             </li>
+            </ul>
+           </li>
+           <li id="c26-li-0058">
+            const-volatile modifications
+            <ul class="check5" id="c26-list-0012">
+             <li id="c26-li-0059">
+              <code>
+               remove_const
+              </code>
+             </li>
+             <li id="c26-li-0060">
+              <code>
+               add_const
+              </code>
+             </li>
+             <li id="c26-li-2051">
+              <code>
+               <?span Start cssStyle="font-family:monospace"??>
+               …
+              </code>
+             </li>
+            </ul>
+           </li>
+           <li id="c26-li-0061">
+            Sign modifications
+            <ul class="check5" id="c26-list-0013">
+             <li id="c26-li-0062">
+              <code>
+               make_signed
+              </code>
+             </li>
+             <li id="c26-li-0063">
+              <code>
+               make_unsigned
+              </code>
+             </li>
+            </ul>
+           </li>
+           <li id="c26-li-0064">
+            Array modifications
+            <ul class="check5" id="c26-list-0014">
+             <li id="c26-li-0065">
+              <code>
+               remove_extent
+              </code>
+             </li>
+             <li id="c26-li-0066">
+              <code>
+               remove_all_extents
+              </code>
+             </li>
+            </ul>
+           </li>
+           <li id="c26-li-0067">
+            Logical operator traits
+            <ul class="check5" id="c26-list-0015">
+             <li id="c26-li-0068">
+              <code>
+               conjunction
+              </code>
+             </li>
+             <li id="c26-li-0069">
+              <code>
+               disjunction
+              </code>
+             </li>
+             <li id="c26-li-0070">
+              <code>
+               negation
+              </code>
+             </li>
+            </ul>
+           </li>
+          </ul>
+         </td>
+        </tr>
+        <tr>
+         <td class="left bgcolor3">
+          <ul class="check5">
+           <li id="c26-li-0037">
+            Reference modifications
+            <ul class="check5" id="c26-list-0006">
+             <li id="c26-li-0038">
+              <code>
+               remove_reference
+              </code>
+             </li>
+             <li id="c26-li-0039">
+              <code>
+               add_lvalue_reference
+              </code>
+             </li>
+             <li id="c26-li-0040">
+              <code>
+               add_rvalue_reference
+              </code>
+             </li>
+            </ul>
+           </li>
+           <li id="c26-li-0041">
+            Pointer modifications
+            <ul class="check5" id="c26-list-0007">
+             <li id="c26-li-0042">
+              <code>
+               remove_pointer
+              </code>
+             </li>
+             <li id="c26-li-0043">
+              <code>
+               add_pointer
+              </code>
+             </li>
+            </ul>
+           </li>
+           <li id="c26-li-0044">
+            Constant evaluation context
+            <ul class="check5" id="c26-list-0008">
+             <li id="c26-li-0045">
+              <code>
+               is_constant_evaluated
+              </code>
+             </li>
+            </ul>
+           </li>
+          </ul>
+         </td>
+         <td class="left bgcolor3">
+          <ul class="check5">
+           <li id="c26-li-0071">
+            Other transformations
+            <ul class="check5" id="c26-list-0016">
+             <li id="c26-li-0072">
+              <code>
+               enable_if
+              </code>
+             </li>
+             <li id="c26-li-0073">
+              <code>
+               conditional
+              </code>
+             </li>
+             <li id="c26-li-0074">
+              <code>
+               invoke_result
+              </code>
+             </li>
+             <li id="c26-li-0075">
+              <code>
+               type_identity
+              </code>
+             </li>
+             <li id="c26-li-0076">
+              <code>
+               remove_cvref
+              </code>
+             </li>
+             <li id="c26-li-0077">
+              <code>
+               common_reference
+              </code>
+             </li>
+             <li id="c26-li-0078">
+              <code>
+               decay
+              </code>
+             </li>
+             <li id="c26-li-0079">
+              <code>
+               …
+              </code>
+             </li>
+            </ul>
+           </li>
+          </ul>
+          <span aria-label="973" epub:type="pagebreak" id="Page_973" role="doc-pagebreak">
+          </span>
+         </td>
+        </tr>
+       </tbody>
+      </table>
+      <p id="c26-para-0142">
+       The type traits marked with an asterisk (*) are available only since C++23.
+      </p>
+      <p id="c26-para-0143">
+       Type traits are a rather advanced C++ feature. By just looking at the preceding list, which is already a shortened version of the list from the C++ standard, it is clear that this book cannot explain all details about all type traits. This section explains just a couple of use cases to show you how type traits can be used.
+      </p>
+      <section>
+       <span id="c26-sec-0031">
+       </span>
+       <h4 id="head-4-372">
+        Using Type Categories
+       </h4>
+       <p>
+        Before an example can be given for a template using type traits, you first need to know a bit more on how classes like
+        <code>
+         is_integral
+        </code>
+        work. The C++ standard defines an
+        <code>
+         integral_constant
+        </code>
+        class that looks like this:
+       </p>
+       <pre id="c26-code-0087"><code>template &lt;class T, T v&gt;</code>
+<code>struct integral_constant {</code>
+<code>    static constexpr T value = v;</code>
+<code>    using value_type = T;</code>
+<code>    using type = integral_constant&lt;T, v&gt;;</code>
+<code>    constexpr operator value_type() const noexcept { return value; }</code>
+<code>    constexpr value_type operator()() const noexcept { return value; }</code>
+<code>};</code></pre>
+       <p>
+        It also defines
+        <code>
+         bool_constant
+        </code>
+        ,
+        <code>
+         true_type
+        </code>
+        , and
+        <code>
+         false_type
+        </code>
+        type aliases:
+       </p>
+       <pre id="c26-code-0088"><code>template &lt;bool B&gt;</code>
+<code>using bool_constant = integral_constant&lt;bool, B&gt;;</code>
+<code> </code>
+<code>using true_type = bool_constant&lt;true&gt;;</code>
+<code>using false_type = bool_constant&lt;false&gt;;</code></pre>
+       <p>
+        When you access
+        <code>
+         true_type::value
+        </code>
+        , you get the value
+        <code>
+         true
+        </code>
+        , and when you access
+        <code>
+         false_type::value
+        </code>
+        , you get the value
+        <code>
+         false
+        </code>
+        . You can also access
+        <code>
+         true_type::type
+        </code>
+        , which results in the type of
+        <code>
+         true_type
+        </code>
+        . The same holds for
+        <code>
+         false_type
+        </code>
+        . Classes like
+        <code>
+         is_integral
+        </code>
+        , which checks whether a type is an integral type, and
+        <code>
+         is_class
+        </code>
+        , which checks whether a type is a class, inherit from either
+        <code>
+         true_type
+        </code>
+        or
+        <code>
+         false_type
+        </code>
+        . For example, the Standard Library specializes
+        <code>
+         is_integral
+        </code>
+        for type
+        <code>
+         bool
+        </code>
+        as follows:
+       </p>
+       <pre id="c26-code-0089"><code>template &lt;&gt; struct is_integral&lt;bool&gt; : public true_type { };</code></pre>
+       <p id="c26-para-0147">
+        <span aria-label="974" epub:type="pagebreak" id="Page_974" role="doc-pagebreak">
+        </span>
+        This allows you to write
+        <code>
+         is_integral&lt;bool&gt;::value
+        </code>
+        , which results in the value
+        <code>
+         true
+        </code>
+        . Note that you don't need to write these specializations yourself; they are part of the Standard Library.
+       </p>
+       <p>
+        The following code shows the simplest example of how type categories can be used:
+       </p>
+       <pre id="c26-code-0090"><code>if (is_integral&lt;int&gt;::value) { println("int is integral"); }</code>
+<code>else { println("int is not integral"); }</code>
+<code> </code>
+<code>if (is_class&lt;string&gt;::value) { println("string is a class"); }</code>
+<code>else { println("string is not a class"); }</code></pre>
+       <p>
+        The output is as follows:
+       </p>
+       <pre id="c26-code-0091"><code>int is integral</code>
+<code>string is a class</code></pre>
+       <p>
+        For each trait that has a
+        <code>
+         value
+        </code>
+        member, the Standard Library adds a variable template that has the same name as the trait followed by
+        <code>
+         _v
+        </code>
+        . Instead of writing
+        <code>
+         some_trait&lt;T&gt;::value
+        </code>
+        , you can write
+        <code>
+         some_trait_v&lt;T&gt;
+        </code>
+        —for example,
+        <code>
+         is_integral_v&lt;T&gt;
+        </code>
+        ,
+        <code>
+         is_const_v&lt;T&gt;
+        </code>
+        , and so on. Here is an example of how the
+        <code>
+         is_integral_v&lt;T&gt;
+        </code>
+        variable template is defined in the Standard Library:
+       </p>
+       <pre id="c26-code-0092"><code>template &lt;class T&gt;</code>
+<code>inline constexpr bool is_integral_v = is_integral&lt;T&gt;::value;</code></pre>
+       <p>
+        Using these variable templates, the previous example can be written as follows:
+       </p>
+       <pre id="c26-code-0093"><code>if (<b>is_integral_v&lt;int&gt;</b>) { println("int is integral"); }</code>
+<code>else { println("int is not integral"); }</code>
+<code> </code>
+<code>if (<b>is_class_v&lt;string&gt;</b>) { println("string is a class"); }</code>
+<code>else { println("string is not a class"); }</code></pre>
+       <p id="c26-para-0152">
+        In fact, because the value of
+        <code>
+         is_integral_v&lt;T&gt;
+        </code>
+        is a compile-time constant, you could use a
+        <code>
+         constexpr if
+        </code>
+        instead of a normal
+        <code>
+         if
+        </code>
+        .
+       </p>
+       <p>
+        Of course, you will likely never use type traits in this way. They become more useful in combination with templates to generate code based on some properties of a type. The following function templates demonstrate this. The code defines two overloaded
+        <code>
+         processHelper()
+        </code>
+        function templates that accept a type as template parameter. The first parameter to these functions is a value, and the second is an instance of either
+        <code>
+         true_type
+        </code>
+        or
+        <code>
+         false_type
+        </code>
+        . The
+        <code>
+         process()
+        </code>
+        function template accepts a single parameter and calls
+        <code>
+         processHelper()
+        </code>
+        .
+       </p>
+       <pre id="c26-code-0094"><code>template &lt;typename T&gt;</code>
+<code>void processHelper(const T&amp; t, true_type)</code>
+<code>{</code>
+<code>    println("{} is an integral type.", t);</code>
+<code>}</code>
+<code> </code>
+<code>template &lt;typename T&gt;</code>
+<code>void processHelper(const T&amp; t, false_type)</code>
+<code>{</code>
+<code>    println("{} is a non-integral type.", t);</code>
+<code>}</code>
+<code> </code>
+<span aria-label="975" epub:type="pagebreak" id="Page_975" role="doc-pagebreak"></span><code>template &lt;typename T&gt;</code>
+<code>void process(const T&amp; t)</code>
+<code>{</code>
+<code>    processHelper(t, is_integral&lt;T&gt;{});</code>
+<code>}</code></pre>
+       <p id="c26-para-0154">
+        The second argument in the call to
+        <code>
+         processHelper()
+        </code>
+        is
+        <code>
+         is_integral&lt;T&gt;{}
+        </code>
+        . This argument uses
+        <code>
+         is_integral&lt;T&gt;
+        </code>
+        to figure out if
+        <code>
+         T
+        </code>
+        is an integral type.
+        <code>
+         is_integral&lt;T&gt;
+        </code>
+        derives from either
+        <code>
+         true_type
+        </code>
+        or
+        <code>
+         false_type
+        </code>
+        . The
+        <code>
+         processHelper()
+        </code>
+        function needs an instance of a
+        <code>
+         true_type
+        </code>
+        or a
+        <code>
+         false_type
+        </code>
+        as a second parameter, so that is the reason for the empty set of braces
+        <code>
+         {}
+        </code>
+        . The two overloaded
+        <code>
+         processHelper()
+        </code>
+        functions don't bother to name the parameters of type
+        <code>
+         true_type
+        </code>
+        and
+        <code>
+         false_type
+        </code>
+        . They are nameless because they don't use those parameters inside their function body. These parameters are used only for function overload resolution.
+       </p>
+       <p>
+        The code can be tested as follows:
+       </p>
+       <pre id="c26-code-0095"><code>process(123);</code>
+<code>process(2.2);</code>
+<code>process("Test"s);</code></pre>
+       <p>
+        Here is the output:
+       </p>
+       <pre id="c26-code-0096"><code>123 is an integral type.</code>
+<code>2.2 is a non-integral type.</code>
+<code>Test is a non-integral type.</code></pre>
+       <p>
+        The previous example can be written as a single function template as follows. However, that doesn't demonstrate how to use type traits to select different overloads based on a type.
+       </p>
+       <pre id="c26-code-0097"><code>template &lt;typename T&gt;</code>
+<code>void process(const T&amp; t)</code>
+<code>{</code>
+<code>    if constexpr (is_integral_v&lt;T&gt;) {</code>
+<code>        println("{} is an integral type.", t);</code>
+<code>    } else {</code>
+<code>        println("{} is a non-integral type.", t);</code>
+<code>    }</code>
+<code>}</code></pre>
+      </section>
+      <section>
+       <span id="c26-sec-0032">
+       </span>
+       <h4 id="head-4-373">
+        Using Type Relationships
+       </h4>
+       <p id="c26-para-0158">
+        Some examples of type relationships are
+        <code>
+         is_same
+        </code>
+        ,
+        <code>
+         is_base_of
+        </code>
+        , and
+        <code>
+         is_convertible
+        </code>
+        . This section gives an example of how to use
+        <code>
+         is_same
+        </code>
+        ; the other type relationships work similarly.
+       </p>
+       <p>
+        The following
+        <code>
+         same()
+        </code>
+        function template uses the
+        <code>
+         is_same
+        </code>
+        type trait to figure out whether two given arguments are of the same type and outputs an appropriate message:
+       </p>
+       <pre id="c26-code-0098"><code>template &lt;typename T1, typename T2&gt;</code>
+<code>void same(const T1&amp; t1, const T2&amp; t2)</code>
+<code>{</code>
+<code>    bool areTypesTheSame { is_same_v&lt;T1, T2&gt; };</code>
+<code>    println("'{}' and '{}' are {} types.", t1, t2,</code>
+<code>        (areTypesTheSame ? "the same" : "different"));</code>
+<code>}</code>
+<code> <span aria-label="976" epub:type="pagebreak" id="Page_976" role="doc-pagebreak"></span></code>
+<code>int main()</code>
+<code>{</code>
+<code>    same(1, 32);</code>
+<code>    same(1, 3.01);</code>
+<code>    same(3.01, "Test"s);</code>
+<code>}</code></pre>
+       <p>
+        The output is as follows:
+       </p>
+       <pre id="c26-code-0099"><code>'1' and '32' are the same types.</code>
+<code>'1' and '3.01' are different types</code>
+<code>'3.01' and 'Test' are different types</code></pre>
+       <p>
+        Alternatively, you can implement this example without using any type traits, but using an overload set of two function templates instead:
+       </p>
+       <pre id="c26-code-0100"><code>template &lt;typename T1, typename T2&gt;</code>
+<code>void same(const T1&amp; t1, const T2&amp; t2)</code>
+<code>{</code>
+<code>    println("'{}' and '{}' are different types.", t1, t2);</code>
+<code>}</code>
+<code>template &lt;typename T&gt;</code>
+<code>void same(const T&amp; t1, const T&amp; t2)</code>
+<code>{</code>
+<code>    println("'{}' and '{}' are the same type.", t1, t2);</code>
+<code>}</code></pre>
+       <p id="c26-para-0162">
+        The second function template is more specialized than the first, so it will be preferred by overload resolution whenever it is viable, that is, whenever both arguments are of the same type
+        <code>
+         T
+        </code>
+        .
+       </p>
+      </section>
+      <section>
+       <span id="c26-sec-0033">
+       </span>
+       <h4 id="head-4-374">
+        Using the conditional Type Trait
+       </h4>
+       <p id="c26-para-0163">
+        <a href="c18.xhtml">
+         Chapter 18
+        </a>
+        , “Standard Library Containers,” explains the Standard Library helper function template
+        <code>
+         std::move_if_noexcept()
+        </code>
+        , which can be used to conditionally call either the move constructor or the copy constructor depending on whether the former is marked
+        <code>
+         noexcept
+        </code>
+        . The Standard Library does not provide a similar helper function template to easily call the move assignment operator or copy assignment operator depending on whether the former is
+        <code>
+         noexcept
+        </code>
+        . Now that you know about template metaprogramming and type traits, let's take a look at how to implement a
+        <code>
+         move_assign_if_noexcept()
+        </code>
+        ourselves.
+       </p>
+       <p id="c26-para-0164">
+        Remember from
+        <a href="c18.xhtml">
+         Chapter 18
+        </a>
+        that
+        <code>
+         move_if_noexcept()
+        </code>
+        just converts a given reference to an rvalue reference if the move constructor is marked
+        <code>
+         noexcept
+        </code>
+        and to a reference-to-
+        <code>
+         const
+        </code>
+        otherwise.
+       </p>
+       <p id="c26-para-0165">
+        <code>
+         move_assign_if_noexcept()
+        </code>
+        needs to do something similar, convert a given reference to an rvalue reference if the move assignment operator is marked
+        <code>
+         noexcept
+        </code>
+        , and to a reference-to-
+        <code>
+         const
+        </code>
+        otherwise.
+       </p>
+       <p>
+        The
+        <code>
+         std::conditional
+        </code>
+        type trait can be used to implement the condition. This type trait has three template parameters: a Boolean, a type for when the Boolean is true, and a type for when it is false. The implementation of the
+        <code>
+         conditional
+        </code>
+        type trait looks as follows:
+       </p>
+       <pre id="c26-code-0101"><code>template &lt;bool B, class T, class F&gt;</code>
+<code>struct conditional { using type = T; };</code>
+<code> </code>
+<code>template &lt;class T, class F&gt;</code>
+<code>struct conditional&lt;false, T, F&gt; { using type = F; };</code></pre>
+       <p>
+        <span aria-label="977" epub:type="pagebreak" id="Page_977" role="doc-pagebreak">
+        </span>
+        The
+        <code>
+         is_nothrow_move_assignable
+        </code>
+        type trait can be used to figure out whether a certain type can be move assigned without throwing exceptions. For class types, this means to check if the type has a move assignment operator that is marked with
+        <code>
+         noexcept
+        </code>
+        . Here is the entire implementation of
+        <code>
+         move_assign_if_noexcept()
+        </code>
+        :
+       </p>
+       <pre id="c26-code-0102"><code>template &lt;typename T&gt;</code>
+<code>constexpr conditional&lt;is_nothrow_move_assignable_v&lt;T&gt;, T&amp;&amp;, const T&amp;&gt;::type</code>
+<code>    move_assign_if_noexcept(T&amp; t) noexcept</code>
+<code>{</code>
+<code>    return move(t);</code>
+<code>}</code></pre>
+       <p>
+        The Standard Library defines alias templates for traits that have a
+        <code>
+         type
+        </code>
+        member, such as
+        <code>
+         conditional
+        </code>
+        . These have the same name as the trait, but are appended with
+        <code>
+         _t
+        </code>
+        . For example, the
+        <code>
+         conditional_t&lt;B,T,F&gt;
+        </code>
+        alias template for
+        <code>
+         conditional&lt;B,T,F&gt;::type
+        </code>
+        is defined by the Standard Library as follows:
+       </p>
+       <pre id="c26-code-0103"><code>template &lt;bool B, class T, class F&gt;</code>
+<code>using conditional_t = typename conditional&lt;B,T,F&gt;::type;</code></pre>
+       <p>
+        So, instead of writing this:
+       </p>
+       <pre id="c26-code-0104"><code>conditional&lt;is_nothrow_move_assignable_v&lt;T&gt;, T&amp;&amp;, const T&amp;&gt;::type</code></pre>
+       <p>
+        you can write this:
+       </p>
+       <pre id="c26-code-0105"><code>conditional_t&lt;is_nothrow_move_assignable_v&lt;T&gt;, T&amp;&amp;, const T&amp;&gt;</code></pre>
+       <p>
+        The
+        <code>
+         move_assign_if_noexcept()
+        </code>
+        function template can be tested as follows:
+       </p>
+       <pre id="c26-code-0106"><code>class MoveAssignable</code>
+<code>{</code>
+<code>    public:</code>
+<code>        MoveAssignable&amp; operator=(const MoveAssignable&amp;) {</code>
+<code>            println("copy assign"); return *this; }</code>
+<code>        MoveAssignable&amp; operator=(MoveAssignable&amp;&amp;) {</code>
+<code>            println("move assign"); return *this; }</code>
+<code>};</code>
+<code> </code>
+<code>class MoveAssignableNoexcept</code>
+<code>{</code>
+<code>    public:</code>
+<code>        MoveAssignableNoexcept&amp; operator=(const MoveAssignableNoexcept&amp;) {</code>
+<code>            println("copy assign"); return *this; }</code>
+<code>        MoveAssignableNoexcept&amp; operator=(MoveAssignableNoexcept&amp;&amp;) noexcept {</code>
+<code>            println("move assign"); return *this; }</code>
+<code>};</code>
+<code> </code>
+<code>int main()</code>
+<code>{</code>
+<code>    MoveAssignable a, b;</code>
+<code>    a = move_assign_if_noexcept(b);</code>
+<code>    MoveAssignableNoexcept c, d;</code>
+<code>    c = move_assign_if_noexcept(d);</code>
+<code>}</code></pre>
+       <p>
+        <span aria-label="978" epub:type="pagebreak" id="Page_978" role="doc-pagebreak">
+        </span>
+        This outputs the following:
+       </p>
+       <pre id="c26-code-0107"><code>copy assign</code>
+<code>move assign</code></pre>
+      </section>
+      <section>
+       <span id="c26-sec-0034">
+       </span>
+       <h4 id="head-4-375">
+        Using Type Modification Type Traits
+       </h4>
+       <p>
+        A number of type traits modify a given type. For example, the
+        <code>
+         add_const
+        </code>
+        type trait adds
+        <code>
+         const
+        </code>
+        to a given type, the
+        <code>
+         remove_pointer
+        </code>
+        type trait removes the pointer from a type, and so on. Here's an example:
+       </p>
+       <pre id="c26-code-0108"><code>println("{}", is_same_v&lt;string, <b>remove_pointer_t&lt;string*&gt;</b>&gt;);</code></pre>
+       <p id="c26-para-0174">
+        The output is
+        <code>
+         true
+        </code>
+        .
+       </p>
+       <p>
+        Implementing such type modification traits yourself is not that hard. Here is an implementation of a
+        <code>
+         my_remove_pointer
+        </code>
+        type trait (slightly simplified):
+       </p>
+       <pre id="c26-code-0109"><code><span class="color3">// my_remove_pointer class template.</span></code>
+<code>template &lt;typename T&gt; struct my_remove_pointer { using type = T; };</code>
+<code><span class="color3">// Partial specialization for pointer types.</span></code>
+<code>template &lt;typename T&gt; struct my_remove_pointer&lt;T*&gt; { using type = T; };</code>
+<code><span class="color3">// Partial specialization for const pointer types.</span></code>
+<code>template &lt;typename T&gt; struct my_remove_pointer&lt;T* const&gt; { using type = T; };</code>
+<code><span class="color3">// Alias template for ease of use.</span></code>
+<code>template &lt;typename T&gt;</code>
+<code>using my_remove_pointer_t = typename my_remove_pointer&lt;T&gt;::type;</code>
+<code> </code>
+<code>int main()</code>
+<code>{</code>
+<code>    println("{}", is_same_v&lt;string, <b>my_remove_pointer_t&lt;string*&gt;</b>&gt;);</code>
+<code>}</code></pre>
+      </section>
+      <section>
+       <span id="c26-sec-0035">
+       </span>
+       <h4 id="head-4-376">
+        Using enable_if
+       </h4>
+       <p id="c26-para-0176">
+        The use of
+        <code>
+         enable_if
+        </code>
+        is based on a principle called
+        <i>
+         substitution failure is not an error
+        </i>
+        (SFINAE), an advanced feature of C++. That principle states that a failure to specialize a function template for a given set of template parameters should not be seen as a compilation error. Instead, such specializations should just be removed from the function overload set. This section explains only the basics of SFINAE.
+       </p>
+       <p>
+        If you have a set of overloaded functions, you can use
+        <code>
+         enable_if
+        </code>
+        to selectively disable certain overloads based on some type traits. The
+        <code>
+         enable_if
+        </code>
+        trait is often used on the return types of your set of overloads, or with unnamed non-type template parameters.
+        <code>
+         enable_if
+        </code>
+        accepts two template parameters. The first is a Boolean, and the second is a type. If the Boolean is
+        <code>
+         true
+        </code>
+        , then the
+        <code>
+         enable_if
+        </code>
+        class template has a type alias that you can access using
+        <code>
+         ::type
+        </code>
+        . The type of this type alias is the type given as the second template parameter. If the Boolean is
+        <code>
+         false
+        </code>
+        , then there is no such type alias. Here is the implementation of this type trait:
+       </p>
+       <pre id="c26-code-0110"><code>template &lt;bool B, class T = void&gt;</code>
+<code>struct enable_if {};</code>
+<code> </code>
+<code>template &lt;class T&gt;</code>
+<code>struct enable_if&lt;true, T&gt; { typedef T type; };</code></pre>
+       <p>
+        <span aria-label="979" epub:type="pagebreak" id="Page_979" role="doc-pagebreak">
+        </span>
+        The
+        <code>
+         same()
+        </code>
+        function template from an earlier section can be rewritten into overloaded
+        <code>
+         checkType()
+        </code>
+        function templates by using
+        <code>
+         enable_if
+        </code>
+        as follows. In this implementation, the
+        <code>
+         checkType()
+        </code>
+        functions return
+        <code>
+         true
+        </code>
+        or
+        <code>
+         false
+        </code>
+        depending on whether the types of the given values are the same. If you don't want to return anything from
+        <code>
+         checkType()
+        </code>
+        , you can remove the return statements and remove the second template argument for
+        <code>
+         enable_if
+        </code>
+        .
+       </p>
+       <pre id="c26-code-0111"><code>template &lt;typename T1, typename T2&gt;</code>
+<code>enable_if_t&lt;is_same_v&lt;T1, T2&gt;, bool&gt;</code>
+<code>    checkType(const T1&amp; t1, const T2&amp; t2)</code>
+<code>{</code>
+<code>    println("'{}' and '{}' are the same types.", t1, t2);</code>
+<code>    return true;</code>
+<code>}</code>
+<code> </code>
+<code>template &lt;typename T1, typename T2&gt;</code>
+<code>enable_if_t&lt;!is_same_v&lt;T1, T2&gt;, bool&gt;</code>
+<code>    checkType(const T1&amp; t1, const T2&amp; t2)</code>
+<code>{</code>
+<code>    println("'{}' and '{}' are different types.", t1, t2);</code>
+<code>    return false;</code>
+<code>}</code>
+<code> </code>
+<code>int main()</code>
+<code>{</code>
+<code>    checkType(1, 32);</code>
+<code>    checkType(1, 3.01);</code>
+<code>    checkType(3.01, "Test"s);</code>
+<code>}</code></pre>
+       <p>
+        The output is the same as before:
+       </p>
+       <pre id="c26-code-0112"><code>'1' and '32' are the same types.</code>
+<code>'1' and '3.01' are different types.</code>
+<code>'3.01' and 'Test' are different types.</code></pre>
+       <p id="c26-para-0180">
+        The code defines two overloads for
+        <code>
+         checkType()
+        </code>
+        . It uses
+        <code>
+         is_same_v
+        </code>
+        to check whether two types are the same. The result is given to
+        <code>
+         enable_if_t
+        </code>
+        . When the first argument to
+        <code>
+         enable_if_t
+        </code>
+        is
+        <code>
+         true
+        </code>
+        ,
+        <code>
+         enable_if_t
+        </code>
+        has type
+        <code>
+         bool
+        </code>
+        ; otherwise, there is no type. This is where SFINAE comes into play.
+       </p>
+       <p id="c26-para-0181">
+        When the compiler starts to compile the first statement in
+        <code>
+         main()
+        </code>
+        , it tries to find a function
+        <code>
+         checkType()
+        </code>
+        that accepts two integer values. It finds the first
+        <code>
+         checkType()
+        </code>
+        function template overload and deduces that it can use an instance of this function template by making
+        <code>
+         T1
+        </code>
+        and
+        <code>
+         T2
+        </code>
+        both integers. It then tries to figure out the return type. Because both arguments are integers and thus the same types,
+        <code>
+         is_same_v&lt;T1, T2&gt;
+        </code>
+        is
+        <code>
+         true
+        </code>
+        , which causes
+        <code>
+         enable_if_t&lt;true, bool&gt;
+        </code>
+        to be type
+        <code>
+         bool
+        </code>
+        . With this instantiation, everything is fine, and thus the compiler adds this overload to the set of candidates. When it sees the second overload of
+        <code>
+         checkType()
+        </code>
+        , it again deduces that it can use an instance of this function template by making
+        <code>
+         T1
+        </code>
+        and
+        <code>
+         T2
+        </code>
+        both integers. However, when trying to figure out the return type, it finds out that
+        <code>
+         !is_same_v&lt;T1, T2&gt;
+        </code>
+        is
+        <code>
+         false
+        </code>
+        . Because of this,
+        <code>
+         enable_if_t&lt;false, bool&gt;
+        </code>
+        does not represent a type, leaving that overload of
+        <code>
+         checkType()
+        </code>
+        without a return type. The compiler notices this error but does not yet generate a real compilation error because of SFINAE. It simply does not add this overload to the set of candidates. Thus, with the first statement in
+        <code>
+         main()
+        </code>
+        , the overload set contains one candidate
+        <code>
+         checkType()
+        </code>
+        function, so it's clear which one the compiler will use.
+       </p>
+       <p id="c26-para-0182">
+        <span aria-label="980" epub:type="pagebreak" id="Page_980" role="doc-pagebreak">
+        </span>
+        When the compiler tries to compile the second statement in
+        <code>
+         main()
+        </code>
+        , it again tries to find a suitable
+        <code>
+         checkType()
+        </code>
+        function. It starts with the first
+        <code>
+         checkType()
+        </code>
+        and decides it can use that overload by setting
+        <code>
+         T1
+        </code>
+        to type
+        <code>
+         int
+        </code>
+        and
+        <code>
+         T2
+        </code>
+        to type
+        <code>
+         double
+        </code>
+        . It then tries to figure out the return type. This time,
+        <code>
+         T1
+        </code>
+        and
+        <code>
+         T2
+        </code>
+        are different types, which means that
+        <code>
+         is_same_v&lt;T1, T2&gt;
+        </code>
+        is
+        <code>
+         false
+        </code>
+        . Because of this,
+        <code>
+         enable_if_t&lt;false, bool&gt;
+        </code>
+        does not represent a type, leaving the function
+        <code>
+         checkType()
+        </code>
+        without a return type. The compiler notices this error but does not yet generate a real compilation error because of SFINAE. Instead, the compiler simply does not add this overload to the set of candidates. When the compiler sees the second
+        <code>
+         checkType()
+        </code>
+        function, it figures out that that one works out fine because
+        <code>
+         T1
+        </code>
+        and
+        <code>
+         T2
+        </code>
+        are of different types, so
+        <code>
+         !is_same_v&lt;T1, T2&gt;
+        </code>
+        is
+        <code>
+         true
+        </code>
+        , and thus
+        <code>
+         enable_if_t&lt;true, bool&gt;
+        </code>
+        is type
+        <code>
+         bool
+        </code>
+        . In the end, the overload set for the second statement in
+        <code>
+         main()
+        </code>
+        again contains only one overload, so it's clear which one the compiler will use.
+       </p>
+       <p>
+        If you don't want to clutter your return types with
+        <code>
+         enable_if
+        </code>
+        , then another option is to use
+        <code>
+         enable_if
+        </code>
+        with extra non-type template parameters. This actually makes the code easier to read. For example:
+       </p>
+       <pre id="c26-code-0113"><code>template &lt;typename T1, typename T2<b>, enable_if_t&lt;is_same_v&lt;T1, T2&gt;&gt;* = nullptr</b>&gt;</code>
+<code>bool checkType(const T1&amp; t1, const T2&amp; t2)</code>
+<code>{</code>
+<code>    println("'{}' and '{}' are the same types.", t1, t2);</code>
+<code>    return true;</code>
+<code>}</code>
+<code> </code>
+<code>template &lt;typename T1, typename T2<b>, enable_if_t&lt;!is_same_v&lt;T1, T2&gt;&gt;* = nullptr</b>&gt;</code>
+<code>bool checkType(const T1&amp; t1, const T2&amp; t2)</code>
+<code>{</code>
+<code>    println("'{}' and '{}' are different types.", t1, t2);</code>
+<code>    return false;</code>
+<code>}</code></pre>
+       <p id="c26-para-0184">
+        If you want to use
+        <code>
+         enable_if
+        </code>
+        on a set of constructors, you can't use it with the return type because constructors don't have a return type. In that case, you must use it with non-type template parameters, as shown earlier.
+       </p>
+       <p>
+        The
+        <code>
+         enable_if
+        </code>
+        syntax explained in this section was the state of the art prior to C++20. Since C++20, you should prefer to use concepts, discussed in
+        <a href="c12.xhtml">
+         Chapter 12
+        </a>
+        . Notice the syntactic similarity between the earlier
+        <code>
+         enable_if
+        </code>
+        code and the following example using concepts. However, it's clear that the version using concepts is more readable.
+       </p>
+       <pre id="c26-code-0114"><code>template &lt;typename T1, typename T2&gt; <b>requires is_same_v&lt;T1, T2&gt;</b></code>
+<code>bool checkType(const T1&amp; t1, const T2&amp; t2)</code>
+<code>{</code>
+<code>    println("'{}' and '{}' are the same types.", t1, t2);</code>
+<code>    return true;</code>
+<code>}</code>
+<code> </code>
+<code>template &lt;typename T1, typename T2&gt; <b>requires !is_same_v&lt;T1, T2&gt;</b></code>
+<code>bool checkType(const T1&amp; t1, const T2&amp; t2)</code>
+<code>{</code>
+<code>    println("'{}' and '{}' are different types.", t1, t2);</code>
+<code>    return false;</code>
+<code>}</code></pre>
+       <p>
+        <span aria-label="981" epub:type="pagebreak" id="Page_981" role="doc-pagebreak">
+        </span>
+        It is recommended to use SFINAE judiciously. Use it only when you need to resolve overload ambiguities that you cannot possibly resolve using any other technique, such as specializations, concepts, and so on. For example, if you just want compilation to fail when you use a template with the wrong types, use concepts or use
+        <code>
+         static_assert()
+        </code>
+        , explained later in this chapter, instead of SFINAE. Of course, there are legitimate use cases for SFINAE, but keep the following in mind.
+       </p>
+       <section>
+        <aside>
+         <div class="top hr">
+          <hr/>
+         </div>
+         <section class="feature1">
+          <p id="c26-para-0187">
+           <b>
+            WARNING
+           </b>
+           <i>
+            Relying on SFINAE is tricky and complicated. If your use of SFINAE and
+           </i>
+           <code>
+            enable_if
+           </code>
+           <i>
+            selectively disables the wrong overloads in your overload set, you will get cryptic compiler errors, which will be hard to track down.
+           </i>
+          </p>
+          <div class="bottom hr">
+           <hr/>
+          </div>
+         </section>
+        </aside>
+       </section>
+      </section>
+      <section>
+       <span id="c26-sec-0037">
+       </span>
+       <h4 id="head-4-377">
+        Using constexpr if to Simplify enable_if Constructs
+       </h4>
+       <p id="c26-para-0188">
+        As you can see from earlier examples, using
+        <code>
+         enable_if
+        </code>
+        can become quite complicated. The
+        <code>
+         constexpr if
+        </code>
+        feature helps to dramatically simplify certain use cases of
+        <code>
+         enable_if
+        </code>
+        .
+       </p>
+       <p>
+        For example, suppose you have the following two classes:
+       </p>
+       <pre id="c26-code-0115"><code>class IsDoable</code>
+<code>{</code>
+<code>    public:</code>
+<code>        virtual void doit() const { println("IsDoable::doit()"); }</code>
+<code>};</code>
+<code> </code>
+<code>class Derived : public IsDoable { };</code></pre>
+       <p>
+        You can write a function template,
+        <code>
+         callDoit()
+        </code>
+        , that calls the
+        <code>
+         doit()
+        </code>
+        member function if the member function is available; otherwise, prints an error message. You can do this with
+        <code>
+         enable_if
+        </code>
+        by checking whether the given type is derived from
+        <code>
+         IsDoable
+        </code>
+        :
+       </p>
+       <pre id="c26-code-0116"><code>template &lt;typename T&gt;</code>
+<code>enable_if_t&lt;is_base_of_v&lt;IsDoable, T&gt;, void&gt; callDoit(const T&amp; t)</code>
+<code>{</code>
+<code>    t.doit();</code>
+<code>}</code>
+<code> </code>
+<code>template &lt;typename T&gt;</code>
+<code>enable_if_t&lt;!is_base_of_v&lt;IsDoable, T&gt;, void&gt; callDoit(const T&amp;)</code>
+<code>{</code>
+<code>    println("Cannot call doit()!");</code>
+<code>}</code></pre>
+       <p>
+        The following code tests this implementation:
+       </p>
+       <pre id="c26-code-0117"><code>Derived d;</code>
+<code>callDoit(d);</code>
+<code>callDoit(123);</code></pre>
+       <p>
+        Here is the output:
+       </p>
+       <pre id="c26-code-0118"><code>IsDoable::doit()</code>
+<code>Cannot call doit()!</code></pre>
+       <p>
+        <span aria-label="982" epub:type="pagebreak" id="Page_982" role="doc-pagebreak">
+        </span>
+        You can simplify this
+        <code>
+         enable_if
+        </code>
+        implementation a lot by using
+        <code>
+         constexpr if
+        </code>
+        :
+       </p>
+       <pre id="c26-code-0119"><code>template &lt;typename T&gt;</code>
+<code>void callDoit(const T&amp; t)</code>
+<code>{</code>
+<code>    if constexpr (is_base_of_v&lt;IsDoable, T&gt;) {</code>
+<code>        t.doit();</code>
+<code>    } else {</code>
+<code>        println("Cannot call doit()!");</code>
+<code>    }</code>
+<code>}</code></pre>
+       <p id="c26-para-0194">
+        You cannot accomplish this using a normal
+        <code>
+         if
+        </code>
+        statement. With a normal
+        <code>
+         if
+        </code>
+        statement, both branches need to be compiled, and this will fail if you supply a type
+        <code>
+         T
+        </code>
+        that is not derived from
+        <code>
+         IsDoable
+        </code>
+        . In that case, the statement
+        <code>
+         t.doit()
+        </code>
+        will fail to compile. However, with the
+        <code>
+         constexpr if
+        </code>
+        statement, if a type is supplied that is not derived from
+        <code>
+         IsDoable
+        </code>
+        , then the statement
+        <code>
+         t.doit()
+        </code>
+        won't even be compiled.
+       </p>
+       <p>
+        Instead of using the
+        <code>
+         is_base_of
+        </code>
+        type trait, you can also use a requires expression; see
+        <a href="c12.xhtml">
+         Chapter 12
+        </a>
+        . Here is an implementation of
+        <code>
+         callDoit()
+        </code>
+        using a requires expression to check whether the
+        <code>
+         doit()
+        </code>
+        member function can be called on object
+        <code>
+         t
+        </code>
+        .
+       </p>
+       <pre id="c26-code-0120"><code>template &lt;typename T&gt;</code>
+<code>void callDoit(const T&amp; t)</code>
+<code>{</code>
+<code>    <b>if constexpr (requires { t.doit(); }) {</b></code>
+<code>        t.doit();</code>
+<code>    } else {</code>
+<code>        println("Cannot call doit()!");</code>
+<code>    }</code>
+<code>}</code></pre>
+      </section>
+      <section>
+       <span id="c26-sec-0038">
+       </span>
+       <h4 id="head-4-378">
+        Logical Operator Traits
+       </h4>
+       <p>
+        There are three logical operator traits:
+        <code>
+         conjunction
+        </code>
+        ,
+        <code>
+         disjunction
+        </code>
+        , and
+        <code>
+         negation
+        </code>
+        . Variable templates, ending with
+        <code>
+         _v
+        </code>
+        , are available as well. These traits accept a variable number of template type arguments and can be used to perform logical operations on type traits, as in this example:
+       </p>
+       <pre id="c26-code-0121"><code>print("{} ", conjunction_v&lt;is_integral&lt;int&gt;, is_integral&lt;short&gt;&gt;);</code>
+<code>print("{} ", conjunction_v&lt;is_integral&lt;int&gt;, is_integral&lt;double&gt;&gt;);</code>
+<code> </code>
+<code>print("{} ", disjunction_v&lt;is_integral&lt;int&gt;, is_integral&lt;double&gt;,</code>
+<code>                      is_integral&lt;short&gt;&gt;);</code>
+<code> </code>
+<code>print("{} ", negation_v&lt;is_integral&lt;int&gt;&gt;);</code></pre>
+       <p>
+        The output is as follows:
+       </p>
+       <pre id="c26-code-0122"><code>true false true false</code></pre>
+      </section>
+      <section>
+       <span id="c26-sec-0039">
+       </span>
+       <h4 id="head-4-379">
+        Static Assertions
+       </h4>
+       <p>
+        <code>
+         static_assert()
+        </code>
+        allows certain conditions to be asserted at compile time. An assertion is something that needs to be true. If an assertion is false, the compiler issues an error. A call to
+        <code>
+         static_assert()
+        </code>
+        <span aria-label="983" epub:type="pagebreak" id="Page_983" role="doc-pagebreak">
+        </span>
+        accepts two parameters: an expression to evaluate at compile time and (optionally) a string. When the expression evaluates to
+        <code>
+         false
+        </code>
+        , the compiler issues an error that contains the given string. An example is to check that you are compiling with a 64-bit compiler:
+       </p>
+       <pre id="c26-code-0123"><code>static_assert(sizeof(void*) == 8, "Requires 64-bit compilation.");</code></pre>
+       <p>
+        If you compile this with a 32-bit compiler where a pointer is four bytes, the compiler issues an error that can look like this:
+       </p>
+       <pre id="c26-code-0124"><code>test.cpp(3): error C2338: Requires 64-bit compilation.</code></pre>
+       <p>
+        The string parameter is optional, as in this example:
+       </p>
+       <pre id="c26-code-0125"><code>static_assert(sizeof(void*) == 8);</code></pre>
+       <p>
+        In this case, if the expression evaluates to
+        <code>
+         false
+        </code>
+        , you get a compiler-dependent error message. For example, Microsoft Visual C++ gives the following error:
+       </p>
+       <pre id="c26-code-0126"><code>test.cpp(3): error C2607: static assertion failed</code></pre>
+       <p>
+        <code>
+         static_assert()
+        </code>
+        can be combined with type traits. Here is an example:
+       </p>
+       <pre id="c26-code-0127"><code>template &lt;typename T&gt;</code>
+<code>void foo(const T&amp; t)</code>
+<code>{</code>
+<code>    static_assert(is_integral_v&lt;T&gt;, "T must be an integral type.");</code>
+<code>}</code></pre>
+      </section>
+     </section>
+     <section>
+      <span id="c26-sec-0040">
+      </span>
+      <h3 id="head-3-491">
+       Metaprogramming Conclusion
+      </h3>
+      <p id="c26-para-0203">
+       As you have seen in this section, template metaprogramming can be a powerful tool, but it can also get quite complicated. One problem with template metaprogramming, not mentioned before, is that everything happens at compile time so you cannot use a debugger to pinpoint a problem. If you decide to use template metaprogramming in your code, make sure you write good comments to explain exactly what is going on and why you are doing something a certain way. If you don't properly document your template metaprogramming code, it might be difficult for someone else to understand your code, and it might even make it difficult for you to understand your own code in the future.
+      </p>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-265">
+     <span id="c26-sec-0041">
+     </span>
+     <h2 id="head-2-265">
+      SUMMARY
+     </h2>
+     <p id="c26-para-0204">
+      This chapter is a continuation of the template discussion from
+      <a href="c12.xhtml">
+       Chapter 12
+      </a>
+      . These chapters show you how to use templates for generic programming and template metaprogramming for compile-time computations. Ideally you have gained an appreciation for the power and capabilities of these features and an idea of how you can apply these techniques to your own code. Don't worry if you didn't understand all the syntax, or didn't follow all the examples, on your first reading. The techniques can be difficult to grasp when you are first exposed to them, and the syntax is tricky whenever you want to write more complicated templates. When you actually sit down to write a class or function template, you can consult this chapter and
+      <a href="c12.xhtml">
+       Chapter 12
+      </a>
+      for a reference on the proper syntax.
+     </p>
+    </section>
+    <span aria-label="984" epub:type="pagebreak" id="Page_984" role="doc-pagebreak">
+    </span>
+    <section aria-labelledby="head-2-266">
+     <span id="c26-sec-0042">
+     </span>
+     <h2 id="head-2-266">
+      EXERCISES
+     </h2>
+     <p id="c26-para-0205">
+      By solving the following exercises, you can practice the material discussed in this chapter. Solutions to all exercises are available with the code download on the book's website at
+      <code>
+       <a href="http://www.wiley.com/go/proc++6e">
+        www.wiley.com/go/proc++6e
+       </a>
+      </code>
+      . However, if you are stuck on an exercise, first reread parts of this chapter to try to find an answer yourself before looking at the solution from the website.
+     </p>
+     <section>
+      <span id="c26-exsec-0001">
+      </span>
+      <ol class="none">
+       <li id="c26-ex-0001">
+        <b>
+         Exercise 26-1:
+        </b>
+        In Exercise 12-2, you wrote a full specialization of a
+        <code>
+         KeyValuePair
+        </code>
+        class template for
+        <code>
+         const char*
+        </code>
+        keys and values. Replace that full specialization with a partial specialization where the values are of type
+        <code>
+         const char*
+        </code>
+        but the keys can be of any type.
+       </li>
+       <li id="c26-ex-0002">
+        <b>
+         Exercise 26-2:
+        </b>
+        Calculate the n
+        <sup>
+         th
+        </sup>
+        number in the Fibonacci series at compile time using template recursion. The Fibonacci series starts with 0 and 1, and any subsequent value is the sum of the two previous values, so: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, and so on.
+        <p class="listPara1" id="c26-para-0208">
+         Can you also provide a variable template to make your recursive Fibonacci template easier to use?
+        </p>
+       </li>
+       <li id="c26-ex-0003">
+        <b>
+         Exercise 26-3:
+        </b>
+        Take your solution for Exercise 26-2 and modify it so that the calculation still happens at compile time, but without the use of any template or function recursion.
+       </li>
+       <li id="c26-ex-0004">
+        <b>
+         Exercise 26-4:
+        </b>
+        Write a variadic function template called
+        <code>
+         push_back_values()
+        </code>
+        accepting a reference to a
+        <code>
+         vector
+        </code>
+        and a variable number of values. The function should use a fold expression to push all the values into the given
+        <code>
+         vector
+        </code>
+        . Then, write an
+        <code>
+         insert_values()
+        </code>
+        function template doing the same thing but in terms of
+        <code>
+         vector::insert(initializer_list&lt;value_type&gt;)
+        </code>
+        . What's the difference with the
+        <code>
+         push_back_values()
+        </code>
+        implementation?
+       </li>
+       <li id="c26-ex-0005">
+        <b>
+         Exercise 26-5:
+        </b>
+        Write a
+        <code>
+         multiply()
+        </code>
+        non-abbreviated function template accepting two template type parameters
+        <code>
+         T1
+        </code>
+        and
+        <code>
+         T2
+        </code>
+        . Use a type trait to verify that both types are arithmetic. If they are, perform the multiplication and return the result. If they are not, throw an exception containing the names of both types.
+       </li>
+       <li id="c26-ex-0006">
+        <b>
+         Exercise 26-6:
+        </b>
+        Advanced. Transform your solution for Exercise 26-5 to use an abbreviated function template.
+       </li>
+      </ol>
+     </section>
+    </section>
+   </section>
+  </div>
+ </body>
+</html>

@@ -1,0 +1,838 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html>
+<html epub:prefix="z3998: http://www.daisy.org/z3998/2012/vocab/structure/#" lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+ <head>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   INTRODUCTION
+  </title>
+ </head>
+ <body>
+  <div class="navigation">
+   <a class="nav-button" href="chapter_007.html">
+    ← Previous
+   </a>
+   <a class="nav-button" href="index.html">
+    Table of Contents
+   </a>
+   <a class="nav-button" href="chapter_009.html">
+    Next →
+   </a>
+  </div>
+  <div class="chapter-content">
+   <section aria-labelledby="f02_1" epub:type="introduction" role="doc-introduction">
+    <header>
+     <h1 id="f02_1">
+      <span aria-label="xli" epub:type="pagebreak" id="Page_xli" role="doc-pagebreak">
+      </span>
+      <span id="fm2">
+      </span>
+      INTRODUCTION
+     </h1>
+    </header>
+    <section aria-label="chapter opening">
+     <span id="fintro-sec-0001">
+     </span>
+     <p id="fintro-para-0002">
+      The development of C++ started in 1982 by Bjarne Stroustrup, a Danish computer scientist, as the successor of C with Classes. In 1985, the first edition of
+      <i>
+       The C++ Programming Language
+      </i>
+      book was released. The first standardized version of C++ was released in 1998, called C++98. In 2003, C++03 came out and contained a few small updates. After that, it was silent for a while, but traction slowly started building up, resulting in a major update of the language in 2011, called C++11. From then on, the C++ Standard Committee has been on a three-year cycle to release updated versions, giving us C++14, C++17, C++20, and now C++23. All in all, with the release of C++23 in 2023, C++ is almost 40 years old and still going strong. In most rankings of programming languages in 2023, C++ is in the top four. It is being used on an extremely wide range of hardware, going from small devices with embedded microprocessors all the way up to multi-rack supercomputers. Besides wide hardware support, C++ can be used to tackle almost any programming job, be it games on mobile platforms, performance-critical artificial intelligence (AI) and machine learning (ML) software, components for self-driving cars, real-time 3-D graphics engines, low-level hardware drivers, entire operating systems, software stacks for networking equipment, web browsers, and so on. The performance of C++ programs is hard to match with any other programming language, and as such, it is the de facto language for writing fast, powerful, and enterprise-class programs. Big tech companies, such as Microsoft, Facebook, Amazon, Google, and many more, use services written in C++ to run their infrastructure. As popular as C++ has become, the language can be difficult to grasp in full. There are simple, but powerful, techniques that professional C++ programmers use that don't show up in traditional texts, and there are useful parts of C++ that remain a mystery even to experienced C++ programmers.
+     </p>
+     <p id="fintro-para-0003">
+      Too often, programming books focus on the syntax of the language instead of its real-world use. The typical C++ text introduces a major part of the language in each chapter, explaining the syntax and providing an example.
+      <i>
+       Professional C++
+      </i>
+      does not follow this pattern. Instead of giving you just the nuts and bolts of the language with little practical context, this book will teach you how to use C++ in the real world. It will show you the little-known features that will make your life easier, as well as the programming techniques that separate novices from professional programmers.
+     </p>
+    </section>
+    <section aria-labelledby="head-2-346">
+     <span id="fintro-sec-0002">
+     </span>
+     <h2 id="head-2-346">
+      WHO THIS BOOK IS FOR
+     </h2>
+     <p id="fintro-para-0004">
+      Even if you have used the language for years, you might still be unfamiliar with the more advanced features of C++, or you might not be using the full capabilities of the language. Maybe you don't yet know all the new features introduced with the latest release, C++23. Perhaps you write competent C++ code but would like to learn more about design and good programming style in C++. Or maybe you're relatively new to C++ but want to learn the “right” way to program from the start. This book will meet those needs and bring your C++ skills to the professional level.
+     </p>
+     <p id="fintro-para-0005">
+      Because this book focuses on advancing from basic or intermediate knowledge of C++ to becoming a professional C++ programmer, it assumes that you have some knowledge about programming.
+      <span aria-label="xlii" epub:type="pagebreak" id="Page_xlii" role="doc-pagebreak">
+      </span>
+      <a href="c01.xhtml">
+       Chapter 1
+      </a>
+      , “A Crash Course in C++ and the Standard Library,” covers the basics of C++ as a refresher, but it is not a substitute for actual training in programming. If you are just starting with C++ but you have experience in another programming language such as C, Java, or C#, you should be able to pick up most of what you need from
+      <a href="c01.xhtml">
+       Chapter 1
+      </a>
+      .
+     </p>
+     <p id="fintro-para-0006">
+      In any case, you should have a solid foundation in programming fundamentals. You should know about loops, functions, and variables. You should know how to structure a program, and you should be familiar with fundamental techniques such as recursion. You should have some knowledge of common data structures such as queues, and useful algorithms such as sorting and searching. You don't need to know about object-oriented programming just yet—that is covered in
+      <a href="c05.xhtml">
+       Chapter 5
+      </a>
+      , “Designing with Classes.”
+     </p>
+     <p id="fintro-para-0007">
+      You will also need to be familiar with the compiler you will be using to compile your code. Two compilers, Microsoft Visual C++ and GCC, are introduced later in this introduction. For other compilers, refer to the documentation that came with your compiler.
+     </p>
+    </section>
+    <section aria-labelledby="head-2-347">
+     <span id="fintro-sec-0003">
+     </span>
+     <h2 id="head-2-347">
+      WHAT THIS BOOK COVERS
+     </h2>
+     <p id="fintro-para-0008">
+      <i>
+       Professional C++
+      </i>
+      uses an approach to C++ programming that will both increase the quality of your code and improve your programming efficiency. You will find discussions on new C++23 features throughout this sixth edition. These features are not just isolated to a few chapters or sections; instead, examples have been updated to use new features when appropriate.
+     </p>
+     <p id="fintro-para-0009">
+      <i>
+       Professional C++
+      </i>
+      teaches you more than just the syntax and language features of C++. It also emphasizes programming methodologies, reusable design patterns, and good programming style. The
+      <i>
+       Professional C++
+      </i>
+      methodology incorporates the entire software development process, from designing and writing code to debugging and working in groups. This approach will enable you to master the C++ language and its idiosyncrasies, as well as take advantage of its powerful capabilities for large-scale software development.
+     </p>
+     <p id="fintro-para-0010">
+      Imagine users who have learned all of the syntax of C++ without seeing a single example of its use. They know just enough to be dangerous! Without examples, they might assume that all code should go in the
+      <code>
+       main()
+      </code>
+      function of the program or that all variables should be global—practices that are generally not considered hallmarks of good programming.
+     </p>
+     <p id="fintro-para-0011">
+      Professional C++ programmers understand the correct way to use the language, in addition to the syntax. They recognize the importance of good design, the theories of object-oriented programming, and the best ways to use existing libraries. They have also developed an arsenal of useful code and reusable ideas.
+     </p>
+     <p id="fintro-para-0012">
+      By reading and understanding this book, you will become a professional C++ programmer. You will expand your knowledge of C++ to cover lesser known and often misunderstood language features. You will gain an appreciation for object-oriented design and acquire top-notch debugging skills. Perhaps most important, you will finish this book armed with a wealth of reusable ideas that you can actually apply to your daily work.
+     </p>
+     <p id="fintro-para-0013">
+      <span aria-label="xliii" epub:type="pagebreak" id="Page_xliii" role="doc-pagebreak">
+      </span>
+      There are many good reasons to make the effort to be a professional C++ programmer as opposed to a programmer who knows C++. Understanding the true workings of the language will improve the quality of your code. Learning about different programming methodologies and processes will help you to work better with your team. Discovering reusable libraries and common design patterns will improve your daily efficiency and help you stop reinventing the wheel. All of these lessons will make you a better programmer and a more valuable employee. While this book can't guarantee you a promotion, it certainly won't hurt.
+     </p>
+    </section>
+    <section aria-labelledby="head-2-348">
+     <span id="fintro-sec-0004">
+     </span>
+     <h2 id="head-2-348">
+      HOW THIS BOOK IS STRUCTURED
+     </h2>
+     <p id="fintro-para-0014">
+      This book is made up of five parts.
+     </p>
+     <p id="fintro-para-0015">
+      <a href="p01.xhtml">
+       Part I
+      </a>
+      , “Introduction to Professional C++,” begins with a crash course in C++ basics to ensure a foundation of C++ knowledge. Following the crash course,
+      <a href="p01.xhtml">
+       Part I
+      </a>
+      goes deeper into working with strings, because strings are used extensively in most examples throughout the book. The last chapter of
+      <a href="p01.xhtml">
+       Part I
+      </a>
+      explores how to write
+      <i>
+       readable
+      </i>
+      C++ code.
+     </p>
+     <p id="fintro-para-0016">
+      <a href="p02.xhtml">
+       Part II
+      </a>
+      , “Professional C++ Software Design,” discusses C++ design methodologies. You will read about the importance of design, the object-oriented methodology, and the importance of code reuse.
+     </p>
+     <p id="fintro-para-0017">
+      <a href="p03.xhtml">
+       Part III
+      </a>
+      , “C++ Coding the Professional Way,” provides a technical tour of C++ from the professional point of view. You will read about the best ways to manage memory in C++, how to create reusable classes, and how to leverage important language features such as inheritance. You will also learn techniques for input and output, error handling, string localization, how to work with regular expressions, and how to structure your code in reusable components called modules. You will read about how to implement operator overloading, how to write templates, how to put restrictions on template parameters using concepts, and how to unlock the power of lambda expressions and function objects. This part also explains the C++ Standard Library, including containers, iterators, ranges, and algorithms. You will also read about some additional libraries that are available in the standard, such as the libraries to work with time, dates, time zones, random numbers, and the filesystem.
+     </p>
+     <p id="fintro-para-0018">
+      <a href="p04.xhtml">
+       Part IV
+      </a>
+      , “Mastering Advanced Features of C++,” demonstrates how you can get the most out of C++. This part of the book exposes the mysteries of C++ and describes how to use some of its more advanced features. You will read about how to customize and extend the C++ Standard Library to your needs, advanced details on template programming, including template metaprogramming, and how to use multithreading to take advantage of multiprocessor and multicore systems.
+     </p>
+     <p id="fintro-para-0019">
+      <a href="p05.xhtml">
+       Part V
+      </a>
+      , “C++ Software Engineering,” focuses on writing enterprise-quality software. You'll read about the engineering practices being used by programming organizations today; how to write efficient C++ code; software testing concepts, such as unit testing and regression testing; techniques used to debug C++ programs; how to incorporate design techniques, frameworks, and conceptual object-oriented design patterns into your own code; and solutions for cross-language and cross-platform code.
+     </p>
+     <p id="fintro-para-0020">
+      The book concludes with a useful chapter-by-chapter guide to succeeding in a C++ technical interview, an annotated bibliography, a summary of the C++ header files available in the standard, and a brief introduction to the Unified Modeling Language (UML).
+     </p>
+     <p>
+      <span aria-label="xliv" epub:type="pagebreak" id="Page_xliv" role="doc-pagebreak">
+      </span>
+      This book is not a reference of every single class, member function, and function available in C++. The book
+      <i>
+       C++17 Standard Library Quick Reference
+      </i>
+      by Peter Van Weert and Marc Gregoire (Apress, 2019. ISBN: 978-1-4842-4923-9) is a condensed reference to all essential data structures, algorithms, and functions provided by the C++ Standard Library up until the C++17 standard.
+      <a aria-describedby="fintro-note-0001" epub:type="noteref" href="#fintro-note-0001" id="R_fintro-note-0001" role="doc-noteref">
+       <sup>
+        1
+       </sup>
+      </a>
+      <a href="b02.xhtml">
+       Appendix B
+      </a>
+      , “Annotated Bibliography,” lists a couple more references. Two excellent online references are:
+     </p>
+     <ul class="check1" id="fintro-list-0001">
+      <li id="fintro-li-0001">
+       <code>
+        <a href="http://cppreference.com">
+         cppreference.com
+        </a>
+       </code>
+       : You can use this reference online or download an offline version for use when you are not connected to the Internet.
+      </li>
+      <li id="fintro-li-0002">
+       <code>
+        <a href="http://cplusplus.com/reference">
+         cplusplus.com/reference
+        </a>
+       </code>
+      </li>
+     </ul>
+     <p id="fintro-para-0022">
+      When I refer to a “Standard Library Reference” in this book, I am referring to one of these detailed C++ references.
+     </p>
+     <p>
+      The following are additional excellent online resources:
+     </p>
+     <ul class="check1" id="fintro-list-0002">
+      <li id="fintro-li-0003">
+       <code>
+        <a href="http://github.com/isocpp/CppCoreGuidelines">
+         github.com/isocpp/CppCoreGuidelines
+        </a>
+       </code>
+       : The
+       <i>
+        C++ Core Guidelines
+       </i>
+       are a collaborative effort led by Bjarne Stroustrup, inventor of the C++ language itself. They are the result of many person-years of discussion and design across a number of organizations. The aim of the guidelines is to help people to use modern C++ effectively. The guidelines are focused on relatively higher-level issues, such as interfaces, resource management, memory management, and concurrency.
+      </li>
+      <li id="fintro-li-0004">
+       <code>
+        <a href="http://github.com/Microsoft/GSL">
+         github.com/Microsoft/GSL
+        </a>
+       </code>
+       : This is an implementation by Microsoft of the
+       <i>
+        Guidelines Support Library
+       </i>
+       (GSL) containing functions and types that are suggested for use by the C++ Core Guidelines. It's a header-only library.
+      </li>
+      <li id="fintro-li-0005">
+       <code>
+        <a href="http://isocpp.org/faq">
+         isocpp.org/faq
+        </a>
+       </code>
+       : This is a large collection of frequently asked C++ questions.
+      </li>
+      <li id="fintro-li-0006">
+       <code>
+        <a href="http://stackoverflow.com">
+         stackoverflow.com
+        </a>
+       </code>
+       : Search for answers to common programming questions—or ask your own questions.
+      </li>
+     </ul>
+    </section>
+    <section aria-labelledby="head-2-349">
+     <span id="fintro-sec-0005">
+     </span>
+     <h2 id="head-2-349">
+      CONVENTIONS
+     </h2>
+     <p>
+      To help you get the most from the text and keep track of what's happening, a number of conventions are used throughout this book.
+     </p>
+     <section>
+      <aside>
+       <div class="top hr">
+        <hr/>
+       </div>
+       <section class="feature1">
+        <p id="fintro-para-0025">
+         <b>
+          WARNING
+         </b>
+         <i>
+          Boxes like this one hold important, not-to-be-forgotten information that is directly relevant to the surrounding text
+         </i>
+         .
+        </p>
+        <div class="bottom hr">
+         <hr/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <section>
+      <aside>
+       <div class="top hr">
+        <hr/>
+       </div>
+       <section class="feature1">
+        <p id="fintro-para-0026">
+         <b>
+          NOTE
+         </b>
+         <i>
+          Tips, hints, tricks, and asides to the current discussion are placed in boxes like this one
+         </i>
+         .
+        </p>
+        <div class="bottom hr">
+         <hr/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <p>
+      <span aria-label="xlv" epub:type="pagebreak" id="Page_xlv" role="doc-pagebreak">
+      </span>
+      As for styles in the text:
+     </p>
+     <ul class="none" id="fintro-list-0003">
+      <li id="fintro-li-0007">
+       Important words are
+       <i>
+        italic
+       </i>
+       when they are introduced.
+      </li>
+      <li id="fintro-li-0008">
+       Keyboard strokes are shown like this: Ctrl+A.
+      </li>
+      <li id="fintro-li-0009">
+       Filenames and code within the text are shown like so:
+       <code>
+        monkey.cpp
+       </code>
+       .
+      </li>
+      <li id="fintro-li-0010">
+       URLs are shown like this:
+       <code>
+        <a href="http://wiley.com">
+         wiley.com
+        </a>
+       </code>
+      </li>
+     </ul>
+     <p>
+      Code is presented in three different ways:
+     </p>
+     <pre id="fintro-code-0001"><code><span class="color3">// Comments in code are shown like this.</span></code>
+<code><b>In code examples, new and important code is highlighted like this.</b></code>
+<code>Code that's less important in the present context or that has been shown before is formatted like this.</code></pre>
+     <p id="fintro-para-0029">
+      <img alt="C++23" src="../images\images/icon1.png"/>
+      Paragraphs or sections that are specific to the C++23 standard have a little C++23 icon on the left, just as this paragraph does. C++11, C++14, C++17, and C++20 features are not marked with any icon.
+     </p>
+    </section>
+    <section aria-labelledby="head-2-350">
+     <span id="fintro-sec-0009">
+     </span>
+     <h2 id="head-2-350">
+      WHAT YOU NEED TO USE THIS BOOK
+     </h2>
+     <p id="fintro-para-0030">
+      All you need to use this book is a computer with a C++ compiler. This book focuses only on parts of C++ that have been standardized, and not on vendor-specific compiler extensions.
+     </p>
+     <section>
+      <span id="fintro-sec-0010">
+      </span>
+      <h3 id="head-3-620">
+       Any C++ Compiler
+      </h3>
+      <p id="fintro-para-0031">
+       You can use whichever C++ compiler you like. If you don't have a C++ compiler yet, you can download one for free. There are a lot of choices. For example, for Windows, you can download Microsoft Visual Studio Community Edition, which is free and includes Visual C++. For Linux, you can use GCC or Clang, which are also free.
+      </p>
+      <p id="fintro-para-0032">
+       The following two sections briefly explain how to use Visual C++ and GCC. Refer to the documentation that came with your compiler for more details.
+      </p>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <span id="fintro-fea-0001">
+         </span>
+         <h1 id="head-2-351">
+          COMPILERS AND C++23 FEATURE SUPPORT
+         </h1>
+         <section>
+          <span id="fintro-sec-0011">
+          </span>
+          <p id="fintro-para-0033">
+           This book discusses new features introduced with the C++23 standard. At the time of this writing, no compilers were fully C++23-compliant yet. Some new features were only supported by some compilers and not others, while other features were not yet supported by any compiler. Compiler vendors are hard at work to catch up with all new features, and I'm sure it won't take long before there will be full C++23-compliant compilers available. You can keep track of which compiler supports which features at
+           <code>
+            <a href="http://en.cppreference.com/w/cpp/compiler_support">
+             en.cppreference.com/w/cpp/compiler_support
+            </a>
+           </code>
+           .
+          </p>
+         </section>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <span id="fintro-fea-0002">
+         </span>
+         <h1 id="head-2-352">
+          COMPILERS AND C++ MODULE SUPPORT
+         </h1>
+         <section>
+          <span id="fintro-sec-0012">
+          </span>
+          <p id="fintro-para-0034">
+           At the time of this writing, not all compilers fully support modules yet; though all major compilers do, at least partially. This book uses modules everywhere. If your compiler does not yet support modules, you can convert modularized code to non-modularized code, as explained briefly in
+           <a href="c11.xhtml">
+            Chapter 11
+           </a>
+           , “Modules, Header Files, and Miscellaneous Topics.”
+          </p>
+         </section>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+     </section>
+     <span aria-label="xlvi" epub:type="pagebreak" id="Page_xlvi" role="doc-pagebreak">
+     </span>
+     <section>
+      <span id="fintro-sec-0013">
+      </span>
+      <h3 id="head-3-621">
+       Example: Microsoft Visual C++ 2022
+      </h3>
+      <p id="fintro-para-0035">
+       First, you need to create a project. Start Visual C++ 2022, and on the welcome screen, click the Create A New Project button. If the welcome screen is not shown, select File ➪ New ➪ Project. In the Create A New Project dialog, search for the Console App project template with tags C++, Windows, and Console, and click Next. Specify a name for the project and a location where to save it and click Create.
+      </p>
+      <p id="fintro-para-0036">
+       Once your new project is loaded, you can see a list of project files in the Solution Explorer. If this docking window is not visible, select View ➪ Solution Explorer. A newly created project will contain a file called
+       <code>
+        &lt;projectname&gt;.cpp
+       </code>
+       under the Source Files section in the Solution Explorer. You can start writing your C++ code in that
+       <code>
+        .cpp
+       </code>
+       file, or if you want to compile source code files from the downloadable source archive for this book, select the
+       <code>
+        &lt;projectname&gt;.cpp
+       </code>
+       file in the Solution Explorer and delete it. You can add new files or existing files to a project by right-clicking the project name in the Solution Explorer and then selecting Add ➪ New Item or Add ➪ Existing Item.
+      </p>
+      <p id="fintro-para-0037">
+       At the time of this writing, Visual C++ 2022 does not yet automatically enable C++23 features. To enable C++23 features, in the Solution Explorer window, right-click your project and click Properties. In the Properties window, go to Configuration Properties ➪ General, set the C++ Language Standard option to ISO C++23 Standard or Preview - Features from the Latest C++ Working Draft, whichever is available in your version of Visual C++, and click OK.
+      </p>
+      <p>
+       Finally, select Build ➪ Build Solution to compile your code. When it compiles without errors, you can run it with Debug ➪ Start Debugging.
+      </p>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <p id="fintro-para-0039">
+          <b>
+           NOTE
+          </b>
+          <i>
+           Microsoft Visual C++ has full support for modules, including the C++23 standard named module
+          </i>
+          <code>
+           std
+          </code>
+          <i>
+           .
+          </i>
+         </p>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+     </section>
+     <section>
+      <span id="fintro-sec-0015">
+      </span>
+      <h3 id="head-3-622">
+       Example: GCC
+      </h3>
+      <p>
+       You can create your source code files with any text editor you prefer and save them to a directory. To compile your code, open a terminal and run the following command, specifying all your
+       <code>
+        .cpp
+       </code>
+       files that you want to compile:
+      </p>
+      <pre id="fintro-code-0002"><code>g++ -std=c++2b -o &lt;executable_name&gt; &lt;source1.cpp&gt; [source2.cpp …]</code></pre>
+      <p id="fintro-para-0041">
+       <span aria-label="xlvii" epub:type="pagebreak" id="Page_xlvii" role="doc-pagebreak">
+       </span>
+       The
+       <code>
+        -std=c++2b
+       </code>
+       option is required to tell GCC to enable C++23 features. This option will change to
+       <code>
+        -std=C++23
+       </code>
+       once GCC is fully C++23-compliant.
+      </p>
+      <section>
+       <span id="fintro-sec-0016">
+       </span>
+       <h4 id="head-4-450">
+        Module Support
+       </h4>
+       <p id="fintro-para-0042">
+        Support for modules in GCC is enabled with the
+        <code>
+         -fmodules-ts
+        </code>
+        option.
+       </p>
+       <p>
+        At the time of this writing, GCC does not yet support the C++23 standard named module
+        <code>
+         std
+        </code>
+        , introduced in
+        <a href="c01.xhtml">
+         Chapter 1
+        </a>
+        . To make such code compile, you have to replace
+        <code>
+         import std;
+        </code>
+        declarations with
+        <code>
+         import
+        </code>
+        declarations of individual Standard Library headers. Once that is done,
+        <code>
+         import
+        </code>
+        declarations of Standard Library headers, such as the following, require you to precompile them:
+       </p>
+       <pre id="fintro-code-0003"><code>import &lt;iostream&gt;;</code></pre>
+       <p>
+        Here is an example of precompiling &lt;
+        <code>
+         iostream&gt;
+        </code>
+        :
+       </p>
+       <pre id="fintro-code-0004"><code>g++ -std=c++2b -fmodules-ts -xc++-system-header iostream</code></pre>
+       <p id="fintro-para-0045">
+        As an example, the
+        <code>
+         AirlineTicket
+        </code>
+        code from
+        <a href="c01.xhtml">
+         Chapter 1
+        </a>
+        uses modules. To compile it with GCC, first replace the use of
+        <code>
+         std::println()
+        </code>
+        with
+        <code>
+         std::cout
+        </code>
+        as GCC does not yet support
+        <code>
+         &lt;print&gt;
+        </code>
+        functionality at the time of this writing. After that, replace the
+        <code>
+         import std;
+        </code>
+        declarations with the appropriate
+        <code>
+         import
+        </code>
+        declarations,
+        <code>
+         &lt;string&gt;
+        </code>
+        and
+        <code>
+         &lt;iostream&gt;
+        </code>
+        for this example. You can find the adapted code in the
+        <code>
+         Examples\Ch00\AirlineTicket
+        </code>
+        directory in the downloadable source code archive.
+       </p>
+       <p>
+        Then, compile the two standard headers
+        <code>
+         &lt;iostream&gt;
+        </code>
+        and
+        <code>
+         &lt;string&gt;
+        </code>
+        :
+       </p>
+       <pre id="fintro-code-0005"><code>g++ -std=c++2b -fmodules-ts -xc++-system-header iostream</code>
+<code>g++ -std=c++2b -fmodules-ts -xc++-system-header string</code></pre>
+       <p>
+        Compile the module interface file:
+       </p>
+       <pre id="fintro-code-0006"><code>g++ -std=c++2b -fmodules-ts -c -x c++ AirlineTicket.cppm</code></pre>
+       <p>
+        Finally, compile the application itself:
+       </p>
+       <pre id="fintro-code-0007"><code>g++ -std=c++2b -fmodules-ts -o AirlineTicket AirlineTicket.cpp AirlineTicketTest.cpp AirlineTicket.o</code></pre>
+       <p>
+        When it compiles without errors, you can run it as follows:
+       </p>
+       <pre id="fintro-code-0008"><code>./AirlineTicket</code></pre>
+       <section>
+        <aside>
+         <div class="top hr">
+          <hr/>
+         </div>
+         <section class="feature1">
+          <p id="fintro-para-0051">
+           <b>
+            NOTE
+           </b>
+           <i>
+            The process of compiling C++ code using C++ modules with GCC might change in the future. Also, support for the C++23 standard named module
+           </i>
+           <code>
+            std
+           </code>
+           <i>
+            will be added. In that case, please consult the GCC documentation for an updated procedure on how to compile such code.
+           </i>
+          </p>
+          <div class="bottom hr">
+           <hr/>
+          </div>
+         </section>
+        </aside>
+       </section>
+      </section>
+     </section>
+     <section>
+      <span id="fintro-sec-0018">
+      </span>
+      <h3 id="head-3-623">
+       C++23's Support for Printing Ranges
+      </h3>
+      <p id="fintro-para-0052">
+       <a href="c02.xhtml">
+        Chapter 2
+       </a>
+       , “Working with Strings and String Views,” explains that you can easily print the entire contents of Standard Library containers, such as
+       <code>
+        std::vector
+       </code>
+       , to the screen. This is a new feature since C++23 and not all compilers support this yet at the time of this writing.
+      </p>
+      <p>
+       <span aria-label="xlviii" epub:type="pagebreak" id="Page_xlviii" role="doc-pagebreak">
+       </span>
+       As an example,
+       <a href="c02.xhtml">
+        Chapter 2
+       </a>
+       explains that you can write the contents of an
+       <code>
+        std::vector
+       </code>
+       as follows. Don't worry if you don't understand all the syntax yet, you will at the end of
+       <a href="c02.xhtml">
+        Chapter 2
+       </a>
+       .
+      </p>
+      <pre id="fintro-code-0009"><code>std::vector values { 11, 22, 33 };</code>
+<code>std::print("{:n}", values);</code></pre>
+      <p>
+       This outputs:
+      </p>
+      <pre id="fintro-code-0010"><code>11, 22, 33</code></pre>
+      <p>
+       If your compiler does not yet support this C++23 feature to print the contents of a container using
+       <code>
+        std::print()
+       </code>
+       , then you can convert the second line of code to the following:
+      </p>
+      <pre id="fintro-code-0011"><code>for (const auto&amp; value : values) { std::cout &lt;&lt; value &lt;&lt; ", "; }</code></pre>
+      <p>
+       This outputs:
+      </p>
+      <pre id="fintro-code-0012"><code>11, 22, 33,</code></pre>
+      <p id="fintro-para-0057">
+       Again, don't worry if you don't understand the syntax yet. All will be clear at the end of
+       <a href="c02.xhtml">
+        Chapter 2
+       </a>
+       .
+      </p>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-353">
+     <span id="fintro-sec-0019">
+     </span>
+     <h2 id="head-2-353">
+      READER SUPPORT FOR THIS BOOK
+     </h2>
+     <p id="fintro-para-0058">
+      The following sections describe different options to get support for this book.
+     </p>
+     <section>
+      <span id="fintro-sec-0020">
+      </span>
+      <h3 id="head-3-624">
+       Companion Download Files
+      </h3>
+      <p>
+       As you work through the examples in this book, you may choose either to type in all the code manually or to use the source code files that accompany the book. However, I suggest you type in all the code manually because it greatly benefits the learning process and your memory. All of the source code used in this book is available for download at
+       <code>
+        <a href="http://www.wiley.com/go/proc++6e">
+         www.wiley.com/go/proc++6e
+        </a>
+       </code>
+       or from GitHub at
+       <code>
+        <a href="http://github.com/Professional-CPP/edition-6">
+         github.com/Professional-CPP/edition-6
+        </a>
+       </code>
+       .
+      </p>
+      <section>
+       <aside>
+        <div class="top hr">
+         <hr/>
+        </div>
+        <section class="feature1">
+         <p id="fintro-para-0061">
+          <b>
+           NOTE
+          </b>
+          <i>
+           Because many books have similar titles, you may find it easiest to search by ISBN; for this book, the ISBN is 978-1-394-19317-2
+          </i>
+          .
+         </p>
+         <div class="bottom hr">
+          <hr/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <p id="fintro-para-0062">
+       Once you've downloaded the code, just decompress it with your favorite decompression tool.
+      </p>
+     </section>
+     <section>
+      <span id="fintro-sec-0022">
+      </span>
+      <h3 id="head-3-625">
+       How to Contact the Publisher
+      </h3>
+      <p id="fintro-para-0064">
+       If you believe you've found a mistake in this book, please bring it to our attention. At John Wiley &amp; Sons, we understand how important it is to provide our customers with accurate content, but even with our best efforts an error may occur.
+      </p>
+      <p id="fintro-para-0065">
+       <span aria-label="xlix" epub:type="pagebreak" id="Page_xlix" role="doc-pagebreak">
+       </span>
+       To submit your possible errata, please e-mail it to our Customer Service Team at
+       <code>
+        <a href="mailto:wileysupport@wiley.com">
+         wileysupport@wiley.com
+        </a>
+       </code>
+       with “Possible Book Errata Submission” as a subject line.
+      </p>
+     </section>
+     <section>
+      <span id="fintro-sec-0023">
+      </span>
+      <h3 id="head-3-626">
+       How to Contact the Author
+      </h3>
+      <p id="fintro-para-0066">
+       If you have any questions while reading this book, the author can easily be reached at
+       <code>
+        <a href="mailto:marc.gregoire@nuonsoft.com">
+         marc.gregoire@nuonsoft.com
+        </a>
+       </code>
+       and will try to get back to you in a timely manner.
+      </p>
+     </section>
+    </section>
+   </section>
+   <section aria-labelledby="f02_2" class="notesSet" role="doc-endnotes">
+    <h2 id="f02_2">
+     NOTE
+    </h2>
+    <ol class="notesList">
+     <li class="noteEntry">
+      <a href="#R_fintro-note-0001" id="fintro-note-0001" role="doc-backlink">
+       1
+      </a>
+      At the time of this writing, an updated edition called
+      <i>
+       C++23 Standard Library Quick Reference
+      </i>
+      is being worked on, which is a similar condensed reference but includes all C++20 and C++23 features.
+     </li>
+    </ol>
+   </section>
+  </div>
+ </body>
+</html>
