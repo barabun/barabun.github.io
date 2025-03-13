@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html>
+<html epub:prefix="z3998: http://www.daisy.org/z3998/2012/vocab/structure/#" lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+ <head>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   CHAPTER 29: WRITING EFFICIENT C++
+  </title>
+ </head>
+ <body>
+  <div class="navigation">
+   <a class="nav-button" href="chapter_030.html">
+    ← Previous
+   </a>
+   <a class="nav-button" href="index.html">
+    Table of Contents
+   </a>
+   <a class="nav-button" href="chapter_032.html">
+    Next →
+   </a>
+  </div>
+  <div class="chapter-content">
+   <section aria-labelledby="b01_1" class="calibre2" epub:type="appendix" role="doc-appendix">
+    <section aria-labelledby="head-2-21" class="calibre2">
+     <h2 class="calibre6" id="head-2-21">
+      CHAPTER 29: WRITING EFFICIENT C++
+     </h2>
+     <p class="calibre13" id="bapp01-para-0108">
+      Efficiency questions are quite common in interviews because many organizations are facing scalability issues with their code and need programmers who are savvy about performance.
+     </p>
+     <section class="calibre2">
+      <span class="calibre" id="bapp01-sec-0063">
+      </span>
+      <h3 class="calibre27" id="head-3-41">
+       Things to Remember
+      </h3>
+      <ul class="check" id="bapp01-list-0023">
+       <li class="calibre9" id="bapp01-li-0199">
+        Language-level efficiency is important, but it can only go so far; design-level choices are ultimately much more significant.
+       </li>
+       <li class="calibre9" id="bapp01-li-0200">
+        Algorithms with bad complexity, such as quadratic algorithms, should be avoided.
+       </li>
+       <li class="calibre9" id="bapp01-li-0201">
+        Reference parameters are more efficient because they avoid copying.
+       </li>
+       <li class="calibre9" id="bapp01-li-0202">
+        Object pools can help avoid the overhead of creating and destroying objects.
+       </li>
+       <li class="calibre9" id="bapp01-li-0203">
+        Profiling is vital to determine which operations are really consuming the most time, so you don't waste effort trying to optimize code that is not a performance bottleneck.
+       </li>
+      </ul>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="bapp01-sec-0064">
+      </span>
+      <h3 class="calibre27" id="head-3-42">
+       Types of Questions
+      </h3>
+      <p class="calibre13" id="bapp01-para-0110">
+       Often, the interviewer will use her own product as an example to drive efficiency questions. Sometimes the interviewer will describe an older design and some performance-related symptoms she experienced. The candidate is supposed to come up with a new design that alleviates the problem. Unfortunately, there is a major problem with a question like this: what are the odds that you're going to come up with the same solution that the company did when the problem was actually solved? Because the odds are slim, you need to be extra careful to justify your designs. You might not come up with the actual solution, but you could still have an answer that is correct or even better than the company's newer design.
+      </p>
+      <p class="calibre13" id="bapp01-para-0111">
+       <span aria-label="1261" class="calibre20" epub:type="pagebreak" id="Page_1261" role="doc-pagebreak">
+       </span>
+       Other types of efficiency questions may ask you to tweak some C++ code for performance or iterate on an algorithm. For example, the interviewer could show you code that contains extraneous copies or inefficient loops.
+      </p>
+      <p class="calibre13" id="bapp01-para-0112">
+       The interviewer might also ask you for a high-level description of profiling tools (such as gprof or Visual C++), what their benefits are, and why you should use them.
+      </p>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-22" class="calibre2">
+     <span class="calibre" id="bapp01-sec-0065">
+     </span>
+     <div class="calibre19" id="calibre_pb_17">
+     </div>
+    </section>
+   </section>
+  </div>
+ </body>
+</html>

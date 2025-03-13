@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html>
+<html epub:prefix="z3998: http://www.daisy.org/z3998/2012/vocab/structure/#" lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+ <head>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   CHAPTER 23: RANDOM NUMBER FACILITIES
+  </title>
+ </head>
+ <body>
+  <div class="navigation">
+   <a class="nav-button" href="chapter_026.html">
+    ← Previous
+   </a>
+   <a class="nav-button" href="index.html">
+    Table of Contents
+   </a>
+   <a class="nav-button" href="chapter_028.html">
+    Next →
+   </a>
+  </div>
+  <div class="chapter-content">
+   <section aria-labelledby="b01_1" class="calibre2" epub:type="appendix" role="doc-appendix">
+    <section aria-labelledby="head-2-17" class="calibre2">
+     <h2 class="calibre6" id="head-2-17">
+      CHAPTER 23: RANDOM NUMBER FACILITIES
+     </h2>
+     <p class="calibre13" id="bapp01-para-0088">
+      Generating good random numbers in software is a complex topic, and interviewers know this. They will not ask any syntactical details about it, but you need to know the basics and concepts behind the
+      <code class="calibre21">
+       &lt;random&gt;
+      </code>
+      library, which is part of the C++ Standard Library.
+     </p>
+     <section class="calibre2">
+      <span class="calibre" id="bapp01-sec-0051">
+      </span>
+      <h3 class="calibre27" id="head-3-33">
+       Things to Remember
+      </h3>
+      <ul class="check" id="bapp01-list-0019">
+       <li class="calibre9" id="bapp01-li-0176">
+        Using the
+        <code class="calibre21">
+         &lt;random&gt;
+        </code>
+        library as the preferred technique of generating random numbers
+       </li>
+       <li class="calibre9" id="bapp01-li-0177">
+        How random number engines and distributions work together to generate random numbers
+       </li>
+       <li class="calibre9" id="bapp01-li-0178">
+        What seeding means and why it is important
+       </li>
+      </ul>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="bapp01-sec-0052">
+      </span>
+      <h3 class="calibre27" id="head-3-34">
+       Types of Questions
+      </h3>
+      <p class="calibre13" id="bapp01-para-0090">
+       An interviewer might show you a piece of code that is using the C functions
+       <code class="calibre21">
+        rand()
+       </code>
+       and
+       <code class="calibre21">
+        srand()
+       </code>
+       to generate random numbers and ask you to comment on the code snippet. You should explain that those C functions are not recommended anymore and why it's better to use the functionality provided by
+       <code class="calibre21">
+        &lt;random&gt;
+       </code>
+       .
+      </p>
+      <p class="calibre13" id="bapp01-para-0091">
+       In the context of questions related to random numbers, it is important to explain the differences between true random numbers and pseudorandom numbers. You will score extra points if you explain that you can use a
+       <code class="calibre21">
+        random_device
+       </code>
+       to generate a truly random seed for a pseudorandom number generator, as well as why you would use a pseudorandom number generator instead of just using a
+       <code class="calibre21">
+        random_device
+       </code>
+       all the time.
+      </p>
+     </section>
+    </section>
+    <span aria-label="1258" class="calibre20" epub:type="pagebreak" id="Page_1258" role="doc-pagebreak">
+    </span>
+    <section aria-labelledby="head-2-18" class="calibre2">
+     <span class="calibre" id="bapp01-sec-0053">
+     </span>
+     <div class="calibre19" id="calibre_pb_13">
+     </div>
+    </section>
+   </section>
+  </div>
+ </body>
+</html>

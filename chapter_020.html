@@ -5,7 +5,7 @@
   <link href="style.css" rel="stylesheet" type="text/css"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <title>
-   24Additional Vocabulary Types
+   CHAPTER 7: MEMORY MANAGEMENT
   </title>
  </head>
  <body>
@@ -16,2647 +16,461 @@
    <a class="nav-button" href="index.html">
     Table of Contents
    </a>
-   <a class="nav-button" href="index.html">
+   <a class="nav-button" href="chapter_021.html">
     Next →
    </a>
   </div>
   <div class="chapter-content">
-   <section aria-labelledby="c24_1" class="calibre2" epub:type="chapter" role="doc-chapter">
-    <header class="calibre10">
-     <h1 class="calibre16" id="c24_1">
-      <span aria-label="891" class="calibre17" epub:type="pagebreak" id="Page_891" role="doc-pagebreak">
-      </span>
-      <span class="calibre" id="c24">
-      </span>
-      <span class="calibre">
-       24
-      </span>
-      <br class="calibre12"/>
-      <span class="calibre">
-       Additional Vocabulary Types
-      </span>
-     </h1>
-    </header>
-    <section aria-label="chapter opening" class="calibre2">
-     <span class="calibre" id="c24-sec-0001">
-     </span>
-     <section class="calibre2">
-      <aside class="calibre23">
-       <div class="top">
-        <hr class="calibre24"/>
-       </div>
-       <section class="feature1">
-        <h3 class="calibre30">
-         WHAT'S IN THIS CHAPTER?
-        </h3>
-        <ul class="check2" id="c24-list-0001">
-         <li class="calibre9" id="c24-li-0001">
-          What vocabulary types are
-         </li>
-         <li class="calibre9" id="c24-li-0002">
-          How to use the
-          <code class="calibre21">
-           variant
-          </code>
-          and
-          <code class="calibre21">
-           any
-          </code>
-          data types
-         </li>
-         <li class="calibre9" id="c24-li-0003">
-          What tuples are and how to use them
-         </li>
-         <li class="calibre9" id="c24-li-0004">
-          How to use monadic operations with
-          <code class="calibre21">
-           optional
-          </code>
-         </li>
-         <li class="calibre9" id="c24-li-0005">
-          How to represent a value or an error using
-          <code class="calibre21">
-           expected
-          </code>
-         </li>
-        </ul>
-        <div class="top">
-         <hr class="calibre24"/>
-        </div>
-       </section>
-      </aside>
-     </section>
-     <section class="calibre2">
-      <aside class="calibre23">
-       <div class="top">
-        <hr class="calibre24"/>
-       </div>
-       <section class="feature1">
-        <span class="calibre" id="c24-fea-0001">
-        </span>
-        <h3 class="calibre30" id="head-2-244">
-         WILEY.COM DOWNLOADS FOR THIS CHAPTER
-        </h3>
-        <span class="calibre" id="c24-sec-0003">
-        </span>
-        <p class="calibre25" id="c24-para-0004">
-         Please note that all the code examples for this chapter are available as part of this chapter's code download on the book's website at
-         <code class="calibre21">
-          <a class="calibre5" href="http://www.wiley.com/go/proc++6e">
-           www.wiley.com/go/proc++6e
-          </a>
-         </code>
-         on the Download Code tab.
-        </p>
-        <div class="top">
-         <hr class="calibre24"/>
-        </div>
-       </section>
-      </aside>
-     </section>
-     <p class="calibre13" id="c24-para-0005">
-      Vocabulary types are types that you are likely to use all the time, just as much as primitive types such as
-      <code class="calibre21">
-       int
-      </code>
-      and
-      <code class="calibre21">
-       double
-      </code>
-      . They are often used to build more complex types. Using vocabulary types makes your code safer, more efficient, and easier to write, read, and maintain. Examples of vocabulary types discussed earlier in this book are
-      <code class="calibre21">
-       vector
-      </code>
-      ,
-      <code class="calibre21">
-       optional
-      </code>
-      ,
-      <code class="calibre21">
-       string
-      </code>
-      ,
-      <code class="calibre21">
-       unique_ptr
-      </code>
-      ,
-      <code class="calibre21">
-       shared_ptr
-      </code>
-      , and so on.
-     </p>
-     <p class="calibre13" id="c24-para-0006">
-      This chapter starts the discussion with two additional vocabulary types:
-      <code class="calibre21">
-       variant
-      </code>
-      and
-      <code class="calibre21">
-       any
-      </code>
-      . It then continues with a more in-depth discussion of
-      <code class="calibre21">
-       tuple
-      </code>
-      s, a generalization of
-      <code class="calibre21">
-       pair
-      </code>
-      s, and their operations. Next is monadic operation support for
-      <code class="calibre21">
-       optional
-      </code>
-      s, which makes chaining operations on
-      <code class="calibre21">
-       optional
-      </code>
-      s so much easier. This is because you won't have to verify whether an
-      <code class="calibre21">
-       optional
-      </code>
-      is empty before applying a next operation on it. The chapter finishes with a discussion of
-      <code class="calibre21">
-       expected
-      </code>
-      , which is a data type capable of storing either a value of an expected type or an error value. The type used to represent the error can be different than the type of the value.
-     </p>
-    </section>
-    <span aria-label="892" class="calibre20" epub:type="pagebreak" id="Page_892" role="doc-pagebreak">
-    </span>
-    <section aria-labelledby="head-2-245" class="calibre2">
-     <span class="calibre" id="c24-sec-0004">
-     </span>
-     <h2 class="calibre6" id="head-2-245">
-      VARIANT
+   <section aria-labelledby="b01_1" class="calibre2" epub:type="appendix" role="doc-appendix">
+    <section aria-labelledby="head-2-7" class="calibre2">
+     <h2 class="calibre6" id="head-2-7">
+      CHAPTER 7: MEMORY MANAGEMENT
      </h2>
-     <p class="calibre13">
-      <code class="calibre21">
-       std::variant
-      </code>
-      , defined in
-      <code class="calibre21">
-       &lt;variant&gt;
-      </code>
-      , can hold a single value of one of a given set of types. When you define a
-      <code class="calibre21">
-       variant
-      </code>
-      , you must specify the types it can potentially contain. For example, the following code defines a
-      <code class="calibre21">
-       variant
-      </code>
-      that can contain an integer, a string, or a floating-point value, but only one at a time:
+     <p class="calibre13" id="bapp01-para-0041">
+      You can be sure that an interviewer will ask you some questions related to memory management, including your knowledge of smart pointers. Besides smart pointers, you will also get more low-level questions. The goal is to determine whether the object-oriented aspects of C++ have distanced you too much from the underlying implementation details. Memory management questions will give you a chance to prove that you know what's really going on.
      </p>
-     <pre class="calibre26" id="c24-code-0001"><code class="calibre21">variant&lt;int, string, float&gt; v;</code></pre>
-     <p class="calibre13">
-      The template type arguments for a
-      <code class="calibre21">
-       variant
-      </code>
-      must be unique; for example,
-      <code class="calibre21">
-       variant&lt;int,int&gt;
-      </code>
-      is invalid. A default-constructed
-      <code class="calibre21">
-       variant
-      </code>
-      contains a default-constructed value of its first type,
-      <code class="calibre21">
-       int
-      </code>
-      in the case of the
-      <code class="calibre21">
-       variant v
-      </code>
-      . If you want to be able to default construct a
-      <code class="calibre21">
-       variant
-      </code>
-      , you must make sure that the first type of the
-      <code class="calibre21">
-       variant
-      </code>
-      is default constructible. For example, the following does not compile because
-      <code class="calibre21">
-       Foo
-      </code>
-      is not default constructible:
-     </p>
-     <pre class="calibre26" id="c24-code-0002"><code class="calibre21">class Foo { public: Foo() = delete; Foo(int) {} };</code>
-<code class="calibre21">class Bar { public: Bar() = delete; Bar(int) {} };</code>
-<code class="calibre21">…</code>
-<code class="calibre21">variant&lt;Foo, Bar&gt; v;</code></pre>
-     <p class="calibre13">
-      In fact, neither
-      <code class="calibre21">
-       Foo
-      </code>
-      nor
-      <code class="calibre21">
-       Bar
-      </code>
-      is default constructible. If you still want to be able to default construct such a
-      <code class="calibre21">
-       variant
-      </code>
-      , then you can use
-      <code class="calibre21">
-       std::monostate
-      </code>
-      , a well-behaved empty alternative, as the first type of the
-      <code class="calibre21">
-       variant
-      </code>
-      :
-     </p>
-     <pre class="calibre26" id="c24-code-0003"><code class="calibre21">variant&lt;monostate, Foo, Bar&gt; v;</code></pre>
-     <p class="calibre13">
-      You can use the assignment operator to store something in a
-      <code class="calibre21">
-       variant
-      </code>
-      :
-     </p>
-     <pre class="calibre26" id="c24-code-0004"><code class="calibre21">variant&lt;int, string, float&gt; v;</code>
-<code class="calibre21">v = 12;</code>
-<code class="calibre21">v = 12.5f;</code>
-<code class="calibre21">v = "An std::string"s;</code></pre>
-     <p class="calibre13" id="c24-para-0011">
-      A
-      <code class="calibre21">
-       variant
-      </code>
-      can contain only one value at any given time. So, with these three assignment statements, first the integer 12 is stored in the
-      <code class="calibre21">
-       variant
-      </code>
-      , then the
-      <code class="calibre21">
-       variant
-      </code>
-      is modified to contain a single floating-point value, and lastly, the
-      <code class="calibre21">
-       variant
-      </code>
-      is modified again to contain a single
-      <code class="calibre21">
-       string
-      </code>
-      value.
-     </p>
-     <p class="calibre13">
-      You can use the
-      <code class="calibre21">
-       index()
-      </code>
-      member function to get the zero-based index of the value's type that is currently stored in the
-      <code class="calibre21">
-       variant
-      </code>
-      , and you can use the
-      <code class="calibre21">
-       std::holds_alternative()
-      </code>
-      function template to figure out whether a
-      <code class="calibre21">
-       variant
-      </code>
-      currently contains a value of a certain type:
-     </p>
-     <pre class="calibre26" id="c24-code-0005"><code class="calibre21">println("Type index: {}", <b class="calibre14">v.index()</b>);</code>
-<code class="calibre21">println("Contains an int: {}", <b class="calibre14">holds_alternative&lt;int&gt;(v)</b>);</code></pre>
-     <p class="calibre13">
-      The output is as follows:
-     </p>
-     <pre class="calibre26" id="c24-code-0006"><code class="calibre21">Type index: 1</code>
-<code class="calibre21">Contains an int: false</code></pre>
-     <p class="calibre13">
-      Use
-      <code class="calibre21">
-       std::get&lt;
-       <i class="calibre18">
-        index
-       </i>
-       &gt;()
-      </code>
-      or
-      <code class="calibre21">
-       get&lt;
-       <i class="calibre18">
-        T
-       </i>
-       &gt;()
-      </code>
-      to retrieve the value from a
-      <code class="calibre21">
-       variant
-      </code>
-      , where
-      <i class="calibre18">
-       <code class="calibre21">
-        index
-       </code>
-      </i>
-      is the zero-based index of the type you want to retrieve, and
-      <i class="calibre18">
-       <code class="calibre21">
-        T
-       </code>
-      </i>
-      is the type you want to retrieve. These functions throw a
-      <code class="calibre21">
-       bad_variant_access
-      </code>
-      exception if you are using the index of a type, or a type, that does not match the current value in the
-      <code class="calibre21">
-       variant
-      </code>
-      :
-     </p>
-     <pre class="calibre26" id="c24-code-0007"><code class="calibre21">println("{}", <b class="calibre14">get&lt;string&gt;(v)</b>);</code>
-<code class="calibre21">try {</code>
-<span aria-label="893" class="calibre20" epub:type="pagebreak" id="Page_893" role="doc-pagebreak"></span><code class="calibre21">    println("{}", <b class="calibre14">get&lt;0&gt;(v)</b>);</code>
-<code class="calibre21">} catch (const bad_variant_access&amp; ex) {</code>
-<code class="calibre21">    println("Exception: {}", ex.what());</code>
-<code class="calibre21">}</code></pre>
-     <p class="calibre13">
-      This is the output:
-     </p>
-     <pre class="calibre26" id="c24-code-0008"><code class="calibre21">An std::string</code>
-<code class="calibre21">Exception: bad variant access</code></pre>
-     <p class="calibre13">
-      To avoid exceptions, use the
-      <code class="calibre21">
-       std::get_if&lt;
-       <i class="calibre18">
-        index
-       </i>
-       &gt;()
-      </code>
-      or
-      <code class="calibre21">
-       get_if&lt;
-       <i class="calibre18">
-        T
-       </i>
-       &gt;()
-      </code>
-      helper function. These functions accept a pointer to a
-      <code class="calibre21">
-       variant
-      </code>
-      and return a pointer to the requested value, or
-      <code class="calibre21">
-       nullptr
-      </code>
-      on error:
-     </p>
-     <pre class="calibre26" id="c24-code-0009"><code class="calibre21">string* theString { <b class="calibre14">get_if&lt;string&gt;(&amp;v)</b> };</code>
-<code class="calibre21">int* theInt { <b class="calibre14">get_if&lt;int&gt;(&amp;v)</b> };</code>
-<code class="calibre21">println("Retrieved string: {}", (theString ? *theString : "n/a"));</code>
-<code class="calibre21">println("Retrieved int: {}", (theInt ? to_string(*theInt) : "n/a"));</code></pre>
-     <p class="calibre13">
-      Here is the output:
-     </p>
-     <pre class="calibre26" id="c24-code-0010"><code class="calibre21">Retrieved string: An std::string</code>
-<code class="calibre21">Retrieved int: n/a</code></pre>
-     <p class="calibre13">
-      An
-      <code class="calibre21">
-       std::visit()
-      </code>
-      helper function is available that you can use to apply the
-      <i class="calibre18">
-       visitor pattern
-      </i>
-      to a
-      <code class="calibre21">
-       variant
-      </code>
-      . A visitor has to be a callable, e.g., a function, a lambda expression, or a function object, that can accept any type that may be stored in the
-      <code class="calibre21">
-       variant
-      </code>
-      . A first example just uses a generic lambda, which can accept any type, as the callable passed as the first argument to
-      <code class="calibre21">
-       visit()
-      </code>
-      :
-     </p>
-     <pre class="calibre26" id="c24-code-0011"><code class="calibre21">visit([](auto&amp;&amp; value) { println("Value = {}", value); }, v);</code></pre>
-     <p class="calibre13">
-      The output is as follows:
-     </p>
-     <pre class="calibre26" id="c24-code-0012"><code class="calibre21">Value = An std::string</code></pre>
-     <p class="calibre13">
-      If you want to handle each type stored in the
-      <code class="calibre21">
-       variant
-      </code>
-      in a different way, then you can write your own visitor class. Suppose you have the following visitor class that defines a number of overloaded function call operators, one for each possible type in the
-      <code class="calibre21">
-       variant
-      </code>
-      . This implementation marks all its function call operators as
-      <code class="calibre21">
-       static
-      </code>
-      (possible since C++23), as they don't require access to any non-static member functions or data members of
-      <code class="calibre21">
-       MyVisitor
-      </code>
-      .
-     </p>
-     <pre class="calibre26" id="c24-code-0013"><code class="calibre21">class MyVisitor</code>
-<code class="calibre21">{</code>
-<code class="calibre21">    public:</code>
-<code class="calibre21">        static void operator()(int i)           { println("int: {}", i); }</code>
-<code class="calibre21">        static void operator()(const string&amp; s) { println("string: {}", s); }</code>
-<code class="calibre21">        static void operator()(float f)         { println("float: {}", f); }</code>
-<code class="calibre21">};</code></pre>
-     <p class="calibre13">
-      You can use this with
-      <code class="calibre21">
-       std::visit()
-      </code>
-      as follows:
-     </p>
-     <pre class="calibre26" id="c24-code-0014"><code class="calibre21">visit(MyVisitor{}, v);</code></pre>
-     <p class="calibre13">
-      The result is that the appropriate overloaded function call operator is called based on the current value stored in the
-      <code class="calibre21">
-       variant
-      </code>
-      . The output for this example is as follows:
-     </p>
-     <pre class="calibre26" id="c24-code-0015"><code class="calibre21">string: An std::string</code></pre>
-     <p class="calibre13" id="c24-para-0023">
-      A
-      <code class="calibre21">
-       variant
-      </code>
-      cannot store an array, and as with
-      <code class="calibre21">
-       optional
-      </code>
-      introduced in
-      <a class="calibre5" href="c01_split_000.xhtml">
-       Chapter 1
-      </a>
-      , “A Crash Course in C++ and the Standard Library,” it cannot store references. You can store either pointers or instances
-      <span aria-label="894" class="calibre20" epub:type="pagebreak" id="Page_894" role="doc-pagebreak">
-      </span>
-      of
-      <code class="calibre21">
-       reference:wrapper&lt;T&gt;
-      </code>
-      or
-      <code class="calibre21">
-       reference:wrapper&lt;const T&gt;
-      </code>
-      (see
-      <a class="calibre5" href="c18_split_000.xhtml">
-       Chapter 18
-      </a>
-      , “Standard Library Containers”).
-     </p>
-     <p class="calibre13" id="c24-para-7061">
-      <img alt="C++23" class="calibre15" src="images/icon1.png"/>
-     </p>
-     <section class="calibre2">
-      <aside class="calibre23">
-       <div class="top">
-        <hr class="calibre24"/>
-       </div>
-       <section class="feature">
-        <p class="calibre25" id="c24-para-0025">
-         <b class="calibre14">
-          NOTE
-         </b>
-         <i class="calibre18">
-          Starting with C++23,
-         </i>
-         <code class="calibre21">
-          variant
-         </code>
-         <i class="calibre18">
-          is a
-         </i>
-         <code class="calibre21">
-          constexpr
-         </code>
-         <i class="calibre18">
-          class, so it can be used at compile time. See
-          <a class="calibre5" href="c09.xhtml">
-           Chapter 9
-          </a>
-          , “Mastering Classes and Objects,” for more on
-         </i>
-         <code class="calibre21">
-          constexpr
-         </code>
-         <i class="calibre18">
-          classes.
-         </i>
-        </p>
-        <div class="top">
-         <hr class="calibre24"/>
-        </div>
-       </section>
-      </aside>
-     </section>
-    </section>
-    <section aria-labelledby="head-2-246" class="calibre2">
-     <span class="calibre" id="c24-sec-0006">
+     <span aria-label="1247" class="calibre20" epub:type="pagebreak" id="Page_1247" role="doc-pagebreak">
      </span>
-     <h2 class="calibre6" id="head-2-246">
-      ANY
-     </h2>
-     <p class="calibre13">
-      <code class="calibre21">
-       std::any
-      </code>
-      , defined in
-      <code class="calibre21">
-       &lt;any&gt;
-      </code>
-      , is a class that can contain a single value of any type. You can create an instance with an
-      <code class="calibre21">
-       any
-      </code>
-      constructor or with the
-      <code class="calibre21">
-       std::make_any()
-      </code>
-      helper function. Once it is constructed, you can ask an
-      <code class="calibre21">
-       any
-      </code>
-      instance whether it contains a value and what the type of the contained value is. To get access to the contained value, you need to use
-      <code class="calibre21">
-       any_cast()
-      </code>
-      , which throws an exception of type
-      <code class="calibre21">
-       bad_any_cast
-      </code>
-      in the case of failure. Here is an example:
-     </p>
-     <pre class="calibre26" id="c24-code-0016"><code class="calibre21">any empty;</code>
-<code class="calibre21">any anInt { 3 };</code>
-<code class="calibre21">any aString { "An std::string."s };</code>
-<code class="calibre21"> </code>
-<code class="calibre21">println("empty.has_value = {}", empty.has_value());</code>
-<code class="calibre21">println("anInt.has_value = {}\n", anInt.has_value());</code>
-<code class="calibre21"> </code>
-<code class="calibre21">println("anInt wrapped type = {}", anInt.type().name());</code>
-<code class="calibre21">println("aString wrapped type = {}\n", aString.type().name());</code>
-<code class="calibre21"> </code>
-<code class="calibre21">int theInt { any_cast&lt;int&gt;(anInt) };</code>
-<code class="calibre21">println("{}", theInt);</code>
-<code class="calibre21">try {</code>
-<code class="calibre21">    int test { any_cast&lt;int&gt;(aString) };</code>
-<code class="calibre21">    println("{}", test);</code>
-<code class="calibre21">} catch (const bad_any_cast&amp; ex) {</code>
-<code class="calibre21">    println("Exception: {}", ex.what());</code>
-<code class="calibre21">}</code></pre>
-     <p class="calibre13">
-      The output is as follows. Note that the wrapped type of
-      <code class="calibre21">
-       aString
-      </code>
-      is compiler dependent.
-     </p>
-     <pre class="calibre26" id="c24-code-0017"><code class="calibre21">empty.has_value = false</code>
-<code class="calibre21">anInt.has_value = true</code>
-<code class="calibre21"> </code>
-<code class="calibre21">anInt wrapped type = int</code>
-<code class="calibre21">aString wrapped type = class std::basic_string&lt;char,struct std::char_traits&lt;char&gt;,class std::allocator&lt;char&gt;&gt;</code>
-<code class="calibre21"> </code>
-<code class="calibre21">3</code>
-<code class="calibre21">Exception: Bad any_cast</code></pre>
-     <p class="calibre13">
-      You can assign a new value to an
-      <code class="calibre21">
-       any
-      </code>
-      instance and even assign a new value of a different type:
-     </p>
-     <pre class="calibre26" id="c24-code-0018"><code class="calibre21">any something { 3 };              <span class="color">// Now it contains an integer.</span></code>
-<code class="calibre21">something = "An std::string"s;    <span class="color">// Now the same instance contains a string.</span></code></pre>
-     <p class="calibre13">
-      <span aria-label="895" class="calibre20" epub:type="pagebreak" id="Page_895" role="doc-pagebreak">
-      </span>
-      Instances of
-      <code class="calibre21">
-       any
-      </code>
-      can be stored in Standard Library containers. This allows you to have heterogeneous data in a single container. The only downside is that you have to perform explicit
-      <code class="calibre21">
-       any_cast
-      </code>
-      s to retrieve specific values, as the following example demonstrates:
-     </p>
-     <pre class="calibre26" id="c24-code-0019"><code class="calibre21">vector&lt;any&gt; v;</code>
-<code class="calibre21">v.push_back(42);</code>
-<code class="calibre21">v.push_back("An std::string"s);</code>
-<code class="calibre21"> </code>
-<code class="calibre21">println("{}", <b class="calibre14">any_cast&lt;string&gt;(v[1])</b>);</code></pre>
-     <p class="calibre13" id="c24-para-0030">
-      As with
-      <code class="calibre21">
-       optional
-      </code>
-      and
-      <code class="calibre21">
-       variant
-      </code>
-      , you cannot store references in an
-      <code class="calibre21">
-       any
-      </code>
-      instance. You can again store either pointers or instances of
-      <code class="calibre21">
-       reference:wrapper&lt;T&gt;
-      </code>
-      or
-      <code class="calibre21">
-       reference:wrapper&lt;const T&gt;
-      </code>
-      .
-     </p>
-    </section>
-    <section aria-labelledby="head-2-247" class="calibre2">
-     <span class="calibre" id="c24-sec-0007">
-     </span>
-     <h2 class="calibre6" id="head-2-247">
-      TUPLE
-     </h2>
-     <p class="calibre13">
-      The
-      <code class="calibre21">
-       std::pair
-      </code>
-      class, defined in
-      <code class="calibre21">
-       &lt;utility&gt;
-      </code>
-      and introduced in
-      <a class="calibre5" href="c01_split_000.xhtml">
-       Chapter 1
-      </a>
-      , can store exactly two values, each with a specific type. The type of each value must be known at compile time. Here is a short reminder:
-     </p>
-     <pre class="calibre26" id="c24-code-0020"><code class="calibre21">pair&lt;int, string&gt; p1 { 16, "Hello World" };</code>
-<code class="calibre21">pair p2 { true, 0.123f };  <span class="color">// Using CTAD.</span></code>
-<code class="calibre21">println("p1 = ({}, {})", p1.first, p1.second);</code>
-<code class="calibre21">println("p2 = ({}, {})", p2.first, p2.second);</code></pre>
-     <p class="calibre13">
-      The output is as follows:
-     </p>
-     <pre class="calibre26" id="c24-code-0021"><code class="calibre21">p1 = (16, Hello World)</code>
-<code class="calibre21">p2 = (true, 0.123)</code></pre>
-     <p class="calibre13">
-      Starting with C++23,
-      <code class="calibre21">
-       std::format()
-      </code>
-      and the
-      <code class="calibre21">
-       print()
-      </code>
-      functions have full support for
-      <code class="calibre21">
-       pair
-      </code>
-      s. For example, the two
-      <code class="calibre21">
-       println()
-      </code>
-      statements in the previous code snippet can be written as follows:
-     </p>
-     <pre class="calibre26" id="c24-code-0022"><code class="calibre21">println("p1 = {}", p1);</code>
-<code class="calibre21">println("p2 = {}", p2);</code></pre>
-     <p class="calibre13">
-      The output is as follows, with strings surrounded by double quotes:
-     </p>
-     <pre class="calibre26" id="c24-code-0023"><code class="calibre21">p1 = (16, "Hello World")</code>
-<code class="calibre21">p2 = (true, 0.123)</code></pre>
-     <p class="calibre13" id="c24-para-0035">
-      An
-      <code class="calibre21">
-       std::tuple
-      </code>
-      , defined in
-      <code class="calibre21">
-       &lt;tuple&gt;
-      </code>
-      , is a generalization of a
-      <code class="calibre21">
-       pair
-      </code>
-      . It allows you to store any number of values, each with its own specific type. Just like a
-      <code class="calibre21">
-       pair
-      </code>
-      , a
-      <code class="calibre21">
-       tuple
-      </code>
-      has a fixed size and fixed value types, which are determined at compile time.
-     </p>
-     <p class="calibre13">
-      A
-      <code class="calibre21">
-       tuple
-      </code>
-      can be created with a
-      <code class="calibre21">
-       tuple
-      </code>
-      constructor, specifying both the template types and the actual values. For example, the following code creates a
-      <code class="calibre21">
-       tuple
-      </code>
-      where the first element is an integer, the second element is a
-      <code class="calibre21">
-       string
-      </code>
-      , and the last element is a Boolean:
-     </p>
-     <pre class="calibre26" id="c24-code-0024"><code class="calibre21">using MyTuple = tuple&lt;int, string, bool&gt;;</code>
-<code class="calibre21">MyTuple t1 { 16, "Test", true };</code></pre>
-     <p class="calibre13">
-      Just as for
-      <code class="calibre21">
-       pair
-      </code>
-      , starting with C++23,
-      <code class="calibre21">
-       std::format()
-      </code>
-      and the
-      <code class="calibre21">
-       print()
-      </code>
-      functions fully support
-      <code class="calibre21">
-       tuple
-      </code>
-      s:
-     </p>
-     <pre class="calibre26" id="c24-code-0025"><code class="calibre21">println("t1 = {}", t1);</code>
-<code class="calibre21"><span class="color">// Outputs: t1 = (16, "Test", true)</span></code></pre>
-     <p class="calibre13">
-      <span aria-label="896" class="calibre20" epub:type="pagebreak" id="Page_896" role="doc-pagebreak">
-      </span>
-      <code class="calibre21">
-       std::get&lt;
-       <i class="calibre18">
-        i
-       </i>
-       &gt;()
-      </code>
-      is used to get the
-      <i class="calibre18">
-       i
-      </i>
-      <sup class="calibre22">
-       th
-      </sup>
-      element from a
-      <code class="calibre21">
-       tuple
-      </code>
-      , where
-      <i class="calibre18">
-       i
-      </i>
-      is a zero-based index; that is,
-      <code class="calibre21">
-       &lt;0&gt;
-      </code>
-      is the first element of the tuple,
-      <code class="calibre21">
-       &lt;1&gt;
-      </code>
-      is the second element of the tuple, and so on. The value returned has the correct type for that index in the
-      <code class="calibre21">
-       tuple
-      </code>
-      :
-     </p>
-     <pre class="calibre26" id="c24-code-0026"><code class="calibre21">println("t1 = ({}, {}, {})", <b class="calibre14">get&lt;0&gt;(t1)</b>, <b class="calibre14">get&lt;1&gt;(t1)</b>, <b class="calibre14">get&lt;2&gt;(t1)</b>);</code>
-<code class="calibre21"><span class="color">// Outputs: t1 = (16, Test, true)</span></code></pre>
-     <p class="calibre13">
-      You can check that
-      <code class="calibre21">
-       get&lt;
-       <i class="calibre18">
-        i
-       </i>
-       &gt;()
-      </code>
-      returns the correct type by using
-      <code class="calibre21">
-       typeid()
-      </code>
-      , from
-      <code class="calibre21">
-       &lt;typeinfo&gt;
-      </code>
-      . The output of the following code confirms that the value returned by
-      <code class="calibre21">
-       get&lt;1&gt;(t1)
-      </code>
-      is indeed an
-      <code class="calibre21">
-       std::string
-      </code>
-      (as mentioned before, the exact string returned by
-      <code class="calibre21">
-       typeid().name()
-      </code>
-      is compiler dependent):
-     </p>
-     <pre class="calibre26" id="c24-code-0027"><code class="calibre21">println("Type of get&lt;1&gt;(t1) = {}", <b class="calibre14">typeid(get&lt;1&gt;(t1)).name()</b>);</code>
-<code class="calibre21"><span class="color">// Outputs: Type of get&lt;1&gt;(t1) = class std::basic_string&lt;char,</span></code>
-<code class="calibre21"><span class="color">//          struct std::char_traits&lt;char&gt;,class std::allocator&lt;char&gt; &gt;</span></code></pre>
-     <p class="calibre13">
-      You can use the
-      <code class="calibre21">
-       std::tuple_element
-      </code>
-      class template to get the type of an element based on the element's index at compile time.
-      <code class="calibre21">
-       tuple_element
-      </code>
-      requires you to specify the type of the
-      <code class="calibre21">
-       tuple
-      </code>
-      (
-      <code class="calibre21">
-       MyTuple
-      </code>
-      in this case) and not an actual
-      <code class="calibre21">
-       tuple
-      </code>
-      instance like
-      <code class="calibre21">
-       t1
-      </code>
-      . Here is an example:
-     </p>
-     <pre class="calibre26" id="c24-code-0028"><code class="calibre21">println("Type of element with index 2 = {}",</code>
-<code class="calibre21">     typeid(<b class="calibre14">tuple_element&lt;2, MyTuple&gt;::type</b>).name());</code>
-<code class="calibre21"><span class="color">// Outputs: Type of element with index 2 = bool</span></code></pre>
-     <p class="calibre13">
-      You can also retrieve an element from a tuple based on its type with
-      <code class="calibre21">
-       std::get&lt;
-       <i class="calibre18">
-        T
-       </i>
-       &gt;()
-      </code>
-      , where
-      <i class="calibre18">
-       <code class="calibre21">
-        T
-       </code>
-      </i>
-      is the type of the element you want to retrieve instead of the index. The compiler generates an error if the tuple has several elements with the requested type. For example, you can retrieve the
-      <code class="calibre21">
-       string
-      </code>
-      element from
-      <code class="calibre21">
-       t1
-      </code>
-      as follows:
-     </p>
-     <pre class="calibre26" id="c24-code-0029"><code class="calibre21">println("String = {}", <b class="calibre14">get&lt;string&gt;(t1)</b>);</code>
-<code class="calibre21"><span class="color">// Outputs: String = Test</span></code></pre>
-     <p class="calibre13" id="c24-para-0042">
-      Iterating over the values of a
-      <code class="calibre21">
-       tuple
-      </code>
-      is unfortunately not straightforward. You cannot write a simple loop and call something like
-      <code class="calibre21">
-       get&lt;i&gt;(mytuple)
-      </code>
-      because the value of
-      <code class="calibre21">
-       i
-      </code>
-      must be known at compile time. A possible solution is to use template metaprogramming, which is discussed in detail in
-      <a class="calibre5" href="c26.xhtml">
-       Chapter 26
-      </a>
-      , “Advanced Templates,” together with an example on how to print
-      <code class="calibre21">
-       tuple
-      </code>
-      values.
-     </p>
-     <p class="calibre13">
-      The size of a tuple can be queried with the
-      <code class="calibre21">
-       std::tuple_size
-      </code>
-      class template. As with
-      <code class="calibre21">
-       tuple_element
-      </code>
-      ,
-      <code class="calibre21">
-       tuple_size
-      </code>
-      requires you to specify the type of the
-      <code class="calibre21">
-       tuple
-      </code>
-      , not an actual
-      <code class="calibre21">
-       tuple
-      </code>
-      :
-     </p>
-     <pre class="calibre26" id="c24-code-0030"><code class="calibre21">println("Tuple Size = {}", <b class="calibre14">tuple_size&lt;MyTuple&gt;::value</b>);</code>
-<code class="calibre21"><span class="color">// Outputs: Tuple Size = 3</span></code></pre>
-     <p class="calibre13">
-      If you don't know a
-      <code class="calibre21">
-       tuple
-      </code>
-      's exact type, you can always use
-      <code class="calibre21">
-       decltype()
-      </code>
-      to query for its type as follows:
-     </p>
-     <pre class="calibre26" id="c24-code-0031"><code class="calibre21">println("Tuple Size = {}", tuple_size&lt;<b class="calibre14">decltype(t1)</b>&gt;::value);</code>
-<code class="calibre21"><span class="color">// Outputs: Tuple Size = 3</span></code></pre>
-     <p class="calibre13">
-      With class template argument deduction (CTAD) you can omit the template type parameters when constructing a
-      <code class="calibre21">
-       tuple
-      </code>
-      and let the compiler deduce them automatically based on the types of the arguments passed to the constructor. For example, the following defines the same
-      <code class="calibre21">
-       t1 tuple
-      </code>
-      consisting of an integer, a
-      <code class="calibre21">
-       string
-      </code>
-      , and a Boolean. Note that you now have to specify
-      <code class="calibre21">
-       "Test"s
-      </code>
-      using the
-      <code class="calibre21">
-       s
-      </code>
-      string literal to make sure it's an
-      <code class="calibre21">
-       std::string
-      </code>
-      :
-     </p>
-     <pre class="calibre26" id="c24-code-0032"><code class="calibre21">tuple t1 { 16, "Test"s, true };</code></pre>
-     <p class="calibre13">
-      <span aria-label="897" class="calibre20" epub:type="pagebreak" id="Page_897" role="doc-pagebreak">
-      </span>
-      With CTAD, you do not explicitly specify the types stored in a
-      <code class="calibre21">
-       tuple
-      </code>
-      and so you cannot use
-      <code class="calibre21">
-       &amp;
-      </code>
-      to specify references. If you want to use CTAD to generate a
-      <code class="calibre21">
-       tuple
-      </code>
-      containing a reference-to-non-
-      <code class="calibre21">
-       const
-      </code>
-      or a reference-to-
-      <code class="calibre21">
-       const
-      </code>
-      , then you need to use
-      <code class="calibre21">
-       ref()
-      </code>
-      or
-      <code class="calibre21">
-       cref()
-      </code>
-      , respectively, both defined in
-      <code class="calibre21">
-       &lt;functional&gt;
-      </code>
-      . These create instances of
-      <code class="calibre21">
-       reference:wrapper&lt;T&gt;
-      </code>
-      or
-      <code class="calibre21">
-       reference:wrapper&lt;const T&gt;
-      </code>
-      . For example, the following statements result in a
-      <code class="calibre21">
-       tuple
-      </code>
-      of type
-      <code class="calibre21">
-       tuple&lt;int, double&amp;, const double&amp;, string&amp;&gt;
-      </code>
-      :
-     </p>
-     <pre class="calibre26" id="c24-code-0033"><code class="calibre21">double d { 3.14 };</code>
-<code class="calibre21">string str1 { "Test" };</code>
-<code class="calibre21">tuple t2 { 16, ref(d), cref(d), ref(str1) };</code></pre>
-     <p class="calibre13">
-      To test the
-      <code class="calibre21">
-       double
-      </code>
-      reference stored in
-      <code class="calibre21">
-       t2
-      </code>
-      , the following code first writes the value of the
-      <code class="calibre21">
-       double
-      </code>
-      variable to the console. The call to
-      <code class="calibre21">
-       get&lt;1&gt;(t2)
-      </code>
-      returns a reference to
-      <code class="calibre21">
-       d
-      </code>
-      because
-      <code class="calibre21">
-       ref(d)
-      </code>
-      is used for the second (index 1)
-      <code class="calibre21">
-       tuple
-      </code>
-      element. The second statement changes the value of the variable referenced, and the last statement shows that the value of
-      <code class="calibre21">
-       d
-      </code>
-      is indeed changed through the reference stored in the
-      <code class="calibre21">
-       tuple
-      </code>
-      . Note that the third line fails to compile because
-      <code class="calibre21">
-       cref(d)
-      </code>
-      is used for the third
-      <code class="calibre21">
-       tuple
-      </code>
-      element; that is, it is a reference-to-
-      <code class="calibre21">
-       const
-      </code>
-      to
-      <code class="calibre21">
-       d
-      </code>
-      :
-     </p>
-     <pre class="calibre26" id="c24-code-0034"><code class="calibre21">println("d = {}", d);</code>
-<code class="calibre21">get&lt;1&gt;(t2) *= 2;</code>
-<code class="calibre21"><span class="color">//get&lt;2&gt;(t2) *= 2;    // ERROR because of cref().</span></code>
-<code class="calibre21">println("d = {}", d);</code>
-<code class="calibre21"><span class="color">// Outputs: d = 3.14</span></code>
-<code class="calibre21"><span class="color">//          d = 6.28</span></code></pre>
-     <p class="calibre13">
-      Without class template argument deduction, you can use the
-      <code class="calibre21">
-       std::make_tuple()
-      </code>
-      function template to create a
-      <code class="calibre21">
-       tuple
-      </code>
-      . Since it is a function template, it supports function template argument deduction and hence also allows you to create a
-      <code class="calibre21">
-       tuple
-      </code>
-      by only specifying the actual values. The types are deduced automatically at compile time. Here's an example:
-     </p>
-     <pre class="calibre26" id="c24-code-0035"><code class="calibre21">auto t2 { make_tuple(16, ref(d), cref(d), ref(str1)) };</code></pre>
      <section class="calibre2">
-      <span class="calibre" id="c24-sec-0008">
+      <span class="calibre" id="bapp01-sec-0021">
       </span>
-      <h3 class="calibre27" id="head-3-470">
-       Decompose Tuples
+      <h3 class="calibre27" id="head-3-13">
+       Things to Remember
       </h3>
-      <p class="calibre13" id="c24-para-0049">
-       There are two ways in which you can
-       <i class="calibre18">
-        decompose
-       </i>
-       a
-       <code class="calibre21">
-        tuple
-       </code>
-       into its individual elements: structured bindings and
-       <code class="calibre21">
-        std::tie()
-       </code>
-       .
-      </p>
-      <section class="calibre2">
-       <span class="calibre" id="c24-sec-0009">
-       </span>
-       <h4 class="calibre29" id="head-4-360">
-        Structured Bindings
-       </h4>
-       <p class="calibre13">
-        Structured bindings, available since C++17, make it easy to decompose a
-        <code class="calibre21">
-         tuple
-        </code>
-        into separate variables. For example, the following code defines a
-        <code class="calibre21">
-         tuple
-        </code>
-        consisting of an integer, a
-        <code class="calibre21">
-         string
-        </code>
-        , and a Boolean value, and then uses a structured binding to decompose it into three distinct variables:
-       </p>
-       <pre class="calibre26" id="c24-code-0036"><code class="calibre21">tuple t1 { 16, "Test"s, true };</code>
-<code class="calibre21"><b class="calibre14">auto [i, str, b] { t1 };</b></code>
-<code class="calibre21">println("Decomposed: i = {}, str = \"{}\", b = {}", i, str, b);</code></pre>
-       <p class="calibre13">
-        You can also decompose a
-        <code class="calibre21">
-         tuple
-        </code>
-        into references, allowing you to modify the contents of the
-        <code class="calibre21">
-         tuple
-        </code>
-        through those references. Here's an example:
-       </p>
-       <pre class="calibre26" id="c24-code-0037"><code class="calibre21"><b class="calibre14">auto&amp; [i2, str2, b2] { t1 };</b></code>
-<code class="calibre21">i2 *= 2;</code>
-<code class="calibre21">str2 = "Hello World";</code>
-<code class="calibre21">b2 = !b2;</code></pre>
-       <p class="calibre13" id="c24-para-0052">
-        <span aria-label="898" class="calibre20" epub:type="pagebreak" id="Page_898" role="doc-pagebreak">
-        </span>
-        With structured bindings, you cannot ignore specific elements while decomposing a
-        <code class="calibre21">
-         tuple
-        </code>
-        . If your
-        <code class="calibre21">
-         tuple
-        </code>
-        has three elements, then your structured binding needs three variables.
-       </p>
-      </section>
-      <section class="calibre2">
-       <span class="calibre" id="c24-sec-0010">
-       </span>
-       <h4 class="calibre29" id="head-4-361">
-        tie
-       </h4>
-       <p class="calibre13">
-        If you want to decompose a
-        <code class="calibre21">
-         tuple
-        </code>
-        without structured bindings, you can use the
-        <code class="calibre21">
-         std::tie()
-        </code>
-        utility function, which generates a
-        <code class="calibre21">
-         tuple
-        </code>
-        of references. The following example first creates a
-        <code class="calibre21">
-         tuple
-        </code>
-        consisting of an integer, a
-        <code class="calibre21">
-         string
-        </code>
-        , and a Boolean value. It then creates three variables—an integer, a
-        <code class="calibre21">
-         string
-        </code>
-        , and a Boolean—and writes the values of those variables to the console. The
-        <code class="calibre21">
-         tie(i, str, b)
-        </code>
-        call creates a
-        <code class="calibre21">
-         tuple
-        </code>
-        containing a reference to
-        <code class="calibre21">
-         i
-        </code>
-        , a reference to
-        <code class="calibre21">
-         str
-        </code>
-        , and a reference to
-        <code class="calibre21">
-         b
-        </code>
-        . The assignment operator is used to assign
-        <code class="calibre21">
-         tuple t1
-        </code>
-        to the result of
-        <code class="calibre21">
-         tie()
-        </code>
-        . Because the result of
-        <code class="calibre21">
-         tie()
-        </code>
-        is a
-        <code class="calibre21">
-         tuple
-        </code>
-        of references, the assignment actually changes the values in the three separate variables, as is shown by the output of the values after the assignment:
-       </p>
-       <pre class="calibre26" id="c24-code-0038"><code class="calibre21">tuple t1 { 16, "Test"s, true };</code>
-<code class="calibre21">int i { 0 };</code>
-<code class="calibre21">string str;</code>
-<code class="calibre21">bool b { false };</code>
-<code class="calibre21">println("Before: i = {}, str = \"{}\", b = {}", i, str, b);</code>
-<code class="calibre21"><b class="calibre14">tie(i, str, b) = t1;</b></code>
-<code class="calibre21">println("After: i = {}, str = \"{}\", b = {}", i, str, b);</code></pre>
-       <p class="calibre13">
-        The result is as follows:
-       </p>
-       <pre class="calibre26" id="c24-code-0039"><code class="calibre21">Before: i = 0, str = "", b = false</code>
-<code class="calibre21">After:  i = 16, str = "Test", b = true</code></pre>
-       <p class="calibre13">
-        With
-        <code class="calibre21">
-         tie()
-        </code>
-        you can ignore certain elements that you do not want to be decomposed. Instead of a variable name for the decomposed element, you use the special
-        <code class="calibre21">
-         std::ignore
-        </code>
-        value. For example, the
-        <code class="calibre21">
-         string
-        </code>
-        element of the
-        <code class="calibre21">
-         t1 tuple
-        </code>
-        can be ignored by replacing the
-        <code class="calibre21">
-         tie()
-        </code>
-        statement from the previous example with the following:
-       </p>
-       <pre class="calibre26" id="c24-code-0040"><code class="calibre21">tie(i, ignore, b) = t1;</code></pre>
-      </section>
-     </section>
-     <section class="calibre2">
-      <span class="calibre" id="c24-sec-0011">
-      </span>
-      <h3 class="calibre27" id="head-3-471">
-       Concatenation
-      </h3>
-      <p class="calibre13">
-       You can use
-       <code class="calibre21">
-        std::tuple_cat()
-       </code>
-       to concatenate two
-       <code class="calibre21">
-        tuple
-       </code>
-       s into one. In the following example, the type of
-       <code class="calibre21">
-        t3
-       </code>
-       is
-       <code class="calibre21">
-        tuple&lt;int, string, bool, double, string&gt;
-       </code>
-       :
-      </p>
-      <pre class="calibre26" id="c24-code-0041"><code class="calibre21">tuple t1 { 16, "Test"s, true };</code>
-<code class="calibre21">tuple t2 { 3.14, "string 2"s };</code>
-<code class="calibre21"><b class="calibre14">auto t3 { tuple_cat(t1, t2) };</b></code>
-<code class="calibre21">println("t3 = {}", t3);</code></pre>
-      <p class="calibre13">
-       The output is as follows:
-      </p>
-      <pre class="calibre26" id="c24-code-0042"><code class="calibre21">t3 = (16, "Test", true, 3.14, "string 2")</code></pre>
-     </section>
-     <section class="calibre2">
-      <span class="calibre" id="c24-sec-0012">
-      </span>
-      <h3 class="calibre27" id="head-3-472">
-       Comparisons
-      </h3>
-      <p class="calibre13">
-       Tuples support all comparison operators. For the comparison operators to work, the element types stored in the
-       <code class="calibre21">
-        tuple
-       </code>
-       should support them as well. Here is an example:
-      </p>
-      <pre class="calibre26" id="c24-code-0043"><code class="calibre21">tuple t1 { 123, "def"s };</code>
-<code class="calibre21">tuple t2 { 123, "abc"s };</code>
-<code class="calibre21">if (t1 &lt; t2) { println("t1 &lt; t2"); }</code>
-<code class="calibre21">else { println("t1 &gt;= t2"); }</code></pre>
-      <p class="calibre13">
-       <span aria-label="899" class="calibre20" epub:type="pagebreak" id="Page_899" role="doc-pagebreak">
-       </span>
-       The output is as follows:
-      </p>
-      <pre class="calibre26" id="c24-code-0044"><code class="calibre21">t1&gt;= t2</code></pre>
-      <p class="calibre13">
-       Tuple comparisons can be used to easily implement lexicographical comparison operators for custom types that have several data members. For example, suppose you have the following
-       <code class="calibre21">
-        class
-       </code>
-       with three data members:
-      </p>
-      <pre class="calibre26" id="c24-code-0045"><code class="calibre21">class Foo</code>
-<code class="calibre21">{</code>
-<code class="calibre21">    public:</code>
-<code class="calibre21">        explicit Foo(int i, string s, bool b)</code>
-<code class="calibre21">            : m_int { i }, m_str { move(s) }, m_bool { b } { }</code>
-<code class="calibre21">    private:</code>
-<code class="calibre21">        int m_int;</code>
-<code class="calibre21">        string m_str;</code>
-<code class="calibre21">        bool m_bool;</code>
-<code class="calibre21">};</code></pre>
-      <p class="calibre13">
-       Correctly implementing a full set of comparison operators that compare
-       <i class="calibre18">
-        all
-       </i>
-       data members of
-       <code class="calibre21">
-        Foo
-       </code>
-       is trivial by explicitly defaulting
-       <code class="calibre21">
-        operator&lt;=&gt;
-       </code>
-       as follows:
-      </p>
-      <pre class="calibre26" id="c24-code-0046"><code class="calibre21">auto operator&lt;=&gt;(const Foo&amp; rhs) const = default;</code></pre>
-      <p class="calibre13">
-       This automatically compares all data members. However, if the semantics of a class are such that a comparison between two instances should take only a subset of the data members into account, then correctly implementing a full set of comparison operators for such a class is not trivial! But, with
-       <code class="calibre21">
-        std::tie()
-       </code>
-       and the three-way comparison operator (
-       <code class="calibre21">
-        operator&lt;=&gt;
-       </code>
-       ), it does become easy, a simple one-liner. The following is an implementation of
-       <code class="calibre21">
-        operator&lt;=&gt;
-       </code>
-       for
-       <code class="calibre21">
-        Foo
-       </code>
-       comparing only the
-       <code class="calibre21">
-        m_int
-       </code>
-       and
-       <code class="calibre21">
-        m_str
-       </code>
-       data members and ignoring
-       <code class="calibre21">
-        m_bool
-       </code>
-       :
-      </p>
-      <pre class="calibre26" id="c24-code-0047"><code class="calibre21">auto operator&lt;=&gt;(const Foo&amp; rhs) const</code>
-<code class="calibre21">{</code>
-<code class="calibre21">    return tie(m_int, m_str) &lt;=&gt; tie(rhs.m_int, rhs.m_str);</code>
-<code class="calibre21">}</code></pre>
-      <p class="calibre13">
-       Here is an example of its use:
-      </p>
-      <pre class="calibre26" id="c24-code-0048"><code class="calibre21">Foo f1 { 42, "Hello", false };</code>
-<code class="calibre21">Foo f2 { 42, "World", false };</code>
-<code class="calibre21">println("{}", (f1 &lt; f2));  <span class="color">// Outputs true</span></code>
-<code class="calibre21">println("{}", (f2 &gt; f1));  <span class="color">// Outputs true</span></code></pre>
-     </section>
-     <section class="calibre2">
-      <span class="calibre" id="c24-sec-0013">
-      </span>
-      <h3 class="calibre27" id="head-3-473">
-       make_from_tuple
-      </h3>
-      <p class="calibre13">
-       <code class="calibre21">
-        std::make_from_tuple&lt;T&gt;()
-       </code>
-       constructs an object of a given type
-       <code class="calibre21">
-        T
-       </code>
-       , passing the elements of a given
-       <code class="calibre21">
-        tuple
-       </code>
-       as arguments to the constructor of
-       <code class="calibre21">
-        T
-       </code>
-       . For example, suppose you have the following class:
-      </p>
-      <pre class="calibre26" id="c24-code-0049"><code class="calibre21">class Foo</code>
-<code class="calibre21">{</code>
-<code class="calibre21">    public:</code>
-<code class="calibre21">        explicit Foo(string str, int i) : m_str { move(str) }, m_int { i } { }</code>
-<code class="calibre21">    private:</code>
-<code class="calibre21">        string m_str;</code>
-<code class="calibre21">        int m_int;</code>
-<code class="calibre21">};</code></pre>
-      <p class="calibre13">
-       <span aria-label="900" class="calibre20" epub:type="pagebreak" id="Page_900" role="doc-pagebreak">
-       </span>
-       You can use
-       <code class="calibre21">
-        make_from_tuple()
-       </code>
-       as follows:
-      </p>
-      <pre class="calibre26" id="c24-code-0050"><code class="calibre21">tuple myTuple { "Hello world.", 42 };</code>
-<code class="calibre21">auto foo { make_from_tuple&lt;Foo&gt;(myTuple) };</code></pre>
-      <p class="calibre13" id="c24-para-0066">
-       Technically, the argument to
-       <code class="calibre21">
-        make_from_tuple()
-       </code>
-       does not have to be a
-       <code class="calibre21">
-        tuple
-       </code>
-       , but it has to be something that supports
-       <code class="calibre21">
-        std::get&lt;&gt;()
-       </code>
-       and
-       <code class="calibre21">
-        tuple_size
-       </code>
-       . Both
-       <code class="calibre21">
-        std::array
-       </code>
-       and
-       <code class="calibre21">
-        pair
-       </code>
-       satisfy these requirements as well.
-      </p>
-      <p class="calibre13" id="c24-para-0067">
-       This function is not that practical for everyday use, but it comes in handy when writing generic code using templates and template metaprogramming.
-      </p>
-     </section>
-     <section class="calibre2">
-      <span class="calibre" id="c24-sec-0014">
-      </span>
-      <h3 class="calibre27" id="head-3-474">
-       apply
-      </h3>
-      <p class="calibre13">
-       <code class="calibre21">
-        std::apply()
-       </code>
-       calls a given callable, passing the elements of a given
-       <code class="calibre21">
-        tuple
-       </code>
-       as arguments. Here is an example:
-      </p>
-      <pre class="calibre26" id="c24-code-0051"><code class="calibre21">int add(int a, int b) { return a + b; }</code>
-<code class="calibre21">…</code>
-<code class="calibre21">println("{}", apply(add, tuple { 39, 3 }));</code></pre>
-      <p class="calibre13" id="c24-para-0069">
-       As with
-       <code class="calibre21">
-        make_from_tuple()
-       </code>
-       , this function is also more useful when writing generic code using templates and template metaprogramming than for everyday use.
-      </p>
-     </section>
-    </section>
-    <section aria-labelledby="head-2-248" class="calibre2">
-     <span class="calibre" id="c24-sec-0015">
-     </span>
-     <h2 class="calibre6" id="head-2-248">
-      <img alt="C++23" class="calibre15" src="images/icon1.png"/>
-      OPTIONAL: MONADIC OPERATIONS
-     </h2>
-     <p class="calibre13" id="c24-para-0071">
-      <a class="calibre5" href="c01_split_000.xhtml">
-       Chapter 1
-      </a>
-      introduces the basics of
-      <code class="calibre21">
-       std::optional
-      </code>
-      . C++23 adds three new member functions to
-      <code class="calibre21">
-       optional
-      </code>
-      , collectively called
-      <i class="calibre18">
-       monadic operations
-      </i>
-      . These allow you to chain operations on an
-      <code class="calibre21">
-       optional
-      </code>
-      without having to check whether the
-      <code class="calibre21">
-       optional
-      </code>
-      has a value before applying each operation.
-     </p>
-     <p class="calibre13">
-      The following monadic operations are available:
-     </p>
-     <ul class="check" id="c24-list-0002">
-      <li class="calibre9" id="c24-li-0006">
-       transform(F): Returns an
-       <code class="calibre21">
-        optional
-       </code>
-       containing the result of invoking
-       <code class="calibre21">
-        F
-       </code>
-       with the value of *this as argument if
-       <code class="calibre21">
-        *this
-       </code>
-       has a value; otherwise, returns an empty
-       <code class="calibre21">
-        optional
-       </code>
-      </li>
-      <li class="calibre9" id="c24-li-0007">
-       <b class="calibre14">
-        <code class="calibre21">
-         and_then(F)
-        </code>
-        :
-       </b>
-       Returns the result (which must be an optional) of invoking
-       <code class="calibre21">
-        F
-       </code>
-       with the value of *this as argument if
-       <code class="calibre21">
-        *this
-       </code>
-       has a value; otherwise, returns an empty
-       <code class="calibre21">
-        optional
-       </code>
-      </li>
-      <li class="calibre9" id="c24-li-0008">
-       <b class="calibre14">
-        <code class="calibre21">
-         or_else(F)
-        </code>
-        :
-       </b>
-       Returns
-       <code class="calibre21">
-        *this
-       </code>
-       if
-       <code class="calibre21">
-        *this
-       </code>
-       has a value; otherwise, returns the result (which must be an optional) of invoking
-       <code class="calibre21">
-        F
-       </code>
-      </li>
-     </ul>
-     <p class="calibre13">
-      Let's look at an example. The following function parses a given string for an integer and returns the result as an
-      <code class="calibre21">
-       optional
-      </code>
-      . If the string cannot be parsed as an integer, an empty
-      <code class="calibre21">
-       optional
-      </code>
-      is returned.
-     </p>
-     <pre class="calibre26" id="c24-code-0052"><code class="calibre21">optional&lt;int&gt; Parse(const string&amp; str)</code>
-<code class="calibre21">{</code>
-<code class="calibre21">    try { return stoi(str); }</code>
-<code class="calibre21">    catch (…) { return {}; }</code>
-<code class="calibre21">}</code></pre>
-     <p class="calibre13">
-      The following loop repeatedly asks the user to give some input.
-      <code class="calibre21">
-       Parse()
-      </code>
-      is called to parse the user's input. If the input is successfully parsed as an integer, the integer is doubled with
-      <code class="calibre21">
-       and_then()
-      </code>
-      and converted back to a string with
-      <code class="calibre21">
-       transform()
-      </code>
-      . If the input cannot be parsed,
-      <code class="calibre21">
-       or_else()
-      </code>
-      is used to
-      <span aria-label="901" class="calibre20" epub:type="pagebreak" id="Page_901" role="doc-pagebreak">
-      </span>
-      return the string “No Integer.” Thanks to monadic operations, there is no need to check whether the
-      <code class="calibre21">
-       optional
-      </code>
-      s returned from
-      <code class="calibre21">
-       Parse()
-      </code>
-      and
-      <code class="calibre21">
-       and_then()
-      </code>
-      contain a value before applying the next operation on them. The error handling is taken care of for you. The different operations can simply be chained together.
-     </p>
-     <pre class="calibre26" id="c24-code-0053"><code class="calibre21">while (true) {</code>
-<code class="calibre21">    print("Enter an integer (q to stop): ");</code>
-<code class="calibre21">    string str;</code>
-<code class="calibre21">    if (!getline(cin, str) || str == "q") { break; }</code>
-<code class="calibre21"> </code>
-<code class="calibre21">    auto result { Parse(str)</code>
-<code class="calibre21">        .<b class="calibre14">and_then</b>([](int value) -&gt; optional&lt;int&gt; { return value * 2; })</code>
-<code class="calibre21">        .<b class="calibre14">transform</b>([](int value) { return to_string(value); })</code>
-<code class="calibre21">        .<b class="calibre14">or_else</b>([] { return optional&lt;string&gt; { "No Integer" }; }) };</code>
-<code class="calibre21">    println("   &gt; Result: {}", *result);</code>
-<code class="calibre21">}</code></pre>
-     <p class="calibre13">
-      Here is some sample output:
-     </p>
-     <pre class="calibre26" id="c24-code-0054"><code class="calibre21">Enter an integer (q to stop): 21</code>
-<code class="calibre21">   &gt; Result: 42</code>
-<code class="calibre21">Enter an integer (q to stop): Test</code>
-<code class="calibre21">   &gt; Result: No Integer</code></pre>
-     <p class="calibre13" id="c24-para-7461">
-      <img alt="C++23" class="calibre15" src="images/icon1.png"/>
-     </p>
-     <section class="calibre2">
-      <aside class="calibre23">
-       <div class="top">
-        <hr class="calibre24"/>
-       </div>
-       <section class="feature">
-        <p class="calibre25" id="c24-para-0077">
-         <b class="calibre14">
-          NOTE
-         </b>
-         <i class="calibre18">
-          Starting with C++23,
-         </i>
-         <code class="calibre21">
-          optional
-         </code>
-         <i class="calibre18">
-          is a
-         </i>
-         <code class="calibre21">
-          constexpr
-         </code>
-         <i class="calibre18">
-          class (see
-          <a class="calibre5" href="c09.xhtml">
-           Chapter 9
-          </a>
-          ) and so can be used at compile time.
-         </i>
-        </p>
-        <div class="top">
-         <hr class="calibre24"/>
-        </div>
-       </section>
-      </aside>
-     </section>
-    </section>
-    <section aria-labelledby="head-2-249" class="calibre2">
-     <span class="calibre" id="c24-sec-0017">
-     </span>
-     <h2 class="calibre6" id="head-2-249">
-      <img alt="C++23" class="calibre15" src="images/icon1.png"/>
-      EXPECTED
-     </h2>
-     <p class="calibre13" id="c24-para-0079">
-      As
-      <a class="calibre5" href="c14.xhtml">
-       Chapter 14
-      </a>
-      , “Handling Errors,” explains, a function in C++ can return only a single type. If a function can fail, it should inform the caller about the failure. In the past, you had a couple of options to do so. You could throw an exception with details of the error. Or you could try to come up with a special value of the return type to signal an error.
-     </p>
-     <p class="calibre13" id="c24-para-0080">
-      For example, if a function returns a pointer, the function could return
-      <code class="calibre21">
-       nullptr
-      </code>
-      in case of an error. If a function returns only positive integers for its normal operation, you could return negative values to signal different errors, and so on. But coming up with such a special value is not always possible. If the return type of a function is
-      <code class="calibre21">
-       int
-      </code>
-      and the valid range of returned values is the entire range of integers, then you don't have any integers left to use as special error values. In such cases, you could use the
-      <code class="calibre21">
-       std::optional
-      </code>
-      vocabulary type. It's a type that can either contain a value of a certain type or be empty. A function could then return an empty
-      <code class="calibre21">
-       optional
-      </code>
-      to signal an error.
-     </p>
-     <p class="calibre13">
-      That's all fine, but when a caller of the function receives an empty
-      <code class="calibre21">
-       optional
-      </code>
-      , it has no way of knowing what exactly went wrong; i.e., the function cannot return the real reason of the error. These problems are solved with
-      <code class="calibre21">
-       std::expected
-      </code>
-      , defined in
-      <code class="calibre21">
-       &lt;expected&gt;
-      </code>
-      , and introduced with C++23. It's a class template accepting two template type parameters:
-     </p>
-     <ul class="check" id="c24-list-0003">
-      <li class="calibre9" id="c24-li-0009">
-       <b class="calibre14">
-        <code class="calibre21">
-         T
-        </code>
-        :
-       </b>
-       The type of the expected value
-      </li>
-      <li class="calibre9" id="c24-li-0010">
-       <b class="calibre14">
-        <code class="calibre21">
-         E
-        </code>
-        :
-       </b>
-       The type of an error value, also known as an unexpected value
-      </li>
-     </ul>
-     <p class="calibre13" id="c24-para-0082">
-      <span aria-label="902" class="calibre20" epub:type="pagebreak" id="Page_902" role="doc-pagebreak">
-      </span>
-      An
-      <code class="calibre21">
-       expected
-      </code>
-      is never empty; it always contains either a value of type
-      <code class="calibre21">
-       T
-      </code>
-      or a value of type
-      <code class="calibre21">
-       E
-      </code>
-      . That's the biggest difference compared to
-      <code class="calibre21">
-       optional
-      </code>
-      , which can be empty, leaving you with no clue as to why it's empty. Thus, a function returning an
-      <code class="calibre21">
-       expected
-      </code>
-      should either return a value of the expected type or return a value of the error type to signal the exact reason of the failure. The error type can be whatever you want. It can be a simple integer or a complex class. Often, it's best to encode errors in a class capable of representing as many details about an error as possible, for example, the filename, line number, and column number where parsing of some data file failed.
-     </p>
-     <p class="calibre13" id="c24-para-0083">
-      An instance of
-      <code class="calibre21">
-       expected&lt;T,E&gt;
-      </code>
-      can be created implicitly from a value of type
-      <code class="calibre21">
-       T
-      </code>
-      , just as an
-      <code class="calibre21">
-       optional&lt;T&gt;
-      </code>
-      . To create an instance of
-      <code class="calibre21">
-       expected&lt;T,E&gt;
-      </code>
-      containing a value of the error type
-      <code class="calibre21">
-       E
-      </code>
-      , you must use
-      <code class="calibre21">
-       std::unexpected&lt;E&gt;
-      </code>
-      . A default constructed
-      <code class="calibre21">
-       expected&lt;T,E&gt;
-      </code>
-      contains a default constructed value of the expected type,
-      <code class="calibre21">
-       T
-      </code>
-      . This is different compared to
-      <code class="calibre21">
-       optional
-      </code>
-      . A default constructed
-      <code class="calibre21">
-       optional
-      </code>
-      is empty! In other words, a default constructed
-      <code class="calibre21">
-       expected
-      </code>
-      represents success, while a default constructed
-      <code class="calibre21">
-       optional
-      </code>
-      represents an error.
-     </p>
-     <p class="calibre13">
-      Let's look at an example. The following is a function receiving a
-      <code class="calibre21">
-       string
-      </code>
-      and trying to parse the string as an integer. The
-      <code class="calibre21">
-       stoi()
-      </code>
-      function throws
-      <code class="calibre21">
-       invalid_argument
-      </code>
-      if the string doesn't represent an integer and throws
-      <code class="calibre21">
-       out_of_range
-      </code>
-      if the parsed integer is larger than what can be represented as an
-      <code class="calibre21">
-       int
-      </code>
-      . Suppose you don't want
-      <code class="calibre21">
-       parseInteger()
-      </code>
-      to throw such exceptions but instead return an
-      <code class="calibre21">
-       expected
-      </code>
-      . The function catches the two exceptions and transforms them to a
-      <code class="calibre21">
-       string
-      </code>
-      , the error type of the returned
-      <code class="calibre21">
-       expected
-      </code>
-      .
-     </p>
-     <pre class="calibre26" id="c24-code-0055"><code class="calibre21">expected&lt;int, string&gt; parseInteger(const string&amp; str)</code>
-<code class="calibre21">{</code>
-<code class="calibre21">    try { return stoi(str); }</code>
-<code class="calibre21">    catch (const invalid_argument&amp; e) { return unexpected { e.what() }; }</code>
-<code class="calibre21">    catch (const out_of_range&amp; e) { return unexpected { e.what() }; }</code>
-<code class="calibre21">}</code></pre>
-     <p class="calibre13">
-      <code class="calibre21">
-       expected
-      </code>
-      has the following member functions. All of them, except
-      <code class="calibre21">
-       error()
-      </code>
-      , are analogous to the similarly named member functions for
-      <code class="calibre21">
-       optional
-      </code>
-      .
-     </p>
-     <ul class="check" id="c24-list-0004">
-      <li class="calibre9" id="c24-li-0011">
-       <b class="calibre14">
-        <code class="calibre21">
-         has_value()
-        </code>
-        and
-        <code class="calibre21">
-         operator bool
-        </code>
-        :
-       </b>
-       Returns
-       <code class="calibre21">
-        true
-       </code>
-       if the
-       <code class="calibre21">
-        expected
-       </code>
-       has a value of type
-       <code class="calibre21">
-        T
-       </code>
-       ,
-       <code class="calibre21">
-        false
-       </code>
-       otherwise.
-      </li>
-      <li class="calibre9" id="c24-li-0012">
-       <b class="calibre14">
-        <code class="calibre21">
-         value()
-        </code>
-        :
-       </b>
-       Returns the value of type
-       <code class="calibre21">
-        T
-       </code>
-       . Throws
-       <code class="calibre21">
-        std::bad_expected_access
-       </code>
-       if called on an
-       <code class="calibre21">
-        expected
-       </code>
-       containing a value of type
-       <code class="calibre21">
-        E
-       </code>
-       .
-      </li>
-      <li class="calibre9" id="c24-li-0013">
-       operator* and -&gt;: Accesses the value of type
-       <code class="calibre21">
-        T
-       </code>
-       . The behavior is undefined if the
-       <code class="calibre21">
-        expected
-       </code>
-       doesn't contain a value of type
-       <code class="calibre21">
-        T
-       </code>
-       .
-      </li>
-      <li class="calibre9" id="c24-li-0014">
-       <b class="calibre14">
-        <code class="calibre21">
-         error()
-        </code>
-        :
-       </b>
-       Returns the error of type
-       <code class="calibre21">
-        E
-       </code>
-       . The behavior is undefined if the
-       <code class="calibre21">
-        expected
-       </code>
-       doesn't contain a value of type
-       <code class="calibre21">
-        E
-       </code>
-       .
-      </li>
-      <li class="calibre9" id="c24-li-0015">
-       <b class="calibre14">
-        <code class="calibre21">
-         value_or()
-        </code>
-        :
-       </b>
-       Returns the value of type
-       <code class="calibre21">
-        T
-       </code>
-       , or another given value if the
-       <code class="calibre21">
-        expected
-       </code>
-       doesn't contain such a value.
-      </li>
-     </ul>
-     <p class="calibre13">
-      The following example demonstrates most of these member functions:
-     </p>
-     <pre class="calibre26" id="c24-code-0056"><code class="calibre21">auto result1 { parseInteger("123456789") };</code>
-<code class="calibre21">if (result1.<b class="calibre14">has_value()</b>) { println("result1 = {}", result1.<b class="calibre14">value()</b>); }</code>
-<code class="calibre21">if (result1) { println("result1 = {}", <b class="calibre14">*result1</b>); }</code>
-<span aria-label="903" class="calibre20" epub:type="pagebreak" id="Page_903" role="doc-pagebreak"></span><code class="calibre21">println("result1 = {}", result1.<b class="calibre14">value_or(0)</b>);</code>
-<code class="calibre21"> </code>
-<code class="calibre21">auto result2 { parseInteger("123456789123456") };</code>
-<code class="calibre21">if (!result2) { println("result2 contains an error: {}", result2.<b class="calibre14">error()</b>); }</code>
-<code class="calibre21"> </code>
-<code class="calibre21">auto result3 { parseInteger("abc") };</code>
-<code class="calibre21">if (!result3) { println("result3 contains an error: {}", result3.<b class="calibre14">error()</b>); }</code></pre>
-     <p class="calibre13">
-      Here is the output:
-     </p>
-     <pre class="calibre26" id="c24-code-0057"><code class="calibre21">result1 = 123456789</code>
-<code class="calibre21">result1 = 123456789</code>
-<code class="calibre21">result1 = 123456789</code>
-<code class="calibre21">result2 contains an error: stoi argument out of range</code>
-<code class="calibre21">result3 contains an error: invalid stoi argument</code></pre>
-     <p class="calibre13">
-      Additionally,
-      <code class="calibre21">
-       expected
-      </code>
-      supports monadic operations:
-      <code class="calibre21">
-       and_then()
-      </code>
-      ,
-      <code class="calibre21">
-       transform()
-      </code>
-      ,
-      <code class="calibre21">
-       or_else()
-      </code>
-      , and
-      <code class="calibre21">
-       transform_error()
-      </code>
-      . The first three are analogous to the monadic operations supported by
-      <code class="calibre21">
-       optional
-      </code>
-      .
-     </p>
-     <ul class="check" id="c24-list-0005">
-      <li class="calibre9" id="c24-li-0016">
-       <b class="calibre14">
-        <code class="calibre21">
-         transform(F)
-        </code>
-        :
-       </b>
-       Returns an
-       <code class="calibre21">
-        expected
-       </code>
-       containing the result of invoking
-       <code class="calibre21">
-        F
-       </code>
-       with the expected value as argument if
-       <code class="calibre21">
-        *this
-       </code>
-       has an expected value; otherwise, just returns the
-       <code class="calibre21">
-        expected
-       </code>
-       as is
-      </li>
-      <li class="calibre9" id="c24-li-0017">
-       <b class="calibre14">
-        <code class="calibre21">
-         and_then(F)
-        </code>
-        :
-       </b>
-       Returns the result (which must be an expected) of invoking
-       <code class="calibre21">
-        F
-       </code>
-       with the expected value as argument if
-       <code class="calibre21">
-        *this
-       </code>
-       has an expected value; otherwise, just returns the
-       <code class="calibre21">
-        expected
-       </code>
-       as is
-      </li>
-      <li class="calibre9" id="c24-li-0018">
-       <b class="calibre14">
-        <code class="calibre21">
-         or_else(F)
-        </code>
-        :
-       </b>
-       Returns
-       <code class="calibre21">
-        *this
-       </code>
-       if
-       <code class="calibre21">
-        *this
-       </code>
-       has an expected value; otherwise, returns the result (which must be an expected) of invoking
-       <code class="calibre21">
-        F
-       </code>
-       with the unexpected value as argument
-      </li>
-      <li class="calibre9" id="c24-li-0019">
-       <b class="calibre14">
-        <code class="calibre21">
-         transform_error(F)
-        </code>
-        :
-       </b>
-       Returns
-       <code class="calibre21">
-        *this
-       </code>
-       if
-       <code class="calibre21">
-        *this
-       </code>
-       has an expected value; otherwise, returns an
-       <code class="calibre21">
-        expected
-       </code>
-       containing the unexpected value transformed by invoking
-       <code class="calibre21">
-        F
-       </code>
-       with the unexpected value as argument
-      </li>
-     </ul>
-     <p class="calibre13">
-      Here is an example of using
-      <code class="calibre21">
-       and_then()
-      </code>
-      on an
-      <code class="calibre21">
-       expected
-      </code>
-      . Just as for monadic operations on
-      <code class="calibre21">
-       optional
-      </code>
-      s, there is no need to explicitly check whether the result of calling
-      <code class="calibre21">
-       parseInteger()
-      </code>
-      contains an expected value before applying the operation. The error handling is taken care of for you.
-     </p>
-     <pre class="calibre26" id="c24-code-0058"><code class="calibre21">auto transformedResult { parseInteger("123456789")</code>
-<code class="calibre21">    .<b class="calibre14">and_then</b>([](int value) -&gt; expected&lt;int, string&gt; { return value * 2; }) };</code></pre>
-     <p class="calibre13">
-      The error type of
-      <code class="calibre21">
-       expected
-      </code>
-      can be any type you want. Returning multiple error types is also possible by using the
-      <code class="calibre21">
-       variant
-      </code>
-      vocabulary type discussed earlier in this chapter. For example, instead of returning a simple
-      <code class="calibre21">
-       string
-      </code>
-      , the
-      <code class="calibre21">
-       parseInteger()
-      </code>
-      function can return two different error types for the two error cases. The following version returns errors of two custom types
-      <code class="calibre21">
-       OutOfRange
-      </code>
-      and
-      <code class="calibre21">
-       InvalidArgument
-      </code>
-      :
-     </p>
-     <pre class="calibre26" id="c24-code-0059"><code class="calibre21">expected&lt;int, variant&lt;OutOfRange, InvalidArgument&gt;&gt;</code>
-<code class="calibre21">    parseInteger(const string&amp; str) { … }</code></pre>
-     <p class="calibre13">
-      To conclude, it's clear that
-      <code class="calibre21">
-       optional
-      </code>
-      and
-      <code class="calibre21">
-       expected
-      </code>
-      are somewhat related. Use the following rule to decide which one to use in certain use cases.
-      <span aria-label="904" class="calibre20" epub:type="pagebreak" id="Page_904" role="doc-pagebreak">
-      </span>
-     </p>
-     <section class="calibre2">
-      <aside class="calibre23">
-       <div class="top">
-        <hr class="calibre24"/>
-       </div>
-       <section class="feature">
-        <p class="calibre25" id="c24-para-0092">
-         <b class="calibre14">
-          NOTE
-         </b>
-         <i class="calibre18">
-          Use
-         </i>
-         <code class="calibre21">
-          expected
-         </code>
-         <i class="calibre18">
-          when an error is unexpected, in which case the
-         </i>
-         <code class="calibre21">
-          expected
-         </code>
-         <i class="calibre18">
-          should represent the exact reason for the error, so the caller can handle the error appropriately.
-         </i>
-        </p>
-        <p class="calibre25" id="c24-para-0093">
-         <i class="calibre18">
-          Use
-         </i>
-         <code class="calibre21">
-          optional
-         </code>
-         <i class="calibre18">
-          if it's acceptable that there is no value and without requiring any reason for a missing value. For example, use for functions accepting optional input parameters or return types of functions for which it is not unexpected that there is no value, such as find-related functions.
-         </i>
-        </p>
-        <div class="top">
-         <hr class="calibre24"/>
-        </div>
-       </section>
-      </aside>
-     </section>
-     <section class="calibre2">
-      <span class="calibre" id="c24-sec-0019">
-      </span>
-      <h3 class="calibre27" id="head-3-475">
-       Exceptions, Error Return Codes, and expected
-      </h3>
-      <p class="calibre13" id="c24-para-0094">
-       There are three major options to handle errors in a function. The function can throw an exception, discussed in detail in
-       <a class="calibre5" href="c14.xhtml">
-        Chapter 14
-       </a>
-       ; return an error code; or return an
-       <code class="calibre21">
-        expected
-       </code>
-       . They all have their own merits. The following table, based on the official proposal paper for
-       <code class="calibre21">
-        std::expected
-       </code>
-       , P0323R12, summarizes them:
-      </p>
-      <table border="1" class="calibre31">
-       <thead class="calibre32">
-        <tr class="calibre33">
-         <th class="left" scope="col">
-         </th>
-         <th class="left" scope="col">
-          EXCEPTION
-         </th>
-         <th class="left" scope="col">
-          ERROR RETURN CODE
-         </th>
-         <th class="left" scope="col">
-          EXPECTED
-         </th>
-        </tr>
-       </thead>
-       <tbody class="calibre34">
-        <tr class="calibre33">
-         <td class="bgcolor">
-          <b class="calibre14">
-           VISIBILITY
-          </b>
-         </td>
-         <td class="bgcolor">
-          Not visible, unless you read the function documentation or analyze the code.
-         </td>
-         <td class="bgcolor">
-          Immediately visible from the function prototype. But easy to ignore the return value.
-         </td>
-         <td class="bgcolor">
-          Immediately visible from the function prototype. Cannot be ignored as it contains the result of the function.
-         </td>
-        </tr>
-        <tr class="calibre33">
-         <td class="bgcolor">
-          <b class="calibre14">
-           DETAILS
-          </b>
-         </td>
-         <td class="bgcolor">
-          Contains as many details about the error as possible.
-         </td>
-         <td class="bgcolor">
-          Often just a simple integer.
-         </td>
-         <td class="bgcolor">
-          Contains as many details about the error as possible.
-         </td>
-        </tr>
-        <tr class="calibre33">
-         <td class="bgcolor">
-          <b class="calibre14">
-           CODE NOISE
-          </b>
-         </td>
-         <td class="bgcolor">
-          Allows for writing clean code with separate error handling.
-         </td>
-         <td class="bgcolor">
-          Error handling is intertwined with the normal flow, making code harder to read and maintain.
-         </td>
-         <td class="bgcolor">
-          Allows for clean code. Thanks to monadic operations, error handling is not intertwined with normal flow.
-         </td>
-        </tr>
-       </tbody>
-      </table>
-     </section>
-    </section>
-    <section aria-labelledby="head-2-250" class="calibre2">
-     <span class="calibre" id="c24-sec-0020">
-     </span>
-     <h2 class="calibre6" id="head-2-250">
-      SUMMARY
-     </h2>
-     <p class="calibre13" id="c24-para-0096">
-      This chapter gave an overview of additional vocabulary types provided by the C++ Standard Library. You learned how to use the
-      <code class="calibre21">
-       variant
-      </code>
-      and
-      <code class="calibre21">
-       any
-      </code>
-      vocabulary data types. You also learned about
-      <code class="calibre21">
-       tuple
-      </code>
-      s, which are a generalization of
-      <code class="calibre21">
-       pair
-      </code>
-      s, and the operations you can apply to
-      <code class="calibre21">
-       tuple
-      </code>
-      s. You discovered the power of monadic operations for
-      <code class="calibre21">
-       optional
-      </code>
-      s allowing you to easily chain operations on
-      <code class="calibre21">
-       optional
-      </code>
-      s. The chapter finished with
-      <code class="calibre21">
-       expected
-      </code>
-      , a vocabulary type capable of holding either a value of a certain type or an error.
-     </p>
-     <p class="calibre13" id="c24-para-0097">
-      <span aria-label="905" class="calibre20" epub:type="pagebreak" id="Page_905" role="doc-pagebreak">
-      </span>
-      This chapter concludes
-      <a class="calibre5" href="p03.xhtml">
-       Part 3
-      </a>
-      of the book. The next part discusses some more advanced topics and starts with a chapter showing you how to customize and extend the functionality provided by the C++ Standard Library by implementing your own Standard Library–compliant algorithms and data structures.
-     </p>
-    </section>
-    <section aria-labelledby="head-2-251" class="calibre2">
-     <span class="calibre" id="c24-sec-0021">
-     </span>
-     <h2 class="calibre6" id="head-2-251">
-      EXERCISES
-     </h2>
-     <p class="calibre13" id="c24-para-0098">
-      By solving the following exercises, you can practice the material discussed in this chapter. Solutions to all exercises are available with the code download on the book's website at
-      <code class="calibre21">
-       <a class="calibre5" href="http://www.wiley.com/go/proc++6e">
-        www.wiley.com/go/proc++6e
-       </a>
-      </code>
-      . However, if you are stuck on an exercise, first reread parts of this chapter to try to find an answer yourself before looking at the solution from the website.
-     </p>
-     <section class="calibre2">
-      <span class="calibre" id="c24-exsec-0001">
-      </span>
-      <ol class="none1">
-       <li class="calibre9" id="c24-ex-0001">
-        <b class="calibre14">
-         Exercise 24-1:
-        </b>
-        <a class="calibre5" href="c14.xhtml">
-         Chapter 14
-        </a>
-        , “Handling Errors,” explains error handling in C++ and explains that there are basically two major options: either you work with error codes or you work with exceptions. I recommend using exceptions for error handling, but for this exercise, you'll use error codes. Write a simple
-        <code class="calibre21">
-         Error
-        </code>
-        class that just stores a single message, has a constructor to set the message, and has a getter to retrieve the message. Next, write a
-        <code class="calibre21">
-         getData()
-        </code>
-        function with a single Boolean parameter called
-        <code class="calibre21">
-         fail
-        </code>
-        . If
-        <code class="calibre21">
-         fail
-        </code>
-        is
-        <code class="calibre21">
-         false
-        </code>
-        , the function returns a
-        <code class="calibre21">
-         vector
-        </code>
-        of some data; otherwise, it returns an instance of
-        <code class="calibre21">
-         Error
-        </code>
-        . You are not allowed to use reference-to-non-
-        <code class="calibre21">
-         const
-        </code>
-        output parameters. Try to come up with a solution that doesn't use the C++23
-        <code class="calibre21">
-         std::expected
-        </code>
-        class template yet. Test your implementation in your
-        <code class="calibre21">
-         main()
-        </code>
-        function.
+      <ul class="check" id="bapp01-list-0008">
+       <li class="calibre9" id="bapp01-li-0062">
+        Know how to draw the stack and the free store; this can help you understand what's going on.
        </li>
-       <li class="calibre9" id="c24-ex-0002">
-        <b class="calibre14">
-         Exercise 24-2:
-        </b>
-        Modify your solution to Exercise 24-1 to use the C++23
+       <li class="calibre9" id="bapp01-li-0063">
+        Avoid using low-level memory allocation and deallocation functions. In modern C++, there should be no calls to
         <code class="calibre21">
-         std::expected
+         new
         </code>
-        class template and discover how it makes the solution much easier to read and understand.
+        ,
+        <code class="calibre21">
+         delete
+        </code>
+        ,
+        <code class="calibre21">
+         new[]
+        </code>
+        ,
+        <code class="calibre21">
+         delete[]
+        </code>
+        ,
+        <code class="calibre21">
+         malloc()
+        </code>
+        ,
+        <code class="calibre21">
+         free()
+        </code>
+        , and so on. Instead, use smart pointers.
        </li>
-       <li class="calibre9" id="c24-ex-0003">
-        <b class="calibre14">
-         Exercise 24-3:
-        </b>
-        Most command-line applications accept command-line parameters. In most, if not all, of the sample code in this book the main function is simply
+       <li class="calibre9" id="bapp01-li-0064">
+        Understand smart pointers; use
         <code class="calibre21">
-         main()
+         std::unique_ptr
         </code>
-        . However,
+        by default,
         <code class="calibre21">
-         main()
+         shared_ptr
         </code>
-        can also accept parameters:
+        for shared ownership.
+       </li>
+       <li class="calibre9" id="bapp01-li-0065">
+        Use
         <code class="calibre21">
-         main(int argc, char** argv)
+         std::make_unique()
         </code>
-        where
+        to create a
         <code class="calibre21">
-         argc
-        </code>
-        is the number of command-line parameters, and
-        <code class="calibre21">
-         argv
-        </code>
-        is an array of strings, one string for each parameter. Assume for this exercise that a command-line parameter is of the form
-        <code class="calibre21">
-         name=value
-        </code>
-        . Write a function that can parse a single parameter and that returns a
-        <code class="calibre21">
-         pair
-        </code>
-        containing the name of the parameter and a
-        <code class="calibre21">
-         variant
-        </code>
-        containing the value as a Boolean if the value can be parsed as a Boolean (
-        <code class="calibre21">
-         true
-        </code>
-        or
-        <code class="calibre21">
-         false
-        </code>
-        ), an integer if the value can be parsed as an integer, or a
-        <code class="calibre21">
-         string
-        </code>
-        otherwise. To split the
-        <code class="calibre21">
-         name=value
-        </code>
-        string, you can use a regular expression (see
-        <a class="calibre5" href="c21.xhtml">
-         Chapter 21
-        </a>
-        , “String Localization and Regular Expressions”). To parse integers, you can use one of the functions explained in
-        <a class="calibre5" href="c02.xhtml">
-         Chapter 2
-        </a>
-        , “Working with Strings and String Views.” In your
-        <code class="calibre21">
-         main()
-        </code>
-        function, loop over all command-line parameters, parse them, and output the parsed results to the standard output using
-        <code class="calibre21">
-         holds_alternative()
+         unique_ptr
         </code>
         .
        </li>
-       <li class="calibre9" id="c24-ex-0004">
-        <b class="calibre14">
-         Exercise 24-4:
-        </b>
-        Modify your solution to Exercise 24-3. Instead of using
+       <li class="calibre9" id="bapp01-li-0066">
+        Use
         <code class="calibre21">
-         holds_alternative()
+         std::make_shared()
         </code>
-        , use a visitor to output the parsed results to the standard output.
+        to create a
+        <code class="calibre21">
+         shared_ptr
+        </code>
+        .
        </li>
-       <li class="calibre9" id="c24-ex-0005">
-        <b class="calibre14">
-         Exercise 24-5:
-        </b>
-        Modify your solution to Exercise 24-4 to use
+       <li class="calibre9" id="bapp01-li-0067">
+        Never use
         <code class="calibre21">
-         tuple
+         auto_ptr
         </code>
-        s instead of
-        <code class="calibre21">
-         pair
-        </code>
-        s.
+        ; it has been removed since C++17.
        </li>
-      </ol>
+       <li class="calibre9" id="bapp01-li-0068">
+        If you do need to use low-level memory allocation functions, use
+        <code class="calibre21">
+         new
+        </code>
+        ,
+        <code class="calibre21">
+         delete
+        </code>
+        ,
+        <code class="calibre21">
+         new[]
+        </code>
+        , and
+        <code class="calibre21">
+         delete[]
+        </code>
+        , never
+        <code class="calibre21">
+         malloc()
+        </code>
+        and
+        <code class="calibre21">
+         free()
+        </code>
+        .
+       </li>
+       <li class="calibre9" id="bapp01-li-0069">
+        If you have an array of pointers to objects, you still need to allocate memory for each individual pointer and delete the memory—the array allocation syntax doesn't take care of pointers.
+       </li>
+       <li class="calibre9" id="bapp01-li-0070">
+        Be aware of the existence of memory allocation problem detectors, such as Valgrind, to expose memory problems.
+       </li>
+      </ul>
      </section>
+     <section class="calibre2">
+      <span class="calibre" id="bapp01-sec-0022">
+      </span>
+      <h3 class="calibre27" id="head-3-14">
+       Types of Questions
+      </h3>
+      <p class="calibre13" id="bapp01-para-0043">
+       Find-the-bug questions often contain memory issues, such as double deletion,
+       <code class="calibre21">
+        new
+       </code>
+       /
+       <code class="calibre21">
+        delete
+       </code>
+       /
+       <code class="calibre21">
+        new[]
+       </code>
+       /
+       <code class="calibre21">
+        delete[]
+       </code>
+       mix-up, and memory leaks. When you are tracing through code that makes heavy use of pointers and arrays, you should draw and update the state of the memory as you process each line of code.
+      </p>
+      <p class="calibre13" id="bapp01-para-0044">
+       Another good way to find out if a candidate understands memory is to ask how pointers and arrays differ. At this point, the question might catch you off guard for a moment. If that's the case, skim
+       <a class="calibre5" href="c07.xhtml">
+        Chapter 7
+       </a>
+       again for the discussion on pointers and arrays.
+      </p>
+      <p class="calibre13" id="bapp01-para-0045">
+       When answering questions about memory allocation, it's always a good idea to mention the concept of smart pointers and their benefits for automatically cleaning up memory and other resources. You should also mention that it's much better to use Standard Library containers, such as
+       <code class="calibre21">
+        std::vector
+       </code>
+       , instead of C-style arrays, because the Standard Library containers handle memory management for you automatically.
+      </p>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-8" class="calibre2">
+     <span class="calibre" id="bapp01-sec-0023">
+     </span>
+     <h2 class="calibre6" id="head-2-8">
+      CHAPTERS 8 AND 9: GAINING PROFICIENCY WITH CLASSES AND OBJECTS, AND MASTERING CLASSES AND OBJECTS
+     </h2>
+     <p class="calibre13" id="bapp01-para-0046">
+      There is no limit to the types of questions you can be asked about classes and objects. Some interviewers are syntax-fixated and might throw some complicated code at you. Others are less concerned with the implementation and more interested in your design skills.
+     </p>
+     <span aria-label="1248" class="calibre20" epub:type="pagebreak" id="Page_1248" role="doc-pagebreak">
+     </span>
+     <section class="calibre2">
+      <span class="calibre" id="bapp01-sec-0024">
+      </span>
+      <h3 class="calibre27" id="head-3-15">
+       Things to Remember
+      </h3>
+      <ul class="check" id="bapp01-list-0009">
+       <li class="calibre9" id="bapp01-li-0071">
+        Basic class definition syntax.
+       </li>
+       <li class="calibre9" id="bapp01-li-0072">
+        Access specifiers for member functions and data members.
+       </li>
+       <li class="calibre9" id="bapp01-li-0073">
+        The use of the
+        <code class="calibre21">
+         this
+        </code>
+        pointer.
+       </li>
+       <li class="calibre9" id="bapp01-li-0074">
+        How name resolution works.
+       </li>
+       <li class="calibre9" id="bapp01-li-0075">
+        Object creation and destruction, both on the stack and the free store.
+       </li>
+       <li class="calibre9" id="bapp01-li-0076">
+        Cases when the compiler generates a constructor for you.
+       </li>
+       <li class="calibre9" id="bapp01-li-0077">
+        Constructor initializers.
+       </li>
+       <li class="calibre9" id="bapp01-li-0078">
+        Copy constructors and assignment operators.
+       </li>
+       <li class="calibre9" id="bapp01-li-0079">
+        Delegating constructors.
+       </li>
+       <li class="calibre9" id="bapp01-li-0080">
+        The
+        <code class="calibre21">
+         mutable
+        </code>
+        keyword.
+       </li>
+       <li class="calibre9" id="bapp01-li-0081">
+        Member function overloading and default arguments.
+       </li>
+       <li class="calibre9" id="bapp01-li-0082">
+        <code class="calibre21">
+         const
+        </code>
+        members.
+       </li>
+       <li class="calibre9" id="bapp01-li-0083">
+        Friend classes and member functions.
+       </li>
+       <li class="calibre9" id="bapp01-li-0084">
+        Managing dynamically allocated memory in classes.
+       </li>
+       <li class="calibre9" id="bapp01-li-0085">
+        <code class="calibre21">
+         static
+        </code>
+        member functions and data members.
+       </li>
+       <li class="calibre9" id="bapp01-li-0086">
+        Inline member functions and the fact that the
+        <code class="calibre21">
+         inline
+        </code>
+        keyword is just a hint for the compiler, which can ignore the hint.
+       </li>
+       <li class="calibre9" id="bapp01-li-0087">
+        The key idea of separating interface and implementation classes, which says that interfaces should only contain
+        <code class="calibre21">
+         public
+        </code>
+        member functions, should be as stable as possible, and should not contain any data members or
+        <code class="calibre21">
+         private
+        </code>
+        /
+        <code class="calibre21">
+         protected
+        </code>
+        member functions. Thus, interfaces can remain stable while implementations are free to change under them.
+       </li>
+       <li class="calibre9" id="bapp01-li-0088">
+        In-class member initializers.
+       </li>
+       <li class="calibre9" id="bapp01-li-0089">
+        Explicitly defaulted and deleted special member functions.
+       </li>
+       <li class="calibre9" id="bapp01-li-0090">
+        The difference between rvalues and lvalues.
+       </li>
+       <li class="calibre9" id="bapp01-li-0091">
+        Rvalue references.
+       </li>
+       <li class="calibre9" id="bapp01-li-0092">
+        Move semantics with move constructors and move assignment operators.
+       </li>
+       <li class="calibre9" id="bapp01-li-0093">
+        The copy-and-swap idiom and what it is used for.
+       </li>
+       <li class="calibre9" id="bapp01-li-0094">
+        The rule of zero versus the rule of five.
+       </li>
+       <li class="calibre9" id="bapp01-li-0095">
+        Basic operator overloading syntax.
+       </li>
+       <li class="calibre9" id="bapp01-li-0096">
+        The three-way comparison operator for classes.
+       </li>
+       <li class="calibre9" id="bapp01-li-0097">
+        What explicit object parameters are (C++23).
+       </li>
+       <li class="calibre9" id="bapp01-li-0098">
+        What
+        <code class="calibre21">
+         constexpr
+        </code>
+        and
+        <code class="calibre21">
+         consteval
+        </code>
+        functions and classes are.
+       </li>
+      </ul>
+     </section>
+     <span aria-label="1249" class="calibre20" epub:type="pagebreak" id="Page_1249" role="doc-pagebreak">
+     </span>
+     <section class="calibre2">
+      <span class="calibre" id="bapp01-sec-0025">
+      </span>
+      <h3 class="calibre27" id="head-3-16">
+       Types of Questions
+      </h3>
+      <p class="calibre13" id="bapp01-para-0048">
+       Questions such as “What does the keyword
+       <code class="calibre21">
+        mutable
+       </code>
+       mean?” are great for phone screening. A recruiter may have a list of C++ terms and will move candidates to the next stage of the process based on the number of terms that they get right. You might not know all of the terms thrown at you, but keep in mind that other candidates are facing the same questions, and it's one of the few metrics available to a recruiter.
+      </p>
+      <p class="calibre13">
+       The find-the-bug style of questions is popular among interviewers and course instructors alike. You will be presented with some nonsense code and asked to point out its flaws. Interviewers struggle to find quantitative ways to analyze candidates, and this is one of the few ways to do it. In general, your approach should be to read each line of code and voice your concerns, brainstorming aloud. The types of bugs can fall into several categories:
+      </p>
+      <ul class="check" id="bapp01-list-0010">
+       <li class="calibre9" id="bapp01-li-0099">
+        <b class="calibre14">
+         Syntax errors:
+        </b>
+        These are rare; interviewers know you can find compile-time bugs with a compiler.
+       </li>
+       <li class="calibre9" id="bapp01-li-0100">
+        <b class="calibre14">
+         Memory problems:
+        </b>
+        These include problems such as leaks and double deletion.
+       </li>
+       <li class="calibre9" id="bapp01-li-0101">
+        <b class="calibre14">
+         “You wouldn't do that” problems:
+        </b>
+        This category includes things that are technically correct but are not recommended. For example, you wouldn't use C-style character arrays; you would use
+        <code class="calibre21">
+         std::string
+        </code>
+        instead.
+       </li>
+       <li class="calibre9" id="bapp01-li-0102">
+        <b class="calibre14">
+         Style errors:
+        </b>
+        Even if the interviewer doesn't count it as a bug, point out poor comments or variable names.
+       </li>
+      </ul>
+      <p class="calibre13">
+       Here's a find-the-bug problem that demonstrates each of these areas:
+      </p>
+      <pre class="calibre26" id="bapp01-code-0003"><code class="calibre21">class Buggy</code>
+<code class="calibre21">{</code>
+<code class="calibre21">        Buggy(int param);</code>
+<code class="calibre21">        ˜Buggy();</code>
+<code class="calibre21">        void turtle(int i = 7, int j);</code>
+<code class="calibre21">    protected:</code>
+<code class="calibre21">        double fjord(double val);</code>
+<code class="calibre21">        int fjord(double val);</code>
+<code class="calibre21">        int param;</code>
+<code class="calibre21">        double* m_graphicDimension;</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">Buggy::Buggy(int param)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    param = param;</code>
+<code class="calibre21">    m_graphicDimension = new double;</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21">Buggy::˜Buggy()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21">double Buggy::fjord(double val)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    return val * param;</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<span aria-label="1250" class="calibre20" epub:type="pagebreak" id="Page_1250" role="doc-pagebreak"></span><code class="calibre21">int Buggy::fjord(double val)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    return (int)fjord(val);</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21">void Buggy::turtle(int i, int j)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    cout &lt;&lt; "i is " &lt;&lt; i &lt;&lt; ", j is " &lt;&lt; j &lt;&lt; endl;</code>
+<code class="calibre21">}</code></pre>
+      <p class="calibre13">
+       Take a careful look at the code, and then consult the following improved version:
+      </p>
+      <pre class="calibre26" id="bapp01-code-0004"><code class="calibre21">import std; <span class="color">// Import the Standard Library functionality.</span></code>
+<code class="calibre21"> </code>
+<code class="calibre21">class Buggy final <span class="color">// Mark as final, or provide a virtual destructor.</span></code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public: <span class="color">// These should most likely be public.</span></code>
+<code class="calibre21">        explicit Buggy(int param);  <span class="color">// Constructor should be explicit.</span></code>
+<code class="calibre21"> </code>
+<code class="calibre21">        <span class="color">// Destructor not necessary as there's nothing to clean up.</span></code>
+<code class="calibre21"> </code>
+<code class="calibre21">        void turtle(int i, int j); <span class="color">// Only last parameters can have defaults.</span></code>
+<code class="calibre21">    private: <span class="color">// Use private by default.</span></code>
+<code class="calibre21">        <span class="color">// int version won't compile. Overloaded member functions</span></code>
+<code class="calibre21">        <span class="color">// cannot differ only in return type.</span></code>
+<code class="calibre21">        double fjord(double val);</code>
+<code class="calibre21">        int m_param; <span class="color">// Data member naming.</span></code>
+<code class="calibre21">        double m_graphicDimension; <span class="color">// Use value semantics!</span></code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">Buggy::Buggy(int param)</code>
+<code class="calibre21">    : m_param{ param } <span class="color">// Prefer using constructor initializer.</span></code>
+<code class="calibre21">{</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21">void Buggy::turtle(int i, int j)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    <span class="color">// Namespaces + use std::println().</span></code>
+<code class="calibre21">    std::println("i is {}, j is {}", i, j);</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21">double Buggy::fjord(double val)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    return val * m_param; <span class="color">// Changed data member name.</span></code>
+<code class="calibre21">}</code></pre>
+      <p class="calibre13" id="bapp01-para-0052">
+       You should explain why you changed
+       <code class="calibre21">
+        m_graphicDimension
+       </code>
+       from a
+       <code class="calibre21">
+        double*
+       </code>
+       pointer to a
+       <code class="calibre21">
+        double
+       </code>
+       value. If you do need to use pointers, you should explain why you should never use raw pointers that represent ownership but smart pointers instead.
+      </p>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-9" class="calibre2">
+     <span class="calibre" id="bapp01-sec-0026">
+     </span>
+     <div class="calibre19" id="calibre_pb_6">
+     </div>
     </section>
    </section>
   </div>
