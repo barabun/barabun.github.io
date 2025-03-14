@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html>
+<html epub:prefix="z3998: http://www.daisy.org/z3998/2012/vocab/structure/#" lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+ <head>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   CHAPTER 27: MULTITHREADED PROGRAMMING WITH C++
+  </title>
+ </head>
+ <body>
+  <div class="navigation">
+   <a class="nav-button" href="chapter_065.html">
+    ← Previous
+   </a>
+   <a class="nav-button" href="index.html">
+    Table of Contents
+   </a>
+   <a class="nav-button" href="chapter_067.html">
+    Next →
+   </a>
+  </div>
+  <div class="chapter-content">
+   <section aria-labelledby="b01_1" class="calibre2" epub:type="appendix" role="doc-appendix">
+    <section aria-labelledby="head-2-19" class="calibre2">
+     <h2 class="calibre6" id="head-2-19">
+      CHAPTER 27: MULTITHREADED PROGRAMMING WITH C++
+     </h2>
+     <p class="calibre13" id="bapp01-para-0096">
+      Almost any system, from servers to laptops and even cellphones, has processors with multiple cores these days. Multithreaded programming is crucial to harness the power of all those cores. An interviewer might ask you a couple of multithreading questions. C++ includes a standard threading support library, so it's a good idea to know how it works.
+     </p>
+     <section class="calibre2">
+      <span class="calibre" id="bapp01-sec-0057">
+      </span>
+      <h3 class="calibre27" id="head-3-37">
+       Things to Remember
+      </h3>
+      <ul class="check" id="bapp01-list-0021">
+       <li class="calibre9" id="bapp01-li-0183">
+        What race conditions and deadlocks are and how to prevent them
+       </li>
+       <li class="calibre9" id="bapp01-li-0184">
+        <code class="calibre21">
+         std::jthread
+        </code>
+        to spawn threads, and why it can be better than using
+        <code class="calibre21">
+         std::thread
+        </code>
+       </li>
+       <li class="calibre9" id="bapp01-li-0185">
+        The atomic types and atomic operations
+       </li>
+       <li class="calibre9" id="bapp01-li-0186">
+        The concept of mutual exclusion, including the use of the different mutex and lock classes, to provide synchronization between threads
+       </li>
+       <li class="calibre9" id="bapp01-li-0187">
+        Condition variables and how to use them to signal other threads
+       </li>
+       <li class="calibre9" id="bapp01-li-0188">
+        The concepts of semaphores, latches, and barriers
+       </li>
+       <li class="calibre9" id="bapp01-li-0189">
+        Futures and promises
+       </li>
+       <li class="calibre9" id="bapp01-li-0190">
+        Copying and rethrowing of exceptions across thread boundaries
+       </li>
+       <li class="calibre9" id="bapp01-li-0191">
+        <span aria-label="1259" class="calibre20" epub:type="pagebreak" id="Page_1259" role="doc-pagebreak">
+        </span>
+        What coroutines are, including a high-level overview of how they work
+       </li>
+       <li class="calibre9" id="bapp01-li-0192">
+        The standard
+        <code class="calibre21">
+         std::generator
+        </code>
+        awaitable (C++23)
+       </li>
+      </ul>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="bapp01-sec-0058">
+      </span>
+      <h3 class="calibre27" id="head-3-38">
+       Types of Questions
+      </h3>
+      <p class="calibre13" id="bapp01-para-0098">
+       Multithreaded programming is a complicated subject, so you don't need to expect detailed questions, unless you are interviewing for a specific multithreaded programming position.
+      </p>
+      <p class="calibre13" id="bapp01-para-0099">
+       Instead, an interviewer might ask you to explain the different kinds of problems you can encounter with multithreaded code: problems such as race conditions, deadlocks, and tearing. She might ask you to explain the need for atomic types and atomic operations. You may also be asked to explain the general concepts behind multithreaded programming. This is a broad question, but it allows the interviewer to get an idea of your multithreading knowledge. Explaining the concepts of mutexes, semaphores, latches, and barriers will earn you extra points. You can also mention that a lot of the Standard Library algorithms have an option to run in parallel to improve their performance.
+      </p>
+      <p class="calibre13" id="bapp01-para-0100">
+       Writing your own coroutines is complicated, but since C++23, the Standard Library comes with a standard
+       <code class="calibre21">
+        std::generator
+       </code>
+       type. If you can explain how
+       <code class="calibre21">
+        generator
+       </code>
+       works with a small example, you will earn extra points.
+      </p>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-20" class="calibre2">
+     <span class="calibre" id="bapp01-sec-0059">
+     </span>
+     <div class="calibre19" id="calibre_pb_15">
+     </div>
+    </section>
+   </section>
+  </div>
+ </body>
+</html>

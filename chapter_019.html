@@ -5,7 +5,7 @@
   <link href="style.css" rel="stylesheet" type="text/css"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <title>
-   CHAPTER 6: DESIGNING FOR REUSE
+   8Gaining Proficiency with Classes and Objects
   </title>
  </head>
  <body>
@@ -21,58 +21,4271 @@
    </a>
   </div>
   <div class="chapter-content">
-   <section aria-labelledby="b01_1" class="calibre2" epub:type="appendix" role="doc-appendix">
-    <section aria-labelledby="head-2-6" class="calibre2">
-     <h2 class="calibre6" id="head-2-6">
-      CHAPTER 6: DESIGNING FOR REUSE
+   <section aria-labelledby="c08_1" class="calibre2" epub:type="chapter" role="doc-chapter">
+    <header class="calibre10">
+     <h1 class="calibre16" id="c08_1">
+      <span aria-label="259" class="calibre17" epub:type="pagebreak" id="Page_259" role="doc-pagebreak">
+      </span>
+      <span class="calibre" id="c08">
+      </span>
+      <span class="calibre">
+       8
+      </span>
+      <br class="calibre12"/>
+      <span class="calibre">
+       Gaining Proficiency with Classes and Objects
+      </span>
+     </h1>
+    </header>
+    <section aria-label="chapter opening" class="calibre2">
+     <span class="calibre" id="c08-sec-0001">
+     </span>
+     <section class="calibre2">
+      <aside class="calibre23">
+       <div class="top">
+        <hr class="calibre24"/>
+       </div>
+       <section class="feature1">
+        <h3 class="calibre30">
+         WHAT'S IN THIS CHAPTER?
+        </h3>
+        <ul class="check2" id="c08-list-0001">
+         <li class="calibre9" id="c08-li-0001">
+          How to write your own classes with member functions and data members
+         </li>
+         <li class="calibre9" id="c08-li-0002">
+          How to control access to your member functions and data members
+         </li>
+         <li class="calibre9" id="c08-li-0003">
+          How to use objects on the stack and on the free store
+         </li>
+         <li class="calibre9" id="c08-li-0004">
+          What the life cycle of an object is
+         </li>
+         <li class="calibre9" id="c08-li-0005">
+          How to write code that is executed when an object is created or destroyed
+         </li>
+         <li class="calibre9" id="c08-li-0006">
+          How to write code to copy or assign objects
+         </li>
+        </ul>
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <section class="calibre2">
+      <aside class="calibre23">
+       <div class="top">
+        <hr class="calibre24"/>
+       </div>
+       <section class="feature1">
+        <span class="calibre" id="c08-fea-0001">
+        </span>
+        <h3 class="calibre30" id="head-2-102">
+         WILEY.COM DOWNLOADS FOR THIS CHAPTER
+        </h3>
+        <p class="calibre25" id="c08-para-0004">
+         Please note that all the code examples for this chapter are available as part of this chapter's code download on the book's website at
+         <code class="calibre21">
+          <a class="calibre5" href="http://www.wiley.com/go/proc++6e">
+           www.wiley.com/go/proc++6e
+          </a>
+         </code>
+         on the Download Code tab.
+        </p>
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <p class="calibre13" id="c08-para-0005">
+      As an object-oriented language, C++ provides facilities for using objects and for writing object blueprints, called
+      <i class="calibre18">
+       classes
+      </i>
+      . You can certainly write programs in C++ without classes and objects, but by doing so, you do not take advantage of the most fundamental and useful aspect of the language; writing a C++ program without classes is like traveling to Paris and eating at McDonald's. To use classes and objects effectively, you must understand their syntax and capabilities.
+     </p>
+     <p class="calibre13" id="c08-para-0006">
+      <span aria-label="260" class="calibre20" epub:type="pagebreak" id="Page_260" role="doc-pagebreak">
+      </span>
+      <a class="calibre5" href="c01_split_000.xhtml">
+       Chapter 1
+      </a>
+      , “A Crash Course in C++ and the Standard Library,” reviewed the basic syntax of class definitions.
+      <a class="calibre5" href="c05.xhtml">
+       Chapter 5
+      </a>
+      , “Designing with Classes,” introduced the object-oriented approach to programming in C++ and presented specific design strategies for classes and objects. This chapter describes the fundamental concepts involved in using classes and objects, including writing class definitions, defining member functions, using objects on the stack and the free store, writing constructors, default constructors, compiler-generated constructors, constructor initializers (also known as
+      <i class="calibre18">
+       ctor-initializers
+      </i>
+      ), copy constructors, initializer-list constructors, destructors, and assignment operators. Even if you are already comfortable with classes and objects, you should skim this chapter because it contains various tidbits of information with which you might not yet be familiar.
+     </p>
+    </section>
+    <section aria-labelledby="head-2-103" class="calibre2">
+     <span class="calibre" id="c08-sec-0004">
+     </span>
+     <h2 class="calibre6" id="head-2-103">
+      INTRODUCING THE SPREADSHEET EXAMPLE
      </h2>
-     <p class="calibre13" id="bapp01-para-0037">
-      Interviewers rarely ask questions about designing reusable code. This omission is unfortunate because having programmers on staff who can write only single-purpose code can be detrimental to a programming organization. Occasionally, you'll find a company that is savvy on code reuse and asks about it in their interviews. Such a question is an indication that it might be a good company to work for.
+     <p class="calibre13" id="c08-para-0007">
+      Both this chapter and the next present a runnable example of a simple spreadsheet application. A spreadsheet is a two-dimensional grid of “cells,” and each cell contains a number or a string. Professional spreadsheets such as Microsoft Excel provide the ability to perform mathematical operations, such as calculating the sum of the values of a set of cells. The spreadsheet example in these chapters does not attempt to challenge Microsoft in the marketplace, but it is useful for illustrating the issues of classes and objects.
+     </p>
+     <p class="calibre13">
+      The spreadsheet application uses two basic classes:
+      <code class="calibre21">
+       Spreadsheet
+      </code>
+      and
+      <code class="calibre21">
+       SpreadsheetCell
+      </code>
+      . Each
+      <code class="calibre21">
+       Spreadsheet
+      </code>
+      object contains
+      <code class="calibre21">
+       SpreadsheetCell
+      </code>
+      objects. In addition, a
+      <code class="calibre21">
+       SpreadsheetApplication
+      </code>
+      class manages a collection of
+      <code class="calibre21">
+       Spreadsheet
+      </code>
+      s. This chapter focuses on the
+      <code class="calibre21">
+       SpreadsheetCell
+      </code>
+      class.
+      <a class="calibre5" href="c09.xhtml">
+       Chapter 9
+      </a>
+      , “Mastering Classes and Objects,” develops the
+      <code class="calibre21">
+       Spreadsheet
+      </code>
+      and
+      <code class="calibre21">
+       SpreadsheetApplication
+      </code>
+      classes.
      </p>
      <section class="calibre2">
-      <span class="calibre" id="bapp01-sec-0018">
+      <aside class="calibre23">
+       <div class="top">
+        <hr class="calibre24"/>
+       </div>
+       <section class="feature">
+        <p class="calibre25" id="c08-para-0009">
+         <b class="calibre14">
+          NOTE
+         </b>
+         <i class="calibre18">
+          This chapter shows several different versions of the
+         </i>
+         <code class="calibre21">
+          SpreadsheetCell
+         </code>
+         <i class="calibre18">
+          class in order to introduce concepts gradually. Thus, the various attempts at the class throughout the chapter do not always illustrate the “best” way to do every aspect of class writing. In particular, the early examples omit important features that would normally be included but have not yet been introduced. You can download the final version of the class as described in the beginning of this chapter.
+         </i>
+        </p>
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+       </section>
+      </aside>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-104" class="calibre2">
+     <span class="calibre" id="c08-sec-0006">
+     </span>
+     <h2 class="calibre6" id="head-2-104">
+      WRITING CLASSES
+     </h2>
+     <p class="calibre13" id="c08-para-0010">
+      When you write a class, you specify the behaviors, or
+      <i class="calibre18">
+       member functions
+      </i>
+      , that will apply to objects of that class, and you specify the properties, or
+      <i class="calibre18">
+       data members
+      </i>
+      , that each object will contain.
+     </p>
+     <p class="calibre13" id="c08-para-0011">
+      There are two components in the process of writing classes: defining the classes themselves and defining their member functions.
+     </p>
+     <section class="calibre2">
+      <span class="calibre" id="c08-sec-0007">
       </span>
-      <h3 class="calibre27" id="head-3-11">
-       Things to Remember
+      <h3 class="calibre27" id="head-3-176">
+       Class Definitions
       </h3>
-      <ul class="check" id="bapp01-list-0007">
-       <li class="calibre9" id="bapp01-li-0058">
-        The principle of abstraction
-       </li>
-       <li class="calibre9" id="bapp01-li-0059">
-        The creation of subsystems and class hierarchies
-       </li>
-       <li class="calibre9" id="bapp01-li-0060">
-        The general rules for good interface design, which are interfaces with no implementation details and no
+      <p class="calibre13">
+       Here is a first attempt at a simple
+       <code class="calibre21">
+        SpreadsheetCell
+       </code>
+       class in a
+       <code class="calibre21">
+        spreadsheet_cell
+       </code>
+       module, in which each cell can store only a single number:
+      </p>
+      <pre class="calibre26" id="c08-code-0001"><span aria-label="261" class="calibre20" epub:type="pagebreak" id="Page_261" role="doc-pagebreak"></span><code class="calibre21">export module spreadsheet_cell;</code>
+<code class="calibre21"> </code>
+<code class="calibre21">export class SpreadsheetCell</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        void setValue(double value);</code>
+<code class="calibre21">        double getValue() const;</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        double m_value;</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13" id="c08-para-0013">
+       As described in
+       <a class="calibre5" href="c01_split_000.xhtml">
+        Chapter 1
+       </a>
+       , the first line specifies that this is the definition of a module named
+       <code class="calibre21">
+        spreadsheet_cell
+       </code>
+       . Every class definition begins with the keyword
+       <code class="calibre21">
+        class
+       </code>
+       followed by the name of the class. If the class is defined in a module and the class must become visible to clients importing the module, then the
+       <code class="calibre21">
+        class
+       </code>
+       keyword is prefixed with
+       <code class="calibre21">
+        export
+       </code>
+       . A class definition is a
+       <i class="calibre18">
+        declaration
+       </i>
+       and ends with a semicolon.
+      </p>
+      <p class="calibre13" id="c08-para-0014">
+       Class definitions usually go in a file named after the class. For example, the
+       <code class="calibre21">
+        SpreadsheetCell
+       </code>
+       class definition is put in a file called
+       <code class="calibre21">
+        SpreadsheetCell.cppm
+       </code>
+       . Some compilers require the use of a specific extension; others allow you to choose any extension.
+      </p>
+      <section class="calibre2">
+       <span class="calibre" id="c08-sec-0008">
+       </span>
+       <h4 class="calibre29" id="head-4-144">
+        Class Members
+       </h4>
+       <p class="calibre13" id="c08-para-0015">
+        A class can have several
+        <i class="calibre18">
+         members
+        </i>
+        . A member can be a
+        <i class="calibre18">
+         member function
+        </i>
+        (which in turn is a
+        <i class="calibre18">
+         function, constructor
+        </i>
+        , or
+        <i class="calibre18">
+         destructor
+        </i>
+        ), a
+        <i class="calibre18">
+         member variable
+        </i>
+        (also called a
+        <i class="calibre18">
+         data member
+        </i>
+        ), member enumerations, type aliases, nested classes, and so on.
+       </p>
+       <p class="calibre13">
+        The two lines that look like function prototypes declare the member functions that this class supports:
+       </p>
+       <pre class="calibre26" id="c08-code-0002"><code class="calibre21">void setValue(double value);</code>
+<code class="calibre21">double getValue() const;</code></pre>
+       <p class="calibre13" id="c08-para-0017">
+        <a class="calibre5" href="c01_split_000.xhtml">
+         Chapter 1
+        </a>
+        points out that it is always a good idea to declare member functions that do not change the object as
+        <code class="calibre21">
+         const
+        </code>
+        , like the
+        <code class="calibre21">
+         getValue()
+        </code>
+        member function.
+       </p>
+       <p class="calibre13">
+        The line that looks like a variable declaration declares the data member for this class:
+       </p>
+       <pre class="calibre26" id="c08-code-0003"><code class="calibre21">double m_value;</code></pre>
+       <p class="calibre13" id="c08-para-0019">
+        A class defines the member functions and data members that apply. They apply only to a specific
+        <i class="calibre18">
+         instance
+        </i>
+        of the class, which is an
+        <i class="calibre18">
+         object
+        </i>
+        . The only exceptions to this rule are static members, which are explained in
+        <a class="calibre5" href="c09.xhtml">
+         Chapter 9
+        </a>
+        . Classes define concepts; objects contain real bits. So, each object contains its own value for the
+        <code class="calibre21">
+         m_value
+        </code>
+        data member. The implementation of the member functions is shared across all objects. Classes can contain any number of member functions and data members. You cannot give a data member the same name as a member function.
+       </p>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c08-sec-0009">
+       </span>
+       <h4 class="calibre29" id="head-4-145">
+        Access Control
+       </h4>
+       <p class="calibre13" id="c08-para-0020">
+        Every member in a class is subject to one of three
+        <i class="calibre18">
+         access specifiers
+        </i>
+        :
         <code class="calibre21">
          public
         </code>
-        data members
+        ,
+        <code class="calibre21">
+         private
+        </code>
+        , or
+        <code class="calibre21">
+         protected
+        </code>
+        . The
+        <code class="calibre21">
+         protected
+        </code>
+        access specifier is explained in the context of inheritance in
+        <a class="calibre5" href="c10_split_000.xhtml">
+         Chapter 10
+        </a>
+        , “Discovering Inheritance Techniques.” An access specifier applies to all member declarations that follow it, until the next access specifier. In the
+        <code class="calibre21">
+         SpreadsheetCell
+        </code>
+        class, the
+        <code class="calibre21">
+         setValue()
+        </code>
+        and
+        <code class="calibre21">
+         getValue()
+        </code>
+        member functions have
+        <code class="calibre21">
+         public
+        </code>
+        access, while the
+        <code class="calibre21">
+         m_value
+        </code>
+        data member has
+        <code class="calibre21">
+         private
+        </code>
+        access.
+       </p>
+       <p class="calibre13">
+        <span aria-label="262" class="calibre20" epub:type="pagebreak" id="Page_262" role="doc-pagebreak">
+        </span>
+        The default access specifier for classes is
+        <code class="calibre21">
+         private
+        </code>
+        : all member declarations before the first access specifier have the
+        <code class="calibre21">
+         private
+        </code>
+        access specification. For example, moving the
+        <code class="calibre21">
+         public
+        </code>
+        access specifier to after the
+        <code class="calibre21">
+         setValue()
+        </code>
+        member function declaration gives the
+        <code class="calibre21">
+         setValue()
+        </code>
+        member function
+        <code class="calibre21">
+         private
+        </code>
+        access instead of
+        <code class="calibre21">
+         public
+        </code>
+        :
+       </p>
+       <pre class="calibre26" id="c08-code-0004"><code class="calibre21">export class SpreadsheetCell</code>
+<code class="calibre21">{</code>
+<code class="calibre21">        <b class="calibre14">void setValue(double value);</b> <span class="color">// now has private access</span></code>
+<code class="calibre21">    <b class="calibre14">public:</b></code>
+<code class="calibre21">        double getValue() const;</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        double m_value;</code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13" id="c08-para-0022">
+        In C++, a
+        <code class="calibre21">
+         struct
+        </code>
+        can have member functions just like a
+        <code class="calibre21">
+         class
+        </code>
+        . In fact, there is only one difference: for a
+        <code class="calibre21">
+         struct
+        </code>
+        , the default access specifier is
+        <code class="calibre21">
+         public
+        </code>
+        , while it's
+        <code class="calibre21">
+         private
+        </code>
+        for a
+        <code class="calibre21">
+         class
+        </code>
+        .
+       </p>
+       <p class="calibre13">
+        For example, the
+        <code class="calibre21">
+         SpreadsheetCell
+        </code>
+        class could be rewritten using a
+        <code class="calibre21">
+         struct
+        </code>
+        as follows:
+       </p>
+       <pre class="calibre26" id="c08-code-0005"><code class="calibre21">export struct SpreadsheetCell</code>
+<code class="calibre21">{</code>
+<code class="calibre21">        void setValue(double value);</code>
+<code class="calibre21">        double getValue() const;</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        double m_value;</code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13">
+        However, it's unconventional to do so. A
+        <code class="calibre21">
+         struct
+        </code>
+        is usually used only if you just need a collection of publicly accessible data members and no member functions. The following is an example of such a simple
+        <code class="calibre21">
+         struct
+        </code>
+        to store 2-D point coordinates:
+       </p>
+       <pre class="calibre26" id="c08-code-0006"><code class="calibre21">export struct Point</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    double x;</code>
+<code class="calibre21">    double y;</code>
+<code class="calibre21">};</code></pre>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c08-sec-0010">
+       </span>
+       <h4 class="calibre29" id="head-4-146">
+        Order of Declarations
+       </h4>
+       <p class="calibre13">
+        You can declare your members and access control specifiers in any order: C++ does not impose any restrictions, such as member functions before data members or
+        <code class="calibre21">
+         public
+        </code>
+        before
+        <code class="calibre21">
+         private
+        </code>
+        . Additionally, you can repeat access specifiers. For example, the
+        <code class="calibre21">
+         SpreadsheetCell
+        </code>
+        definition could look like this:
+       </p>
+       <pre class="calibre26" id="c08-code-0007"><code class="calibre21">export class SpreadsheetCell</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    <b class="calibre14">public:</b></code>
+<code class="calibre21">        <b class="calibre14">void setValue(double value);</b></code>
+<code class="calibre21">    <b class="calibre14">private:</b></code>
+<code class="calibre21">        <b class="calibre14">double m_value;</b></code>
+<code class="calibre21">    <b class="calibre14">public:</b></code>
+<code class="calibre21">        <b class="calibre14">double getValue() const;</b></code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13" id="c08-para-0026">
+        However, for clarity it is a good idea to group declarations based on their access specifier and to group member functions and data members within those declarations.
+       </p>
+      </section>
+      <span aria-label="263" class="calibre20" epub:type="pagebreak" id="Page_263" role="doc-pagebreak">
+      </span>
+      <section class="calibre2">
+       <span class="calibre" id="c08-sec-0011">
+       </span>
+       <h4 class="calibre29" id="head-4-147">
+        In-Class Member Initializers
+       </h4>
+       <p class="calibre13">
+        Data members can be initialized directly in the class definition. For example, the
+        <code class="calibre21">
+         SpreadsheetCell
+        </code>
+        class can, by default, initialize
+        <code class="calibre21">
+         m_value
+        </code>
+        to 0 directly in the class definition as follows:
+       </p>
+       <pre class="calibre26" id="c08-code-0008"><code class="calibre21">export class SpreadsheetCell</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    <span class="color">// Remainder of the class definition omitted for brevity</span></code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        <b class="calibre14">double m_value { 0 };</b></code>
+<code class="calibre21">};</code></pre>
+       <section class="calibre2">
+        <aside class="calibre23">
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+         <section class="feature">
+          <p class="calibre25" id="c08-para-0029">
+           <b class="calibre14">
+            NOTE
+           </b>
+           <i class="calibre18">
+            It is recommended to always initialize data members of a class
+           </i>
+           .
+          </p>
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+         </section>
+        </aside>
+       </section>
+      </section>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c08-sec-0013">
+      </span>
+      <h3 class="calibre27" id="head-3-177">
+       Defining Member Functions
+      </h3>
+      <p class="calibre13" id="c08-para-0030">
+       The preceding definition for the
+       <code class="calibre21">
+        SpreadsheetCell
+       </code>
+       class is enough for you to create objects of the class. However, if you try to call the
+       <code class="calibre21">
+        setValue()
+       </code>
+       or
+       <code class="calibre21">
+        getValue()
+       </code>
+       member function, your linker will complain that those member functions are not defined. That's because these member functions only have prototypes so far, but no implementations yet. Usually, a class definition goes in a module interface file. For the member function definitions, you have a choice: they can go in the module interface file or in a
+       <i class="calibre18">
+        module implementation file
+       </i>
+       .
+      </p>
+      <p class="calibre13">
+       Here is the
+       <code class="calibre21">
+        SpreadsheetCell
+       </code>
+       class with in-class member function implementations:
+      </p>
+      <pre class="calibre26" id="c08-code-0009"><code class="calibre21">export module spreadsheet_cell;</code>
+<code class="calibre21"> </code>
+<code class="calibre21">export class SpreadsheetCell</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        <b class="calibre14">void setValue(double value) { m_value = value; }</b></code>
+<code class="calibre21">        <b class="calibre14">double getValue() const { return m_value; }</b></code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        double m_value { 0 };</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13" id="c08-para-0032">
+       Unlike with header files, with C++ modules there is no harm in putting member function definitions in module interface files. This is discussed in more detail in
+       <a class="calibre5" href="c11.xhtml">
+        Chapter 11
+       </a>
+       , “Modules, Header Files, and Miscellaneous Topics.” However, this book often puts member function definitions in module implementation files, in the interest of keeping module interface files clean and without any implementation details.
+      </p>
+      <p class="calibre13">
+       The first line of a module implementation file specifies which module the implementations are for. Here are the definitions for the two member functions of the
+       <code class="calibre21">
+        SpreadsheetCell
+       </code>
+       class in the
+       <code class="calibre21">
+        spreadsheet_cell
+       </code>
+       module:
+      </p>
+      <pre class="calibre26" id="c08-code-0010"><code class="calibre21">module spreadsheet_cell;</code>
+<code class="calibre21"> </code>
+<code class="calibre21">void SpreadsheetCell::setValue(double value)</code>
+<code class="calibre21">{</code>
+<span aria-label="264" class="calibre20" epub:type="pagebreak" id="Page_264" role="doc-pagebreak"></span><code class="calibre21">    m_value = value;</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21">double SpreadsheetCell::getValue() const</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    return m_value;</code>
+<code class="calibre21">}</code></pre>
+      <p class="calibre13">
+       Note that the name of the class followed by two colons precedes each member function name:
+      </p>
+      <pre class="calibre26" id="c08-code-0011"><code class="calibre21">void SpreadsheetCell::setValue(double value)</code></pre>
+      <p class="calibre13" id="c08-para-0035">
+       The
+       <code class="calibre21">
+        ::
+       </code>
+       is called the
+       <i class="calibre18">
+        scope resolution operator
+       </i>
+       . In this context, the syntax tells the compiler that the coming definition of the
+       <code class="calibre21">
+        setValue()
+       </code>
+       member function is part of the
+       <code class="calibre21">
+        SpreadsheetCell
+       </code>
+       class. Note also that you do not repeat the access specification when you define the member function.
+      </p>
+      <section class="calibre2">
+       <span class="calibre" id="c08-sec-0014">
+       </span>
+       <h4 class="calibre29" id="head-4-148">
+        Accessing Data Members
+       </h4>
+       <p class="calibre13">
+        Non-static member functions of a class, such as
+        <code class="calibre21">
+         setValue()
+        </code>
+        and
+        <code class="calibre21">
+         getValue()
+        </code>
+        , are always executed on behalf of a specific object of that class. Inside a member function's body, you have access to all data members of the class for that object. In the previous definition for
+        <code class="calibre21">
+         setValue()
+        </code>
+        , the following line changes the
+        <code class="calibre21">
+         m_value
+        </code>
+        variable inside whatever object calls the member function:
+       </p>
+       <pre class="calibre26" id="c08-code-0012"><code class="calibre21">m_value = value;</code></pre>
+       <p class="calibre13" id="c08-para-0037">
+        If
+        <code class="calibre21">
+         setValue()
+        </code>
+        is called for two different objects, the same line of code (executed once for each object) changes the variable in two different objects.
+       </p>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c08-sec-0015">
+       </span>
+       <h4 class="calibre29" id="head-4-149">
+        Calling Other Member Functions
+       </h4>
+       <p class="calibre13">
+        You can call member functions of a class from inside another member function. For example, consider an extension to the
+        <code class="calibre21">
+         SpreadsheetCell
+        </code>
+        class to allow setting and retrieving the value of a cell as a string or as a number. When you try to set the value of a cell with a string, the cell tries to convert the string to a number. If the string does not represent a valid number, the cell value is ignored. In this program, strings that are not numbers will generate a cell value of 0. Here is a first stab at such a class definition for a
+        <code class="calibre21">
+         SpreadsheetCell
+        </code>
+        :
+       </p>
+       <pre class="calibre26" id="c08-code-0013"><code class="calibre21">export module spreadsheet_cell;</code>
+<code class="calibre21"><b class="calibre14">import std;</b></code>
+<code class="calibre21">export class SpreadsheetCell</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        void setValue(double value);</code>
+<code class="calibre21">        double getValue() const;</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        <b class="calibre14">void setString(std::string_view value);</b></code>
+<code class="calibre21">        <b class="calibre14">std::string getString() const;</b></code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        <b class="calibre14">std::string doubleToString(double value) const;</b></code>
+<code class="calibre21">        <b class="calibre14">double stringToDouble(std::string_view value) const;</b></code>
+<code class="calibre21">        double m_value { 0 };</code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13">
+        <span aria-label="265" class="calibre20" epub:type="pagebreak" id="Page_265" role="doc-pagebreak">
+        </span>
+        This version of the class stores the data only as a
+        <code class="calibre21">
+         double
+        </code>
+        . If the client sets the data as a
+        <code class="calibre21">
+         string
+        </code>
+        , it is converted to a
+        <code class="calibre21">
+         double
+        </code>
+        . If the text is not a valid number, the
+        <code class="calibre21">
+         double
+        </code>
+        value is set to 0. The class definition shows two new member functions to set and retrieve the text representation of the cell, and two new private
+        <i class="calibre18">
+         helper member functions
+        </i>
+        to convert a
+        <code class="calibre21">
+         double
+        </code>
+        to a
+        <code class="calibre21">
+         string
+        </code>
+        and vice versa. Here are the implementations of all the member functions:
+       </p>
+       <pre class="calibre26" id="c08-code-0014"><code class="calibre21">module spreadsheet_cell;</code>
+<code class="calibre21"><b class="calibre14">import std;</b></code>
+<code class="calibre21"><b class="calibre14">using namespace std;</b></code>
+<code class="calibre21"> </code>
+<code class="calibre21">void SpreadsheetCell::setValue(double value)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    m_value = value;</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21">double SpreadsheetCell::getValue() const</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    return m_value;</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21"><b class="calibre14">void SpreadsheetCell::setString(string_view value)</b></code>
+<code class="calibre21"><b class="calibre14">{</b></code>
+<code class="calibre21">    <b class="calibre14">m_value = stringToDouble(value);</b></code>
+<code class="calibre21"><b class="calibre14">}</b></code>
+<code class="calibre21"> </code>
+<code class="calibre21"><b class="calibre14">string SpreadsheetCell::getString() const</b></code>
+<code class="calibre21"><b class="calibre14">{</b></code>
+<code class="calibre21">    <b class="calibre14">return doubleToString(m_value);</b></code>
+<code class="calibre21"><b class="calibre14">}</b></code>
+<code class="calibre21"> </code>
+<code class="calibre21"><b class="calibre14">string SpreadsheetCell::doubleToString(double value) const</b></code>
+<code class="calibre21"><b class="calibre14">{</b></code>
+<code class="calibre21">    <b class="calibre14">return to_string(value);</b></code>
+<code class="calibre21"><b class="calibre14">}</b></code>
+<code class="calibre21"> </code>
+<code class="calibre21"><b class="calibre14">double SpreadsheetCell::stringToDouble(string_view value) const</b></code>
+<code class="calibre21"><b class="calibre14">{</b></code>
+<code class="calibre21">    <b class="calibre14">double number { 0 };</b></code>
+<code class="calibre21">    <b class="calibre14">from_chars(value.data(), value.data() + value.size(), number);</b></code>
+<code class="calibre21">    <b class="calibre14">return number;</b></code>
+<code class="calibre21"><b class="calibre14">}</b></code></pre>
+       <p class="calibre13" id="c08-para-0040">
+        The
+        <code class="calibre21">
+         std::to_string()
+        </code>
+        and
+        <code class="calibre21">
+         from_chars()
+        </code>
+        functions are explained in
+        <a class="calibre5" href="c02.xhtml">
+         Chapter 2
+        </a>
+        , “Working with Strings and String Views.”
+       </p>
+       <p class="calibre13" id="c08-para-0041">
+        Note that with this implementation of the
+        <code class="calibre21">
+         doubleToString()
+        </code>
+        member function, a value of, for example, 6.1 is converted to 6.100000. However, because it is a private helper member function, you are free to modify the implementation without having to modify any client code.
+       </p>
+      </section>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c08-sec-0016">
+      </span>
+      <h3 class="calibre27" id="head-3-178">
+       Using Objects
+      </h3>
+      <p class="calibre13" id="c08-para-0042">
+       The previous class definition says that a
+       <code class="calibre21">
+        SpreadsheetCell
+       </code>
+       consists of one data member, four
+       <code class="calibre21">
+        public
+       </code>
+       member functions, and two
+       <code class="calibre21">
+        private
+       </code>
+       member functions. However, the class definition does
+       <span aria-label="266" class="calibre20" epub:type="pagebreak" id="Page_266" role="doc-pagebreak">
+       </span>
+       not actually create any
+       <code class="calibre21">
+        SpreadsheetCell
+       </code>
+       s; it just specifies their shape and behavior. In that sense, a class is like architectural blueprints. The blueprints specify what a house should look like, but drawing the blueprints doesn't build any houses. Houses must be constructed later based on the blueprints.
+      </p>
+      <p class="calibre13" id="c08-para-0043">
+       Similarly, in C++ you can construct a
+       <code class="calibre21">
+        SpreadsheetCell
+       </code>
+       “object” from the
+       <code class="calibre21">
+        SpreadsheetCell
+       </code>
+       class definition by declaring a variable of type
+       <code class="calibre21">
+        SpreadsheetCell
+       </code>
+       . Just as a builder can build more than one house based on a given set of blueprints, a programmer can create more than one
+       <code class="calibre21">
+        SpreadsheetCell
+       </code>
+       object from a
+       <code class="calibre21">
+        SpreadsheetCell
+       </code>
+       class. There are two ways to create and use objects: on the stack and on the free store.
+      </p>
+      <section class="calibre2">
+       <span class="calibre" id="c08-sec-0017">
+       </span>
+       <h4 class="calibre29" id="head-4-150">
+        Objects on the Stack
+       </h4>
+       <p class="calibre13">
+        Here is some code that creates and uses
+        <code class="calibre21">
+         SpreadsheetCell
+        </code>
+        objects on the stack:
+       </p>
+       <pre class="calibre26" id="c08-code-0015"><code class="calibre21">SpreadsheetCell myCell, anotherCell;</code>
+<code class="calibre21">myCell.setValue(6);</code>
+<code class="calibre21">anotherCell.setString("3.2");</code>
+<code class="calibre21">println("cell 1: {}", myCell.getValue());</code>
+<code class="calibre21">println("cell 2: {}", anotherCell.getValue());</code></pre>
+       <p class="calibre13" id="c08-para-0045">
+        You create objects just as you declare simple variables, except that the variable type is the class name. The
+        <code class="calibre21">
+         .
+        </code>
+        in lines like
+        <code class="calibre21">
+         myCell.setValue(6);
+        </code>
+        is called the
+        <i class="calibre18">
+         “dot” operator
+        </i>
+        , also called the
+        <i class="calibre18">
+         member access operator
+        </i>
+        ; it allows you to call
+        <code class="calibre21">
+         public
+        </code>
+        member functions on the object. If there were any
+        <code class="calibre21">
+         public
+        </code>
+        data members in the object, you could access them with the dot operator as well. Remember that
+        <code class="calibre21">
+         public
+        </code>
+        data members are not recommended.
+       </p>
+       <p class="calibre13">
+        The output of the program is as follows:
+       </p>
+       <pre class="calibre26" id="c08-code-0016"><code class="calibre21">cell 1: 6</code>
+<code class="calibre21">cell 2: 3.2</code></pre>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c08-sec-0018">
+       </span>
+       <h4 class="calibre29" id="head-4-151">
+        Objects on the Free Store
+       </h4>
+       <p class="calibre13">
+        You can also dynamically allocate objects by using
+        <code class="calibre21">
+         new:
+        </code>
+       </p>
+       <pre class="calibre26" id="c08-code-0017"><code class="calibre21">SpreadsheetCell* myCellp { new SpreadsheetCell { } };</code>
+<code class="calibre21">myCellp-&gt;setValue(3.7);</code>
+<code class="calibre21">println("cell 1: {} {}", myCellp-&gt;getValue(), myCellp-&gt;getString());</code>
+<code class="calibre21">delete myCellp;</code>
+<code class="calibre21">myCellp = nullptr;</code></pre>
+       <p class="calibre13">
+        When you create an object on the free store, you access its members through the “arrow” operator:
+        <code class="calibre21">
+         -&gt;
+        </code>
+        . The arrow combines dereferencing (
+        <code class="calibre21">
+         *
+        </code>
+        ) and member access (
+        <code class="calibre21">
+         .
+        </code>
+        ). You could use those two operators instead, but doing so would be stylistically awkward:
+       </p>
+       <pre class="calibre26" id="c08-code-0018"><code class="calibre21">SpreadsheetCell* myCellp { new SpreadsheetCell { } };</code>
+<code class="calibre21"><b class="calibre14">(*myCellp).setValue(3.7);</b></code>
+<code class="calibre21"><b class="calibre14">println("cell 1: {} {}", (*myCellp).getValue(), (*myCellp).getString());</b></code>
+<code class="calibre21">delete myCellp;</code>
+<code class="calibre21">myCellp = nullptr;</code></pre>
+       <p class="calibre13">
+        Just as you must free other memory that you allocate on the free store, you must free the memory for objects that you allocate on the free store by calling
+        <code class="calibre21">
+         delete
+        </code>
+        on them, as is done in the previous code
+        <span aria-label="267" class="calibre20" epub:type="pagebreak" id="Page_267" role="doc-pagebreak">
+        </span>
+        snippets! To guarantee safety and to avoid memory problems, you really should use smart pointers, as in the following example:
+       </p>
+       <pre class="calibre26" id="c08-code-0019"><code class="calibre21"><b class="calibre14">auto myCellp { make_unique&lt;SpreadsheetCell&gt;() };</b></code>
+<code class="calibre21"><span class="color">// Equivalent to:</span></code>
+<code class="calibre21"><span class="color">// unique_ptr&lt;SpreadsheetCell&gt; myCellp { new SpreadsheetCell { } };</span></code>
+<code class="calibre21">myCellp-&gt;setValue(3.7);</code>
+<code class="calibre21">println("cell 1: {} {}", myCellp-&gt;getValue(), myCellp-&gt;getString());</code></pre>
+       <p class="calibre13">
+        With smart pointers you don't need to manually free the memory; it happens automatically.
+       </p>
+       <section class="calibre2">
+        <aside class="calibre23">
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+         <section class="feature">
+          <p class="calibre25" id="c08-para-0051">
+           <b class="calibre14">
+            WARNING
+           </b>
+           <i class="calibre18">
+            When you allocate an object with
+           </i>
+           <code class="calibre21">
+            new
+           </code>
+           <i class="calibre18">
+            , free it with
+           </i>
+           <code class="calibre21">
+            delete
+           </code>
+           <i class="calibre18">
+            after you are finished with it, or, better yet, use smart pointers to manage the memory automatically!
+           </i>
+          </p>
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+         </section>
+        </aside>
+       </section>
+       <section class="calibre2">
+        <aside class="calibre23">
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+         <section class="feature">
+          <p class="calibre25" id="c08-para-0052">
+           <b class="calibre14">
+            NOTE
+           </b>
+           <i class="calibre18">
+            If you don't use smart pointers, it is always a good idea to reset a pointer to
+            <code class="calibre21">
+             nullptr
+            </code>
+            after deleting the object to which it pointed. You are not required to do so, but it will make debugging easier in case the pointer is accidentally used after deleting the object
+           </i>
+           .
+          </p>
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+         </section>
+        </aside>
+       </section>
+      </section>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c08-sec-0021">
+      </span>
+      <h3 class="calibre27" id="head-3-179">
+       The this Pointer
+      </h3>
+      <p class="calibre13">
+       Every normal member function call implicitly passes a pointer to the object for which it is called as a “hidden” parameter with the name
+       <code class="calibre21">
+        this
+       </code>
+       . You can use this pointer to access data members or call member functions, and you can pass it to other member functions or functions. It is sometimes also useful for disambiguating names. For example, you could have defined the
+       <code class="calibre21">
+        SpreadsheetCell
+       </code>
+       class with a
+       <code class="calibre21">
+        value
+       </code>
+       data member instead of
+       <code class="calibre21">
+        m_value
+       </code>
+       . In that case,
+       <code class="calibre21">
+        setValue()
+       </code>
+       would look like the following:
+      </p>
+      <pre class="calibre26" id="c08-code-0020"><code class="calibre21">void SpreadsheetCell::setValue(double value)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    <b class="calibre14">value = value;</b> <span class="color">// Confusing!</span></code>
+<code class="calibre21">}</code></pre>
+      <p class="calibre13">
+       That line is confusing. Which
+       <code class="calibre21">
+        value
+       </code>
+       do you mean: the
+       <code class="calibre21">
+        value
+       </code>
+       that was passed as a parameter or the
+       <code class="calibre21">
+        value
+       </code>
+       that is a member of the object?
+      </p>
+      <section class="calibre2">
+       <aside class="calibre23">
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+        <section class="feature">
+         <p class="calibre25" id="c08-para-0055">
+          <b class="calibre14">
+           NOTE
+          </b>
+          <i class="calibre18">
+           With some compilers or compiler settings, the preceding confusing line compiles without any warnings or errors, but it will not produce the results that you are expecting
+          </i>
+          .
+         </p>
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <p class="calibre13">
+       <span aria-label="268" class="calibre20" epub:type="pagebreak" id="Page_268" role="doc-pagebreak">
+       </span>
+       To disambiguate the names, you can use the
+       <code class="calibre21">
+        this
+       </code>
+       pointer:
+      </p>
+      <pre class="calibre26" id="c08-code-0021"><code class="calibre21">void SpreadsheetCell::setValue(double value)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    <b class="calibre14">this-&gt;value = value;</b></code>
+<code class="calibre21">}</code></pre>
+      <p class="calibre13" id="c08-para-0057">
+       However, if you use the naming conventions described in
+       <a class="calibre5" href="c03.xhtml">
+        Chapter 3
+       </a>
+       , “Coding with Style,” you will never encounter this type of name collision.
+      </p>
+      <p class="calibre13">
+       You can also use the
+       <code class="calibre21">
+        this
+       </code>
+       pointer to call a function that takes, as a parameter, a pointer to an object from within a member function of that object. For example, suppose you write a
+       <code class="calibre21">
+        printCell()
+       </code>
+       stand-alone function (not a member function) like this:
+      </p>
+      <pre class="calibre26" id="c08-code-0022"><code class="calibre21">void printCell(const SpreadsheetCell&amp; cell)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    println("{}", cell.getString());</code>
+<code class="calibre21">}</code></pre>
+      <p class="calibre13">
+       If you want to call
+       <code class="calibre21">
+        printCell()
+       </code>
+       from the
+       <code class="calibre21">
+        setValue()
+       </code>
+       member function, you must pass
+       <code class="calibre21">
+        *this
+       </code>
+       as the argument to give
+       <code class="calibre21">
+        printCell()
+       </code>
+       a reference to the
+       <code class="calibre21">
+        SpreadsheetCell
+       </code>
+       on which
+       <code class="calibre21">
+        setValue()
+       </code>
+       operates:
+      </p>
+      <pre class="calibre26" id="c08-code-0023"><code class="calibre21">void SpreadsheetCell::setValue(double value)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    this-&gt;value = value;</code>
+<code class="calibre21">    <b class="calibre14">printCell(*this);</b></code>
+<code class="calibre21">}</code></pre>
+      <section class="calibre2">
+       <aside class="calibre23">
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+        <section class="feature">
+         <p class="calibre25" id="c08-para-0061">
+          <b class="calibre14">
+           NOTE
+          </b>
+          <i class="calibre18">
+           Instead of writing a
+          </i>
+          <code class="calibre21">
+           printCell()
+          </code>
+          <i class="calibre18">
+           function, it would be more convenient to write a custom formatter, as explained in
+           <a class="calibre5" href="c02.xhtml">
+            Chapter 2
+           </a>
+           . You can then use the following line to print a
+          </i>
+          <code class="calibre21">
+           SpreadsheetCell
+          </code>
+          <i class="calibre18">
+           called
+          </i>
+          <code class="calibre21">
+           myCell
+          </code>
+          <i class="calibre18">
+           :
+          </i>
+         </p>
+         <pre class="calibre26" id="c08-code-0024"><code class="calibre21">std::println("{}", myCell);</code></pre>
+         <p class="calibre25" id="c08-para-0063">
+          <i class="calibre18">
+           Alternatively, you can overload the
+          </i>
+          <code class="calibre21">
+           &lt;&lt;
+          </code>
+          <i class="calibre18">
+           operator, as explained in
+           <a class="calibre5" href="c15.xhtml">
+            Chapter 15
+           </a>
+           , “Overloading C++ Operators.” You can then write the following:
+          </i>
+         </p>
+         <pre class="calibre26" id="c08-code-0025"><code class="calibre21">    cout &lt;&lt; myCell &lt;&lt; endl;</code></pre>
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+        </section>
+       </aside>
+      </section>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c08-sec-0025">
+      </span>
+      <h3 class="calibre27" id="head-3-180">
+       <img alt="C++23" class="calibre15" src="images/icon1.png"/>
+       Explicit Object Parameter
+      </h3>
+      <p class="calibre13">
+       Starting with C++23, instead of relying on the compiler to provide an implicit
+       <code class="calibre21">
+        this
+       </code>
+       parameter, you can use an
+       <i class="calibre18">
+        explicit object parameter
+       </i>
+       , usually of a reference type. The following code snippet implements the
+       <code class="calibre21">
+        setValue()
+       </code>
+       member function of
+       <code class="calibre21">
+        SpreadsheetCell
+       </code>
+       from the previous section using an explicit object parameter:
+      </p>
+      <pre class="calibre26" id="c08-code-0026"><code class="calibre21">void SpreadsheetCell::setValue(<b class="calibre14">this SpreadsheetCell&amp; self,</b> double value)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    <b class="calibre14">self.</b>m_value = value;</code>
+<code class="calibre21">    printCell(<b class="calibre14">self</b>);</code>
+<code class="calibre21">}</code></pre>
+      <p class="calibre13" id="c08-para-0067">
+       <span aria-label="269" class="calibre20" epub:type="pagebreak" id="Page_269" role="doc-pagebreak">
+       </span>
+       The first parameter of
+       <code class="calibre21">
+        setValue()
+       </code>
+       is now the explicit object parameter, usually called
+       <code class="calibre21">
+        self
+       </code>
+       , but you can use any name you want. The type of
+       <code class="calibre21">
+        self
+       </code>
+       is prefixed with the
+       <code class="calibre21">
+        this
+       </code>
+       keyword. This explicit object parameter must be the first parameter of the member function. Once you use an explicit object parameter, the function no longer has an implicitly defined
+       <code class="calibre21">
+        this
+       </code>
+       ; hence, in the body of
+       <code class="calibre21">
+        setValue()
+       </code>
+       , you now must explicitly use
+       <code class="calibre21">
+        self
+       </code>
+       to access anything from the
+       <code class="calibre21">
+        SpreadsheetCell
+       </code>
+       .
+      </p>
+      <p class="calibre13">
+       Calling a member function that uses an explicit object parameter is no different than calling one with an implicit
+       <code class="calibre21">
+        this
+       </code>
+       parameter. Even though
+       <code class="calibre21">
+        setValue()
+       </code>
+       now specifies two parameters,
+       <code class="calibre21">
+        self
+       </code>
+       and
+       <code class="calibre21">
+        value
+       </code>
+       , you still call it by passing just a single argument, the
+       <code class="calibre21">
+        value
+       </code>
+       that you want to set:
+      </p>
+      <pre class="calibre26" id="c08-code-0027"><code class="calibre21">SpreadsheetCell myCell;</code>
+<code class="calibre21">myCell.setValue(6);</code></pre>
+      <p class="calibre13">
+       Using explicit object parameters as demonstrated in this section has no benefits at all, it even makes the code more verbose. However, they are useful in the following situations:
+      </p>
+      <ul class="check" id="c08-list-0002">
+       <li class="calibre9" id="c08-li-0007">
+        To provide a more explicit syntax for writing ref-qualified member functions, discussed in
+        <a class="calibre5" href="c09.xhtml">
+         Chapter 9
+        </a>
+        .
        </li>
-       <li class="calibre9" id="bapp01-li-0061">
-        When to use templates for polymorphism and when to use inheritance
+       <li class="calibre9" id="c08-li-0008">
+        For member function templates where the type of the explicit object parameter is a template type parameter. This can be useful to avoid code duplication when implementing
+        <code class="calibre21">
+         const
+        </code>
+        and non-
+        <code class="calibre21">
+         const
+        </code>
+        overloads of member functions and is discussed in
+        <a class="calibre5" href="c12.xhtml">
+         Chapter 12
+        </a>
+        , “Writing Generic Code with Templates.”
+       </li>
+       <li class="calibre9" id="c08-li-0009">
+        To write recursive lambda expressions, explained in
+        <a class="calibre5" href="c19.xhtml">
+         Chapter 19
+        </a>
+        , “Function Pointers, Function Objects, and Lambda Expressions.”
        </li>
       </ul>
      </section>
+    </section>
+    <section aria-labelledby="head-2-105" class="calibre2">
+     <span class="calibre" id="c08-sec-0026">
+     </span>
+     <h2 class="calibre6" id="head-2-105">
+      UNDERSTANDING OBJECT LIFE CYCLES
+     </h2>
+     <p class="calibre13" id="c08-para-0070">
+      The object life cycle involves three activities:
+      <i class="calibre18">
+       creation
+      </i>
+      ,
+      <i class="calibre18">
+       destruction
+      </i>
+      , and
+      <i class="calibre18">
+       assignment
+      </i>
+      . It is important to understand how and when objects are created, destroyed, and assigned, and how you can customize these behaviors.
+     </p>
      <section class="calibre2">
-      <span class="calibre" id="bapp01-sec-0019">
+      <span class="calibre" id="c08-sec-0027">
       </span>
-      <h3 class="calibre27" id="head-3-12">
-       Types of Questions
+      <h3 class="calibre27" id="head-3-181">
+       Object Creation
       </h3>
-      <p class="calibre13" id="bapp01-para-0039">
-       The interviewer might ask you to explain the principle of abstraction and its benefits and to give some concrete examples.
+      <p class="calibre13">
+       Objects are created at the point you declare them (if they're on the stack) or when you explicitly allocate space for them with a smart pointer,
+       <code class="calibre21">
+        new
+       </code>
+       , or
+       <code class="calibre21">
+        new[]
+       </code>
+       . When an object is created, all its embedded objects are also created. Here is an example:
       </p>
-      <p class="calibre13" id="bapp01-para-0040">
-       Questions about reuse will almost certainly be about previous projects on which you have worked. For example, if you worked at a company that produced both consumer and professional video-editing applications, the interviewer may ask how code was shared between the two applications. Even if you aren't explicitly asked about code reuse, you might be able to sneak it in. When you're describing some of your past work, tell the interviewer if the modules you wrote were used in other projects. Even when answering apparently straight coding questions, make sure to consider and mention the interfaces involved. As always, be careful not to expose intellectual property from your previous jobs, though.
+      <pre class="calibre26" id="c08-code-0028"><code class="calibre21">import std;</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class MyClass</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        std::string m_name;</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">int main()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    MyClass obj;</code>
+<code class="calibre21">}</code></pre>
+      <p class="calibre13" id="c08-para-0072">
+       <span aria-label="270" class="calibre20" epub:type="pagebreak" id="Page_270" role="doc-pagebreak">
+       </span>
+       The embedded
+       <code class="calibre21">
+        string
+       </code>
+       object is created at the point where the
+       <code class="calibre21">
+        MyClass
+       </code>
+       object is created in the
+       <code class="calibre21">
+        main()
+       </code>
+       function and is destroyed when its containing object is destroyed.
       </p>
+      <p class="calibre13">
+       It is often helpful to give variables initial values as you declare them, as so:
+      </p>
+      <pre class="calibre26" id="c08-code-0029"><code class="calibre21">int x { 0 };</code></pre>
+      <p class="calibre13">
+       Similarly, you could give initial values to objects. You can provide this functionality by declaring and writing a special member function called a
+       <i class="calibre18">
+        constructor
+       </i>
+       , in which you can perform initialization work for the object. Whenever an object is created, one of its constructors is executed.
+      </p>
+      <section class="calibre2">
+       <aside class="calibre23">
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+        <section class="feature">
+         <p class="calibre25" id="c08-para-0075">
+          <b class="calibre14">
+           NOTE
+          </b>
+          <i class="calibre18">
+           C++ programmers sometimes call a constructor a ctor (pronounced “see-tor”)
+          </i>
+          .
+         </p>
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c08-sec-0029">
+       </span>
+       <h4 class="calibre29" id="head-4-152">
+        Writing Constructors
+       </h4>
+       <p class="calibre13" id="c08-para-0076">
+        Syntactically, a constructor is specified by a member function name that is the same as the class name. A constructor never has a return type and may or may not have parameters. A constructor that can be called without any arguments is called a
+        <i class="calibre18">
+         default constructor
+        </i>
+        . This can be a constructor that does not have any parameters, or a constructor for which all parameters have default values. There are certain contexts in which you may have to provide a default constructor, and you will get compilation errors if you have not provided one. Default constructors are discussed later in this chapter.
+       </p>
+       <p class="calibre13">
+        Here is a first attempt at adding a constructor to the
+        <code class="calibre21">
+         SpreadsheetCell
+        </code>
+        class:
+       </p>
+       <pre class="calibre26" id="c08-code-0030"><code class="calibre21">export class SpreadsheetCell</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        <b class="calibre14">SpreadsheetCell(double initialValue);</b></code>
+<code class="calibre21">        <span class="color">// Remainder of the class definition omitted for brevity</span></code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13">
+        Just as you must provide implementations for normal member functions, you must provide an implementation for the constructor:
+       </p>
+       <pre class="calibre26" id="c08-code-0031"><code class="calibre21">SpreadsheetCell::SpreadsheetCell(double initialValue)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    setValue(initialValue);</code>
+<code class="calibre21">}</code></pre>
+       <p class="calibre13" id="c08-para-0079">
+        The
+        <code class="calibre21">
+         SpreadsheetCell
+        </code>
+        constructor is a member of the
+        <code class="calibre21">
+         SpreadsheetCell
+        </code>
+        class, so C++ requires the normal
+        <code class="calibre21">
+         SpreadsheetCell::
+        </code>
+        scope resolution before the constructor name. The constructor name itself is also
+        <code class="calibre21">
+         SpreadsheetCell
+        </code>
+        , so the code ends up with the funny-looking
+        <code class="calibre21">
+         SpreadsheetCell::SpreadsheetCell
+        </code>
+        . The implementation simply makes a call to
+        <code class="calibre21">
+         setValue()
+        </code>
+        .
+       </p>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c08-sec-0030">
+       </span>
+       <h4 class="calibre29" id="head-4-153">
+        Using Constructors
+       </h4>
+       <p class="calibre13" id="c08-para-0080">
+        Using the constructor creates an object and initializes its values. You can use constructors with both stack-based and free store-based allocation.
+       </p>
+       <span aria-label="271" class="calibre20" epub:type="pagebreak" id="Page_271" role="doc-pagebreak">
+       </span>
+       <section class="calibre2">
+        <span class="calibre" id="c08-sec-0031">
+        </span>
+        <h5 class="calibre35" id="head-5-56">
+         Constructors for Objects on the Stack
+        </h5>
+        <p class="calibre13">
+         When you allocate a
+         <code class="calibre21">
+          SpreadsheetCell
+         </code>
+         object on the stack, you use the constructor like this:
+        </p>
+        <pre class="calibre26" id="c08-code-0032"><code class="calibre21"><b class="calibre14">SpreadsheetCell myCell(5), anotherCell(4);</b></code>
+<code class="calibre21">println("cell 1: {}", myCell.getValue());</code>
+<code class="calibre21">println("cell 2: {}", anotherCell.getValue());</code></pre>
+        <p class="calibre13">
+         Alternatively, you can use the uniform initialization syntax:
+        </p>
+        <pre class="calibre26" id="c08-code-0033"><code class="calibre21"><b class="calibre14">SpreadsheetCell myCell { 5 }, anotherCell { 4 };</b></code></pre>
+        <p class="calibre13">
+         Note that you do
+         <i class="calibre18">
+          not
+         </i>
+         call the
+         <code class="calibre21">
+          SpreadsheetCell
+         </code>
+         constructor explicitly. For example, do not do something as follows:
+        </p>
+        <pre class="calibre26" id="c08-code-0034"><code class="calibre21">SpreadsheetCell myCell.SpreadsheetCell(5); <span class="color">// WILL NOT COMPILE!</span></code></pre>
+        <p class="calibre13">
+         Similarly, you cannot call the constructor later. The following is also incorrect:
+        </p>
+        <pre class="calibre26" id="c08-code-0035"><code class="calibre21">SpreadsheetCell myCell;</code>
+<code class="calibre21">myCell.SpreadsheetCell(5); <span class="color">// WILL NOT COMPILE!</span></code></pre>
+       </section>
+       <section class="calibre2">
+        <span class="calibre" id="c08-sec-0032">
+        </span>
+        <h5 class="calibre35" id="head-5-57">
+         Constructors for Objects on the Free Store
+        </h5>
+        <p class="calibre13">
+         When you dynamically allocate a
+         <code class="calibre21">
+          SpreadsheetCell
+         </code>
+         object, you use the constructor like this:
+        </p>
+        <pre class="calibre26" id="c08-code-0036"><code class="calibre21">auto smartCellp { make_unique&lt;SpreadsheetCell&gt;(4) };</code>
+<code class="calibre21"><span class="color">// … do something with the cell, no need to delete the smart pointer</span></code>
+<code class="calibre21"> </code>
+<code class="calibre21"><span class="color">// Or with raw pointers, without smart pointers (not recommended)</span></code>
+<code class="calibre21">SpreadsheetCell* myCellp { new SpreadsheetCell { 5 } };</code>
+<code class="calibre21"><span class="color">// Or</span></code>
+<code class="calibre21"><span class="color">// SpreadsheetCell* myCellp{ new SpreadsheetCell(5) };</span></code>
+<code class="calibre21">SpreadsheetCell* anotherCellp { nullptr };</code>
+<code class="calibre21">anotherCellp = new SpreadsheetCell { 4 };</code>
+<code class="calibre21"><span class="color">// … do something with the cells</span></code>
+<code class="calibre21">delete myCellp;            myCellp = nullptr;</code>
+<code class="calibre21">delete anotherCellp;       anotherCellp = nullptr;</code></pre>
+        <p class="calibre13" id="c08-para-0086">
+         Note that you can declare a pointer to a
+         <code class="calibre21">
+          SpreadsheetCell
+         </code>
+         object without calling the constructor immediately, which is different from objects on the stack, where the constructor is called at the point of declaration.
+        </p>
+        <p class="calibre13" id="c08-para-0087">
+         Remember to always initialize pointers, either with a proper pointer or with
+         <code class="calibre21">
+          nullptr
+         </code>
+         .
+        </p>
+       </section>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c08-sec-0033">
+       </span>
+       <h4 class="calibre29" id="head-4-154">
+        Providing Multiple Constructors
+       </h4>
+       <p class="calibre13" id="c08-para-0088">
+        You can provide more than one constructor in a class. All constructors have the same name (the name of the class), but different constructors must take a different number of arguments or different argument types. In C++, if you have more than one function with the same name, the compiler selects the one whose parameter types match the types at the call site. This is called
+        <i class="calibre18">
+         overloading
+        </i>
+        and is discussed in detail in
+        <a class="calibre5" href="c09.xhtml">
+         Chapter 9
+        </a>
+        .
+       </p>
+       <p class="calibre13">
+        In the
+        <code class="calibre21">
+         SpreadsheetCell
+        </code>
+        class, it is helpful to have two constructors: one to take an initial
+        <code class="calibre21">
+         double
+        </code>
+        value and one to take an initial string value. Here is the new class definition:
+       </p>
+       <pre class="calibre26" id="c08-code-0037"><code class="calibre21">export class SpreadsheetCell</code>
+<code class="calibre21">{</code>
+<span aria-label="272" class="calibre20" epub:type="pagebreak" id="Page_272" role="doc-pagebreak"></span><code class="calibre21">    public:</code>
+<code class="calibre21">        SpreadsheetCell(double initialValue);</code>
+<code class="calibre21">        <b class="calibre14">SpreadsheetCell(std::string_view initialValue);</b></code>
+<code class="calibre21">        <span class="color">// Remainder of the class definition omitted for brevity</span></code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13">
+        Here is the implementation of the second constructor:
+       </p>
+       <pre class="calibre26" id="c08-code-0038"><code class="calibre21">SpreadsheetCell::SpreadsheetCell(string_view initialValue)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    setString(initialValue);</code>
+<code class="calibre21">}</code></pre>
+       <p class="calibre13">
+        Here is some code that uses the two different constructors:
+       </p>
+       <pre class="calibre26" id="c08-code-0039"><code class="calibre21">SpreadsheetCell aThirdCell { "test" };  <span class="color">// Uses string-arg ctor</span></code>
+<code class="calibre21">SpreadsheetCell aFourthCell { 4.4 };    <span class="color">// Uses double-arg ctor</span></code>
+<code class="calibre21">auto aFifthCellp { make_unique&lt;SpreadsheetCell&gt;("5.5") }; <span class="color">// string-arg ctor</span></code>
+<code class="calibre21">println("aThirdCell: {}", aThirdCell.getValue());</code>
+<code class="calibre21">println("aFourthCell: {}", aFourthCell.getValue());</code>
+<code class="calibre21">println("aFifthCellp: {}", aFifthCellp-&gt;getValue());</code></pre>
+       <p class="calibre13">
+        When you have multiple constructors, it is tempting to try to implement one constructor in terms of another. For example, you might want to call the double constructor from the string constructor as follows:
+       </p>
+       <pre class="calibre26" id="c08-code-0040"><code class="calibre21">SpreadsheetCell::SpreadsheetCell(string_view initialValue)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    SpreadsheetCell(stringToDouble(initialValue));</code>
+<code class="calibre21">}</code></pre>
+       <p class="calibre13" id="c08-para-0093">
+        That seems to make sense. After all, you can call normal class member functions from within other member functions. The code will compile, link, and run, but will not do what you expect! The explicit call to the
+        <code class="calibre21">
+         SpreadsheetCell
+        </code>
+        constructor actually creates a new temporary unnamed object of type
+        <code class="calibre21">
+         SpreadsheetCell
+        </code>
+        . It does not call the constructor for the object that you are supposed to be initializing.
+       </p>
+       <p class="calibre13" id="c08-para-0094">
+        However, all is not lost. C++ does support
+        <i class="calibre18">
+         delegating constructors
+        </i>
+        . These allow you to call other constructors of the same class from inside the ctor-initializer, but for this, you'll have to wait until later in this chapter after the introduction of ctor-initializers.
+       </p>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c08-sec-0034">
+       </span>
+       <h4 class="calibre29" id="head-4-155">
+        Default Constructors
+       </h4>
+       <p class="calibre13" id="c08-para-0095">
+        A
+        <i class="calibre18">
+         default constructor
+        </i>
+        is a constructor that requires no arguments. It is also called a
+        <i class="calibre18">
+         zero-argument constructor
+        </i>
+        .
+       </p>
+       <section class="calibre2">
+        <span class="calibre" id="c08-sec-0035">
+        </span>
+        <h5 class="calibre35" id="head-5-58">
+         When You Need a Default Constructor
+        </h5>
+        <p class="calibre13">
+         Consider arrays of objects. The act of creating an array of objects accomplishes two tasks: it allocates contiguous memory space for all the objects, and it calls the default constructor on each object. C++ fails to provide any syntax to tell the array creation code directly to call a different constructor. For example, if you do not define a default constructor for the
+         <code class="calibre21">
+          SpreadsheetCell
+         </code>
+         class, the following code does not compile:
+        </p>
+        <pre class="calibre26" id="c08-code-0041"><code class="calibre21">SpreadsheetCell cells[3]; <span class="color">// FAILS compilation without default constructor</span></code>
+<code class="calibre21">SpreadsheetCell* myCellp { new SpreadsheetCell[10] }; <span class="color">// Also FAILS</span></code></pre>
+        <p class="calibre13">
+         <span aria-label="273" class="calibre20" epub:type="pagebreak" id="Page_273" role="doc-pagebreak">
+         </span>
+         You can circumvent this restriction by using
+         <i class="calibre18">
+          initializers
+         </i>
+         like these:
+        </p>
+        <pre class="calibre26" id="c08-code-0042"><code class="calibre21">SpreadsheetCell cells[3] { SpreadsheetCell { 0 }, SpreadsheetCell { 23 },</code>
+<code class="calibre21">    SpreadsheetCell { 41 } };</code></pre>
+        <p class="calibre13" id="c08-para-0098">
+         However, it is usually easier to ensure that your class has a default constructor if you intend to create arrays of objects of that class. If you haven't defined your own constructors, the compiler automatically creates a default constructor for you. This compiler-generated constructor is discussed in a later section.
+        </p>
+       </section>
+       <section class="calibre2">
+        <span class="calibre" id="c08-sec-0036">
+        </span>
+        <h5 class="calibre35" id="head-5-59">
+         How to Write a Default Constructor
+        </h5>
+        <p class="calibre13">
+         Here is part of the
+         <code class="calibre21">
+          SpreadsheetCell
+         </code>
+         class definition with a default constructor:
+        </p>
+        <pre class="calibre26" id="c08-code-0043"><code class="calibre21">export class SpreadsheetCell</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        <b class="calibre14">SpreadsheetCell();</b></code>
+<code class="calibre21">        <span class="color">// Remainder of the class definition omitted for brevity</span></code>
+<code class="calibre21">};</code></pre>
+        <p class="calibre13">
+         Here is a first crack at an implementation of the default constructor:
+        </p>
+        <pre class="calibre26" id="c08-code-0044"><code class="calibre21">SpreadsheetCell::SpreadsheetCell()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    m_value = 0;</code>
+<code class="calibre21">}</code></pre>
+        <p class="calibre13">
+         If you use an in-class member initializer for
+         <code class="calibre21">
+          m_value
+         </code>
+         , then the single statement in this default constructor can be left out.
+        </p>
+        <pre class="calibre26" id="c08-code-0045"><code class="calibre21">SpreadsheetCell::SpreadsheetCell()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">}</code></pre>
+        <p class="calibre13">
+         You use the default constructor on the stack like this:
+        </p>
+        <pre class="calibre26" id="c08-code-0046"><code class="calibre21"><b class="calibre14">SpreadsheetCell myCell;</b></code>
+<code class="calibre21">myCell.setValue(6);</code>
+<code class="calibre21">println("cell 1: {}", myCell.getValue());</code></pre>
+        <p class="calibre13">
+         The preceding code creates a new
+         <code class="calibre21">
+          SpreadsheetCell
+         </code>
+         called
+         <code class="calibre21">
+          myCell
+         </code>
+         , sets its value, and prints out its value. Unlike other constructors for stack-based objects, you do not call the default constructor with function-call syntax. Based on the syntax for other constructors, you might be tempted to call the default constructor like this:
+        </p>
+        <pre class="calibre26" id="c08-code-0047"><code class="calibre21"><b class="calibre14">SpreadsheetCell myCell();</b> <span class="color">// WRONG, but will compile.</span></code>
+<code class="calibre21">myCell.setValue(6);       <span class="color">// However, this line will not compile.</span></code>
+<code class="calibre21">println("cell 1: {}", myCell.getValue());</code></pre>
+        <p class="calibre13" id="c08-para-0104">
+         Unfortunately, the line attempting to call the default constructor compiles. The line following it does not compile. This problem is commonly known as the
+         <i class="calibre18">
+          most vexing parse
+         </i>
+         , and it means that your compiler thinks the first line is actually a function declaration for a function with the name
+         <code class="calibre21">
+          myCell
+         </code>
+         that takes zero arguments and returns a
+         <code class="calibre21">
+          SpreadsheetCell
+         </code>
+         object. When it gets to the second line, it thinks that you're trying to use a function name as an object!
+        </p>
+        <p class="calibre13">
+         <span aria-label="274" class="calibre20" epub:type="pagebreak" id="Page_274" role="doc-pagebreak">
+         </span>
+         Of course, instead of using function-call-style parentheses, you can use the uniform initialization syntax as follows:
+        </p>
+        <pre class="calibre26" id="c08-code-0048"><code class="calibre21">SpreadsheetCell myCell { }; <span class="color">// Calls the default constructor.</span></code></pre>
+        <section class="calibre2">
+         <aside class="calibre23">
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+          <section class="feature">
+           <p class="calibre25" id="c08-para-0107">
+            <b class="calibre14">
+             WARNING
+            </b>
+            <i class="calibre18">
+             When creating an object on the stack with a default constructor, either use curly brackets for the uniform initialization syntax or omit any parentheses
+            </i>
+            .
+           </p>
+           <div class="top">
+            <hr class="calibre24"/>
+           </div>
+          </section>
+         </aside>
+        </section>
+        <p class="calibre13">
+         For free store-based object allocation, the default constructor can be used as follows:
+        </p>
+        <pre class="calibre26" id="c08-code-0049"><code class="calibre21">auto smartCellp { make_unique&lt;SpreadsheetCell&gt;() };</code>
+<code class="calibre21"><span class="color">// Or with a raw pointer (not recommended)</span></code>
+<code class="calibre21">SpreadsheetCell* myCellp { new SpreadsheetCell { } };</code>
+<code class="calibre21"><span class="color">// Or</span></code>
+<code class="calibre21"><span class="color">// SpreadsheetCell* myCellp { new SpreadsheetCell };</span></code>
+<code class="calibre21"><span class="color">// Or</span></code>
+<code class="calibre21"><span class="color">// SpreadsheetCell* myCellp { new SpreadsheetCell() };</span></code>
+<code class="calibre21"><span class="color">// … use myCellp</span></code>
+<code class="calibre21">delete myCellp;    myCellp = nullptr;</code></pre>
+       </section>
+       <section class="calibre2">
+        <span class="calibre" id="c08-sec-0038">
+        </span>
+        <h5 class="calibre35" id="head-5-60">
+         Compiler-Generated Default Constructor
+        </h5>
+        <p class="calibre13">
+         The first
+         <code class="calibre21">
+          SpreadsheetCell
+         </code>
+         class definition in this chapter looked like this:
+        </p>
+        <pre class="calibre26" id="c08-code-0050"><code class="calibre21">export class SpreadsheetCell</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        void setValue(double value);</code>
+<code class="calibre21">        double getValue() const;</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        double m_value;</code>
+<code class="calibre21">};</code></pre>
+        <p class="calibre13">
+         This definition does not declare a default constructor, but still, the code that follows works fine:
+        </p>
+        <pre class="calibre26" id="c08-code-0051"><code class="calibre21">SpreadsheetCell myCell;</code>
+<code class="calibre21">myCell.setValue(6);</code></pre>
+        <p class="calibre13">
+         The following definition is the same as the preceding definition except that it adds an explicit constructor, accepting a
+         <code class="calibre21">
+          double
+         </code>
+         . It still does not explicitly declare a default constructor.
+        </p>
+        <pre class="calibre26" id="c08-code-0052"><code class="calibre21">export class SpreadsheetCell</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        <b class="calibre14">SpreadsheetCell(double initialValue);</b> <span class="color">// No default constructor</span></code>
+<code class="calibre21">        <span class="color">// Remainder of the class definition omitted for brevity</span></code>
+<code class="calibre21">};</code></pre>
+        <p class="calibre13">
+         With this definition, the following code does not compile anymore:
+        </p>
+        <pre class="calibre26" id="c08-code-0053"><code class="calibre21">SpreadsheetCell myCell;</code>
+<code class="calibre21">myCell.setValue(6);</code></pre>
+        <p class="calibre13">
+         <span aria-label="275" class="calibre20" epub:type="pagebreak" id="Page_275" role="doc-pagebreak">
+         </span>
+         What's going on here? The reason it is not compiling is that if you don't specify
+         <i class="calibre18">
+          any
+         </i>
+         constructors, the compiler writes one for you that doesn't take any arguments. This
+         <i class="calibre18">
+          compiler-generated default constructor
+         </i>
+         calls the default constructor on all object members of the class but does not initialize the language primitives such as
+         <code class="calibre21">
+          int
+         </code>
+         and
+         <code class="calibre21">
+          double
+         </code>
+         . Nonetheless, it allows you to create objects of that class. However, if you declare any constructor yourself, the compiler no longer generates a default constructor for you.
+        </p>
+        <section class="calibre2">
+         <aside class="calibre23">
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+          <section class="feature">
+           <p class="calibre25" id="c08-para-0114">
+            <b class="calibre14">
+             NOTE
+            </b>
+            <i class="calibre18">
+             A default constructor is the same as a zero-argument constructor. The term default constructor does not refer only to the constructor that is automatically generated if you fail to declare any constructors yourself. It also refers to the constructor that is defaulted to if no arguments are required
+            </i>
+            .
+           </p>
+           <div class="top">
+            <hr class="calibre24"/>
+           </div>
+          </section>
+         </aside>
+        </section>
+       </section>
+       <section class="calibre2">
+        <span class="calibre" id="c08-sec-0040">
+        </span>
+        <h5 class="calibre35" id="head-5-61">
+         Explicitly Defaulted Default Constructors
+        </h5>
+        <p class="calibre13" id="c08-para-0115">
+         Before C++11, if your class required a number of explicit constructors accepting arguments but also a default constructor that did nothing, you still had to explicitly write your own empty default constructor as shown earlier.
+        </p>
+        <p class="calibre13">
+         To avoid having to write empty default constructors manually, C++ supports the concept of
+         <i class="calibre18">
+          explicitly defaulted default constructors
+         </i>
+         . This allows you to write the class definition as follows without having to provide an empty implementation for the default constructor:
+        </p>
+        <pre class="calibre26" id="c08-code-0054"><code class="calibre21">export class SpreadsheetCell</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        <b class="calibre14">SpreadsheetCell() = default;</b></code>
+<code class="calibre21">        SpreadsheetCell(double initialValue);</code>
+<code class="calibre21">        SpreadsheetCell(std::string_view initialValue);</code>
+<code class="calibre21">        <span class="color">// Remainder of the class definition omitted for brevity</span></code>
+<code class="calibre21">};</code></pre>
+        <p class="calibre13" id="c08-para-0117">
+         <code class="calibre21">
+          SpreadsheetCell
+         </code>
+         defines two custom constructors. However, the compiler still generates a standard compiler-generated default constructor because one is explicitly defaulted using the
+         <code class="calibre21">
+          default
+         </code>
+         keyword. You are free to put the
+         <code class="calibre21">
+          = default
+         </code>
+         either directly in the class definition or in an implementation file.
+        </p>
+       </section>
+       <section class="calibre2">
+        <span class="calibre" id="c08-sec-0041">
+        </span>
+        <h5 class="calibre35" id="head-5-62">
+         Explicitly Deleted Default Constructors
+        </h5>
+        <p class="calibre13">
+         The opposite of explicitly defaulted default constructors is also possible and is called
+         <i class="calibre18">
+          explicitly deleted default constructors
+         </i>
+         . For example, you can define a class with only static member functions (see
+         <a class="calibre5" href="c09.xhtml">
+          Chapter 9
+         </a>
+         ) for which you do not want to write any constructors, and you also do not want the compiler to generate the default constructor. In that case, you need to explicitly delete the default constructor.
+        </p>
+        <pre class="calibre26" id="c08-code-0055"><code class="calibre21">export class MyClass</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        MyClass() = delete;</code>
+<code class="calibre21">};</code></pre>
+        <p class="calibre13">
+         <span aria-label="276" class="calibre20" epub:type="pagebreak" id="Page_276" role="doc-pagebreak">
+         </span>
+        </p>
+        <section class="calibre2">
+         <aside class="calibre23">
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+          <section class="feature">
+           <p class="calibre25" id="c08-para-0120">
+            <b class="calibre14">
+             NOTE
+            </b>
+            <i class="calibre18">
+             If a class has data members that have a deleted default constructor, then the default constructor for the class is automatically deleted as well
+            </i>
+            .
+           </p>
+           <div class="top">
+            <hr class="calibre24"/>
+           </div>
+          </section>
+         </aside>
+        </section>
+       </section>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c08-sec-0043">
+       </span>
+       <h4 class="calibre29" id="head-4-156">
+        Constructor Initializers aka Ctor-Initializers
+       </h4>
+       <p class="calibre13">
+        Up to now, this chapter initialized data members in the body of a constructor, as in this example:
+       </p>
+       <pre class="calibre26" id="c08-code-0056"><code class="calibre21">SpreadsheetCell::SpreadsheetCell(double initialValue)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    setValue(initialValue);</code>
+<code class="calibre21">}</code></pre>
+       <p class="calibre13">
+        C++ provides an alternative method for initializing data members in the constructor, called the
+        <i class="calibre18">
+         constructor initializer
+        </i>
+        , also known as the
+        <i class="calibre18">
+         ctor-initializer
+        </i>
+        or
+        <i class="calibre18">
+         member initializer list
+        </i>
+        . Here is the same
+        <code class="calibre21">
+         SpreadsheetCell
+        </code>
+        constructor, rewritten to use the ctor-initializer syntax:
+       </p>
+       <pre class="calibre26" id="c08-code-0057"><code class="calibre21">SpreadsheetCell::SpreadsheetCell(double initialValue)</code>
+<code class="calibre21">    <b class="calibre14">: m_value { initialValue }</b></code>
+<code class="calibre21">{</code>
+<code class="calibre21">}</code></pre>
+       <p class="calibre13" id="c08-para-0123">
+        As you can see, the ctor-initializer appears syntactically between the constructor parameter list and the opening brace for the body of the constructor. The list starts with a colon and is separated by commas. Each element in the list is an initialization of a data member using function notation or the uniform initialization syntax, a call to a base class constructor (see
+        <a class="calibre5" href="c10_split_000.xhtml">
+         Chapter 10
+        </a>
+        ), or a call to a delegated constructor, discussed later in this chapter.
+       </p>
+       <p class="calibre13" id="c08-para-0124">
+        Initializing data members with a ctor-initializer provides different behavior than does initializing data members inside the constructor body itself. When C++ creates an object, it must create all the data members of the object before calling the constructor. As part of creating these data members, it must call a constructor on any of them that are themselves objects. By the time you assign a value to an object inside your constructor body, you are not actually constructing that object. You are only modifying its value. A ctor-initializer allows you to provide initial values for data members as they are created, which is more efficient than assigning values to them later.
+       </p>
+       <p class="calibre13" id="c08-para-0125">
+        If your class has as data member an object of a class that has a default constructor, then you do not have to explicitly initialize that object in the ctor-initializer. For example, if you have an
+        <code class="calibre21">
+         std::string
+        </code>
+        as data member, its default constructor initializes the string to the empty string, so initializing it to
+        <code class="calibre21">
+         ""
+        </code>
+        in the ctor-initializer is superfluous.
+       </p>
+       <p class="calibre13">
+        On the other hand, if your class has as a data member an object of a class without a default constructor, you must use the ctor-initializer to properly construct that object. For example, take the following
+        <code class="calibre21">
+         SpreadsheetCell
+        </code>
+        class:
+       </p>
+       <pre class="calibre26" id="c08-code-0058"><code class="calibre21">export class SpreadsheetCell</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        SpreadsheetCell(double d);</code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13">
+        <span aria-label="277" class="calibre20" epub:type="pagebreak" id="Page_277" role="doc-pagebreak">
+        </span>
+        This class has only one constructor accepting a
+        <code class="calibre21">
+         double
+        </code>
+        and does not include a default constructor. You can use this class as a data member of another class as follows:
+       </p>
+       <pre class="calibre26" id="c08-code-0059"><code class="calibre21">class SomeClass</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        SomeClass();</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        SpreadsheetCell m_cell;</code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13">
+        You can implement the
+        <code class="calibre21">
+         SomeClass
+        </code>
+        constructor as follows:
+       </p>
+       <pre class="calibre26" id="c08-code-0060"><code class="calibre21">SomeClass::SomeClass() { }</code></pre>
+       <p class="calibre13" id="c08-para-0129">
+        However, with this implementation, the code does not compile. The compiler does not know how to initialize the
+        <code class="calibre21">
+         m_cell
+        </code>
+        data member of
+        <code class="calibre21">
+         SomeClass
+        </code>
+        because it does not have a default constructor.
+       </p>
+       <p class="calibre13">
+        You must initialize the
+        <code class="calibre21">
+         m_cell
+        </code>
+        data member in the ctor-initializer as follows:
+       </p>
+       <pre class="calibre26" id="c08-code-0061"><code class="calibre21">SomeClass::SomeClass() : m_cell { 1.0 } { }</code></pre>
+       <section class="calibre2">
+        <aside class="calibre23">
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+         <section class="feature">
+          <p class="calibre25" id="c08-para-0132">
+           <b class="calibre14">
+            NOTE
+           </b>
+           <i class="calibre18">
+            Ctor-initializers allow initialization of data members at the time of their creation
+           </i>
+           .
+          </p>
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+         </section>
+        </aside>
+       </section>
+       <p class="calibre13" id="c08-para-0134">
+        Some programmers prefer to assign initial values in the body of the constructor, even though this might be less efficient. However, several data types must be initialized in a ctor-initializer or with an in-class initializer. The following table summarizes them:
+       </p>
+       <table border="1" class="calibre31">
+        <thead class="calibre32">
+         <tr class="calibre33">
+          <th class="left" scope="col">
+           DATA TYPE
+          </th>
+          <th class="left" scope="col">
+           EXPLANATION
+          </th>
+         </tr>
+        </thead>
+        <tbody class="calibre34">
+         <tr class="calibre33">
+          <td class="left1">
+           <code class="calibre21">
+            const
+           </code>
+           data members
+          </td>
+          <td class="left1">
+           You cannot legally assign a value to a
+           <code class="calibre21">
+            const
+           </code>
+           variable after it is created. Any value must be supplied at the time of creation.
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="left1">
+           Reference data members
+          </td>
+          <td class="left1">
+           References cannot exist without referring to something, and once created, a reference cannot be changed to refer to something else.
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="left1">
+           Object data members for which there is no default constructor
+          </td>
+          <td class="left1">
+           C++ attempts to initialize member objects using a default constructor. If no default constructor exists, it cannot initialize the object, and you must tell it explicitly which constructor to call.
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="left1">
+           Base classes without default constructors
+          </td>
+          <td class="left1">
+           These are covered in
+           <a class="calibre5" href="c10_split_000.xhtml">
+            Chapter 10
+           </a>
+           .
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p class="calibre13">
+        There is one important caveat with ctor-initializers: they initialize data members in the order that they appear in the class definition, not their order in the ctor-initializer! Take the following definition for a class called
+        <code class="calibre21">
+         Foo
+        </code>
+        . Its constructor simply stores a
+        <code class="calibre21">
+         double
+        </code>
+        value and prints out the value to the console.
+       </p>
+       <pre class="calibre26" id="c08-code-0062"><span aria-label="278" class="calibre20" epub:type="pagebreak" id="Page_278" role="doc-pagebreak"></span><code class="calibre21">class Foo</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        Foo(double value);</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        double m_value { 0 };</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">Foo::Foo(double value) : m_value { value }</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    println("Foo::m_value = {}", m_value);</code>
+<code class="calibre21">}</code></pre>
+       <p class="calibre13">
+        Suppose you have another class,
+        <code class="calibre21">
+         MyClass
+        </code>
+        , that contains a
+        <code class="calibre21">
+         Foo
+        </code>
+        object as one of its data members.
+       </p>
+       <pre class="calibre26" id="c08-code-0063"><code class="calibre21">class MyClass</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        MyClass(double value);</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        double m_value { 0 };</code>
+<code class="calibre21">        Foo m_foo;</code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13">
+        Its constructor could be implemented as follows:
+       </p>
+       <pre class="calibre26" id="c08-code-0064"><code class="calibre21">MyClass::MyClass(double value) : m_value { value }, m_foo { m_value }</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    println("MyClass::m_value = {}", m_value);</code>
+<code class="calibre21">}</code></pre>
+       <p class="calibre13">
+        The ctor-initializer first stores the given
+        <code class="calibre21">
+         value
+        </code>
+        in
+        <code class="calibre21">
+         m_value
+        </code>
+        and then calls the
+        <code class="calibre21">
+         Foo
+        </code>
+        constructor with
+        <code class="calibre21">
+         m_value
+        </code>
+        as argument. You can create an instance of
+        <code class="calibre21">
+         MyClass
+        </code>
+        as follows:
+       </p>
+       <pre class="calibre26" id="c08-code-0065"><code class="calibre21">MyClass instance { 1.2 };</code></pre>
+       <p class="calibre13">
+        Here is the output of the program:
+       </p>
+       <pre class="calibre26" id="c08-code-0066"><code class="calibre21">Foo::m_value = 1.2</code>
+<code class="calibre21">MyClass::m_value = 1.2</code></pre>
+       <p class="calibre13">
+        So, everything looks fine. Now make one tiny change to the
+        <code class="calibre21">
+         MyClass
+        </code>
+        definition; just reverse the order of the
+        <code class="calibre21">
+         m_value
+        </code>
+        and
+        <code class="calibre21">
+         m_foo
+        </code>
+        data members. Nothing else is changed.
+       </p>
+       <pre class="calibre26" id="c08-code-0067"><code class="calibre21">class MyClass</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        MyClass(double value);</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        <b class="calibre14">Foo m_foo;</b></code>
+<code class="calibre21">        <b class="calibre14">double m_value { 0 };</b></code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13">
+        The output of the program now depends on your system. It could, for example, be as follows:
+       </p>
+       <pre class="calibre26" id="c08-code-0068"><code class="calibre21">Foo::m_value = -9.255963134931783e+61</code>
+<code class="calibre21">MyClass::m_value = 1.2</code></pre>
+       <p class="calibre13" id="c08-para-0143">
+        <span aria-label="279" class="calibre20" epub:type="pagebreak" id="Page_279" role="doc-pagebreak">
+        </span>
+        This is far from what you expected. You might assume, based on your ctor-initializer, that
+        <code class="calibre21">
+         m_value
+        </code>
+        is initialized before using
+        <code class="calibre21">
+         m_value
+        </code>
+        in the call to the
+        <code class="calibre21">
+         Foo
+        </code>
+        constructor. But C++ doesn't work that way. The data members are initialized in the order they appear in the definition of the class, not the order in the ctor-initializer! So, in this case, the
+        <code class="calibre21">
+         Foo
+        </code>
+        constructor is called first with an uninitialized
+        <code class="calibre21">
+         m_value
+        </code>
+        .
+       </p>
+       <p class="calibre13" id="c08-para-0144">
+        Note that some compilers issue a warning when the order in the ctor-initializer does not match the order in the class definition.
+       </p>
+       <p class="calibre13">
+        For this example, there is an easy fix. Don't pass
+        <code class="calibre21">
+         m_value
+        </code>
+        to the
+        <code class="calibre21">
+         Foo
+        </code>
+        constructor, but simply pass the
+        <code class="calibre21">
+         value
+        </code>
+        parameter:
+       </p>
+       <pre class="calibre26" id="c08-code-0069"><code class="calibre21">MyClass::MyClass(double value) : m_value { value }, m_foo { <b class="calibre14">value</b> }</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    println("MyClass::m_value = {}", m_value);</code>
+<code class="calibre21">}</code></pre>
+       <section class="calibre2">
+        <aside class="calibre23">
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+         <section class="feature">
+          <p class="calibre25" id="c08-para-0147">
+           <b class="calibre14">
+            WARNING
+           </b>
+           <i class="calibre18">
+            Ctor-initializers initialize data members in their declared order in the class definition, not their order in the ctor-initializer list
+           </i>
+           .
+          </p>
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+         </section>
+        </aside>
+       </section>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c08-sec-0046">
+       </span>
+       <h4 class="calibre29" id="head-4-157">
+        Copy Constructors
+       </h4>
+       <p class="calibre13">
+        There is a special constructor in C++ called a
+        <i class="calibre18">
+         copy constructor
+        </i>
+        that allows you to create an object that is an exact copy of another object. Here is the declaration for a copy constructor in the
+        <code class="calibre21">
+         SpreadsheetCell
+        </code>
+        class:
+       </p>
+       <pre class="calibre26" id="c08-code-0070"><code class="calibre21">export class SpreadsheetCell</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        <b class="calibre14">SpreadsheetCell(const SpreadsheetCell&amp; src);</b></code>
+<code class="calibre21">        <span class="color">// Remainder of the class definition omitted for brevity</span></code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13">
+        The copy constructor takes a reference-to-
+        <code class="calibre21">
+         const
+        </code>
+        to the source object. Like other constructors, it does not return a value. The copy constructor should copy all the data members from the source object. Technically, of course, you can do whatever you want in a copy constructor, but it's generally a good idea to follow expected behavior and initialize the new object to be a copy of the old one. Here is an example implementation of the
+        <code class="calibre21">
+         SpreadsheetCell
+        </code>
+        copy constructor. Note the use of the ctor-initializer.
+       </p>
+       <pre class="calibre26" id="c08-code-0071"><code class="calibre21">SpreadsheetCell::SpreadsheetCell(const SpreadsheetCell&amp; src)</code>
+<code class="calibre21">    : m_value { src.m_value }</code>
+<code class="calibre21">{</code>
+<code class="calibre21">}</code></pre>
+       <p class="calibre13">
+        If you don't write a copy constructor yourself, C++ generates one for you that initializes each data member in the new object from its equivalent data member in the source object. For object data members, this initialization means that their copy constructors are called. Given a set of data members, called
+        <code class="calibre21">
+         m1
+        </code>
+        ,
+        <code class="calibre21">
+         m2
+        </code>
+        , …
+        <code class="calibre21">
+         mn
+        </code>
+        , this compiler-generated copy constructor can be expressed as follows:
+       </p>
+       <pre class="calibre26" id="c08-code-0072"><code class="calibre21">classname::classname(const classname&amp; src)</code>
+<code class="calibre21">    : m1 { src.m1 }, m2 { src.m2 }, … mn { src.mn } { }</code></pre>
+       <p class="calibre13">
+        <span aria-label="280" class="calibre20" epub:type="pagebreak" id="Page_280" role="doc-pagebreak">
+        </span>
+        Therefore, in most circumstances, there is no need for you to specify a copy constructor!
+       </p>
+       <section class="calibre2">
+        <aside class="calibre23">
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+         <section class="feature">
+          <p class="calibre25" id="c08-para-0152">
+           <b class="calibre14">
+            NOTE
+           </b>
+           <i class="calibre18">
+            The
+           </i>
+           <code class="calibre21">
+            SpreadsheetCell
+           </code>
+           <i class="calibre18">
+            copy constructor is shown only for demonstration purposes. In fact, in this case, the copy constructor can be omitted because the default compiler-generated one is good enough. However, under certain conditions, this compiler-generated copy constructor is not sufficient. These conditions are covered in
+            <a class="calibre5" href="c09.xhtml">
+             Chapter 9
+            </a>
+            .
+           </i>
+          </p>
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+         </section>
+        </aside>
+       </section>
+       <section class="calibre2">
+        <span class="calibre" id="c08-sec-0048">
+        </span>
+        <h5 class="calibre35" id="head-5-63">
+         When the Copy Constructor Is Called
+        </h5>
+        <p class="calibre13">
+         The default semantics for passing arguments to functions in C++ is pass-by-value. That means that the function receives a copy of the value or object. Thus, whenever you pass an object to a function, the compiler calls the copy constructor of the new object to initialize it. For example, suppose you have the following
+         <code class="calibre21">
+          printString()
+         </code>
+         function accepting an
+         <code class="calibre21">
+          std::string
+         </code>
+         parameter by value:
+        </p>
+        <pre class="calibre26" id="c08-code-0073"><code class="calibre21">void printString(string value)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    println("{}", value);</code>
+<code class="calibre21">}</code></pre>
+        <p class="calibre13">
+         Recall that
+         <code class="calibre21">
+          std::string
+         </code>
+         is actually a class, not a built-in type. When your code makes a call to
+         <code class="calibre21">
+          printString()
+         </code>
+         passing a
+         <code class="calibre21">
+          string
+         </code>
+         argument, the
+         <code class="calibre21">
+          string
+         </code>
+         parameter
+         <code class="calibre21">
+          value
+         </code>
+         is initialized with a call to its copy constructor. The argument to the copy constructor is the
+         <code class="calibre21">
+          string
+         </code>
+         you passed to
+         <code class="calibre21">
+          printString()
+         </code>
+         . In the following example, the
+         <code class="calibre21">
+          string
+         </code>
+         copy constructor is executed for the
+         <code class="calibre21">
+          value
+         </code>
+         object in
+         <code class="calibre21">
+          printString()
+         </code>
+         with
+         <code class="calibre21">
+          name
+         </code>
+         as its argument:
+        </p>
+        <pre class="calibre26" id="c08-code-0074"><code class="calibre21">string name { "heading one" };</code>
+<code class="calibre21">printString(name); <span class="color">// Copies name</span></code></pre>
+        <p class="calibre13" id="c08-para-0155">
+         When the
+         <code class="calibre21">
+          printString()
+         </code>
+         member function finishes,
+         <code class="calibre21">
+          value
+         </code>
+         is destroyed. Because it was only a copy of
+         <code class="calibre21">
+          name
+         </code>
+         ,
+         <code class="calibre21">
+          name
+         </code>
+         remains intact. Of course, you can avoid the overhead of copy constructors by passing parameters as references-to-
+         <code class="calibre21">
+          const
+         </code>
+         , discussed in an upcoming section.
+        </p>
+        <p class="calibre13" id="c08-para-0156">
+         When returning objects by value from a function, the copy constructor might also get called. This is discussed in the section “
+         <a class="calibre5" href="#c08-sec-0073">
+          Objects as Return Values
+         </a>
+         ” later in this chapter.
+        </p>
+       </section>
+       <section class="calibre2">
+        <span class="calibre" id="c08-sec-0049">
+        </span>
+        <h5 class="calibre35" id="head-5-64">
+         Calling the Copy Constructor Explicitly
+        </h5>
+        <p class="calibre13">
+         You can use the copy constructor explicitly as well. It is often useful to be able to construct one object as an exact copy of another. For example, you might want to create a copy of a
+         <code class="calibre21">
+          SpreadsheetCell
+         </code>
+         object like this:
+        </p>
+        <pre class="calibre26" id="c08-code-0075"><code class="calibre21">SpreadsheetCell myCell1 { 4 };</code>
+<code class="calibre21"><b class="calibre14">SpreadsheetCell myCell2 { myCell1 };</b> <span class="color">// myCell2 has the same values as myCell1</span></code></pre>
+       </section>
+       <section class="calibre2">
+        <span class="calibre" id="c08-sec-0050">
+        </span>
+        <h5 class="calibre35" id="head-5-65">
+         Passing Objects by Reference
+        </h5>
+        <p class="calibre13" id="c08-para-0158">
+         To avoid copying objects when you pass them to functions, you should declare that the function takes a
+         <i class="calibre18">
+          reference
+         </i>
+         to the object. Passing objects by reference is usually more efficient than passing them by value, because only the address of the object is copied, not the entire contents of the object.
+         <span aria-label="281" class="calibre20" epub:type="pagebreak" id="Page_281" role="doc-pagebreak">
+         </span>
+         Additionally, pass-by-reference avoids problems with dynamic memory allocation in objects, which is discussed in
+         <a class="calibre5" href="c09.xhtml">
+          Chapter 9
+         </a>
+         .
+        </p>
+        <p class="calibre13">
+         When you pass an object by reference, the function using the object reference could change the original object. When you are only using pass-by-reference for efficiency, you should preclude this possibility by declaring the object
+         <code class="calibre21">
+          const
+         </code>
+         as well. This is known as passing objects by reference-to-
+         <code class="calibre21">
+          const
+         </code>
+         and has been done in examples throughout this book.
+        </p>
+        <section class="calibre2">
+         <aside class="calibre23">
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+          <section class="feature">
+           <p class="calibre25" id="c08-para-0160">
+            <b class="calibre14">
+             NOTE
+            </b>
+            <i class="calibre18">
+             For performance reasons, it is best to pass objects by reference-to-
+            </i>
+            <code class="calibre21">
+             const
+            </code>
+            <i class="calibre18">
+             instead of by value.
+             <a class="calibre5" href="c09.xhtml">
+              Chapter 9
+             </a>
+             slightly modifies this rule after the introduction of move semantics, allowing pass-by-value of objects in certain cases.
+            </i>
+           </p>
+           <div class="top">
+            <hr class="calibre24"/>
+           </div>
+          </section>
+         </aside>
+        </section>
+        <p class="calibre13" id="c08-para-0161">
+         Note that the
+         <code class="calibre21">
+          SpreadsheetCell
+         </code>
+         class has a number of member functions accepting an
+         <code class="calibre21">
+          std::string_view
+         </code>
+         as parameter. As discussed in
+         <a class="calibre5" href="c02.xhtml">
+          Chapter 2
+         </a>
+         , a
+         <code class="calibre21">
+          string_view
+         </code>
+         is basically just a pointer and a length. So, it is cheap to copy and is usually passed by value.
+        </p>
+        <p class="calibre13" id="c08-para-0162">
+         Also primitive types, such as
+         <code class="calibre21">
+          int
+         </code>
+         ,
+         <code class="calibre21">
+          double
+         </code>
+         , and so on, should just be passed by value. You don't gain anything by passing such types as reference-to-
+         <code class="calibre21">
+          const
+         </code>
+         .
+        </p>
+        <p class="calibre13" id="c08-para-0163">
+         The
+         <code class="calibre21">
+          doubleToString()
+         </code>
+         member function of the
+         <code class="calibre21">
+          SpreadsheetCell
+         </code>
+         class always returns a
+         <code class="calibre21">
+          string
+         </code>
+         by value because the implementation of the member function creates a local
+         <code class="calibre21">
+          string
+         </code>
+         object that at the end of the member function is returned to the caller. Returning a reference to this
+         <code class="calibre21">
+          string
+         </code>
+         wouldn't work because the
+         <code class="calibre21">
+          string
+         </code>
+         to which it refers to will be destroyed when the function exits.
+        </p>
+       </section>
+       <section class="calibre2">
+        <span class="calibre" id="c08-sec-0052">
+        </span>
+        <h5 class="calibre35" id="head-5-66">
+         Explicitly Defaulted and Deleted Copy Constructors
+        </h5>
+        <p class="calibre13">
+         Just as you can explicitly default or delete a compiler-generated default constructor for a class, you can also explicitly default or delete a compiler-generated copy constructor as follows:
+        </p>
+        <pre class="calibre26" id="c08-code-0076"><code class="calibre21">SpreadsheetCell(const SpreadsheetCell&amp; src) = default;</code></pre>
+        <p class="calibre13">
+         or
+        </p>
+        <pre class="calibre26" id="c08-code-0077"><code class="calibre21">SpreadsheetCell(const SpreadsheetCell&amp; src) = delete;</code></pre>
+        <p class="calibre13">
+         By deleting the copy constructor, the object cannot be copied anymore. This can be used to disallow passing the object by value, as discussed in
+         <a class="calibre5" href="c09.xhtml">
+          Chapter 9
+         </a>
+         .
+        </p>
+        <section class="calibre2">
+         <aside class="calibre23">
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+          <section class="feature">
+           <p class="calibre25" id="c08-para-0167">
+            <b class="calibre14">
+             NOTE
+            </b>
+            <i class="calibre18">
+             If a class has data members that have a deleted or
+            </i>
+            <code class="calibre21">
+             private
+            </code>
+            <i class="calibre18">
+             copy constructor, then the copy constructor for the class is automatically deleted as well, even if you explicitly
+            </i>
+            <code class="calibre21">
+             default
+            </code>
+            <i class="calibre18">
+             one.
+            </i>
+           </p>
+           <div class="top">
+            <hr class="calibre24"/>
+           </div>
+          </section>
+         </aside>
+        </section>
+       </section>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c08-sec-0054">
+       </span>
+       <h4 class="calibre29" id="head-4-158">
+        Initializer-List Constructors
+       </h4>
+       <p class="calibre13">
+        An
+        <i class="calibre18">
+         initializer-list constructor
+        </i>
+        is a constructor with an
+        <code class="calibre21">
+         std::initializer_list&lt;T&gt;
+        </code>
+        (see
+        <a class="calibre5" href="c01_split_000.xhtml">
+         Chapter 1
+        </a>
+        ) as the first parameter and without any additional parameters or with additional parameters having
+        <span aria-label="282" class="calibre20" epub:type="pagebreak" id="Page_282" role="doc-pagebreak">
+        </span>
+        default values. The
+        <code class="calibre21">
+         initializer_list&lt;T&gt;
+        </code>
+        class template is defined in
+        <code class="calibre21">
+         &lt;initializer_list&gt;
+        </code>
+        . The following class demonstrates its use. The class accepts only an
+        <code class="calibre21">
+         initializer_list&lt;double&gt;
+        </code>
+        with an even number of elements; otherwise, it throws an exception.
+        <a class="calibre5" href="c01_split_000.xhtml">
+         Chapter 1
+        </a>
+        introduces exceptions.
+       </p>
+       <pre class="calibre26" id="c08-code-0078"><code class="calibre21">class EvenSequence</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        EvenSequence(initializer_list&lt;double&gt; values)</code>
+<code class="calibre21">        {</code>
+<code class="calibre21">            if (values.size() % 2 != 0) {</code>
+<code class="calibre21">                throw invalid_argument { "initializer_list should "</code>
+<code class="calibre21">                    "contain even number of elements." };</code>
+<code class="calibre21">            }</code>
+<code class="calibre21">            m_sequence.reserve(values.size());</code>
+<code class="calibre21">            for (const auto&amp; value : values) {</code>
+<code class="calibre21">                m_sequence.push_back(value);</code>
+<code class="calibre21">            }</code>
+<code class="calibre21">        }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        void print() const</code>
+<code class="calibre21">        {</code>
+<code class="calibre21">            for (const auto&amp; value : m_sequence) {</code>
+<code class="calibre21">                std::print("{}, ", value);</code>
+<code class="calibre21">            }</code>
+<code class="calibre21">            println("");</code>
+<code class="calibre21">        }</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        vector&lt;double&gt; m_sequence;</code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13" id="c08-para-0169">
+        Inside the initializer-list constructor you can access the elements of the initializer-list with a range-based
+        <code class="calibre21">
+         for
+        </code>
+        loop. You can get the number of elements in an initializer-list with the
+        <code class="calibre21">
+         size()
+        </code>
+        member function.
+       </p>
+       <p class="calibre13">
+        The
+        <code class="calibre21">
+         EvenSequence
+        </code>
+        initializer-list constructor uses a range-based
+        <code class="calibre21">
+         for
+        </code>
+        loop to copy elements from the given
+        <code class="calibre21">
+         initializer_list&lt;T&gt;
+        </code>
+        . You can also use the
+        <code class="calibre21">
+         assign()
+        </code>
+        member function of
+        <code class="calibre21">
+         vector
+        </code>
+        . The different member functions of
+        <code class="calibre21">
+         vector
+        </code>
+        , including
+        <code class="calibre21">
+         assign()
+        </code>
+        , are discussed in detail in
+        <a class="calibre5" href="c18_split_000.xhtml">
+         Chapter 18
+        </a>
+        , “Standard Library Containers.” As a sneak preview, to give you an idea of the power of a
+        <code class="calibre21">
+         vector
+        </code>
+        , here is the initializer-list constructor using
+        <code class="calibre21">
+         assign()
+        </code>
+        :
+       </p>
+       <pre class="calibre26" id="c08-code-0079"><code class="calibre21">EvenSequence(initializer_list&lt;double&gt; values)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    if (values.size() % 2 != 0) {</code>
+<code class="calibre21">        throw invalid_argument { "initializer_list should "</code>
+<code class="calibre21">            "contain even number of elements." };</code>
+<code class="calibre21">    }</code>
+<code class="calibre21">    <b class="calibre14">m_sequence.assign(values);</b></code>
+<code class="calibre21">}</code></pre>
+       <p class="calibre13">
+        <code class="calibre21">
+         EvenSequence
+        </code>
+        objects can be constructed as follows:
+       </p>
+       <pre class="calibre26" id="c08-code-0080"><code class="calibre21">try {</code>
+<code class="calibre21">    EvenSequence p1 { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };</code>
+<code class="calibre21">    p1.print();</code>
+<code class="calibre21"> </code>
+<span aria-label="283" class="calibre20" epub:type="pagebreak" id="Page_283" role="doc-pagebreak"></span><code class="calibre21">    EvenSequence p2 { 1.0, 2.0, 3.0 };</code>
+<code class="calibre21">} catch (const invalid_argument&amp; e) {</code>
+<code class="calibre21">    println("{}", e.what());</code>
+<code class="calibre21">}</code></pre>
+       <p class="calibre13" id="c08-para-0172">
+        The construction of
+        <code class="calibre21">
+         p2
+        </code>
+        throws an exception because it has an odd number of elements in the initializer-list.
+       </p>
+       <p class="calibre13">
+        The Standard Library has full support for initializer-list constructors. For example, the
+        <code class="calibre21">
+         std::vector
+        </code>
+        container can be initialized with an initializer-list:
+       </p>
+       <pre class="calibre26" id="c08-code-0081"><code class="calibre21">vector&lt;string&gt; myVec { "String 1", "String 2", "String 3" };</code></pre>
+       <p class="calibre13">
+        Without initializer-list constructors, one way to initialize this
+        <code class="calibre21">
+         vector
+        </code>
+        is by using several
+        <code class="calibre21">
+         push_back()
+        </code>
+        calls:
+       </p>
+       <pre class="calibre26" id="c08-code-0082"><code class="calibre21">vector&lt;string&gt; myVec;</code>
+<code class="calibre21">myVec.push_back("String 1");</code>
+<code class="calibre21">myVec.push_back("String 2");</code>
+<code class="calibre21">myVec.push_back("String 3");</code></pre>
+       <p class="calibre13">
+        Initializer lists are not limited to constructors and can also be used with normal functions as explained in
+        <a class="calibre5" href="c01_split_000.xhtml">
+         Chapter 1
+        </a>
+        .
+       </p>
+       <section class="calibre2">
+        <aside class="calibre23">
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+         <section class="feature">
+          <p class="calibre25">
+           <b class="calibre14">
+            NOTE
+           </b>
+           <i class="calibre18">
+            When a class has both an initializer-list constructor and another single-argument constructor, then you should be careful to call the correct one. For example,
+           </i>
+           <code class="calibre21">
+            std::vector
+           </code>
+           <i class="calibre18">
+            has an initializer-list constructor to initialize a
+           </i>
+           <code class="calibre21">
+            vector
+           </code>
+           <i class="calibre18">
+            with a given set of elements. It also has a constructor accepting a single argument, the desired size of the new
+           </i>
+           <code class="calibre21">
+            vector
+           </code>
+           <i class="calibre18">
+            . You call the initializer-list constructor using a braced initializer,
+           </i>
+           <code class="calibre21">
+            {}
+           </code>
+           <i class="calibre18">
+            , and call the other single-argument constructor using parentheses,
+           </i>
+           <code class="calibre21">
+            ()
+           </code>
+           <i class="calibre18">
+            . For example:
+           </i>
+          </p>
+          <pre class="calibre26" id="c08-code-0083"><code class="calibre21">vector&lt;int&gt; v1 { 6 }; <span class="color">// Constructs a vector with a single element, 6.</span></code>
+<code class="calibre21">vector&lt;int&gt; v2 ( 6 ); <span class="color">// Constructs a vector with 6 default-</span></code>
+<code class="calibre21">                      <span class="color">// initialized elements.</span></code></pre>
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+         </section>
+        </aside>
+       </section>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c08-sec-0056">
+       </span>
+       <h4 class="calibre29" id="head-4-159">
+        Delegating Constructors
+       </h4>
+       <p class="calibre13">
+        <i class="calibre18">
+         Delegating constructors
+        </i>
+        allow constructors to call another constructor from the same class. However, this call cannot be placed in the constructor body; it must be in the ctor-initializer, and it must be the only member-initializer in the list. The following is an example:
+       </p>
+       <pre class="calibre26" id="c08-code-0084"><code class="calibre21">SpreadsheetCell::SpreadsheetCell(string_view initialValue)</code>
+<code class="calibre21">    <b class="calibre14">: SpreadsheetCell { stringToDouble(initialValue) }</b></code>
+<code class="calibre21">{</code>
+<code class="calibre21">}</code></pre>
+       <p class="calibre13" id="c08-para-0179">
+        When this
+        <code class="calibre21">
+         string_view
+        </code>
+        constructor (the delegating constructor) is called, it first delegates the call to the target constructor, which is the
+        <code class="calibre21">
+         double
+        </code>
+        constructor in this example. When the target constructor returns, the body of the delegating constructor is executed.
+       </p>
+       <p class="calibre13">
+        <span aria-label="284" class="calibre20" epub:type="pagebreak" id="Page_284" role="doc-pagebreak">
+        </span>
+        Make sure you avoid constructor recursion while using delegating constructors. Here is an example:
+       </p>
+       <pre class="calibre26" id="c08-code-0085"><code class="calibre21">class MyClass</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    MyClass(char c) : MyClass { 1.2 } { }</code>
+<code class="calibre21">    MyClass(double d) : MyClass { 'm' } { }</code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13" id="c08-para-0181">
+        The first constructor delegates to the second constructor, which delegating back to the first one. The behavior of such code is undefined by the standard and depends on your compiler.
+       </p>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c08-sec-0057">
+       </span>
+       <h4 class="calibre29" id="head-4-160">
+        Converting Constructors and Explicit Constructors
+       </h4>
+       <p class="calibre13">
+        The current set of constructors for
+        <code class="calibre21">
+         SpreadsheetCell
+        </code>
+        is as follows:
+       </p>
+       <pre class="calibre26" id="c08-code-0086"><code class="calibre21">export class SpreadsheetCell</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        SpreadsheetCell() = default;</code>
+<code class="calibre21">        SpreadsheetCell(double initialValue);</code>
+<code class="calibre21">        SpreadsheetCell(std::string_view initialValue);</code>
+<code class="calibre21">        SpreadsheetCell(const SpreadsheetCell&amp; src);</code>
+<code class="calibre21">    <span class="color">// Remainder omitted for brevity</span></code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13">
+        The single-parameter
+        <code class="calibre21">
+         double
+        </code>
+        and
+        <code class="calibre21">
+         string_view
+        </code>
+        constructors can be used to convert a
+        <code class="calibre21">
+         double
+        </code>
+        or a
+        <code class="calibre21">
+         string_view
+        </code>
+        into a
+        <code class="calibre21">
+         SpreadsheetCell
+        </code>
+        . Such constructors are called
+        <i class="calibre18">
+         converting constructors
+        </i>
+        . The compiler can use such constructors to perform implicit conversions for you. Here's an example:
+       </p>
+       <pre class="calibre26" id="c08-code-0087"><code class="calibre21">SpreadsheetCell myCell { 4 };</code>
+<code class="calibre21">myCell = 5;</code>
+<code class="calibre21">myCell = "6"sv; <span class="color">// A string_view literal (see <a class="calibre5" href="c02.xhtml">Chapter 2</a>).</span></code></pre>
+       <p class="calibre13">
+        This might not always be the behavior you want. You can prevent the compiler from doing such implicit conversions by marking constructors as
+        <code class="calibre21">
+         explicit
+        </code>
+        . The
+        <code class="calibre21">
+         explicit
+        </code>
+        keyword goes only in the class definition. Here's an example:
+       </p>
+       <pre class="calibre26" id="c08-code-0088"><code class="calibre21">export class SpreadsheetCell</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        SpreadsheetCell() = default;</code>
+<code class="calibre21">        SpreadsheetCell(double initialValue);</code>
+<code class="calibre21">        <b class="calibre14">explicit SpreadsheetCell(std::string_view initialValue);</b></code>
+<code class="calibre21">        SpreadsheetCell(const SpreadsheetCell&amp; src);</code>
+<code class="calibre21">    <span class="color">// Remainder omitted for brevity</span></code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13">
+        With this change, a line as follows no longer compiles:
+       </p>
+       <pre class="calibre26" id="c08-code-0089"><code class="calibre21">myCell = "6"sv; <span class="color">// A string_view literal (see <a class="calibre5" href="c02.xhtml">Chapter 2</a>).</span></code></pre>
+       <p class="calibre13">
+        Prior to C++11, converting constructors could have only a single parameter, as in the
+        <code class="calibre21">
+         SpreadsheetCell
+        </code>
+        example. Since C++11, converting constructors can have multiple parameters because of support for list initialization. Let's look at an example. Suppose you have the following class:
+       </p>
+       <pre class="calibre26" id="c08-code-0090"><code class="calibre21">class MyClass</code>
+<code class="calibre21">{</code>
+<span aria-label="285" class="calibre20" epub:type="pagebreak" id="Page_285" role="doc-pagebreak"></span><code class="calibre21">    public:</code>
+<code class="calibre21">        MyClass(int) { }</code>
+<code class="calibre21">        MyClass(int, int) { }</code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13">
+        This class has two constructors, and since C++11, both are converting constructors. The following example shows that the compiler automatically converts arguments such as
+        <code class="calibre21">
+         1
+        </code>
+        ,
+        <code class="calibre21">
+         {1}
+        </code>
+        , and
+        <code class="calibre21">
+         {1,2}
+        </code>
+        , to instances of
+        <code class="calibre21">
+         MyClass
+        </code>
+        using these converting constructors:
+       </p>
+       <pre class="calibre26" id="c08-code-0091"><code class="calibre21">void process(const MyClass&amp; c) { }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">int main()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    process(1);</code>
+<code class="calibre21">    process({ 1 });</code>
+<code class="calibre21">    process({ 1, 2 });</code>
+<code class="calibre21">}</code></pre>
+       <p class="calibre13">
+        To prevent these implicit conversions, both converting constructors can be marked as
+        <code class="calibre21">
+         explicit
+        </code>
+        :
+       </p>
+       <pre class="calibre26" id="c08-code-0092"><code class="calibre21">class MyClass</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        <b class="calibre14">explicit</b> MyClass(int) { }</code>
+<code class="calibre21">        <b class="calibre14">explicit</b> MyClass(int, int) { }</code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13">
+        With this change, you have to perform these conversions explicitly; here's an example:
+       </p>
+       <pre class="calibre26" id="c08-code-0093"><code class="calibre21">process(<b class="calibre14">MyClass</b>{ 1 });</code>
+<code class="calibre21">process(<b class="calibre14">MyClass</b>{ 1, 2 });</code></pre>
+       <p class="calibre13">
+        It is possible to pass a Boolean argument to
+        <code class="calibre21">
+         explicit
+        </code>
+        to turn it into a conditional
+        <code class="calibre21">
+         explicit
+        </code>
+        . The syntax is as follows:
+       </p>
+       <pre class="calibre26" id="c08-code-0094"><code class="calibre21"><b class="calibre14">explicit(true)</b> MyClass(int);</code></pre>
+       <p class="calibre13">
+        Of course, just writing
+        <code class="calibre21">
+         explicit(true)
+        </code>
+        is equivalent to
+        <code class="calibre21">
+         explicit
+        </code>
+        , but it becomes more useful in the context of generic template code using type traits. With type traits you can query certain properties of given types, such as whether a certain type is convertible to another type. The result of such a type trait can be used as argument to
+        <code class="calibre21">
+         explicit()
+        </code>
+        . Type traits allow for writing advanced generic code and are discussed in
+        <a class="calibre5" href="c26.xhtml">
+         Chapter 26
+        </a>
+        , “Advanced Templates.”
+       </p>
+       <section class="calibre2">
+        <aside class="calibre23">
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+         <section class="feature">
+          <p class="calibre25" id="c08-para-0192">
+           <b class="calibre14">
+            NOTE
+           </b>
+           <i class="calibre18">
+            It is recommended to mark at least any constructor that can be called with a single argument as
+           </i>
+           <code class="calibre21">
+            explicit
+           </code>
+           <i class="calibre18">
+            to avoid accidental implicit conversions. If there is a real use case for implicit conversions, you can mark the constructor with
+           </i>
+           <code class="calibre21">
+            explicit(false)
+           </code>
+           <i class="calibre18">
+            . Doing so explains to users of your class that the implicit conversion is consciously allowed
+           </i>
+           .
+          </p>
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+         </section>
+        </aside>
+       </section>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c08-sec-0059">
+       </span>
+       <h4 class="calibre29" id="head-4-161">
+        Summary of Compiler-Generated Constructors
+       </h4>
+       <p class="calibre13" id="c08-para-0193">
+        The compiler can automatically generate a default constructor and a copy constructor for every class. However, the constructors that the compiler automatically generates depend on the constructors that you define yourself according to the rules in the following table:
+       </p>
+       <p class="calibre13">
+        <span aria-label="286" class="calibre20" epub:type="pagebreak" id="Page_286" role="doc-pagebreak">
+        </span>
+       </p>
+       <table border="1" class="calibre31">
+        <thead class="calibre32">
+         <tr class="calibre33">
+          <th class="left" scope="col">
+           IF YOU DEFINE…
+          </th>
+          <th class="left" scope="col">
+           THEN THE COMPILER GENERATES…
+          </th>
+          <th class="left" scope="col">
+           AND YOU CAN CREATE AN OBJECT…
+          </th>
+         </tr>
+        </thead>
+        <tbody class="calibre34">
+         <tr class="calibre33">
+          <td class="left1">
+           [no constructors]
+          </td>
+          <td class="left1">
+           A default constructor
+           <br class="calibre12"/>
+           A copy constructor
+          </td>
+          <td class="left1">
+           With no arguments:
+           <code class="calibre21">
+            SpreadsheetCell a;
+           </code>
+           As a copy:
+           <code class="calibre21">
+            SpreadsheetCell b{a};
+           </code>
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="left1">
+           A default constructor only
+          </td>
+          <td class="left1">
+           A copy constructor
+          </td>
+          <td class="left1">
+           With no arguments:
+           <code class="calibre21">
+            SpreadsheetCell a;
+           </code>
+           As a copy:
+           <code class="calibre21">
+            SpreadsheetCell b{a};
+           </code>
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="left1">
+           A copy constructor only
+          </td>
+          <td class="left1">
+           No constructors
+          </td>
+          <td class="left1">
+           Theoretically, as a copy of another object (practically, you can't create any objects, because there are no non-copy constructors)
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="left1">
+           A single- or multi-argument non-copy constructor only
+          </td>
+          <td class="left1">
+           A copy constructor
+          </td>
+          <td class="left1">
+           With arguments:
+           <code class="calibre21">
+            SpreadsheetCell a{6};
+           </code>
+           As a copy:
+           <code class="calibre21">
+            SpreadsheetCell b{a};
+           </code>
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="left1">
+           A default constructor as well as a single- or multi-argument non-copy constructor
+          </td>
+          <td class="left1">
+           A copy constructor
+          </td>
+          <td class="left1">
+           With no arguments:
+           <code class="calibre21">
+            SpreadsheetCell a;
+           </code>
+           With arguments:
+           <code class="calibre21">
+            SpreadsheetCell b{5};
+           </code>
+           As a copy:
+           <code class="calibre21">
+            SpreadsheetCell c{a};
+           </code>
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p class="calibre13" id="c08-para-0198">
+        Note the lack of symmetry between the default constructor and the copy constructor. As long as you don't define a copy constructor explicitly, the compiler creates one for you. On the other hand, as soon as you define
+        <i class="calibre18">
+         any
+        </i>
+        constructor, the compiler stops generating a default constructor.
+       </p>
+       <p class="calibre13">
+        As mentioned before in this chapter, the automatic generation of a default constructor and a default copy constructor can be influenced by defining them as explicitly defaulted or explicitly deleted.
+       </p>
+       <section class="calibre2">
+        <aside class="calibre23">
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+         <section class="feature">
+          <p class="calibre25" id="c08-para-0200">
+           <b class="calibre14">
+            NOTE
+           </b>
+           <i class="calibre18">
+            A final type of constructor is a move constructor, required to implement move semantics. Move semantics is used to increase performance in certain situations and is discussed in detail in
+           </i>
+           <a class="calibre5" href="c09.xhtml">
+            <i class="calibre18">
+             Chapter
+            </i>
+            9
+           </a>
+           .
+          </p>
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+         </section>
+        </aside>
+       </section>
+      </section>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c08-sec-0061">
+      </span>
+      <h3 class="calibre27" id="head-3-182">
+       Object Destruction
+      </h3>
+      <p class="calibre13">
+       When an object is destroyed, two events occur: the object's
+       <i class="calibre18">
+        destructor
+       </i>
+       member function is called, and the memory it was taking up is freed. The destructor is your chance to perform any cleanup work for the object, such as freeing dynamically allocated memory or closing file handles. If you don't declare a destructor, the compiler writes one for you that does recursive member-wise destruction and allows the object to be deleted. A destructor of a class is a member function with as name the name of the class prefixed with a tilde (
+       <code class="calibre21">
+        ˜
+       </code>
+       ). A destructor does not return anything and does not have any parameters. Here is an example of a destructor that simply writes something to standard output:
+      </p>
+      <pre class="calibre26" id="c08-code-0095"><span aria-label="287" class="calibre20" epub:type="pagebreak" id="Page_287" role="doc-pagebreak"></span><code class="calibre21">export class SpreadsheetCell</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        ˜SpreadsheetCell();  <span class="color">// Destructor.</span></code>
+<code class="calibre21">        <span class="color">// Remainder of the class definition omitted for brevity</span></code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">SpreadsheetCell::˜SpreadsheetCell()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    println("Destructor called.");</code>
+<code class="calibre21">}</code></pre>
+      <p class="calibre13">
+       Objects on the stack are destroyed when they go
+       <i class="calibre18">
+        out of scope
+       </i>
+       , which means whenever the current function or other execution
+       <i class="calibre18">
+        block
+       </i>
+       ends. In other words, whenever the code encounters an ending curly brace, any objects created on the stack within those curly braces are destroyed. The following program shows this behavior:
+      </p>
+      <pre class="calibre26" id="c08-code-0096"><code class="calibre21">int main()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    SpreadsheetCell myCell { 5 };</code>
+<code class="calibre21">    if (myCell.getValue() == 5) {</code>
+<code class="calibre21">        SpreadsheetCell anotherCell { 6 };</code>
+<code class="calibre21">    } <span class="color">// anotherCell is destroyed as this block ends.</span></code>
+<code class="calibre21"> </code>
+<code class="calibre21">    println("myCell: {}", myCell.getValue());</code>
+<code class="calibre21">} <span class="color">// myCell is destroyed as this block ends.</span></code></pre>
+      <p class="calibre13">
+       Objects on the stack are destroyed in the reverse order of their declaration (and construction). For example, in the following code fragment,
+       <code class="calibre21">
+        myCell2
+       </code>
+       is created before
+       <code class="calibre21">
+        anotherCell2
+       </code>
+       , so
+       <code class="calibre21">
+        anotherCell2
+       </code>
+       is destroyed before
+       <code class="calibre21">
+        myCell2
+       </code>
+       (note that you can start a new code block at any point in your program with an opening curly brace):
+      </p>
+      <pre class="calibre26" id="c08-code-0097"><code class="calibre21">{</code>
+<code class="calibre21">    SpreadsheetCell myCell2 { 4 };</code>
+<code class="calibre21">    SpreadsheetCell anotherCell2 { 5 }; <span class="color">// myCell2 constructed before anotherCell2</span></code>
+<code class="calibre21">} <span class="color">// anotherCell2 destroyed before myCell2</span></code></pre>
+      <p class="calibre13" id="c08-para-0204">
+       This ordering also applies to objects that are data members of other objects. Recall that data members are initialized in the order of their declaration in the class. Thus, following the rule that objects are destroyed in the reverse order of their construction, data member objects are destroyed in the reverse order of their declaration order in the class.
+      </p>
+      <p class="calibre13">
+       Objects allocated on the free store without the help of smart pointers are not destroyed automatically. You must call
+       <code class="calibre21">
+        delete
+       </code>
+       on the object pointer to call its destructor and free its memory. The following program shows this behavior.
+      </p>
+      <section class="calibre2">
+       <aside class="calibre23">
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+        <section class="feature">
+         <p class="calibre25" id="c08-para-0206">
+          <b class="calibre14">
+           WARNING
+          </b>
+          <i class="calibre18">
+           Do not write programs like the next example where
+          </i>
+          <code class="calibre21">
+           cellPtr2
+          </code>
+          <i class="calibre18">
+           is not deleted. Make sure you always free dynamically allocated memory by calling
+          </i>
+          <code class="calibre21">
+           delete
+          </code>
+          <i class="calibre18">
+           or
+          </i>
+          <code class="calibre21">
+           delete[]
+          </code>
+          <i class="calibre18">
+           depending on whether the memory was allocated using
+          </i>
+          <code class="calibre21">
+           new
+          </code>
+          <i class="calibre18">
+           or
+          </i>
+          <code class="calibre21">
+           new[]
+          </code>
+          <i class="calibre18">
+           . Or better yet, use smart pointers as discussed earlier!
+          </i>
+         </p>
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <pre class="calibre26" id="c08-code-0098"><span aria-label="288" class="calibre20" epub:type="pagebreak" id="Page_288" role="doc-pagebreak"></span><code class="calibre21">int main()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    SpreadsheetCell* cellPtr1 { new SpreadsheetCell { 5 } };</code>
+<code class="calibre21">    SpreadsheetCell* cellPtr2 { new SpreadsheetCell { 6 } };</code>
+<code class="calibre21">    println("cellPtr1: {}", cellPtr1-&gt;getValue());</code>
+<code class="calibre21">    delete cellPtr1; <span class="color">// Destroys cellPtr1</span></code>
+<code class="calibre21">    cellPtr1 = nullptr;</code>
+<code class="calibre21">} <span class="color">// cellPtr2 is NOT destroyed because delete was not called on it.</span></code></pre>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c08-sec-0063">
+      </span>
+      <h3 class="calibre27" id="head-3-183">
+       Assigning to Objects
+      </h3>
+      <p class="calibre13">
+       Just as you can assign the value of one
+       <code class="calibre21">
+        int
+       </code>
+       to another in C++, you can assign the value of one object to another. For example, the following code assigns the value of
+       <code class="calibre21">
+        myCell
+       </code>
+       to
+       <code class="calibre21">
+        anotherCell
+       </code>
+       :
+      </p>
+      <pre class="calibre26" id="c08-code-0099"><code class="calibre21">SpreadsheetCell myCell { 5 }, anotherCell;</code>
+<code class="calibre21"><b class="calibre14">anotherCell = myCell;</b></code></pre>
+      <p class="calibre13" id="c08-para-0208">
+       You might be tempted to say that
+       <code class="calibre21">
+        myCell
+       </code>
+       is “copied” to
+       <code class="calibre21">
+        anotherCell
+       </code>
+       . However, in the world of C++, “copying” occurs only when an object is being initialized. If an object already has a value that is being overwritten, the more accurate term is “assigned to.” Note that the facility that C++ provides for copying is the copy constructor. Because it is a constructor, it can only be used for object creation, not for later assignments to the object.
+      </p>
+      <p class="calibre13">
+       Therefore, C++ provides another member function in every class to perform assignment. This member function is called the
+       <i class="calibre18">
+        assignment operator
+       </i>
+       . Its name is
+       <code class="calibre21">
+        operator=
+       </code>
+       because it is actually an overload of the
+       <code class="calibre21">
+        =
+       </code>
+       operator for that class. In the preceding example, the assignment operator for
+       <code class="calibre21">
+        anotherCell
+       </code>
+       is called, with
+       <code class="calibre21">
+        myCell
+       </code>
+       as the argument.
+      </p>
+      <section class="calibre2">
+       <aside class="calibre23">
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+        <section class="feature">
+         <p class="calibre25" id="c08-para-0210">
+          <b class="calibre14">
+           NOTE
+          </b>
+          <i class="calibre18">
+           The assignment operator as explained in this section is sometimes called the copy assignment operator because data is copied from the right-hand side object to the left-hand side object
+          </i>
+          .
+          <a class="calibre5" href="c09.xhtml">
+           <i class="calibre18">
+            Chapter
+           </i>
+           9
+          </a>
+          <i class="calibre18">
+           discusses another kind of assignment operator, the move assignment operator, in which data is moved instead of copied, which improves performance for certain use cases
+          </i>
+          .
+         </p>
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <p class="calibre13" id="c08-para-0211">
+       As usual, if you don't write your own assignment operator, C++ writes one for you to allow objects to be assigned to one another. The default C++ assignment behavior is almost identical to its default copying behavior: it recursively assigns each data member from the source to the destination object.
+      </p>
+      <section class="calibre2">
+       <span class="calibre" id="c08-sec-0065">
+       </span>
+       <h4 class="calibre29" id="head-4-162">
+        Declaring an Assignment Operator
+       </h4>
+       <p class="calibre13">
+        Here is the assignment operator for the
+        <code class="calibre21">
+         SpreadsheetCell
+        </code>
+        class:
+       </p>
+       <pre class="calibre26" id="c08-code-0100"><code class="calibre21">export class SpreadsheetCell</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        <b class="calibre14">SpreadsheetCell&amp; operator=(const SpreadsheetCell&amp; rhs);</b></code>
+<code class="calibre21">        <span class="color">// Remainder of the class definition omitted for brevity</span></code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13" id="c08-para-0213">
+        <span aria-label="289" class="calibre20" epub:type="pagebreak" id="Page_289" role="doc-pagebreak">
+        </span>
+        The assignment operator usually takes a reference-to-
+        <code class="calibre21">
+         const
+        </code>
+        to the source object, like the copy constructor. In this case, the source object is called
+        <code class="calibre21">
+         rhs
+        </code>
+        , which stands for right-hand side of the equal sign, but you are of course free to call it whatever you want. The object on which the assignment operator is called is the left-hand side of the equal sign.
+       </p>
+       <p class="calibre13">
+        Unlike a copy constructor, the assignment operator returns a reference to a
+        <code class="calibre21">
+         SpreadsheetCell
+        </code>
+        object. The reason is that assignments can be
+        <i class="calibre18">
+         chained
+        </i>
+        , as in the following example:
+       </p>
+       <pre class="calibre26" id="c08-code-0101"><code class="calibre21">myCell = anotherCell = aThirdCell;</code></pre>
+       <p class="calibre13">
+        When that line is executed, the first thing that happens is the assignment operator for
+        <code class="calibre21">
+         anotherCell
+        </code>
+        is called with
+        <code class="calibre21">
+         aThirdCell
+        </code>
+        as its “right-hand side” argument. Next, the assignment operator for
+        <code class="calibre21">
+         myCell
+        </code>
+        is called. However, its argument is not
+        <code class="calibre21">
+         anotherCell
+        </code>
+        ; its right-hand side is the
+        <i class="calibre18">
+         result
+        </i>
+        of the assignment of
+        <code class="calibre21">
+         aThirdCell
+        </code>
+        to
+        <code class="calibre21">
+         anotherCell
+        </code>
+        . The equal sign is simply just shorthand for what is really a member function call. When you look at the line in its full functional syntax shown here, you can see the problem:
+       </p>
+       <pre class="calibre26" id="c08-code-0102"><code class="calibre21">myCell.operator=(anotherCell.operator=(aThirdCell));</code></pre>
+       <p class="calibre13">
+        Now, you can see that the
+        <code class="calibre21">
+         operator=
+        </code>
+        call from
+        <code class="calibre21">
+         anotherCell
+        </code>
+        must return a value, which is passed to the
+        <code class="calibre21">
+         operator=
+        </code>
+        call for
+        <code class="calibre21">
+         myCell
+        </code>
+        . The correct value to return is a reference to
+        <code class="calibre21">
+         anotherCell
+        </code>
+        itself, so it can serve as the source for the assignment to
+        <code class="calibre21">
+         myCell
+        </code>
+        .
+       </p>
+       <section class="calibre2">
+        <aside class="calibre23">
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+         <section class="feature">
+          <p class="calibre25" id="c08-para-0217">
+           <b class="calibre14">
+            WARNING
+           </b>
+           <i class="calibre18">
+            You could actually declare the assignment operator to return whatever type you wanted, including
+           </i>
+           <code class="calibre21">
+            void
+           </code>
+           <i class="calibre18">
+            . However, you should always return a reference to the object on which it is called because that's what clients expect.
+           </i>
+          </p>
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+         </section>
+        </aside>
+       </section>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c08-sec-0067">
+       </span>
+       <h4 class="calibre29" id="head-4-163">
+        Defining an Assignment Operator
+       </h4>
+       <p class="calibre13" id="c08-para-0218">
+        The implementation of the assignment operator is similar to that of a copy constructor but with several important differences. First, a copy constructor is called only for initialization, so the destination object does not yet have valid values. An assignment operator can overwrite the current values in an object. This consideration doesn't really come into play until you have dynamically allocated resources, such as memory, in your objects. See
+        <a class="calibre5" href="c09.xhtml">
+         Chapter 9
+        </a>
+        for details.
+       </p>
+       <p class="calibre13">
+        Second, it's legal in C++ to assign an object to itself. For example, the following code compiles and runs:
+       </p>
+       <pre class="calibre26" id="c08-code-0103"><code class="calibre21">SpreadsheetCell cell { 4 };</code>
+<code class="calibre21">cell = cell; <span class="color">// Self-assignment</span></code></pre>
+       <p class="calibre13" id="c08-para-0220">
+        Your assignment operator needs to take the possibility of self-assignment into account. In the
+        <code class="calibre21">
+         SpreadsheetCell
+        </code>
+        class, this is not important, as its only data member is a primitive type,
+        <code class="calibre21">
+         double
+        </code>
+        . However, when your class has dynamically allocated memory or other resources, it's paramount to take self-assignment into account, as is discussed in detail in
+        <a class="calibre5" href="c09.xhtml">
+         Chapter 9
+        </a>
+        . To prevent problems in such cases, the first thing assignment operators usually do is check for self-assignment and return immediately if that's the case.
+       </p>
+       <p class="calibre13">
+        <span aria-label="290" class="calibre20" epub:type="pagebreak" id="Page_290" role="doc-pagebreak">
+        </span>
+        Here is the start of the definition of the assignment operator for the
+        <code class="calibre21">
+         SpreadsheetCell
+        </code>
+        class:
+       </p>
+       <pre class="calibre26" id="c08-code-0104"><code class="calibre21">SpreadsheetCell&amp; SpreadsheetCell::operator=(const SpreadsheetCell&amp; rhs)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    if (this == &amp;rhs) {</code></pre>
+       <p class="calibre13">
+        This first line checks for self-assignment, but it might be a bit cryptic. Self-assignment occurs when the left-hand side and the right-hand side of the equal sign are the same. One way to tell whether two objects are the same is if they occupy the same memory location—more explicitly, if pointers to them are equal. Recall that
+        <code class="calibre21">
+         this
+        </code>
+        is a pointer to an object accessible from any member function called on the object. Thus,
+        <code class="calibre21">
+         this
+        </code>
+        is a pointer to the left-hand side object. Similarly,
+        <code class="calibre21">
+         &amp;rhs
+        </code>
+        is a pointer to the right-hand side object. If these pointers are equal, the assignment must be self-assignment, but because the return type is
+        <code class="calibre21">
+         SpreadsheetCell&amp;
+        </code>
+        , a correct value must still be returned. All assignment operators return
+        <code class="calibre21">
+         *this
+        </code>
+        as follows, and the self-assignment case is no exception:
+       </p>
+       <pre class="calibre26" id="c08-code-0105"><code class="calibre21">        return *this;</code>
+<code class="calibre21">    }</code></pre>
+       <p class="calibre13">
+        <code class="calibre21">
+         this
+        </code>
+        is a pointer to the object on which the member function executes, so
+        <code class="calibre21">
+         *this
+        </code>
+        is the object itself. The compiler returns a reference to the object to match the declared return type. Now, if it is not self-assignment, you have to do an assignment to every member:
+       </p>
+       <pre class="calibre26" id="c08-code-0106"><code class="calibre21">    m_value = rhs.m_value;</code>
+<code class="calibre21">    return *this;</code>
+<code class="calibre21">}</code></pre>
+       <p class="calibre13" id="c08-para-0224">
+        Here the member function copies the values, and finally, it returns
+        <code class="calibre21">
+         *this
+        </code>
+        , as explained earlier.
+       </p>
+       <p class="calibre13">
+        Astute readers will notice there's some code duplication between the copy assignment operator and the copy constructor; they both need to copy all data members.
+        <a class="calibre5" href="c09.xhtml">
+         Chapter 9
+        </a>
+        introduces the copy-and-swap idiom to prevent such code duplication.
+       </p>
+       <section class="calibre2">
+        <aside class="calibre23">
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+         <section class="feature">
+          <p class="calibre25" id="c08-para-0226">
+           <b class="calibre14">
+            NOTE
+           </b>
+           <i class="calibre18">
+            The
+           </i>
+           <code class="calibre21">
+            SpreadsheetCell
+           </code>
+           <i class="calibre18">
+            assignment operator is shown only for demonstration purposes. In fact, in this case, the assignment operator can be omitted because the default compiler-generated one is good enough; it does simple member-wise assignments of all data members. However, under certain conditions, this compiler-generated assignment operator is not sufficient. These conditions are covered in
+            <a class="calibre5" href="c09.xhtml">
+             Chapter 9
+            </a>
+            .
+           </i>
+          </p>
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+         </section>
+        </aside>
+       </section>
+       <section class="calibre2">
+        <aside class="calibre23">
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+         <section class="feature">
+          <p class="calibre25" id="c08-para-0227">
+           <b class="calibre14">
+            WARNING
+           </b>
+           <i class="calibre18">
+            If your class requires special handling for copy operations, always implement both the copy constructor and the copy assignment operator
+           </i>
+           .
+          </p>
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+         </section>
+        </aside>
+       </section>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c08-sec-0070">
+       </span>
+       <h4 class="calibre29" id="head-4-164">
+        Explicitly Defaulted and Deleted Assignment Operator
+       </h4>
+       <p class="calibre13">
+        You can explicitly default or delete a compiler-generated assignment operator as follows:
+       </p>
+       <pre class="calibre26" id="c08-code-0107"><code class="calibre21">SpreadsheetCell&amp; operator=(const SpreadsheetCell&amp; rhs) = default;</code></pre>
+       <p class="calibre13">
+        <span aria-label="291" class="calibre20" epub:type="pagebreak" id="Page_291" role="doc-pagebreak">
+        </span>
+        or
+       </p>
+       <pre class="calibre26" id="c08-code-0108"><code class="calibre21">SpreadsheetCell&amp; operator=(const SpreadsheetCell&amp; rhs) = delete;</code></pre>
+      </section>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c08-sec-0071">
+      </span>
+      <h3 class="calibre27" id="head-3-184">
+       Compiler-Generated Copy Constructor and Copy Assignment Operator
+      </h3>
+      <p class="calibre13">
+       C++11 deprecated the generation of a copy constructor if the class has a user-declared copy assignment operator or destructor. If you still need a compiler-generated copy constructor in such a case, you can explicitly default one:
+      </p>
+      <pre class="calibre26" id="c08-code-0109"><code class="calibre21">MyClass(const MyClass&amp; src) = default;</code></pre>
+      <p class="calibre13">
+       C++11 also deprecated the generation of a copy assignment operator if the class has a user-declared copy constructor or destructor. If you still need a compiler-generated copy assignment operator in such a case, you can explicitly default one:
+      </p>
+      <pre class="calibre26" id="c08-code-0110"><code class="calibre21">MyClass&amp; operator=(const MyClass&amp; rhs) = default;</code></pre>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c08-sec-0072">
+      </span>
+      <h3 class="calibre27" id="head-3-185">
+       Distinguishing Copying from Assignment
+      </h3>
+      <p class="calibre13">
+       It is sometimes difficult to tell when objects are initialized with a copy constructor rather than assigned to with the assignment operator. Essentially, things that look like a declaration are going to be using copy constructors, and things that look like assignment statements are handled by the assignment operator. Consider the following code:
+      </p>
+      <pre class="calibre26" id="c08-code-0111"><code class="calibre21">SpreadsheetCell myCell { 5 };</code>
+<code class="calibre21">SpreadsheetCell anotherCell { myCell };</code></pre>
+      <p class="calibre13">
+       <code class="calibre21">
+        AnotherCell
+       </code>
+       is constructed with the copy constructor. Now consider the following:
+      </p>
+      <pre class="calibre26" id="c08-code-0112"><code class="calibre21">SpreadsheetCell aThirdCell = myCell;</code></pre>
+      <p class="calibre13">
+       <code class="calibre21">
+        aThirdCell
+       </code>
+       is also constructed with the copy constructor, because this is a declaration. The
+       <code class="calibre21">
+        operator=
+       </code>
+       is not called for this line! This syntax is just another way to write
+       <code class="calibre21">
+        SpreadsheetCell aThirdCell{myCell};
+       </code>
+       . However, consider the following code:
+      </p>
+      <pre class="calibre26" id="c08-code-0113"><code class="calibre21">anotherCell = myCell; <span class="color">// Calls operator= for anotherCell</span></code></pre>
+      <p class="calibre13" id="c08-para-0235">
+       Here,
+       <code class="calibre21">
+        anotherCell
+       </code>
+       has already been constructed, so the compiler calls
+       <code class="calibre21">
+        operator=
+       </code>
+       .
+      </p>
+      <section class="calibre2">
+       <span class="calibre" id="c08-sec-0073">
+       </span>
+       <h4 class="calibre29" id="head-4-165">
+        Objects as Return Values
+       </h4>
+       <p class="calibre13">
+        When you return objects from functions, it is sometimes difficult to see exactly what copying and assigning is happening. For example, the implementation of
+        <code class="calibre21">
+         SpreadsheetCell::getString()
+        </code>
+        looks like this:
+       </p>
+       <pre class="calibre26" id="c08-code-0114"><code class="calibre21">string SpreadsheetCell::getString() const</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    return doubleToString(m_value);</code>
+<code class="calibre21">}</code></pre>
+       <p class="calibre13">
+        Now consider the following code:
+       </p>
+       <pre class="calibre26" id="c08-code-0115"><code class="calibre21">SpreadsheetCell myCell2 { 5 };</code>
+<code class="calibre21">string s1;</code>
+<code class="calibre21">s1 = myCell2.getString();</code></pre>
+       <p class="calibre13" id="c08-para-0238">
+        <span aria-label="292" class="calibre20" epub:type="pagebreak" id="Page_292" role="doc-pagebreak">
+        </span>
+        When
+        <code class="calibre21">
+         getString()
+        </code>
+        returns the string, the compiler actually creates an unnamed temporary
+        <code class="calibre21">
+         string
+        </code>
+        object by calling a
+        <code class="calibre21">
+         string
+        </code>
+        copy constructor. When you assign this result to
+        <code class="calibre21">
+         s1
+        </code>
+        , the assignment operator is called for
+        <code class="calibre21">
+         s1
+        </code>
+        with the temporary
+        <code class="calibre21">
+         string
+        </code>
+        as a parameter. Then, the temporary
+        <code class="calibre21">
+         string
+        </code>
+        object is destroyed. Thus, the single line of code could invoke the copy constructor and the assignment operator (for two different objects).
+       </p>
+       <p class="calibre13">
+        In case you're not confused enough, consider this code:
+       </p>
+       <pre class="calibre26" id="c08-code-0116"><code class="calibre21">SpreadsheetCell myCell3 { 5 };</code>
+<code class="calibre21"><b class="calibre14">string s2 = myCell3.getString();</b></code></pre>
+       <p class="calibre13" id="c08-para-0240">
+        In this case,
+        <code class="calibre21">
+         getString()
+        </code>
+        still creates a temporary unnamed
+        <code class="calibre21">
+         string
+        </code>
+        object when it returns. But now,
+        <code class="calibre21">
+         s2
+        </code>
+        gets its copy constructor called, not its assignment operator.
+       </p>
+       <p class="calibre13" id="c08-para-0241">
+        With
+        <i class="calibre18">
+         move semantics
+        </i>
+        , the compiler can use a
+        <i class="calibre18">
+         move constructor
+        </i>
+        or
+        <i class="calibre18">
+         move assignment operator
+        </i>
+        instead of a copy constructor or copy assignment operator to return the string from
+        <code class="calibre21">
+         getString()
+        </code>
+        . This can be more efficient in certain cases and is discussed in
+        <a class="calibre5" href="c09.xhtml">
+         Chapter 9
+        </a>
+        . However, even better, compilers are free to (and often even required to) implement
+        <i class="calibre18">
+         copy elision
+        </i>
+        to optimize away costly copy operations or move operations when returning values; see
+        <a class="calibre5" href="c01_split_000.xhtml">
+         Chapter 1
+        </a>
+        .
+       </p>
+       <p class="calibre13" id="c08-para-0242">
+        If you ever forget the order in which these things happen or which constructor or operator is called, you can easily figure it out by temporarily including helpful output in your code or by stepping through your code with a debugger.
+       </p>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c08-sec-0074">
+       </span>
+       <h4 class="calibre29" id="head-4-166">
+        Copy Constructors and Object Members
+       </h4>
+       <p class="calibre13" id="c08-para-0243">
+        You should also note the difference between assignment operator and copy constructor calls in constructors. If an object contains other objects, the compiler-generated copy constructor calls the copy constructors of each of the contained objects recursively. When you write your own copy constructor, you can provide the same semantics by using a ctor-initializer, as shown previously. If you omit a data member from the ctor-initializer, the compiler performs default initialization on it (a call to the default constructor for objects) before executing your code in the body of the constructor. Thus, by the time the body of the constructor executes, all object data members have already been initialized.
+       </p>
+       <p class="calibre13">
+        For example, you could write the
+        <code class="calibre21">
+         SpreadsheetCell
+        </code>
+        copy constructor like this:
+       </p>
+       <pre class="calibre26" id="c08-code-0117"><code class="calibre21">SpreadsheetCell::SpreadsheetCell(const SpreadsheetCell&amp; src)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    m_value = src.m_value;</code>
+<code class="calibre21">}</code></pre>
+       <p class="calibre13" id="c08-para-0245">
+        However, when you assign values to data members in the body of the copy constructor, you are using the assignment operator on them, not the copy constructor, because they have already been initialized.
+       </p>
+       <p class="calibre13">
+        If you write the copy constructor as follows, then
+        <code class="calibre21">
+         m_value
+        </code>
+        is initialized using the copy constructor:
+       </p>
+       <pre class="calibre26" id="c08-code-0118"><code class="calibre21">SpreadsheetCell::SpreadsheetCell(const SpreadsheetCell&amp; src)</code>
+<code class="calibre21">    : m_value { src.m_value }</code>
+<code class="calibre21">{</code>
+<code class="calibre21">}</code></pre>
+      </section>
      </section>
     </section>
-    <section aria-labelledby="head-2-7" class="calibre2">
-     <span class="calibre" id="bapp01-sec-0020">
+    <span aria-label="293" class="calibre20" epub:type="pagebreak" id="Page_293" role="doc-pagebreak">
+    </span>
+    <section aria-labelledby="head-2-106" class="calibre2">
+     <span class="calibre" id="c08-sec-0075">
      </span>
-     <div class="calibre19" id="calibre_pb_5">
-     </div>
+     <h2 class="calibre6" id="head-2-106">
+      SUMMARY
+     </h2>
+     <p class="calibre13" id="c08-para-0247">
+      This chapter covered the fundamental aspects of C++'s facilities for object-oriented programming: classes and objects. It first reviewed the basic syntax for writing classes and using objects, including access control. Then, it covered object life cycles: when objects are constructed, destructed, and assigned to, and what member functions those actions invoke. The chapter included details of the constructor syntax, including ctor-initializers and initializer-list constructors, and introduced the notion of copy assignment operators. It also specified exactly which constructors the compiler writes for you and under what circumstances, and it explained that default constructors require no arguments.
+     </p>
+     <p class="calibre13" id="c08-para-0248">
+      You may have found this chapter to be mostly review. Or, it may have opened your eyes to the world of object-oriented programming in C++. In any case, now that you are proficient with objects and classes, read
+      <a class="calibre5" href="c09.xhtml">
+       Chapter 9
+      </a>
+      to learn more about their tricks and subtleties.
+     </p>
+    </section>
+    <section aria-labelledby="head-2-107" class="calibre2">
+     <span class="calibre" id="c08-sec-0076">
+     </span>
+     <h2 class="calibre6" id="head-2-107">
+      EXERCISES
+     </h2>
+     <p class="calibre13" id="c08-para-0249">
+      By solving the following exercises, you can practice the material discussed in this chapter. Solutions to all exercises are available with the code download on the book's website at
+      <code class="calibre21">
+       <a class="calibre5" href="http://www.wiley.com/go/proc++6e">
+        www.wiley.com/go/proc++6e
+       </a>
+      </code>
+      . However, if you are stuck on an exercise, first reread parts of this chapter to try to find an answer yourself before looking at the solution from the website.
+     </p>
+     <section class="calibre2">
+      <span class="calibre" id="c08-exsec-0001">
+      </span>
+      <ol class="none1">
+       <li class="calibre9" id="c08-ex-0001">
+        <b class="calibre14">
+         Exercise 8-1:
+        </b>
+        Implement a
+        <code class="calibre21">
+         Person
+        </code>
+        class storing a first and last name as data members. Add a single constructor accepting two parameters, the first and last name. Provide appropriate getters and setters. Write a small
+        <code class="calibre21">
+         main()
+        </code>
+        function to test your implementation by creating a
+        <code class="calibre21">
+         Person
+        </code>
+        object on the stack and on the free store.
+       </li>
+       <li class="calibre9" id="c08-ex-0002">
+        <b class="calibre14">
+         Exercise 8-2:
+        </b>
+        With the set of member functions implemented in Exercise 8-1, the following line of code does not compile:
+        <pre class="calibre26" id="c08-code-0119"><code class="calibre21">Person persons[3];</code></pre>
+        <p class="listpara" id="c08-para-0253">
+         Can you explain why this does not compile? Modify the implementation of your
+         <code class="calibre21">
+          Person
+         </code>
+         class to make this work.
+        </p>
+       </li>
+       <li class="calibre9" id="c08-ex-0003">
+        <b class="calibre14">
+         Exercise 8-3:
+        </b>
+        Add the following member functions to your
+        <code class="calibre21">
+         Person
+        </code>
+        class implementation: a copy constructor, a copy assignment operator, and a destructor. In all of these member functions, implement what you think is necessary, and additionally, output a line of text to the console so you can trace when they are executed. Modify your
+        <code class="calibre21">
+         main()
+        </code>
+        function to test these new member functions. Note: technically, these new member functions are not strictly required for this
+        <code class="calibre21">
+         Person
+        </code>
+        class, because the compiler-generated versions are good enough, but this exercise is to practice writing them.
+       </li>
+       <li class="calibre9" id="c08-ex-0004">
+        <b class="calibre14">
+         Exercise 8-4:
+        </b>
+        Remove the copy constructor, copy assignment operator, and destructor from your
+        <code class="calibre21">
+         Person
+        </code>
+        class, because the default compiler-generated versions are exactly what you need for this simple class. Next, add a new data member to store the initials of a person, and provide a getter and setter. Add a new constructor that accepts three parameters, a first and last name, and a person's initials. Modify the original two-parameter constructor to automatically generate initials for a given first and last name, and delegate the actual construction work to the new three-parameter constructor. Test this new functionality in your
+        <code class="calibre21">
+         main()
+        </code>
+        function.
+       </li>
+      </ol>
+     </section>
     </section>
    </section>
   </div>

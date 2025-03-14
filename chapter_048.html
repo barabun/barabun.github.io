@@ -1,0 +1,2968 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html>
+<html epub:prefix="z3998: http://www.daisy.org/z3998/2012/vocab/structure/#" lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+ <head>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   33Applying Design Patterns
+  </title>
+ </head>
+ <body>
+  <div class="navigation">
+   <a class="nav-button" href="chapter_047.html">
+    ← Previous
+   </a>
+   <a class="nav-button" href="index.html">
+    Table of Contents
+   </a>
+   <a class="nav-button" href="chapter_049.html">
+    Next →
+   </a>
+  </div>
+  <div class="chapter-content">
+   <section aria-labelledby="c33_1" class="calibre2" epub:type="chapter" role="doc-chapter">
+    <header class="calibre10">
+     <h1 class="calibre16" id="c33_1">
+      <span aria-label="1179" class="calibre17" epub:type="pagebreak" id="Page_1179" role="doc-pagebreak">
+      </span>
+      <span class="calibre" id="c33">
+      </span>
+      <span class="calibre">
+       33
+      </span>
+      <br class="calibre12"/>
+      <span class="calibre">
+       Applying Design Patterns
+      </span>
+     </h1>
+    </header>
+    <section aria-label="chapter opening" class="calibre2">
+     <span class="calibre" id="c33-sec-0001">
+     </span>
+     <section class="calibre2">
+      <aside class="calibre23">
+       <div class="top">
+        <hr class="calibre24"/>
+       </div>
+       <section class="feature1">
+        <h3 class="calibre30">
+         WHAT'S IN THIS CHAPTER?
+        </h3>
+        <ul class="check2" id="c33-list-0001">
+         <li class="calibre9" id="c33-li-0001">
+          What a pattern is and what the difference is with a design technique
+         </li>
+         <li class="calibre9" id="c33-li-0002">
+          How to use the following patterns:
+          <ul class="check3" id="c33-list-0002">
+           <li class="calibre9" id="c33-li-0003">
+            Strategy
+           </li>
+           <li class="calibre9" id="c33-li-0004">
+            Abstract factory
+           </li>
+           <li class="calibre9" id="c33-li-0005">
+            Factory method
+           </li>
+           <li class="calibre9" id="c33-li-0006">
+            Adapter
+           </li>
+           <li class="calibre9" id="c33-li-0007">
+            Proxy
+           </li>
+           <li class="calibre9" id="c33-li-0008">
+            Iterator
+           </li>
+           <li class="calibre9" id="c33-li-0009">
+            Observer
+           </li>
+           <li class="calibre9" id="c33-li-0010">
+            Decorator
+           </li>
+           <li class="calibre9" id="c33-li-0011">
+            Chain of responsibility
+           </li>
+           <li class="calibre9" id="c33-li-0012">
+            Singleton
+           </li>
+          </ul>
+         </li>
+        </ul>
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <section class="calibre2">
+      <aside class="calibre23">
+       <div class="top">
+        <hr class="calibre24"/>
+       </div>
+       <section class="feature1">
+        <span class="calibre" id="c33-fea-0001">
+        </span>
+        <h3 class="calibre30" id="head-2-323">
+         WILEY.COM DOWNLOADS FOR THIS CHAPTER
+        </h3>
+        <span class="calibre" id="c33-sec-0003">
+        </span>
+        <p class="calibre25" id="c33-para-0006">
+         Please note that all the code examples for this chapter are available as part of this chapter's code download on the book's website at
+         <code class="calibre21">
+          <a class="calibre5" href="http://www.wiley.com/go/proc++6e">
+           www.wiley.com/go/proc++6e
+          </a>
+         </code>
+         on the Download Code tab.
+        </p>
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <p class="calibre13" id="c33-para-0007">
+      A
+      <i class="calibre18">
+       design pattern
+      </i>
+      is a standard approach to program organization that solves a general problem. Design patterns are less language-specific than are techniques. The difference between a pattern
+      <span aria-label="1180" class="calibre20" epub:type="pagebreak" id="Page_1180" role="doc-pagebreak">
+      </span>
+      and a technique is admittedly fuzzy, and different books employ different definitions. This book defines a technique as a strategy particular to the C++ language, while a pattern is a more general strategy for object-oriented design applicable to any object-oriented language, such as C++, C#, Java, or Smalltalk. In fact, if you are familiar with C# or Java programming, you will recognize many of these patterns.
+     </p>
+     <p class="calibre13" id="c33-para-0008">
+      Design patterns have names, and that's a big advantage. The name carries meaning and therefore helps to more easily communicate about solutions. The names of patterns also help developers to more quickly understand a solution. However, certain patterns have several different names, and the distinctions between certain patterns is sometimes a bit vague with different sources describing and categorizing them slightly differently. In fact, depending on the books or other sources you use, you may find the same name applied to different patterns. There is even disagreement as to which design approaches qualify as patterns. With a few exceptions, this book follows the terminology used in the seminal book
+      <i class="calibre18">
+       Design Patterns: Elements of Reusable Object-Oriented Software
+      </i>
+      , by Erich Gamma et al. (Addison-Wesley Professional, 1994). Other pattern names and variations are noted when appropriate.
+     </p>
+     <p class="calibre13" id="c33-para-0009">
+      The design pattern concept is a simple but powerful idea. Once you are able to recognize the recurring object-oriented interactions that occur in a program, finding an elegant solution often becomes a matter of selecting the appropriate pattern to apply.
+     </p>
+     <p class="calibre13" id="c33-para-0010">
+      As there are books available discussing nothing but design patterns, this chapter briefly describes just a small selection of the more important design patterns in detail and presents sample implementations. This gives you a pretty good idea about what design patterns are all about.
+     </p>
+     <p class="calibre13" id="c33-para-0011">
+      Any aspect of design is likely to provoke debate among programmers, and I believe that is a good thing. Don't simply accept these patterns as the only way to accomplish a task—draw on their approaches and ideas to refine them and form new patterns.
+     </p>
+    </section>
+    <section aria-labelledby="head-2-324" class="calibre2">
+     <span class="calibre" id="c33-sec-0004">
+     </span>
+     <h2 class="calibre6" id="head-2-324">
+      THE STRATEGY PATTERN
+     </h2>
+     <p class="calibre13" id="c33-para-0012">
+      The
+      <i class="calibre18">
+       strategy design pattern
+      </i>
+      is one way to support the
+      <i class="calibre18">
+       dependency inversion principle
+      </i>
+      (DIP); see
+      <a class="calibre5" href="c06.xhtml">
+       Chapter 6
+      </a>
+      , “Designing for Reuse.” With this pattern, interfaces are used to invert dependency relationships. Interfaces are created for every provided service. If a component needs a set of services, interfaces to those services are injected into the component, a mechanism called
+      <i class="calibre18">
+       dependency injection
+      </i>
+      . Using the strategy pattern makes unit testing easier, as you can easily mock services away. As an example, this section discusses a logging mechanism implemented with the strategy pattern.
+     </p>
+     <section class="calibre2">
+      <span class="calibre" id="c33-sec-0005">
+      </span>
+      <h3 class="calibre27" id="head-3-580">
+       Example: A Logging Mechanism
+      </h3>
+      <p class="calibre13" id="c33-para-0013">
+       The strategy-based logger example uses an interface, or abstract base class, called
+       <code class="calibre21">
+        ILogger
+       </code>
+       . Any code that wants to log something uses this
+       <code class="calibre21">
+        ILogger
+       </code>
+       interface. Subsequently, a concrete implementation of this interface is then injected into any code that needs to be able to use the logging functionality. With this pattern, a unit test can, for example, inject a special mock implementation for the
+       <code class="calibre21">
+        ILogger
+       </code>
+       interface to verify that the right information gets logged. A huge advantage of this pattern is that concrete loggers can easily be swapped without having to modify any library code; client code simply passes in the logger it wants to use.
+      </p>
+     </section>
+     <span aria-label="1181" class="calibre20" epub:type="pagebreak" id="Page_1181" role="doc-pagebreak">
+     </span>
+     <section class="calibre2">
+      <span class="calibre" id="c33-sec-0006">
+      </span>
+      <h3 class="calibre27" id="head-3-581">
+       Implementation of a Strategy-Based Logger
+      </h3>
+      <p class="calibre13">
+       This implementation provides a
+       <code class="calibre21">
+        Logger
+       </code>
+       class with the following features:
+      </p>
+      <ul class="check" id="c33-list-0003">
+       <li class="calibre9" id="c33-li-0013">
+        It can log single strings.
+       </li>
+       <li class="calibre9" id="c33-li-0014">
+        Each log message is prefixed with the current system time and an associated log level.
+       </li>
+       <li class="calibre9" id="c33-li-0015">
+        The logger can be set up to only log messages above a certain log level.
+       </li>
+       <li class="calibre9" id="c33-li-0016">
+        Every logged message is flushed to disk so that it will appear in the file immediately.
+       </li>
+      </ul>
+      <p class="calibre13">
+       Let's first define the
+       <code class="calibre21">
+        ILogger
+       </code>
+       interface:
+      </p>
+      <pre class="calibre26" id="c33-code-0001"><code class="calibre21">export class ILogger</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual ˜ILogger() = default; <span class="color">// Virtual destructor.</span></code>
+<code class="calibre21"> </code>
+<code class="calibre21">        <span class="color">// Enumeration for the different log levels.</span></code>
+<code class="calibre21">        enum class LogLevel { Debug, Info, Error };</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        <span class="color">// Sets the log level.</span></code>
+<code class="calibre21">        virtual void setLogLevel(LogLevel level) = 0;</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        <span class="color">// Logs a single message at the given log level.</span></code>
+<code class="calibre21">        virtual void log(std::string_view message, LogLevel logLevel) = 0;</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13">
+       Next, a concrete
+       <code class="calibre21">
+        Logger
+       </code>
+       class is implemented as follows:
+      </p>
+      <pre class="calibre26" id="c33-code-0002"><code class="calibre21">export class Logger : public ILogger</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        explicit Logger(const std::string&amp; logFilename);</code>
+<code class="calibre21">        void setLogLevel(LogLevel level) override;</code>
+<code class="calibre21">        void log(std::string_view message, LogLevel logLevel) override;</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        <span class="color">// Converts a log level to a human readable string.</span></code>
+<code class="calibre21">        std::string_view getLogLevelString(LogLevel level) const;</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        std::ofstream m_outputStream;</code>
+<code class="calibre21">        LogLevel m_logLevel { LogLevel::Error };</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13">
+       The implementation of the
+       <code class="calibre21">
+        Logger
+       </code>
+       class is straightforward. Once the log file has been opened, each log message is written to it with the log level prepended and then flushed to disk.
+      </p>
+      <pre class="calibre26" id="c33-code-0003"><code class="calibre21">Logger::Logger(const string&amp; logFilename)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    m_outputStream.open(logFilename, ios_base::app);</code>
+<code class="calibre21">    if (!m_outputStream.good()) {</code>
+<code class="calibre21">        throw runtime_error { "Unable to initialize the Logger!" };</code>
+<code class="calibre21">    }</code>
+<code class="calibre21">    println(m_outputStream, "{}: Logger started.", chrono::system_clock::now());</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<span aria-label="1182" class="calibre20" epub:type="pagebreak" id="Page_1182" role="doc-pagebreak"></span><code class="calibre21">void Logger::setLogLevel(LogLevel level)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    m_logLevel = level;</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21">string_view Logger::getLogLevelString(LogLevel level) const</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    switch (level) {</code>
+<code class="calibre21">        case LogLevel::Debug: return "DEBUG";</code>
+<code class="calibre21">        case LogLevel::Info: return "INFO";</code>
+<code class="calibre21">        case LogLevel::Error: return "ERROR";</code>
+<code class="calibre21">    }</code>
+<code class="calibre21">    throw runtime_error { "Invalid log level." };</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21">void Logger::log(string_view message, LogLevel logLevel)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    if (m_logLevel &gt; logLevel) { return; }</code>
+<code class="calibre21">    println(m_outputStream, "{}: [{}] {}", chrono::system_clock::now(),</code>
+<code class="calibre21">        getLogLevelString(logLevel), message);</code>
+<code class="calibre21">}</code></pre>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c33-sec-0007">
+      </span>
+      <h3 class="calibre27" id="head-3-582">
+       Using the Strategy-Based Logger
+      </h3>
+      <p class="calibre13">
+       Suppose you have a class called
+       <code class="calibre21">
+        Foo
+       </code>
+       that wants to use the logging functionality. With the strategy pattern, a concrete
+       <code class="calibre21">
+        ILogger
+       </code>
+       instance is injected into the class, for example through the constructor:
+      </p>
+      <pre class="calibre26" id="c33-code-0004"><code class="calibre21">class Foo</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        explicit Foo(ILogger* logger) : m_logger { logger }</code>
+<code class="calibre21">        {</code>
+<code class="calibre21">            if (m_logger == nullptr) {</code>
+<code class="calibre21">                throw invalid_argument { "ILogger cannot be null." };</code>
+<code class="calibre21">            }</code>
+<code class="calibre21">        }</code>
+<code class="calibre21">        void doSomething()</code>
+<code class="calibre21">        {</code>
+<code class="calibre21">            m_logger-&gt;log("Hello strategy!", ILogger::LogLevel::Info);</code>
+<code class="calibre21">        }</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        ILogger* m_logger;</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13">
+       When a
+       <code class="calibre21">
+        Foo
+       </code>
+       instance is created, a concrete
+       <code class="calibre21">
+        ILogger
+       </code>
+       is injected into it:
+      </p>
+      <pre class="calibre26" id="c33-code-0005"><code class="calibre21">Logger concreteLogger { "log.out" };</code>
+<code class="calibre21">concreteLogger.setLogLevel(ILogger::LogLevel::Debug);</code>
+<code class="calibre21"> </code>
+<code class="calibre21">Foo f { &amp;concreteLogger };</code>
+<code class="calibre21">f.doSomething();</code></pre>
+     </section>
+    </section>
+    <span aria-label="1183" class="calibre20" epub:type="pagebreak" id="Page_1183" role="doc-pagebreak">
+    </span>
+    <section aria-labelledby="head-2-325" class="calibre2">
+     <span class="calibre" id="c33-sec-0008">
+     </span>
+     <h2 class="calibre6" id="head-2-325">
+      THE ABSTRACT FACTORY PATTERN
+     </h2>
+     <p class="calibre13" id="c33-para-0020">
+      A factory in real life constructs tangible objects, such as tables or cars. Similarly, a
+      <i class="calibre18">
+       factory
+      </i>
+      in object-oriented programming constructs objects. When you use factories in your program, portions of code that want to create a particular object ask a factory for an instance of the object instead of calling the object constructor themselves. For example, an interior decorating program might have a
+      <code class="calibre21">
+       FurnitureFactory
+      </code>
+      object. When part of the code needs a piece of furniture such as a table, it calls the
+      <code class="calibre21">
+       createTable()
+      </code>
+      member function of the
+      <code class="calibre21">
+       FurnitureFactory
+      </code>
+      object, returning a new table. This is the main benefit of factories; they abstract the object creation process.
+     </p>
+     <p class="calibre13" id="c33-para-0021">
+      At first glance, factories seem to lead to complicated designs. It appears that you're only adding another layer of indirection to the program. Instead of calling
+      <code class="calibre21">
+       createTable()
+      </code>
+      on a
+      <code class="calibre21">
+       FurnitureFactory
+      </code>
+      , you could simply create a new
+      <code class="calibre21">
+       Table
+      </code>
+      object directly. However, a benefit of using factories is that they can be used alongside class hierarchies to construct objects without knowing their exact type. As you'll see in the following example, factories can run parallel to class hierarchies. This is not to say they must run parallel to class hierarchies. Factories may as well just create any number of concrete types.
+     </p>
+     <p class="calibre13" id="c33-para-0022">
+      Another benefit of factories is that instead of directly creating various objects all over your code, you pass around factories that allow different parts of the program to create objects of the same kind for a particular domain.
+     </p>
+     <p class="calibre13" id="c33-para-0023">
+      Another reason to use a factory is when the creation of your objects requires certain information, states, resources, and so on, owned by the factory, and which clients of the factory should not know about. A factory can also be used if creating your objects requires a complex series of steps to be executed in the right order, or if all created objects need to be linked to other objects in a correct manner, and so on.
+     </p>
+     <p class="calibre13" id="c33-para-0024">
+      Factories can be swapped; using dependency injection, you can easily substitute a different factory in your program. And, just as you can use polymorphism with the created objects, you can use polymorphism with factories. The following example demonstrates this.
+     </p>
+     <p class="calibre13" id="c33-para-0025">
+      There are two major types of factory-related patterns in object-oriented programming: the
+      <i class="calibre18">
+       abstract factory pattern
+      </i>
+      and the
+      <i class="calibre18">
+       factory method pattern
+      </i>
+      . This section discusses the abstract factory pattern, while the next section discusses the factory method pattern.
+     </p>
+     <section class="calibre2">
+      <span class="calibre" id="c33-sec-0009">
+      </span>
+      <h3 class="calibre27" id="head-3-583">
+       Example: A Car Factory Simulation
+      </h3>
+      <p class="calibre13" id="c33-para-0026">
+       Imagine a factory capable of producing cars. The factory creates the type of car that is requested from it. First, a hierarchy is needed to represent several types of cars.
+       <a class="calibre5" href="#c33-fig-0001" id="R_c33-fig-0001">
+        Figure 33.1
+       </a>
+       introduces an
+       <code class="calibre21">
+        ICar
+       </code>
+       interface with a
+       <code class="calibre21">
+        virtual
+       </code>
+       member function to retrieve information about a specific car. The
+       <code class="calibre21">
+        Toyota
+       </code>
+       and
+       <code class="calibre21">
+        Ford
+       </code>
+       cars derive from
+       <code class="calibre21">
+        ICar
+       </code>
+       , and finally, both Ford and Toyota have a sedan and an SUV model.
+      </p>
+      <p class="calibre13" id="c33-para-0027">
+       Next to the car hierarchy, we need a factory hierarchy. An abstract factory just exposes an interface to create a sedan or an SUV independent of the brand, with concrete factories constructing concrete models from concrete brands.
+       <a class="calibre5" href="#c33-fig-0002" id="R_c33-fig-0002">
+        Figure 33.2
+       </a>
+       shows this hierarchy.
+      </p>
+      <span aria-label="1184" class="calibre20" epub:type="pagebreak" id="Page_1184" role="doc-pagebreak">
+      </span>
+      <figure class="calibre36">
+       <img alt="A class diagram at the top illustrates an interface I Car with a method plus info empty set of parentheses string. Two classes. 1. Toyota. 2. Ford. Both Toyota and Ford have two subclasses each. 1. Toyota S uv. 2. ToyotaSedan. 3. Ford Suv. 4. FordSedan." class="center" src="images/c33f001.png"/>
+       <figcaption class="calibre37">
+        <p class="calibre13">
+         <span class="figurelabel">
+          <a class="calibre5" href="#R_c33-fig-0001" id="c33-fig-0001" role="doc-backlink">
+           <b class="calibre14">
+            FIGURE 33.1
+           </b>
+          </a>
+         </span>
+        </p>
+       </figcaption>
+      </figure>
+      <figure class="calibre36">
+       <img alt="A class diagram at the top illustrates an interface I Car factory with a method plus make Suv an empty set of parentheses I Car. Two classes. 1. Toyota Factory. 2. Ford Factory. All these subclasses also have the plus make Suv and sedan empty set of parentheses I Car method." class="center" src="images/c33f002.png"/>
+       <figcaption class="calibre37">
+        <p class="calibre13">
+         <span class="figurelabel">
+          <a class="calibre5" href="#R_c33-fig-0002" id="c33-fig-0002" role="doc-backlink">
+           <b class="calibre14">
+            FIGURE 33.2
+           </b>
+          </a>
+         </span>
+        </p>
+       </figcaption>
+      </figure>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c33-sec-0010">
+      </span>
+      <h3 class="calibre27" id="head-3-584">
+       Implementation of an Abstract Factory
+      </h3>
+      <p class="calibre13">
+       The implementation of the car hierarchy is straightforward:
+      </p>
+      <pre class="calibre26" id="c33-code-0006"><code class="calibre21">export class ICar</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual ˜ICar() = default;  <span class="color">// Always a virtual destructor!</span></code>
+<code class="calibre21">        virtual std::string info() const = 0;</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">export class Ford : public ICar { };</code>
+<code class="calibre21"> </code>
+<code class="calibre21">export class FordSedan : public Ford</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        std::string info() const override { return "Ford Sedan"; }</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">export class FordSuv : public Ford</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        std::string info() const override { return "Ford SUV"; }</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<span aria-label="1185" class="calibre20" epub:type="pagebreak" id="Page_1185" role="doc-pagebreak"></span><code class="calibre21">export class Toyota : public ICar { };</code>
+<code class="calibre21"> </code>
+<code class="calibre21">export class ToyotaSedan : public Toyota</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        std::string info() const override { return "Toyota Sedan"; }</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">export class ToyotaSuv : public Toyota</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        std::string info() const override { return "Toyota SUV"; }</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13">
+       Next up is the
+       <code class="calibre21">
+        ICarFactory
+       </code>
+       interface. It simply exposes member functions to create a sedan or an SUV without knowing any concrete factory or car.
+      </p>
+      <pre class="calibre26" id="c33-code-0007"><code class="calibre21">export class ICarFactory</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual ˜ICarFactory() = default;  <span class="color">// Always a virtual destructor!</span></code>
+<code class="calibre21">        virtual std::unique_ptr&lt;ICar&gt; makeSuv() = 0;</code>
+<code class="calibre21">        virtual std::unique_ptr&lt;ICar&gt; makeSedan() = 0;</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13">
+       Then finally we have the concrete factories, creating concrete car models. Only the
+       <code class="calibre21">
+        FordFactory
+       </code>
+       is shown; the
+       <code class="calibre21">
+        ToyotaFactory
+       </code>
+       is similar.
+      </p>
+      <pre class="calibre26" id="c33-code-0008"><code class="calibre21">export class FordFactory : public ICarFactory</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        std::unique_ptr&lt;ICar&gt; makeSuv() override {</code>
+<code class="calibre21">            return std::make_unique&lt;FordSuv&gt;(); }</code>
+<code class="calibre21">        std::unique_ptr&lt;ICar&gt; makeSedan() override {</code>
+<code class="calibre21">            return std::make_unique&lt;FordSedan&gt;(); }</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13" id="c33-para-0031">
+       The approach used in this example is called an
+       <i class="calibre18">
+        abstract factory
+       </i>
+       because the type of object created depends on which
+       <i class="calibre18">
+        concrete
+       </i>
+       factory is being used.
+      </p>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c33-sec-0011">
+      </span>
+      <h3 class="calibre27" id="head-3-585">
+       Using an Abstract Factory
+      </h3>
+      <p class="calibre13">
+       The following example shows how to use the implemented factories. It has a function that accepts an abstract car factory and uses that to build both a sedan and an SUV and prints out information about each produced car. This function has no idea about any concrete factory or any concrete cars; i.e., it only uses interfaces. The
+       <code class="calibre21">
+        main()
+       </code>
+       function creates two factories, one for Fords and one for Toyotas, and then asks the
+       <code class="calibre21">
+        createSomeCars()
+       </code>
+       function to use each of these factories to create some cars.
+      </p>
+      <pre class="calibre26" id="c33-code-0009"><code class="calibre21">void createSomeCars(ICarFactory&amp; carFactory)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    auto sedan { carFactory.makeSedan() };</code>
+<code class="calibre21">    auto suv { carFactory.makeSuv() };</code>
+<code class="calibre21">    println("Sedan: {}", sedan-&gt;info());</code>
+<code class="calibre21">    println("SUV: {}", suv-&gt;info());</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<span aria-label="1186" class="calibre20" epub:type="pagebreak" id="Page_1186" role="doc-pagebreak"></span><code class="calibre21">int main()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    FordFactory fordFactory;</code>
+<code class="calibre21">    ToyotaFactory toyotaFactory;</code>
+<code class="calibre21">    createSomeCars(fordFactory);</code>
+<code class="calibre21">    createSomeCars(toyotaFactory);</code>
+<code class="calibre21">}</code></pre>
+      <p class="calibre13">
+       The output of this code snippet is as follows:
+      </p>
+      <pre class="calibre26" id="c33-code-0010"><code class="calibre21">Sedan: Ford Sedan</code>
+<code class="calibre21">SUV: Ford SUV</code>
+<code class="calibre21">Sedan: Toyota Sedan</code>
+<code class="calibre21">SUV: Toyota SUV</code></pre>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-326" class="calibre2">
+     <span class="calibre" id="c33-sec-0012">
+     </span>
+     <h2 class="calibre6" id="head-2-326">
+      THE FACTORY METHOD PATTERN
+     </h2>
+     <p class="calibre13" id="c33-para-0034">
+      The second type of factory-related pattern is called the
+      <i class="calibre18">
+       factory method pattern
+      </i>
+      . With this pattern, it is entirely up to the concrete factory to decide what kind of object to create. In the earlier abstract factory example, the
+      <code class="calibre21">
+       ICarFactory
+      </code>
+      had a member function to either create an SUV or create a sedan. With the factory method pattern, you just ask for a car from the factory, and the concrete factories decide what exactly to build. Let's look at another car factory simulation.
+     </p>
+     <section class="calibre2">
+      <span class="calibre" id="c33-sec-0013">
+      </span>
+      <h3 class="calibre27" id="head-3-586">
+       Example: A Second Car Factory Simulation
+      </h3>
+      <p class="calibre13" id="c33-para-0035">
+       In the real world, when you talk about driving a car, you can do so without referring to the specific type of car. You could be discussing a Toyota or a Ford. It doesn't matter, because both Toyotas and Fords are drivable. Now, suppose that you want a new car. You would then need to specify whether you wanted a Toyota or a Ford, right? Not always. You could just say, “I want a car,” and depending on where you were, you would get a specific car. If you said “I want a car” in a Toyota factory, chances are you'd get a Toyota. (Or you'd get arrested, depending on how you asked.) If you said “I want a car” in a Ford factory, you'd get a Ford.
+      </p>
+      <p class="calibre13" id="c33-para-0036">
+       The same concepts apply to C++ programming. The first concept, a generic car that's drivable, is nothing new; it's standard polymorphism, described in
+       <a class="calibre5" href="c05.xhtml">
+        Chapter 5
+       </a>
+       , “Designing with Classes.” You could write an abstract
+       <code class="calibre21">
+        ICar
+       </code>
+       interface that defines a virtual
+       <code class="calibre21">
+        drive()
+       </code>
+       member function. Both
+       <code class="calibre21">
+        Toyota
+       </code>
+       and
+       <code class="calibre21">
+        Ford
+       </code>
+       could be implementing such an interface.
+      </p>
+      <p class="calibre13" id="c33-para-0037">
+       Your program could drive cars without knowing whether they were really
+       <code class="calibre21">
+        Toyota
+       </code>
+       s or
+       <code class="calibre21">
+        Ford
+       </code>
+       s. However, with standard object-oriented programming, the one place that you'd need to specify
+       <code class="calibre21">
+        Toyota
+       </code>
+       or
+       <code class="calibre21">
+        Ford
+       </code>
+       would be when you created the car. Here, you would need to call the constructor for one or the other. You couldn't just say, “I want a car.” However, suppose that you also had a parallel class hierarchy of car factories. The
+       <code class="calibre21">
+        CarFactory
+       </code>
+       base class could define a
+       <code class="calibre21">
+        public
+       </code>
+       non-virtual
+       <code class="calibre21">
+        requestCar()
+       </code>
+       member function that forwards the work to a
+       <code class="calibre21">
+        private
+       </code>
+       virtual
+       <code class="calibre21">
+        createCar()
+       </code>
+       member function. The
+       <code class="calibre21">
+        ToyotaFactory
+       </code>
+       and
+       <code class="calibre21">
+        FordFactory
+       </code>
+       derived classes override the
+       <code class="calibre21">
+        createCar()
+       </code>
+       member function to build a
+       <code class="calibre21">
+        Toyota
+       </code>
+       or a
+       <code class="calibre21">
+        Ford
+       </code>
+       .
+       <a class="calibre5" href="#c33-fig-0003" id="R_c33-fig-0003">
+        Figure 33.3
+       </a>
+       shows the
+       <code class="calibre21">
+        ICar
+       </code>
+       and
+       <code class="calibre21">
+        CarFactory
+       </code>
+       hierarchies.
+      </p>
+      <span aria-label="1187" class="calibre20" epub:type="pagebreak" id="Page_1187" role="doc-pagebreak">
+      </span>
+      <figure class="calibre36">
+       <img alt="A U M L diagram illustrates an interface I Car and I Car factory with a method plus drive empty set, plus request car of empty set parentheses I Car, and minus create Car empty set parentheses I Car. Each has two classes. 1. Ford. 2. Toyota. 3. Toyota Factory. 4. Ford Factory." class="center" src="images/c33f003.png"/>
+       <figcaption class="calibre37">
+        <p class="calibre13">
+         <span class="figurelabel">
+          <a class="calibre5" href="#R_c33-fig-0003" id="c33-fig-0003" role="doc-backlink">
+           <b class="calibre14">
+            FIGURE 33.3
+           </b>
+          </a>
+         </span>
+        </p>
+       </figcaption>
+      </figure>
+      <p class="calibre13" id="c33-para-0038">
+       Now, suppose that there is one
+       <code class="calibre21">
+        CarFactory
+       </code>
+       object in a program. When code in the program, such as a car dealer, wants a new car, it calls
+       <code class="calibre21">
+        requestCar()
+       </code>
+       on the
+       <code class="calibre21">
+        CarFactory
+       </code>
+       object. Depending on whether that car factory is really a
+       <code class="calibre21">
+        ToyotaFactory
+       </code>
+       or a
+       <code class="calibre21">
+        FordFactory
+       </code>
+       , the code gets either a
+       <code class="calibre21">
+        Toyota
+       </code>
+       or a
+       <code class="calibre21">
+        Ford
+       </code>
+       .
+       <a class="calibre5" href="#c33-fig-0004" id="R_c33-fig-0004">
+        Figure 33.4
+       </a>
+       shows the objects in a car dealer program using a
+       <code class="calibre21">
+        ToyotaFactory
+       </code>
+       .
+      </p>
+      <figure class="calibre36">
+       <img alt="A diagram illustrates a car dealer standing next to a sign that includes new cars. The car dealer requests a car from the toyota factory. Toyota factory, which builds toyota cars, returns a car to the car dealer." class="center" src="images/c33f004.png"/>
+       <figcaption class="calibre37">
+        <p class="calibre13">
+         <span class="figurelabel">
+          <a class="calibre5" href="#R_c33-fig-0004" id="c33-fig-0004" role="doc-backlink">
+           <b class="calibre14">
+            FIGURE 33.4
+           </b>
+          </a>
+         </span>
+        </p>
+       </figcaption>
+      </figure>
+      <p class="calibre13" id="c33-para-0039">
+       <a class="calibre5" href="#c33-fig-0005" id="R_c33-fig-0005">
+        Figure 33.5
+       </a>
+       shows the same program, but with a
+       <code class="calibre21">
+        FordFactory
+       </code>
+       instead of a
+       <code class="calibre21">
+        ToyotaFactory
+       </code>
+       . Note that the
+       <code class="calibre21">
+        CarDealer
+       </code>
+       object and its relationship with the factory stay the same.
+      </p>
+      <figure class="calibre36">
+       <img alt="A diagram illustrates a car dealer standing next to a sign that includes new cars. The car dealer requests a car from the ford factory. Ford factory, which builds ford cars, returns a car to the car dealer." class="center" src="images/c33f005.png"/>
+       <figcaption class="calibre37">
+        <p class="calibre13">
+         <span class="figurelabel">
+          <a class="calibre5" href="#R_c33-fig-0005" id="c33-fig-0005" role="doc-backlink">
+           <b class="calibre14">
+            FIGURE 33.5
+           </b>
+          </a>
+         </span>
+        </p>
+       </figcaption>
+      </figure>
+      <p class="calibre13" id="c33-para-0040">
+       This example demonstrates using polymorphism with factories. When you ask the car factory for a car, you might not know whether it's a Toyota factory or a Ford factory, but either way it will give you a car that you can drive. This approach leads to easily extensible programs; simply changing the factory instance can allow the program to work on a completely different set of objects and classes.
+      </p>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c33-sec-0014">
+      </span>
+      <h3 class="calibre27" id="head-3-587">
+       Implementation of a Factory Method
+      </h3>
+      <p class="calibre13" id="c33-para-0041">
+       One reason for using factories is that the type of the object you want to create may depend on some condition. For example, if you want a car, you might want to put your order into the factory that has
+       <span aria-label="1188" class="calibre20" epub:type="pagebreak" id="Page_1188" role="doc-pagebreak">
+       </span>
+       received the fewest requests so far, regardless of whether the car you eventually get is a
+       <code class="calibre21">
+        Toyota
+       </code>
+       or a
+       <code class="calibre21">
+        Ford
+       </code>
+       . The following implementation shows how to write such factories in C++.
+      </p>
+      <p class="calibre13">
+       The first thing we need is the hierarchy of cars:
+      </p>
+      <pre class="calibre26" id="c33-code-0011"><code class="calibre21">export class ICar</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual ˜ICar() = default;  <span class="color">// Always a virtual destructor!</span></code>
+<code class="calibre21">        virtual std::string info() const = 0;</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">export class Ford : public ICar</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        std::string info() const override { return "Ford"; }</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">export class Toyota : public ICar</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        std::string info() const override { return "Toyota"; }</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13" id="c33-para-0043">
+       The
+       <code class="calibre21">
+        CarFactory
+       </code>
+       base class is a bit more interesting. Each factory keeps track of the number of cars produced. When the
+       <code class="calibre21">
+        public
+       </code>
+       non-virtual
+       <code class="calibre21">
+        requestCar()
+       </code>
+       member function is called, the number of cars produced at the factory is increased by one, and the
+       <code class="calibre21">
+        private
+       </code>
+       virtual
+       <code class="calibre21">
+        createCar()
+       </code>
+       member function is called, which creates and returns a new concrete car. This idiom is also called the
+       <i class="calibre18">
+        non-virtual interface idiom (NVI)
+       </i>
+       . The idea is that individual factories override
+       <code class="calibre21">
+        createCar()
+       </code>
+       to return the appropriate type of car. The
+       <code class="calibre21">
+        CarFactory
+       </code>
+       itself implements
+       <code class="calibre21">
+        requestCar()
+       </code>
+       , which takes care of updating the number of cars produced. The
+       <code class="calibre21">
+        requestCar()
+       </code>
+       member function is an example of the
+       <i class="calibre18">
+        template method design pattern
+       </i>
+       .
+      </p>
+      <p class="calibre13">
+       The
+       <code class="calibre21">
+        CarFactory
+       </code>
+       also provides a
+       <code class="calibre21">
+        public
+       </code>
+       member function to query the number of cars produced at each factory. The class definitions for the
+       <code class="calibre21">
+        CarFactory
+       </code>
+       class and derived classes are as follows:
+      </p>
+      <pre class="calibre26" id="c33-code-0012"><code class="calibre21">export class CarFactory</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual ˜CarFactory() = default;  <span class="color">// Always a virtual destructor!</span></code>
+<code class="calibre21">        <span class="color">// Omitted defaulted default ctor, copy/move ctor, copy/move assignment op.</span></code>
+<code class="calibre21"> </code>
+<code class="calibre21">        std::unique_ptr&lt;ICar&gt; requestCar()</code>
+<code class="calibre21">        {</code>
+<code class="calibre21">            <span class="color">// Increment the number of cars produced and return the new car.</span></code>
+<code class="calibre21">            ++m_numberOfCarsProduced;</code>
+<code class="calibre21">            return createCar();</code>
+<code class="calibre21">        }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        unsigned getNumberOfCarsProduced() const { return m_numberOfCarsProduced; }</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        virtual std::unique_ptr&lt;ICar&gt; createCar() = 0;</code>
+<code class="calibre21">        unsigned m_numberOfCarsProduced { 0 };</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<span aria-label="1189" class="calibre20" epub:type="pagebreak" id="Page_1189" role="doc-pagebreak"></span><code class="calibre21">export class FordFactory final : public CarFactory</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        std::unique_ptr&lt;ICar&gt; createCar() override {</code>
+<code class="calibre21">            return std::make_unique&lt;Ford&gt;(); }</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">export class ToyotaFactory final : public CarFactory</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        std::unique_ptr&lt;ICar&gt; createCar() override {</code>
+<code class="calibre21">            return std::make_unique&lt;Toyota&gt;(); }</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13">
+       As you can see, the derived classes simply override
+       <code class="calibre21">
+        createCar()
+       </code>
+       to return the specific type of car that they produce.
+      </p>
+      <section class="calibre2">
+       <aside class="calibre23">
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+        <section class="feature">
+         <p class="calibre25" id="c33-para-0046">
+          <b class="calibre14">
+           NOTE
+          </b>
+          <i class="calibre18">
+           Factory methods are one way to implement virtual constructors, which are member functions that create objects of different types. For example, the
+          </i>
+          <code class="calibre21">
+           requestCar()
+          </code>
+          <i class="calibre18">
+           member function creates both
+          </i>
+          <code class="calibre21">
+           Toyota
+          </code>
+          <i class="calibre18">
+           s and
+          </i>
+          <code class="calibre21">
+           Ford
+          </code>
+          <i class="calibre18">
+           s, depending on the concrete factory object on which it is called
+          </i>
+          .
+         </p>
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+        </section>
+       </aside>
+      </section>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c33-sec-0016">
+      </span>
+      <h3 class="calibre27" id="head-3-588">
+       Using a Factory Method
+      </h3>
+      <p class="calibre13">
+       The simplest way to use a factory is to instantiate it and to call the appropriate member function, as in the following piece of code:
+      </p>
+      <pre class="calibre26" id="c33-code-0013"><code class="calibre21">ToyotaFactory myFactory;</code>
+<code class="calibre21">auto myCar { myFactory.requestCar() };</code>
+<code class="calibre21">println("{}", myCar-&gt;info());    <span class="color">// Outputs Toyota</span></code></pre>
+      <p class="calibre13">
+       A more interesting example makes use of the virtual constructor idea to build a car in the factory that has the fewest cars produced. To do this, you can create a new factory, called
+       <code class="calibre21">
+        LeastBusyFactory
+       </code>
+       , that derives from
+       <code class="calibre21">
+        CarFactory
+       </code>
+       and that accepts a number of other
+       <code class="calibre21">
+        CarFactory
+       </code>
+       objects in its constructor. As all
+       <code class="calibre21">
+        CarFactory
+       </code>
+       classes have to do,
+       <code class="calibre21">
+        LeastBusyFactory
+       </code>
+       overrides the
+       <code class="calibre21">
+        createCar()
+       </code>
+       member function. Its implementation finds the least busy factory in the list of factories passed to the constructor and asks that factory to create a car. Here is the implementation of such a factory:
+      </p>
+      <pre class="calibre26" id="c33-code-0014"><code class="calibre21">class LeastBusyFactory final : public CarFactory</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        <span class="color">// Constructs an instance, taking ownership of the given factories.</span></code>
+<code class="calibre21">        explicit LeastBusyFactory(vector&lt;unique_ptr&lt;CarFactory&gt;&gt; factories);</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        unique_ptr&lt;ICar&gt; createCar() override;</code>
+<code class="calibre21">        vector&lt;unique_ptr&lt;CarFactory&gt;&gt; m_factories;</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">LeastBusyFactory::LeastBusyFactory(vector&lt;unique_ptr&lt;CarFactory&gt;&gt; factories)</code>
+<code class="calibre21">    : m_factories { move(factories) }</code>
+<code class="calibre21">{</code>
+<span aria-label="1190" class="calibre20" epub:type="pagebreak" id="Page_1190" role="doc-pagebreak"></span><code class="calibre21">    if (m_factories.empty()) {</code>
+<code class="calibre21">        throw runtime_error { "No factories provided." };</code>
+<code class="calibre21">    }</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21">unique_ptr&lt;ICar&gt; LeastBusyFactory::createCar()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    auto leastBusyFactory { ranges::min_element(m_factories,</code>
+<code class="calibre21">        [](const auto&amp; factory1, const auto&amp; factory2) {</code>
+<code class="calibre21">            return factory1-&gt;getNumberOfCarsProduced() &lt;</code>
+<code class="calibre21">                   factory2-&gt;getNumberOfCarsProduced(); }) };</code>
+<code class="calibre21">    return (*leastBusyFactory)-&gt;requestCar();</code>
+<code class="calibre21">}</code></pre>
+      <p class="calibre13">
+       The following code makes use of this factory to build 10 cars, whatever brand they might be, from the factory that has produced the least number of cars:
+      </p>
+      <pre class="calibre26" id="c33-code-0015"><code class="calibre21">vector&lt;unique_ptr&lt;CarFactory&gt;&gt; factories;</code>
+<code class="calibre21"> </code>
+<code class="calibre21"><span class="color">// Create 3 Ford factories and 1 Toyota factory.</span></code>
+<code class="calibre21">factories.push_back(make_unique&lt;FordFactory&gt;());</code>
+<code class="calibre21">factories.push_back(make_unique&lt;FordFactory&gt;());</code>
+<code class="calibre21">factories.push_back(make_unique&lt;FordFactory&gt;());</code>
+<code class="calibre21">factories.push_back(make_unique&lt;ToyotaFactory&gt;());</code>
+<code class="calibre21"> </code>
+<code class="calibre21"><span class="color">// To get more interesting results, preorder some cars from specific factories.</span></code>
+<code class="calibre21">for (size_t i : {0, 0, 0, 1, 1, 2}) { factories[i]-&gt;requestCar(); }</code>
+<code class="calibre21"> </code>
+<code class="calibre21"><span class="color">// Create a factory that automatically selects the least busy</span></code>
+<code class="calibre21"><span class="color">// factory from a list of given factories.</span></code>
+<code class="calibre21">LeastBusyFactory leastBusyFactory { move(factories) };</code>
+<code class="calibre21"> </code>
+<code class="calibre21"><span class="color">// Build 10 cars from the least busy factory.</span></code>
+<code class="calibre21">for (unsigned i { 0 }; i &lt; 10; ++i) {</code>
+<code class="calibre21">    auto theCar { leastBusyFactory.requestCar() };</code>
+<code class="calibre21">    println("{}", theCar-&gt;info());</code>
+<code class="calibre21">}</code></pre>
+      <p class="calibre13">
+       When executed, the program prints out the make of each car produced.
+      </p>
+      <pre class="calibre26" id="c33-code-0016"><code class="calibre21">Toyota</code>
+<code class="calibre21">Ford</code>
+<code class="calibre21">Toyota</code>
+<code class="calibre21">Ford</code>
+<code class="calibre21">Ford</code>
+<code class="calibre21">Toyota</code>
+<code class="calibre21">Ford</code>
+<code class="calibre21">Ford</code>
+<code class="calibre21">Ford</code>
+<code class="calibre21">Toyota</code></pre>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c33-sec-0017">
+      </span>
+      <h3 class="calibre27" id="head-3-589">
+       Other Uses
+      </h3>
+      <p class="calibre13" id="c33-para-0051">
+       You can use a factory method pattern for more than just modeling real-world factories. For example, consider a word processor in which you want to support documents in different languages, where each document uses a single language. There are many aspects of the word processor in which the
+       <span aria-label="1191" class="calibre20" epub:type="pagebreak" id="Page_1191" role="doc-pagebreak">
+       </span>
+       choice of document language requires different support: the character set used in the document (whether accented characters are needed), the spell checker, the thesaurus, and the way the document is displayed, to name just a few. You could use factories to design a clean word processor by writing a
+       <code class="calibre21">
+        LanguageFactory
+       </code>
+       base class and derived factories for each language of interest, such as
+       <code class="calibre21">
+        EnglishLanguageFactory
+       </code>
+       and
+       <code class="calibre21">
+        FrenchLanguageFactory
+       </code>
+       . When the user specifies a language for a document, the program uses the appropriate
+       <code class="calibre21">
+        LanguageFactory
+       </code>
+       to create language-specific instances of certain functionality. For example, it calls the
+       <code class="calibre21">
+        createSpellchecker()
+       </code>
+       member function on the factory to create a language-specific spell checker. It then replaces the current spell checker for the previous language attached to the document with the newly constructed spell checker for the new language.
+      </p>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-327" class="calibre2">
+     <span class="calibre" id="c33-sec-0018">
+     </span>
+     <h2 class="calibre6" id="head-2-327">
+      OTHER FACTORY PATTERNS
+     </h2>
+     <p class="calibre13" id="c33-para-0052">
+      The previous sections describe two concrete patterns related to factories: the abstract factory pattern and the factory method pattern.
+     </p>
+     <p class="calibre13" id="c33-para-0053">
+      There are other types of factories. For example, a factory can also be implemented in a single class instead of a class hierarchy. In that case, a single
+      <code class="calibre21">
+       create()
+      </code>
+      member function on the factory takes a type or string parameter from which it decides which object to create, instead of delegating that work to concrete subclasses. Such a function is commonly called a
+      <i class="calibre18">
+       factory function
+      </i>
+      . This factory pattern does not provide dependency inversion and does not allow customization of the construction process.
+     </p>
+     <p class="calibre13">
+      An example of using a factory function is an alternative implementation of the pimpl idiom, discussed in
+      <a class="calibre5" href="c09.xhtml">
+       Chapter 9
+      </a>
+      , “Mastering Classes and Objects.” It provides a wall between the public interface and the concrete implementation of the provided functionality. This use of a factory function looks as follows. First, the following is publicly exposed, with a
+      <code class="calibre21">
+       create()
+      </code>
+      factory function:
+     </p>
+     <pre class="calibre26" id="c33-code-0017"><code class="calibre21"><span class="color">// Public interface (to be included in the rest of the program,</span></code>
+<code class="calibre21"><span class="color">// shared from a library, …)</span></code>
+<code class="calibre21">class Foo</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual ˜Foo() = default;  <span class="color">// Always a virtual destructor!</span></code>
+<code class="calibre21">        <span class="color">// Omitted defaulted copy/move ctor, copy/move assignment op.</span></code>
+<code class="calibre21">        <b class="calibre14">static unique_ptr&lt;Foo&gt; create();</b>  <span class="color">// Factory function.</span></code>
+<code class="calibre21">        <span class="color">// Public functionality…</span></code>
+<code class="calibre21">        virtual void bar() = 0;</code>
+<code class="calibre21">    protected:</code>
+<code class="calibre21">        Foo() = default; <span class="color">// Protected default constructor.</span></code>
+<code class="calibre21">};</code></pre>
+     <p class="calibre13">
+      Next, the implementation is hidden from the outside world:
+     </p>
+     <pre class="calibre26" id="c33-code-0018"><code class="calibre21"><span class="color">// Implementation</span></code>
+<code class="calibre21">class FooImpl : public Foo</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        void bar() override { <span class="color"><b class="calibre14">/* … */</b></span> }</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<span aria-label="1192" class="calibre20" epub:type="pagebreak" id="Page_1192" role="doc-pagebreak"></span><code class="calibre21">unique_ptr&lt;Foo&gt; Foo::create()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    return make_unique&lt;FooImpl&gt;();</code>
+<code class="calibre21">}</code></pre>
+     <p class="calibre13">
+      Any client code that needs a
+      <code class="calibre21">
+       Foo
+      </code>
+      instance can create one as follows:
+     </p>
+     <pre class="calibre26" id="c33-code-0019"><code class="calibre21">auto fooInstance { Foo::create() };</code>
+<code class="calibre21">fooInstance-&gt;bar();</code></pre>
+    </section>
+    <section aria-labelledby="head-2-328" class="calibre2">
+     <span class="calibre" id="c33-sec-0019">
+     </span>
+     <h2 class="calibre6" id="head-2-328">
+      THE ADAPTER PATTERN
+     </h2>
+     <p class="calibre13">
+      Sometimes, the abstraction given by a class doesn't suit the current design and can't be changed. In this case, you can build an
+      <i class="calibre18">
+       adapter
+      </i>
+      class. The adapter provides the abstraction that the rest of the code uses and serves as the link between the desired abstraction and the actual underlying code. There are two main use cases:
+     </p>
+     <ul class="check" id="c33-list-0004">
+      <li class="calibre9" id="c33-li-0017">
+       Implementing a certain interface by reusing some existing implementation. In this use case, the adapter typically creates an instance of the implementation behind the scenes.
+      </li>
+      <li class="calibre9" id="c33-li-0018">
+       Allowing existing functionality to be used through a new interface. In this use case, the constructor of the adapter typically receives an instance of the underlying object in its constructor.
+      </li>
+     </ul>
+     <p class="calibre13" id="c33-para-0058">
+      <a class="calibre5" href="c18_split_000.xhtml">
+       Chapter 18
+      </a>
+      , “Standard Library Containers,” discusses how the Standard Library uses the adapter pattern to implement containers like
+      <code class="calibre21">
+       stack
+      </code>
+      and
+      <code class="calibre21">
+       queue
+      </code>
+      in terms of other containers, such as
+      <code class="calibre21">
+       deque
+      </code>
+      and
+      <code class="calibre21">
+       list
+      </code>
+      .
+     </p>
+     <section class="calibre2">
+      <span class="calibre" id="c33-sec-0020">
+      </span>
+      <h3 class="calibre27" id="head-3-590">
+       Example: Adapting a Logger Class
+      </h3>
+      <p class="calibre13">
+       For this adapter pattern example, let's assume a very basic
+       <code class="calibre21">
+        Logger
+       </code>
+       class. Here is the interface and class definition:
+      </p>
+      <pre class="calibre26" id="c33-code-0020"><code class="calibre21"><span class="color">// Definition of a logger interface.</span></code>
+<code class="calibre21">export class ILogger</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual ˜ILogger() = default;  <span class="color">// Always a virtual destructor!</span></code>
+<code class="calibre21">        enum class LogLevel { Debug, Info, Error };</code>
+<code class="calibre21">        <span class="color">// Logs a single message at the given log level.</span></code>
+<code class="calibre21">        virtual void log(LogLevel level, const std::string&amp; message) = 0;</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21"><span class="color">// Concrete implementation of ILogger.</span></code>
+<code class="calibre21">export class Logger : public ILogger</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        Logger();</code>
+<code class="calibre21">        void log(LogLevel level, const std::string&amp; message) override;</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        <span class="color">// Converts a log level to a human readable string.</span></code>
+<code class="calibre21">        std::string_view getLogLevelString(LogLevel level) const;</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13">
+       <span aria-label="1193" class="calibre20" epub:type="pagebreak" id="Page_1193" role="doc-pagebreak">
+       </span>
+       The
+       <code class="calibre21">
+        Logger
+       </code>
+       class has a constructor, which outputs a line of text to the standard console, and a member function called
+       <code class="calibre21">
+        log()
+       </code>
+       that writes the given message to the console prefixed with the current system time and a log level. Here are the implementations:
+      </p>
+      <pre class="calibre26" id="c33-code-0021"><code class="calibre21">Logger::Logger() { println("Logger constructor"); }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">void Logger::log(LogLevel level, const string&amp; message)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    println("{}: [{}] {}", chrono::system_clock::now(),</code>
+<code class="calibre21">        getLogLevelString(level), message); </code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21">string_view Logger::getLogLevelString(LogLevel level) const</code>
+<code class="calibre21">{ <span class="color">/* See the strategy-based logger earlier in this chapter. */</span> }</code></pre>
+      <p class="calibre13" id="c33-para-0061">
+       One reason why you might want to write an adapter class around this basic
+       <code class="calibre21">
+        Logger
+       </code>
+       class is to change its interface. Maybe you are not interested in the log level and you would like to call the
+       <code class="calibre21">
+        log()
+       </code>
+       member function with just one argument, the actual message. You might also want to change the interface to accept an
+       <code class="calibre21">
+        std::string_view
+       </code>
+       instead of a
+       <code class="calibre21">
+        string
+       </code>
+       as the argument for the
+       <code class="calibre21">
+        log()
+       </code>
+       member function.
+      </p>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c33-sec-0021">
+      </span>
+      <h3 class="calibre27" id="head-3-591">
+       Implementation of an Adapter
+      </h3>
+      <p class="calibre13">
+       The first step in implementing the adapter pattern is to define the new interface for the underlying functionality. This new interface is called
+       <code class="calibre21">
+        IAdaptedLogger
+       </code>
+       and looks like this:
+      </p>
+      <pre class="calibre26" id="c33-code-0022"><code class="calibre21">export class IAdaptedLogger</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual ˜IAdaptedLogger() = default; <span class="color">// Always virtual destructor!</span></code>
+<code class="calibre21">        <span class="color">// Logs a single message with Info as log level.</span></code>
+<code class="calibre21">        virtual void log(std::string_view message) = 0;</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13" id="c33-para-0063">
+       This class is an abstract class, which declares the desired interface that you want for your new logger. The interface defines only one pure virtual member function, that is, a
+       <code class="calibre21">
+        log()
+       </code>
+       member function accepting just a single argument of type
+       <code class="calibre21">
+        string_view
+       </code>
+       .
+      </p>
+      <p class="calibre13">
+       The next step is to write the concrete new logger class,
+       <code class="calibre21">
+        AdaptedLogger
+       </code>
+       , which implements
+       <code class="calibre21">
+        IAdaptedLogger
+       </code>
+       so that it has the interface that you designed. The implementation wraps a
+       <code class="calibre21">
+        Logger
+       </code>
+       instance, i.e., it uses composition.
+      </p>
+      <pre class="calibre26" id="c33-code-0023"><code class="calibre21">export class AdaptedLogger : public IAdaptedLogger</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        AdaptedLogger();</code>
+<code class="calibre21">        void log(std::string_view message) override;</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        Logger m_logger;</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13">
+       The constructor of the new class writes a line to the standard output to keep track of which constructors are being called. The code then implements the
+       <code class="calibre21">
+        log()
+       </code>
+       member function from
+       <code class="calibre21">
+        IAdaptedLogger
+       </code>
+       <span aria-label="1194" class="calibre20" epub:type="pagebreak" id="Page_1194" role="doc-pagebreak">
+       </span>
+       by forwarding the call to the
+       <code class="calibre21">
+        log()
+       </code>
+       member function of the
+       <code class="calibre21">
+        Logger
+       </code>
+       instance that is wrapped. In that call, the given
+       <code class="calibre21">
+        string_view
+       </code>
+       is converted to a
+       <code class="calibre21">
+        string
+       </code>
+       , and the log level is hard-coded as
+       <code class="calibre21">
+        Info
+       </code>
+       .
+      </p>
+      <pre class="calibre26" id="c33-code-0024"><code class="calibre21">AdaptedLogger::AdaptedLogger() { println("AdaptedLogger constructor"); }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">void AdaptedLogger::log(string_view message)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    m_logger.log(Logger::LogLevel::Info, string { message });</code>
+<code class="calibre21">}</code></pre>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c33-sec-0022">
+      </span>
+      <h3 class="calibre27" id="head-3-592">
+       Using an Adapter
+      </h3>
+      <p class="calibre13">
+       Because adapters exist to provide a more appropriate interface for the underlying functionality, their use should be straightforward and specific to the particular case. Given the previous implementation, the following code snippet uses the new simplified interface for the logging functionality:
+      </p>
+      <pre class="calibre26" id="c33-code-0025"><code class="calibre21">AdaptedLogger logger;</code>
+<code class="calibre21">logger.log("Testing the logger.");</code></pre>
+      <p class="calibre13">
+       It produces the following output:
+      </p>
+      <pre class="calibre26" id="c33-code-0026"><code class="calibre21">Logger constructor</code>
+<code class="calibre21">AdaptedLogger constructor</code>
+<code class="calibre21">2023-08-12 14:06:53.3694244: [INFO] Testing the logger.</code></pre>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-329" class="calibre2">
+     <span class="calibre" id="c33-sec-0023">
+     </span>
+     <h2 class="calibre6" id="head-2-329">
+      THE PROXY PATTERN
+     </h2>
+     <p class="calibre13" id="c33-para-0068">
+      The
+      <i class="calibre18">
+       proxy
+      </i>
+      pattern is one of several patterns that divorce the abstraction of a class from its underlying representation. A proxy object serves as a stand-in for a real object. Such objects are generally used when using the real object would be time-consuming or impossible. For example, take a document editor. A document could contain several big objects, such as images. Instead of loading all those images when opening the document, the document editor could substitute
+      <i class="calibre18">
+       proxy objects
+      </i>
+      for all the images. These proxies don't immediately load the images. Only when the user scrolls down in the document and reaches an image does the document editor ask the image proxy to draw itself. At that time, the proxy delegates the work to the real image object, which loads the image.
+     </p>
+     <p class="calibre13" id="c33-para-0069">
+      Proxies can also be used to properly shield certain functionality from clients, while at the same time making sure that clients can't even use casts to get around the shielding.
+     </p>
+     <section class="calibre2">
+      <span class="calibre" id="c33-sec-0024">
+      </span>
+      <h3 class="calibre27" id="head-3-593">
+       Example: Hiding Network Connectivity Issues
+      </h3>
+      <p class="calibre13" id="c33-para-0070">
+       Consider a networked game with a
+       <code class="calibre21">
+        Player
+       </code>
+       class that represents a person on the Internet who has joined the game. The
+       <code class="calibre21">
+        Player
+       </code>
+       class includes functionality that requires network connectivity, such as an instant messaging feature. If a player's connection becomes unresponsive, the
+       <code class="calibre21">
+        Player
+       </code>
+       object representing that person can no longer receive instant messages.
+      </p>
+      <p class="calibre13" id="c33-para-0071">
+       Because you don't want to expose network problems to the user, it may be desirable to have a separate class that hides the networked parts of a
+       <code class="calibre21">
+        Player
+       </code>
+       . This
+       <code class="calibre21">
+        PlayerProxy
+       </code>
+       object would substitute for the actual
+       <code class="calibre21">
+        Player
+       </code>
+       object. Either clients of the class would use the
+       <code class="calibre21">
+        PlayerProxy
+       </code>
+       class at all times as a gatekeeper to the real
+       <code class="calibre21">
+        Player
+       </code>
+       class, or the system would substitute a
+       <code class="calibre21">
+        PlayerProxy
+       </code>
+       when a
+       <code class="calibre21">
+        Player
+       </code>
+       <span aria-label="1195" class="calibre20" epub:type="pagebreak" id="Page_1195" role="doc-pagebreak">
+       </span>
+       became unavailable. During a network failure, the
+       <code class="calibre21">
+        PlayerProxy
+       </code>
+       object could still display the player's name and last known state and could continue to function when the original
+       <code class="calibre21">
+        Player
+       </code>
+       object could not. Thus, the proxy class hides some undesirable semantics of the underlying
+       <code class="calibre21">
+        Player
+       </code>
+       class.
+      </p>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c33-sec-0025">
+      </span>
+      <h3 class="calibre27" id="head-3-594">
+       Implementation of a Proxy
+      </h3>
+      <p class="calibre13">
+       The first step is defining an
+       <code class="calibre21">
+        IPlayer
+       </code>
+       interface containing the public interface for a
+       <code class="calibre21">
+        Player
+       </code>
+       :
+      </p>
+      <pre class="calibre26" id="c33-code-0027"><code class="calibre21">class IPlayer</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual ˜IPlayer() = default; <span class="color">// Always virtual destructor.</span></code>
+<code class="calibre21">        virtual string getName() const = 0;</code>
+<code class="calibre21">        <span class="color">// Sends an instant message to the player over the network and</span></code>
+<code class="calibre21">        <span class="color">// returns the reply as a string.</span></code>
+<code class="calibre21">        virtual string sendInstantMessage(string_view message) const = 0;</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13">
+       The
+       <code class="calibre21">
+        Player
+       </code>
+       class implements the
+       <code class="calibre21">
+        IPlayer
+       </code>
+       interface as follows. Imagine for this example that
+       <code class="calibre21">
+        sendInstantMessage()
+       </code>
+       requires network connectivity to properly function and raises an exception if the network connection is down.
+      </p>
+      <pre class="calibre26" id="c33-code-0028"><code class="calibre21">class Player : public IPlayer</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        string getName() const override;</code>
+<code class="calibre21">        <span class="color">// Network connectivity is required.</span></code>
+<code class="calibre21">        <span class="color">// Throws an exception if network connection is down.</span></code>
+<code class="calibre21">        string sendInstantMessage(string_view message) const override;</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13">
+       The
+       <code class="calibre21">
+        PlayerProxy
+       </code>
+       class also implements the
+       <code class="calibre21">
+        IPlayer
+       </code>
+       interface and contains another
+       <code class="calibre21">
+        IPlayer
+       </code>
+       instance (the “real”
+       <code class="calibre21">
+        Player
+       </code>
+       ):
+      </p>
+      <pre class="calibre26" id="c33-code-0029"><code class="calibre21">class PlayerProxy : public IPlayer</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        <span class="color">// Create a PlayerProxy, taking ownership of the given player.</span></code>
+<code class="calibre21">        explicit PlayerProxy(unique_ptr&lt;IPlayer&gt; player);</code>
+<code class="calibre21">        string getName() const override;</code>
+<code class="calibre21">        <span class="color">// Network connectivity is optional.</span></code>
+<code class="calibre21">        string sendInstantMessage(string_view message) const override;</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        bool hasNetworkConnectivity() const;</code>
+<code class="calibre21">        unique_ptr&lt;IPlayer&gt; m_player;</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13">
+       The constructor takes ownership of the given
+       <code class="calibre21">
+        IPlayer
+       </code>
+       :
+      </p>
+      <pre class="calibre26" id="c33-code-0030"><code class="calibre21">PlayerProxy::PlayerProxy(unique_ptr&lt;IPlayer&gt; player)</code>
+<code class="calibre21">    : m_player { move(player) } { }</code></pre>
+      <p class="calibre13">
+       The
+       <code class="calibre21">
+        getName()
+       </code>
+       member function just forwards to the underlying player:
+      </p>
+      <pre class="calibre26" id="c33-code-0031"><code class="calibre21">string PlayerProxy::getName() const { return m_player-&gt;getName(); }</code></pre>
+      <p class="calibre13">
+       <span aria-label="1196" class="calibre20" epub:type="pagebreak" id="Page_1196" role="doc-pagebreak">
+       </span>
+       The implementation of the
+       <code class="calibre21">
+        PlayerProxy
+       </code>
+       's
+       <code class="calibre21">
+        sendInstantMessage()
+       </code>
+       member function checks the network connectivity and either returns a default string or forwards the request. This hides the fact that the
+       <code class="calibre21">
+        sendInstantMessage()
+       </code>
+       member function on the underlying
+       <code class="calibre21">
+        Player
+       </code>
+       object raises an exception when the network connection is down.
+      </p>
+      <pre class="calibre26" id="c33-code-0032"><code class="calibre21">string PlayerProxy::sendInstantMessage(string_view message) const</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    if (hasNetworkConnectivity()) { return m_player-&gt;sendInstantMessage(message); }</code>
+<code class="calibre21">    else { return "The player has gone offline."; }</code>
+<code class="calibre21">}</code></pre>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c33-sec-0026">
+      </span>
+      <h3 class="calibre27" id="head-3-595">
+       Using a Proxy
+      </h3>
+      <p class="calibre13">
+       If a proxy is well written, using it should be no different from using any other object. For the
+       <code class="calibre21">
+        PlayerProxy
+       </code>
+       example, the code that uses the proxy could be completely unaware of its existence. The following function, designed to be called when the
+       <code class="calibre21">
+        Player
+       </code>
+       has won, could be dealing with an actual
+       <code class="calibre21">
+        Player
+       </code>
+       or a
+       <code class="calibre21">
+        PlayerProxy
+       </code>
+       . The code is able to handle both cases in the same way because the proxy ensures a valid result.
+      </p>
+      <pre class="calibre26" id="c33-code-0033"><code class="calibre21">bool informWinner(const IPlayer&amp; player)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    auto result { player.sendInstantMessage("You have won! Play again?") };</code>
+<code class="calibre21">    if (result == "yes") {</code>
+<code class="calibre21">        println("{} wants to play again.", player.getName());</code>
+<code class="calibre21">        return true;</code>
+<code class="calibre21">    } else {</code>
+<code class="calibre21">        <span class="color">// The player said no, or is offline.</span></code>
+<code class="calibre21">        println("{} does not want to play again.", player.getName());</code>
+<code class="calibre21">        return false;</code>
+<code class="calibre21">    }</code>
+<code class="calibre21">}</code></pre>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-330" class="calibre2">
+     <span class="calibre" id="c33-sec-0027">
+     </span>
+     <h2 class="calibre6" id="head-2-330">
+      THE ITERATOR PATTERN
+     </h2>
+     <p class="calibre13" id="c33-para-0079">
+      The
+      <i class="calibre18">
+       iterator
+      </i>
+      pattern provides a mechanism for separating algorithms or operations from the structure of the data on which they operate. Basically, an iterator allows algorithms to navigate a data structure without having to know the actual structure of the data. At first glance, this pattern seems to contradict the fundamental principle in object-oriented programming of grouping together in classes data and the behaviors that operate on that data. While that argument is true on a certain level, the iterator pattern does not advocate removing fundamental behaviors from classes. Instead, it solves two problems that commonly arise with tight coupling of data and behaviors.
+     </p>
+     <p class="calibre13" id="c33-para-0080">
+      The first problem with tightly coupling data and behaviors is that it precludes generic algorithms that work on a variety of data structures. To write generic algorithms, you need some standard mechanism to navigate/access the contents of a data structure without knowledge of the concrete structure.
+     </p>
+     <p class="calibre13" id="c33-para-0081">
+      The second problem with tightly coupled data and behaviors is that it's sometimes difficult to add new behaviors. At the least, you need access to the source code for the data objects. However, what if the class hierarchy of interest is part of a third-party framework or library that you cannot change? It would be nice to be able to add an algorithm or operation that works on the data without modifying the original hierarchy of classes that hold the data.
+     </p>
+     <p class="calibre13" id="c33-para-0082">
+      <span aria-label="1197" class="calibre20" epub:type="pagebreak" id="Page_1197" role="doc-pagebreak">
+      </span>
+      You've already seen an example of the iterator pattern in the Standard Library. Conceptually, Standard Library
+      <i class="calibre18">
+       iterators
+      </i>
+      provide a mechanism for an operation or algorithm to access a container of elements in a sequence. The name comes from the English word
+      <i class="calibre18">
+       iterate
+      </i>
+      , which means “repeat.” It applies to iterators because they repeat the action of moving forward in a sequence to reach each new element. In the Standard Library, the generic algorithms use iterators to access the elements of the containers on which they operate. By defining a standard iterator interface, the Standard Library allows you to write algorithms that can work on any container that supplies an iterator with the appropriate interface. You can even provide several different iterators for a single data structure. This allows an algorithm to navigate that data in different ways, for example, top-down and bottom-up traversal for a tree data structure. Thus, iterators allow you to write generic algorithms that can traverse the contents of a data structure without having to know anything about the structure.
+      <a class="calibre5" href="#c33-fig-0006" id="R_c33-fig-0006">
+       Figure 33.6
+      </a>
+      shows an iterator as the central coordinator; operations depend on iterators, and data objects provide iterators.
+     </p>
+     <figure class="calibre36">
+      <img alt="A diagram illustrates three components. It includes data object, iterator, and operation. The data object is represented by a database icon. Iterator by a circular arrow symbol." class="center" src="images/c33f006.png"/>
+      <figcaption class="calibre37">
+       <p class="calibre13">
+        <span class="figurelabel">
+         <a class="calibre5" href="#R_c33-fig-0006" id="c33-fig-0006" role="doc-backlink">
+          <b class="calibre14">
+           FIGURE 33.6
+          </b>
+         </a>
+        </span>
+       </p>
+      </figcaption>
+     </figure>
+     <p class="calibre13" id="c33-para-0083">
+      <a class="calibre5" href="c25.xhtml">
+       Chapter 25
+      </a>
+      , “Customizing and Extending the Standard Library,” illustrates a detailed example of how to implement a Standard Library-compliant iterator for a data structure, which means that the iterator can be used by the generic Standard Library algorithms.
+     </p>
+    </section>
+    <section aria-labelledby="head-2-331" class="calibre2">
+     <span class="calibre" id="c33-sec-0028">
+     </span>
+     <h2 class="calibre6" id="head-2-331">
+      THE OBSERVER PATTERN
+     </h2>
+     <p class="calibre13" id="c33-para-0084">
+      The
+      <i class="calibre18">
+       observer
+      </i>
+      pattern is used to have observers be notified by observable objects (= subjects). Concrete observers are
+      <i class="calibre18">
+       registered
+      </i>
+      with the observable object they are interested in. When the observable object's state changes, it notifies all registered observers of this change. The main benefit of using the observer pattern is that it decreases coupling. The observable class does not need to know the concrete observer types that are observing it.
+     </p>
+     <section class="calibre2">
+      <span class="calibre" id="c33-sec-0029">
+      </span>
+      <h3 class="calibre27" id="head-3-596">
+       Example: Exposing Events from Subjects
+      </h3>
+      <p class="calibre13" id="c33-para-0085">
+       This example consists of generic-purpose events with a variadic number of arguments. Subjects can expose specific events, for example an event raised when the subject's data is modified, an event raised when the subject's data is deleted, and so on.
+      </p>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c33-sec-0030">
+      </span>
+      <h3 class="calibre27" id="head-3-597">
+       Implementation of an Observable
+      </h3>
+      <p class="calibre13">
+       First, a variadic class template
+       <code class="calibre21">
+        Event
+       </code>
+       is defined. Variadic class templates are discussed in
+       <a class="calibre5" href="c26.xhtml">
+        Chapter 26
+       </a>
+       , “Advanced Templates.” The class stores a
+       <code class="calibre21">
+        map
+       </code>
+       of
+       <code class="calibre21">
+        function
+       </code>
+       s with a variadic number of arguments. An
+       <code class="calibre21">
+        addObserver()
+       </code>
+       member function is provided to register a new observer in the form of a
+       <code class="calibre21">
+        function
+       </code>
+       that should be notified when this event is raised.
+       <code class="calibre21">
+        addObserver()
+       </code>
+       returns an
+       <code class="calibre21">
+        EventHandle
+       </code>
+       <span aria-label="1198" class="calibre20" epub:type="pagebreak" id="Page_1198" role="doc-pagebreak">
+       </span>
+       that subsequently can be passed to
+       <code class="calibre21">
+        removeObserver()
+       </code>
+       to unregister the observer. This
+       <code class="calibre21">
+        EventHandle
+       </code>
+       is just a number that is increased with every registered observer. Finally, the
+       <code class="calibre21">
+        raise()
+       </code>
+       member function notifies all registered observers that the event has been raised.
+      </p>
+      <pre class="calibre26" id="c33-code-0034"><code class="calibre21">using EventHandle = unsigned int;</code>
+<code class="calibre21"> </code>
+<code class="calibre21">template &lt;typename… Args&gt;</code>
+<code class="calibre21">class Event final</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        <span class="color">// Adds an observer. Returns an EventHandle to unregister the observer.</span></code>
+<code class="calibre21">        [[nodiscard]] EventHandle addObserver(</code>
+<code class="calibre21">            function&lt;void(const Args&amp;…)&gt; observer)</code>
+<code class="calibre21">        {</code>
+<code class="calibre21">            auto number { ++m_counter };</code>
+<code class="calibre21">            m_observers[number] = move(observer);</code>
+<code class="calibre21">            return number;</code>
+<code class="calibre21">        }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        <span class="color">// Unregisters the observer pointed to by the given handle.</span></code>
+<code class="calibre21">        void removeObserver(EventHandle handle)</code>
+<code class="calibre21">        {</code>
+<code class="calibre21">            m_observers.erase(handle);</code>
+<code class="calibre21">        }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        <span class="color">// Raise event: notifies all registered observers.</span></code>
+<code class="calibre21">        void raise(const Args&amp;… args)</code>
+<code class="calibre21">        {</code>
+<code class="calibre21">            for (const auto&amp; [_, callback] : m_observers) { callback(args…); }</code>
+<code class="calibre21">        }</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        unsigned int m_counter { 0 };</code>
+<code class="calibre21">        map&lt;EventHandle, function&lt;void(const Args&amp;…)&gt;&gt; m_observers;</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13">
+       Any class that wants to expose events on which observers can register themselves just needs to provide register and unregister member functions. Thanks to the use of a variadic class template,
+       <code class="calibre21">
+        Event
+       </code>
+       instances can be created with any number of parameters. This allows an observable object to pass any relevant information to observers. Here is an example:
+      </p>
+      <pre class="calibre26" id="c33-code-0035"><code class="calibre21">class ObservableSubject</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        EventHandle registerDataModifiedObserver(const auto&amp; observer) {</code>
+<code class="calibre21">            return m_eventDataModified.addObserver(observer); }</code>
+<code class="calibre21">        void unregisterDataModifiedObserver(EventHandle handle) {</code>
+<code class="calibre21">            m_eventDataModified.removeObserver(handle); }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        EventHandle registerDataDeletedObserver(const auto&amp; observer) {</code>
+<code class="calibre21">            return m_eventDataDeleted.addObserver(observer); }</code>
+<code class="calibre21">        void unregisterDataDeletedObserver(EventHandle handle) {</code>
+<code class="calibre21">            m_eventDataDeleted.removeObserver(handle); }</code>
+<code class="calibre21"> </code>
+<span aria-label="1199" class="calibre20" epub:type="pagebreak" id="Page_1199" role="doc-pagebreak"></span><code class="calibre21">        void modifyData()</code>
+<code class="calibre21">        {</code>
+<code class="calibre21">            <span class="color">// …</span></code>
+<code class="calibre21">            m_eventDataModified.raise(1, 2.3);</code>
+<code class="calibre21">        }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        void deleteData()</code>
+<code class="calibre21">        {</code>
+<code class="calibre21">            <span class="color">// …</span></code>
+<code class="calibre21">            m_eventDataDeleted.raise();</code>
+<code class="calibre21">        }</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        Event&lt;int, double&gt; m_eventDataModified;</code>
+<code class="calibre21">        Event&lt;&gt; m_eventDataDeleted;</code>
+<code class="calibre21">};</code></pre>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c33-sec-0031">
+      </span>
+      <h3 class="calibre27" id="head-3-598">
+       Using an Observer
+      </h3>
+      <p class="calibre13">
+       The following is some test code that demonstrates how to use the implemented observer pattern. Suppose we have the following stand-alone global function
+       <code class="calibre21">
+        modified()
+       </code>
+       that can handle modification events:
+      </p>
+      <pre class="calibre26" id="c33-code-0036"><code class="calibre21">void modified(int a, double b) { println("modified({}, {})", a, b); }</code></pre>
+      <p class="calibre13">
+       Suppose that we also have a class
+       <code class="calibre21">
+        Observer
+       </code>
+       capable of handling modification events:
+      </p>
+      <pre class="calibre26" id="c33-code-0037"><code class="calibre21">class Observer final</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        explicit Observer(ObservableSubject&amp; subject) : m_subject { subject }</code>
+<code class="calibre21">        {</code>
+<code class="calibre21">            m_subjectModifiedHandle = m_subject.registerDataModifiedObserver(</code>
+<code class="calibre21">                [this](int i, double d) { onSubjectModified(i, d); });</code>
+<code class="calibre21">        }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        ˜Observer()</code>
+<code class="calibre21">        {</code>
+<code class="calibre21">            m_subject.unregisterDataModifiedObserver(m_subjectModifiedHandle);</code>
+<code class="calibre21">        }</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        void onSubjectModified(int a, double b)</code>
+<code class="calibre21">        {</code>
+<code class="calibre21">            println("Observer::onSubjectModified({}, {})", a, b);</code>
+<code class="calibre21">        }</code>
+<code class="calibre21">        ObservableSubject&amp; m_subject;</code>
+<code class="calibre21">        EventHandle m_subjectModifiedHandle;</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13">
+       Finally, we can construct an
+       <code class="calibre21">
+        ObservableSubject
+       </code>
+       instance and register some observers:
+      </p>
+      <pre class="calibre26" id="c33-code-0038"><code class="calibre21">ObservableSubject subject;</code>
+<code class="calibre21"> </code>
+<code class="calibre21">auto handleModified { subject.registerDataModifiedObserver(modified) };</code>
+<code class="calibre21">auto handleDeleted { subject.registerDataDeletedObserver(</code>
+<code class="calibre21">    []{ println("deleted"); }) };</code>
+<code class="calibre21">Observer observer { subject };</code>
+<code class="calibre21"> </code>
+<span aria-label="1200" class="calibre20" epub:type="pagebreak" id="Page_1200" role="doc-pagebreak"></span><code class="calibre21">subject.modifyData();</code>
+<code class="calibre21">subject.deleteData();</code>
+<code class="calibre21"> </code>
+<code class="calibre21">println("");</code>
+<code class="calibre21"> </code>
+<code class="calibre21">subject.unregisterDataModifiedObserver(handleModified);</code>
+<code class="calibre21">subject.modifyData();</code>
+<code class="calibre21">subject.deleteData();</code></pre>
+      <p class="calibre13">
+       The output is as follows:
+      </p>
+      <pre class="calibre26" id="c33-code-0039"><code class="calibre21">modified(1, 2.3)</code>
+<code class="calibre21">Observer::onSubjectModified(1, 2.3)</code>
+<code class="calibre21">deleted</code>
+<code class="calibre21"> </code>
+<code class="calibre21">Observer::onSubjectModified(1, 2.3)</code>
+<code class="calibre21">deleted</code></pre>
+      <section class="calibre2">
+       <aside class="calibre23">
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+        <section class="feature">
+         <p class="calibre25" id="c33-para-0093">
+          <b class="calibre14">
+           NOTE
+          </b>
+          <i class="calibre18">
+           One issue with the observer pattern that you need to keep in mind is the lifetime coupling between observers and subjects. In the previous example, for instance, the destructor of
+          </i>
+          <code class="calibre21">
+           Observer
+          </code>
+          <i class="calibre18">
+           works only if the subject is still alive.
+          </i>
+         </p>
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+        </section>
+       </aside>
+      </section>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-332" class="calibre2">
+     <span class="calibre" id="c33-sec-0033">
+     </span>
+     <h2 class="calibre6" id="head-2-332">
+      THE DECORATOR PATTERN
+     </h2>
+     <p class="calibre13" id="c33-para-0094">
+      The
+      <i class="calibre18">
+       decorator
+      </i>
+      pattern is exactly what it sounds like: a “decoration” on a class. The pattern is used to augment or change the behavior of a class at run time. Decorators are a lot like derived classes but are able to dynamically change the decorated class's behavior. The trade-off is that decorators have fewer ways to change behavior compared to derived classes, because, for example, a decorator cannot override certain helper member functions. On the other hand, the major benefit of decorators is that they are non-intrusive; that is, they allow you to adapt behavior without having to change code in the underlying class. Decorators can also easily be composed to accomplish exactly what you need without having to write derived classes for each combination.
+     </p>
+     <p class="calibre13" id="c33-para-0095">
+      For example, if you have a stream of data that you are parsing and you reach data that represents an image, you could temporarily decorate the stream object with an
+      <code class="calibre21">
+       ImageStream
+      </code>
+      object. The
+      <code class="calibre21">
+       ImageStream
+      </code>
+      constructor would take the stream object as a parameter and would have built-in knowledge of image parsing. Once the image is parsed, you could continue using the original object to parse the remainder of the stream. The
+      <code class="calibre21">
+       ImageStream
+      </code>
+      acts as a decorator because it adds new functionality (image parsing) to an existing object (a stream).
+     </p>
+     <section class="calibre2">
+      <span class="calibre" id="c33-sec-0034">
+      </span>
+      <h3 class="calibre27" id="head-3-599">
+       Example: Defining Styles in Web Pages
+      </h3>
+      <p class="calibre13">
+       As you may already know, web pages are written in a simple text-based structure called HyperText Markup Language (HTML). In HTML, you can apply styles to a text by using style tags, such as
+       <code class="calibre21">
+        &lt;b&gt;
+       </code>
+       and
+       <code class="calibre21">
+        &lt;/b&gt;
+       </code>
+       for bold and
+       <code class="calibre21">
+        &lt;i&gt;
+       </code>
+       and
+       <code class="calibre21">
+        &lt;/i&gt;
+       </code>
+       for italic. The following line of HTML displays the message in bold:
+      </p>
+      <pre class="calibre26" id="c33-code-0040"><code class="calibre21">&lt;b&gt;A party? For me? Thanks!&lt;/b&gt;</code></pre>
+      <p class="calibre13">
+       <span aria-label="1201" class="calibre20" epub:type="pagebreak" id="Page_1201" role="doc-pagebreak">
+       </span>
+       The following line displays the message in bold and italic:
+      </p>
+      <pre class="calibre26" id="c33-code-0041"><code class="calibre21">&lt;i&gt;&lt;b&gt;A party? For me? Thanks!&lt;/b&gt;&lt;/i&gt;</code></pre>
+      <p class="calibre13">
+       Paragraphs in HTML are wrapped in
+       <code class="calibre21">
+        &lt;p&gt;
+       </code>
+       and
+       <code class="calibre21">
+        &lt;/p&gt;
+       </code>
+       tags. Here's an example:
+      </p>
+      <pre class="calibre26" id="c33-code-0042"><code class="calibre21">&lt;p&gt;This is a paragraph.&lt;/p&gt;</code></pre>
+      <p class="calibre13" id="c33-para-0099">
+       Suppose you are writing an HTML editing application. Your users should be able to type in paragraphs of text and apply one or more styles to them. You
+       <i class="calibre18">
+        could
+       </i>
+       make each type of paragraph a new derived class, as shown in
+       <a class="calibre5" href="#c33-fig-0007" id="R_c33-fig-0007">
+        Figure 33.7
+       </a>
+       , but that design is cumbersome and would grow exponentially as new styles are added.
+      </p>
+      <figure class="calibre36">
+       <img alt="A diagram illustrates a paragraph connected to three other components. 1. Bold Paragraph. 2. Italic Paragraph. 3. Bold Italic Paragraph." class="center" src="images/c33f007.png"/>
+       <figcaption class="calibre37">
+        <p class="calibre13">
+         <span class="figurelabel">
+          <a class="calibre5" href="#R_c33-fig-0007" id="c33-fig-0007" role="doc-backlink">
+           <b class="calibre14">
+            FIGURE 33.7
+           </b>
+          </a>
+         </span>
+        </p>
+       </figcaption>
+      </figure>
+      <p class="calibre13" id="c33-para-0100">
+       The alternative is to consider styled paragraphs not as
+       <i class="calibre18">
+        types
+       </i>
+       of paragraphs, but as
+       <i class="calibre18">
+        decorated
+       </i>
+       paragraphs. This leads to situations like the one shown in
+       <a class="calibre5" href="#c33-fig-0008" id="R_c33-fig-0008">
+        Figure 33.8
+       </a>
+       , where an
+       <code class="calibre21">
+        ItalicParagraph
+       </code>
+       operates on a
+       <code class="calibre21">
+        BoldParagraph
+       </code>
+       , which in turn operates on a
+       <code class="calibre21">
+        Paragraph
+       </code>
+       . The recursive decoration of objects nests the styles in code just as they are nested in HTML.
+      </p>
+      <figure class="calibre36">
+       <img alt="A diagram illustrates three different styles of components enclosed in a square box. 1. Italic paragraph. 2. Bold Paragraph. 3. Paragraph." class="center" src="images/c33f008.png"/>
+       <figcaption class="calibre37">
+        <p class="calibre13">
+         <span class="figurelabel">
+          <a class="calibre5" href="#R_c33-fig-0008" id="c33-fig-0008" role="doc-backlink">
+           <b class="calibre14">
+            FIGURE 33.8
+           </b>
+          </a>
+         </span>
+        </p>
+       </figcaption>
+      </figure>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c33-sec-0035">
+      </span>
+      <h3 class="calibre27" id="head-3-600">
+       Implementation of a Decorator
+      </h3>
+      <p class="calibre13">
+       To start, you need an
+       <code class="calibre21">
+        IParagraph
+       </code>
+       interface:
+      </p>
+      <pre class="calibre26" id="c33-code-0043"><code class="calibre21">class IParagraph</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual ˜IParagraph() = default;  <span class="color">// Always a virtual destructor!</span></code>
+<code class="calibre21">        virtual std::string getHTML() const = 0;</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13">
+       The
+       <code class="calibre21">
+        Paragraph
+       </code>
+       class implements this
+       <code class="calibre21">
+        IParagraph
+       </code>
+       interface:
+      </p>
+      <pre class="calibre26" id="c33-code-0044"><code class="calibre21">class Paragraph : public IParagraph</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        explicit Paragraph(std::string text) : m_text { std::move(text) } {}</code>
+<code class="calibre21">        std::string getHTML() const override {return format("&lt;p&gt;{}&lt;/p&gt;", m_text); }</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        std::string m_text;</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13">
+       To decorate a
+       <code class="calibre21">
+        Paragraph
+       </code>
+       with zero or more styles, you need styled
+       <code class="calibre21">
+        IParagraph
+       </code>
+       classes, each one constructible from an existing
+       <code class="calibre21">
+        IParagraph
+       </code>
+       . This way, they can all decorate a
+       <code class="calibre21">
+        Paragraph
+       </code>
+       or a styled
+       <code class="calibre21">
+        IParagraph
+       </code>
+       . The
+       <code class="calibre21">
+        BoldParagraph
+       </code>
+       class derives from
+       <code class="calibre21">
+        IParagraph
+       </code>
+       and implements
+       <code class="calibre21">
+        getHTML()
+       </code>
+       . The key here is that since you only intend to use it as a decorator, its single
+       <code class="calibre21">
+        public
+       </code>
+       non-copy constructor takes a reference-to-
+       <code class="calibre21">
+        const
+       </code>
+       to an
+       <code class="calibre21">
+        IParagraph
+       </code>
+       .
+      </p>
+      <pre class="calibre26" id="c33-code-0045"><span aria-label="1202" class="calibre20" epub:type="pagebreak" id="Page_1202" role="doc-pagebreak"></span><code class="calibre21">class BoldParagraph : public IParagraph</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        explicit BoldParagraph(const IParagraph&amp; paragraph)</code>
+<code class="calibre21">            : m_wrapped { paragraph } { }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        std::string getHTML() const override {</code>
+<code class="calibre21">            return format("&lt;b&gt;{}&lt;/b&gt;", m_wrapped.getHTML()); }</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        const IParagraph&amp; m_wrapped;</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13">
+       The
+       <code class="calibre21">
+        ItalicParagraph
+       </code>
+       class is similar:
+      </p>
+      <pre class="calibre26" id="c33-code-0046"><code class="calibre21">class ItalicParagraph : public IParagraph</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        explicit ItalicParagraph(const IParagraph&amp; paragraph)</code>
+<code class="calibre21">            : m_wrapped { paragraph } { }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        std::string getHTML() const override {</code>
+<code class="calibre21">            return format("&lt;i&gt;{}&lt;/i&gt;", m_wrapped.getHTML()); }</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        const IParagraph&amp; m_wrapped;</code>
+<code class="calibre21">};</code></pre>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c33-sec-0036">
+      </span>
+      <h3 class="calibre27" id="head-3-601">
+       Using a Decorator
+      </h3>
+      <p class="calibre13" id="c33-para-0105">
+       From the user's point of view, the decorator pattern is appealing because it is easy to apply and is transparent once applied. A
+       <code class="calibre21">
+        BoldParagraph
+       </code>
+       behaves just like a
+       <code class="calibre21">
+        Paragraph
+       </code>
+       . Keep in mind, though, that since a
+       <code class="calibre21">
+        BoldParagraph
+       </code>
+       contains just a reference to an
+       <code class="calibre21">
+        IParagraph
+       </code>
+       , if you somehow change the text of that
+       <code class="calibre21">
+        IParagraph
+       </code>
+       , that change will be visible through the
+       <code class="calibre21">
+        BoldParagraph
+       </code>
+       as well.
+      </p>
+      <p class="calibre13">
+       Here is an example that creates and outputs a paragraph, first in bold and then in bold and italic:
+      </p>
+      <pre class="calibre26" id="c33-code-0047"><code class="calibre21">Paragraph text { "A party? For me? Thanks!" };</code>
+<code class="calibre21"><span class="color">// Bold</span></code>
+<code class="calibre21">println("{}", BoldParagraph{text}.getHTML());</code>
+<code class="calibre21"><span class="color">// Bold and Italic</span></code>
+<code class="calibre21">println("{}", ItalicParagraph{BoldParagraph{text}}.getHTML());</code></pre>
+      <p class="calibre13">
+       The output is as follows:
+      </p>
+      <pre class="calibre26" id="c33-code-0048"><code class="calibre21">&lt;b&gt;&lt;p&gt;A party? For me? Thanks!&lt;/p&gt;&lt;/b&gt;</code>
+<code class="calibre21">&lt;i&gt;&lt;b&gt;&lt;p&gt;A party? For me? Thanks!&lt;/p&gt;&lt;/b&gt;&lt;/i&gt;</code></pre>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-333" class="calibre2">
+     <span class="calibre" id="c33-sec-0037">
+     </span>
+     <h2 class="calibre6" id="head-2-333">
+      THE CHAIN OF RESPONSIBILITY PATTERN
+     </h2>
+     <p class="calibre13" id="c33-para-0108">
+      A
+      <i class="calibre18">
+       chain of responsibility
+      </i>
+      is used when you want a number of objects to get a crack at performing a particular action. Chains of responsibility are perhaps most commonly used for event handling. Many modern applications, particularly those with graphical user interfaces, are designed as a series of events and responses. For example, when a user clicks the
+      <i class="calibre18">
+       File
+      </i>
+      menu and selects
+      <i class="calibre18">
+       Open
+      </i>
+      , an “open” event is triggered. When the user moves the mouse over the drawable area of a paint program, mouse
+      <span aria-label="1203" class="calibre20" epub:type="pagebreak" id="Page_1203" role="doc-pagebreak">
+      </span>
+      move events are generated continuously. If the user presses down a button on the mouse, a “mouse down” event for that button-press is generated. The program can then start paying attention to the mouse move events, allowing the user to “draw” some object and continue doing this until the “mouse up” event occurs. Each operating system has its own way of naming and using these events, but the overall idea is the same: when an event occurs, it is somehow propagated to different objects to take appropriate action.
+     </p>
+     <p class="calibre13" id="c33-para-0109">
+      You might find the chain of responsibility pattern to be similar to the decorator pattern. However, there is a difference. You should see the chain of responsibility pattern as the architectural equivalent of an if-else cascade; that is, find a first match. The decorator pattern on the other hand extends functionality.
+     </p>
+     <p class="calibre13" id="c33-para-0110">
+      As you know, C++ does not have any built-in facilities for graphical programming. It also has no notion of events, event transmission, or event handling. A chain of responsibility is a reasonable approach to give different objects a chance to handle certain events.
+     </p>
+     <section class="calibre2">
+      <span class="calibre" id="c33-sec-0038">
+      </span>
+      <h3 class="calibre27" id="head-3-602">
+       Example: Event Handling
+      </h3>
+      <p class="calibre13" id="c33-para-0111">
+       Consider a drawing program: an application with a window in which shapes can be drawn. The user can press a mouse button somewhere in the application's window. If that happens, the application should figure out whether the user clicked a shape. If so, the shape is asked to handle the “mouse button down” event. If it decides it doesn't need to handle the event, it passes the event to the window, which gets the next crack at the event. If the window is also not interested in the event, it forwards it to the application itself, which is the final object in the chain to handle the event. It's a chain of responsibility because each handler may either handle the event or pass the event to the next handler in the chain.
+      </p>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c33-sec-0039">
+      </span>
+      <h3 class="calibre27" id="head-3-603">
+       Implementation of a Chain of Responsibility
+      </h3>
+      <p class="calibre13">
+       Suppose all possible events are defined in an enumeration as follows:
+      </p>
+      <pre class="calibre26" id="c33-code-0049"><code class="calibre21">enum class Event { LeftMouseButtonDown, LeftMouseButtonUp,</code>
+<code class="calibre21">    RightMouseButtonDown, RightMouseButtonUp };</code></pre>
+      <p class="calibre13">
+       Next, the following
+       <code class="calibre21">
+        Handler
+       </code>
+       base class is defined:
+      </p>
+      <pre class="calibre26" id="c33-code-0050"><code class="calibre21">class Handler</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual ˜Handler() = default;</code>
+<code class="calibre21">        <span class="color">// Omitted defaulted default ctor, copy/move ctor, copy/move assignment op.</span></code>
+<code class="calibre21">        explicit Handler(Handler* nextHandler) : m_nextHandler { nextHandler } { }</code>
+<code class="calibre21">        virtual void handleMessage(Event message) = 0;</code>
+<code class="calibre21">    protected:</code>
+<code class="calibre21">        void nextHandler(Event message)</code>
+<code class="calibre21">        {</code>
+<code class="calibre21">            if (m_nextHandler) { m_nextHandler-&gt;handleMessage(message); }</code>
+<code class="calibre21">        }</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        Handler* m_nextHandler { nullptr };</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13">
+       <span aria-label="1204" class="calibre20" epub:type="pagebreak" id="Page_1204" role="doc-pagebreak">
+       </span>
+       Next, the
+       <code class="calibre21">
+        Application
+       </code>
+       ,
+       <code class="calibre21">
+        Window
+       </code>
+       , and
+       <code class="calibre21">
+        Shape
+       </code>
+       classes are concrete handlers, all deriving from the
+       <code class="calibre21">
+        Handler
+       </code>
+       class. In this example,
+       <code class="calibre21">
+        Application
+       </code>
+       handles only
+       <code class="calibre21">
+        RightMouseButtonDown
+       </code>
+       messages,
+       <code class="calibre21">
+        Window
+       </code>
+       handles only
+       <code class="calibre21">
+        LeftMouseButtonUp
+       </code>
+       messages, and
+       <code class="calibre21">
+        Shape
+       </code>
+       handles only
+       <code class="calibre21">
+        LeftMouseButtonDown
+       </code>
+       messages. If any of the handlers receives a message it doesn't know about, it calls the next handler in the chain.
+      </p>
+      <pre class="calibre26" id="c33-code-0051"><code class="calibre21">class Application : public Handler</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        explicit Application(Handler* nextHandler) : Handler { nextHandler } { }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        void handleMessage(Event message) override</code>
+<code class="calibre21">        {</code>
+<code class="calibre21">            println("Application::handleMessage()");</code>
+<code class="calibre21">            if (message == Event::RightMouseButtonDown) {</code>
+<code class="calibre21">                println("   Handling message RightMouseButtonDown");</code>
+<code class="calibre21">            } else { nextHandler(message); }</code>
+<code class="calibre21">        }</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class Window : public Handler</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        explicit Window(Handler* nextHandler) : Handler { nextHandler } { }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        void handleMessage(Event message) override</code>
+<code class="calibre21">        {</code>
+<code class="calibre21">            println("Window::handleMessage()");</code>
+<code class="calibre21">            if (message == Event::LeftMouseButtonUp) {</code>
+<code class="calibre21">                println("   Handling message LeftMouseButtonUp");</code>
+<code class="calibre21">            } else { nextHandler(message); }</code>
+<code class="calibre21">        }</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class Shape : public Handler</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        explicit Shape(Handler* nextHandler) : Handler { nextHandler } { }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        void handleMessage(Event message) override</code>
+<code class="calibre21">        {</code>
+<code class="calibre21">            println("Shape::handleMessage()");</code>
+<code class="calibre21">            if (message == Event::LeftMouseButtonDown) {</code>
+<code class="calibre21">                println("   Handling message LeftMouseButtonDown");</code>
+<code class="calibre21">            } else { nextHandler(message); }</code>
+<code class="calibre21">        }</code>
+<code class="calibre21">};</code></pre>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c33-sec-0040">
+      </span>
+      <h3 class="calibre27" id="head-3-604">
+       Using a Chain of Responsibility
+      </h3>
+      <p class="calibre13">
+       The chain of responsibility implemented in the previous section can be tested as follows:
+      </p>
+      <pre class="calibre26" id="c33-code-0052"><code class="calibre21">Application application { nullptr };</code>
+<code class="calibre21">Window window { &amp;application };</code>
+<code class="calibre21">Shape shape { &amp;window };</code>
+<code class="calibre21"> </code>
+<span aria-label="1205" class="calibre20" epub:type="pagebreak" id="Page_1205" role="doc-pagebreak"></span><code class="calibre21">shape.handleMessage(Event::LeftMouseButtonDown);</code>
+<code class="calibre21">println("");</code>
+<code class="calibre21"> </code>
+<code class="calibre21">shape.handleMessage(Event::LeftMouseButtonUp);</code>
+<code class="calibre21">println("");</code>
+<code class="calibre21"> </code>
+<code class="calibre21">shape.handleMessage(Event::RightMouseButtonDown);</code>
+<code class="calibre21">println("");</code>
+<code class="calibre21"> </code>
+<code class="calibre21">shape.handleMessage(Event::RightMouseButtonUp);</code></pre>
+      <p class="calibre13">
+       The output is as follows:
+      </p>
+      <pre class="calibre26" id="c33-code-0053"><code class="calibre21">Shape::handleMessage()</code>
+<code class="calibre21">   Handling message LeftMouseButtonDown</code>
+<code class="calibre21"> </code>
+<code class="calibre21">Shape::handleMessage()</code>
+<code class="calibre21">Window::handleMessage()</code>
+<code class="calibre21">   Handling message LeftMouseButtonUp</code>
+<code class="calibre21"> </code>
+<code class="calibre21">Shape::handleMessage()</code>
+<code class="calibre21">Window::handleMessage()</code>
+<code class="calibre21">Application::handleMessage()</code>
+<code class="calibre21">   Handling message RightMouseButtonDown</code>
+<code class="calibre21"> </code>
+<code class="calibre21">Shape::handleMessage()</code>
+<code class="calibre21">Window::handleMessage()</code>
+<code class="calibre21">Application::handleMessage()</code></pre>
+      <p class="calibre13">
+       Of course, in a real application there must be some other class that
+       <i class="calibre18">
+        dispatches
+       </i>
+       the events to the correct object, i.e., calls
+       <code class="calibre21">
+        handleMessage()
+       </code>
+       on the correct object. Because this task varies greatly by framework or platform, the following example shows pseudo-code for handling a left mouse button down event, in lieu of platform-specific C++ code:
+      </p>
+      <pre class="calibre26" id="c33-code-0054"><code class="calibre21">MouseLocation location { getMouseLocation() };</code>
+<code class="calibre21">Shape* clickedShape { findShapeAtLocation(location) };</code>
+<code class="calibre21">if (clickedShape) {</code>
+<code class="calibre21">    clickedShape-&gt;handleMessage(Event::LeftMouseButtonDown);</code>
+<code class="calibre21">} else {</code>
+<code class="calibre21">    window.handleMessage(Event::LeftMouseButtonDown);</code>
+<code class="calibre21">}</code></pre>
+      <p class="calibre13" id="c33-para-0118">
+       The chained approach is flexible and has an appealing structure for object-oriented hierarchies. The downside is that it requires diligence on the part of the programmer. If a class forgets to chain to the next handler in the chain, events will effectively get lost. Worse, if you chain to the wrong class, you could end up in an infinite loop!
+      </p>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-334" class="calibre2">
+     <span class="calibre" id="c33-sec-0041">
+     </span>
+     <h2 class="calibre6" id="head-2-334">
+      THE SINGLETON PATTERN
+     </h2>
+     <p class="calibre13" id="c33-para-0119">
+      The
+      <i class="calibre18">
+       singleton
+      </i>
+      is one of the simplest design patterns. In English, the word
+      <i class="calibre18">
+       singleton
+      </i>
+      means “one of a kind” or “individual.” It has a similar meaning in programming. The singleton pattern is a strategy for enforcing the existence of exactly one instance of a class in a program. Applying the singleton pattern
+      <span aria-label="1206" class="calibre20" epub:type="pagebreak" id="Page_1206" role="doc-pagebreak">
+      </span>
+      to a class guarantees that only one object of that class type will ever be created. The singleton pattern also specifies that the one object is globally accessible from anywhere in the program. Programmers usually refer to a class following the singleton pattern as a
+      <i class="calibre18">
+       singleton class
+      </i>
+      .
+     </p>
+     <p class="calibre13" id="c33-para-0120">
+      If your program relies on the assumption that there will be exactly one instance of a class, you could enforce that assumption with the singleton pattern. Technically, in C++, you could achieve the same thing using global variables and free functions in some namespace instead of a class, but other languages, such as Java, don't have the concept of global variables.
+     </p>
+     <p class="calibre13" id="c33-para-0121">
+      However, the singleton pattern has a number of disadvantages that you need to be aware of. If you have multiple singletons, it's not always easy to guarantee that they are initialized in the right order at program startup. It's also not easy to ensure a singleton is still there when callers need it during program shutdown. On top of that, singleton classes introduce hidden dependencies, cause tight coupling, and complicate unit testing. In a unit test, for example, you might want to write a mock version (see
+      <a class="calibre5" href="c30.xhtml">
+       Chapter 30
+      </a>
+      , “Becoming Adept at Testing”) of a singleton that accesses the network or a database, but given the nature of a typical singleton implementation, that's hard to do.
+     </p>
+     <p class="calibre13">
+      A more appropriate design pattern is the strategy design pattern, discussed earlier in this chapter. With the strategy design pattern, you create an interface for each service you provide and inject the interfaces a component needs into the component. Strategy makes it easy to introduce different implementations which helps with mocking (stub versions) for unit testing. Still, the singleton pattern is discussed here because you will encounter it, especially in legacy code bases.
+     </p>
+     <section class="calibre2">
+      <aside class="calibre23">
+       <div class="top">
+        <hr class="calibre24"/>
+       </div>
+       <section class="feature">
+        <p class="calibre25" id="c33-para-0123">
+         <b class="calibre14">
+          WARNING
+         </b>
+         <i class="calibre18">
+          Avoid using the singleton pattern in new code because of its numerous problems. Prefer other patterns, such as the strategy design pattern
+         </i>
+         .
+        </p>
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c33-sec-0043">
+      </span>
+      <h3 class="calibre27" id="head-3-605">
+       Example: A Logging Mechanism
+      </h3>
+      <p class="calibre13">
+       Many applications have a notion of a logger—a class that is responsible for writing status information, debugging data, and errors to a central location. A logging class could have the following characteristics:
+      </p>
+      <ul class="check" id="c33-list-0005">
+       <li class="calibre9" id="c33-li-0019">
+        It is available at all times.
+       </li>
+       <li class="calibre9" id="c33-li-0020">
+        It is easy to use.
+       </li>
+       <li class="calibre9" id="c33-li-0021">
+        There is only one instance.
+       </li>
+      </ul>
+      <p class="calibre13" id="c33-para-0125">
+       The singleton pattern could be used to accomplish these requirements. But again, in new code I recommend avoiding introducing new singletons.
+      </p>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c33-sec-0044">
+      </span>
+      <h3 class="calibre27" id="head-3-606">
+       Implementation of a Singleton
+      </h3>
+      <p class="calibre13" id="c33-para-0126">
+       There are two approaches to implement singleton behavior in C++. The first approach uses a class with only static member functions. Such a class needs no instantiation and is accessible from anywhere. The problem with this technique is that it lacks a built-in mechanism for construction and destruction. And, technically, a class that uses all static member functions doesn't really follow the singleton design pattern but the
+       <i class="calibre18">
+        monostate
+       </i>
+       design pattern; that is, such a class can have multiple
+       <span aria-label="1207" class="calibre20" epub:type="pagebreak" id="Page_1207" role="doc-pagebreak">
+       </span>
+       instances but only one state. The term
+       <i class="calibre18">
+        singleton
+       </i>
+       implies that there is exactly one instance of the class. The monostate design pattern is not further discussed in this section.
+      </p>
+      <p class="calibre13" id="c33-para-0127">
+       The second approach uses access control levels to regulate the creation and access of one single instance of a class. This is a true singleton and illustrated with the example of a
+       <code class="calibre21">
+        Logger
+       </code>
+       class, providing similar features as the strategy-based
+       <code class="calibre21">
+        Logger
+       </code>
+       discussed earlier in this chapter.
+      </p>
+      <p class="calibre13">
+       To build a true singleton in C++, you can use the access control mechanisms as well as the
+       <code class="calibre21">
+        static
+       </code>
+       keyword. An actual
+       <code class="calibre21">
+        Logger
+       </code>
+       instance exists at run time, and the class enforces that only one instance is ever instantiated. Clients can always get a hold of that single instance through a
+       <code class="calibre21">
+        static
+       </code>
+       member function called
+       <code class="calibre21">
+        instance()
+       </code>
+       . The class definition looks like this:
+      </p>
+      <pre class="calibre26" id="c33-code-0055"><code class="calibre21">export class Logger final</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        enum class LogLevel { Debug, Info, Error };</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        <span class="color">// Sets the name of the log file.</span></code>
+<code class="calibre21">        <span class="color">// Note: needs to be called before the first call to instance()!</span></code>
+<code class="calibre21">        static void setLogFilename(std::string logFilename);</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        <span class="color">// Returns a reference to the singleton Logger object.</span></code>
+<code class="calibre21">        static Logger&amp; instance();</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        <span class="color">// Prevent copy/move construction.</span></code>
+<code class="calibre21">        Logger(const Logger&amp;) = delete;</code>
+<code class="calibre21">        Logger(Logger&amp;&amp;) = delete;</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        <span class="color">// Prevent copy/move assignment operations.</span></code>
+<code class="calibre21">        Logger&amp; operator=(const Logger&amp;) = delete;</code>
+<code class="calibre21">        Logger&amp; operator=(Logger&amp;&amp;) = delete;</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        <span class="color">// Sets the log level.</span></code>
+<code class="calibre21">        void setLogLevel(LogLevel level);</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        <span class="color">// Logs a single message at the given log level.</span></code>
+<code class="calibre21">        void log(std::string_view message, LogLevel logLevel);</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        <span class="color">// Private constructor and destructor.</span></code>
+<code class="calibre21">        Logger();</code>
+<code class="calibre21">        ˜Logger();</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        <span class="color">// Converts a log level to a human-readable string.</span></code>
+<code class="calibre21">        std::string_view getLogLevelString(LogLevel level) const;</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        static inline std::string ms_logFilename;</code>
+<code class="calibre21">        std::ofstream m_outputStream;</code>
+<code class="calibre21">        LogLevel m_logLevel { LogLevel::Error };</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13" id="c33-para-0129">
+       This implementation is based on Scott Meyers’ singleton pattern. This means that the
+       <code class="calibre21">
+        instance()
+       </code>
+       member function contains a local
+       <code class="calibre21">
+        static
+       </code>
+       instance of the
+       <code class="calibre21">
+        Logger
+       </code>
+       class. C++ guarantees that this local
+       <code class="calibre21">
+        static
+       </code>
+       instance is initialized in a thread-safe fashion, so you don't need any manual thread synchronization in this version of the singleton pattern. These are called
+       <i class="calibre18">
+        magic statics
+       </i>
+       or
+       <i class="calibre18">
+        thread-safe static local variables
+       </i>
+       . Note that only the initialization is thread-safe! If multiple threads are going to call
+       <span aria-label="1208" class="calibre20" epub:type="pagebreak" id="Page_1208" role="doc-pagebreak">
+       </span>
+       member functions on the
+       <code class="calibre21">
+        Logger
+       </code>
+       class, then you should make the
+       <code class="calibre21">
+        Logger
+       </code>
+       member functions themselves thread safe as well. See
+       <a class="calibre5" href="c27.xhtml">
+        Chapter 27
+       </a>
+       , “Multithreaded Programming with C++,” for a detailed discussion on synchronization mechanisms to make a class thread-safe.
+      </p>
+      <p class="calibre13" id="c33-para-0130">
+       The implementation of the
+       <code class="calibre21">
+        Logger
+       </code>
+       class is straightforward. Once the log file has been opened, each log message is written to it with a timestamp and the log level prepended, and then flushed to disk. The constructor and destructor are called automatically when the
+       <code class="calibre21">
+        static
+       </code>
+       instance of the
+       <code class="calibre21">
+        Logger
+       </code>
+       class in the
+       <code class="calibre21">
+        instance()
+       </code>
+       member function is created and destroyed. Because the constructor and destructor are
+       <code class="calibre21">
+        private
+       </code>
+       , no external code can create or delete a
+       <code class="calibre21">
+        Logger
+       </code>
+       .
+      </p>
+      <p class="calibre13">
+       Here are the implementations of the
+       <code class="calibre21">
+        setLogFilename()
+       </code>
+       and
+       <code class="calibre21">
+        instance()
+       </code>
+       member functions and the constructor and destructor. The other member functions have the same implementations as in the strategy-based logger example earlier in this chapter.
+      </p>
+      <pre class="calibre26" id="c33-code-0056"><code class="calibre21">void Logger::setLogFilename(string logFilename)</code>
+<code class="calibre21">{ ms_logFilename = move(logFilename); }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">Logger&amp; Logger::instance()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    static Logger instance; <span class="color">// Thread-safe static local variable.</span></code>
+<code class="calibre21">    return instance;</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21">Logger::Logger()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    m_outputStream.open(ms_logFileName, ios_base::app);</code>
+<code class="calibre21">    if (!m_outputStream.good()) {</code>
+<code class="calibre21">        throw runtime_error { "Unable to initialize the Logger!" };</code>
+<code class="calibre21">    }</code>
+<code class="calibre21">    println(m_outputStream, "{}: Logger started.", chrono::system_clock::now());</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21">Logger::~Logger()</code>
+<code class="calibre21">{ println(m_outputStream, "{}: Logger stopped.", chrono::system_clock::now()); }</code></pre>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c33-sec-0045">
+      </span>
+      <h3 class="calibre27" id="head-3-607">
+       Using a Singleton
+      </h3>
+      <p class="calibre13">
+       The singleton
+       <code class="calibre21">
+        Logger
+       </code>
+       class can be tested as follows:
+      </p>
+      <pre class="calibre26" id="c33-code-0057"><code class="calibre21"><span class="color">// Set the log filename before the first call to instance().</span></code>
+<code class="calibre21">Logger::setLogFilename("log.out");</code>
+<code class="calibre21"><span class="color">// Set log level to Debug.</span></code>
+<code class="calibre21">Logger::instance().setLogLevel(Logger::LogLevel::Debug);</code>
+<code class="calibre21"><span class="color">// Log some messages.</span></code>
+<code class="calibre21">Logger::instance().log("test message", Logger::LogLevel::Debug);</code>
+<code class="calibre21"><span class="color">// Set log level to Error.</span></code>
+<code class="calibre21">Logger::instance().setLogLevel(Logger::LogLevel::Error);</code>
+<code class="calibre21"><span class="color">// Now that the log level is set to Error, logging a Debug</span></code>
+<code class="calibre21"><span class="color">// message will be ignored.</span></code>
+<code class="calibre21">Logger::instance().log("A debug message", Logger::LogLevel::Debug);</code></pre>
+      <p class="calibre13">
+       <span aria-label="1209" class="calibre20" epub:type="pagebreak" id="Page_1209" role="doc-pagebreak">
+       </span>
+       After executing, the file
+       <code class="calibre21">
+        log.out
+       </code>
+       contains the following lines:
+      </p>
+      <pre class="calibre26" id="c33-code-0058"><code class="calibre21">2023-08-12 17:36:15.1370238: Logger started.</code>
+<code class="calibre21">2023-08-12 17:36:15.1372522: [DEBUG] test message</code>
+<code class="calibre21">2023-08-12 17:36:15.1373057: Logger stopped.</code></pre>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-335" class="calibre2">
+     <span class="calibre" id="c33-sec-0046">
+     </span>
+     <h2 class="calibre6" id="head-2-335">
+      SUMMARY
+     </h2>
+     <p class="calibre13" id="c33-para-0134">
+      This chapter has given you just a taste of how patterns can help you organize object-oriented concepts into high-level designs. A lot of design patterns are cataloged and discussed on Wikipedia (
+      <code class="calibre21">
+       <a class="calibre5" href="http://en.wikipedia.org/wiki/Software_design_pattern">
+        en.wikipedia.org/wiki/Software_design_pattern
+       </a>
+      </code>
+      ). It's easy to get lost with the sheer number of available patterns. I recommend that you concentrate on a few patterns that interest you and slowly build up your arsenal of patterns.
+     </p>
+     <p class="calibre13" id="c33-para-0135">
+      I would like to conclude this chapter with the following quote, which expresses the reason why we use patterns:
+     </p>
+     <blockquote class="extract">
+      <p class="calibre13" id="c33-para-0137">
+       <i class="calibre18">
+        The use of [design patterns] provides us in our daily lives with decisive speed advantages for understanding complex structures. This is also why patterns found their way into software development years ago…. Consistently applied patterns help us deal with the complexity of source code.
+       </i>
+      </p>
+      <p class="right">
+       CAROLA LILIENTHAL, SOFTWARE ARCHITECTURE METRICS, O’REILLY MEDIA
+      </p>
+     </blockquote>
+    </section>
+    <section aria-labelledby="head-2-336" class="calibre2">
+     <span class="calibre" id="c33-sec-0047">
+     </span>
+     <h2 class="calibre6" id="head-2-336">
+      EXERCISES
+     </h2>
+     <p class="calibre13" id="c33-para-0138">
+      By solving the following exercises, you can practice the material discussed in this chapter. Solutions to all exercises are available with the code download on the book's website at
+      <code class="calibre21">
+       <a class="calibre5" href="http://www.wiley.com/go/proc++6e">
+        www.wiley.com/go/proc++6e
+       </a>
+      </code>
+      . However, if you are stuck on an exercise, first reread parts of this chapter to try to find an answer yourself before looking at the solution from the website.
+     </p>
+     <p class="calibre13" id="c33-para-0139">
+      The concept of the exercises for this chapter is different compared to other chapters. The following exercises briefly introduce new patterns and ask you to do research into those patterns to learn more about them.
+     </p>
+     <section class="calibre2">
+      <span class="calibre" id="c33-exsec-0001">
+      </span>
+      <ol class="none1">
+       <li class="calibre9" id="c33-ex-0001">
+        <b class="calibre14">
+         Exercise 33-1:
+        </b>
+        Although this chapter discussed a nice selection of patterns, there are of course many more patterns available. One such pattern is the
+        <i class="calibre18">
+         command pattern
+        </i>
+        . It encapsulates an operation or operations in an object. One major use case of this pattern is to implement undoable operations. Use one of the patterns-related references in
+        <a class="calibre5" href="b02.xhtml">
+         Appendix B
+        </a>
+        , “Annotated Bibliography,” to research and learn about the command pattern, or, alternatively, start from the Wikipedia article,
+        <code class="calibre21">
+         <a class="calibre5" href="http://en.wikipedia.org/wiki/Software_design_pattern">
+          en.wikipedia.org/wiki/Software_design_pattern
+         </a>
+        </code>
+        , to start your research.
+       </li>
+       <li class="calibre9" id="c33-ex-0002">
+        <b class="calibre14">
+         Exercise 33-2:
+        </b>
+        Another pattern is the
+        <i class="calibre18">
+         facade pattern
+        </i>
+        . With this pattern, you provide an easy-to-use higher-level interface to hide the complexity of a subsystem. This makes the subsystem easier to use. Research the facade pattern to learn more about it.
+       </li>
+       <li class="calibre9" id="c33-ex-0003">
+        <b class="calibre14">
+         Exercise 33-3:
+        </b>
+        With
+        <span aria-label="1210" class="calibre20" epub:type="pagebreak" id="Page_1210" role="doc-pagebreak">
+        </span>
+        the
+        <i class="calibre18">
+         prototype pattern
+        </i>
+        , you specify different kinds of objects that can be created by constructing prototypical instances of those objects. These prototypical instances are usually registered in some kind of registry. A client can then ask the registry for the prototype of a specific kind of object and subsequently clone the prototype for further use. Research the prototype pattern to learn more about it.
+       </li>
+       <li class="calibre9" id="c33-ex-0004">
+        <b class="calibre14">
+         Exercise 33-4:
+        </b>
+        The
+        <i class="calibre18">
+         mediator pattern
+        </i>
+        is used to control the interactions between a set of objects. It advocates loose coupling between the different subsystems in play. Research the mediator pattern to learn more about it.
+       </li>
+      </ol>
+     </section>
+    </section>
+   </section>
+  </div>
+ </body>
+</html>

@@ -1,0 +1,199 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html>
+<html epub:prefix="z3998: http://www.daisy.org/z3998/2012/vocab/structure/#" lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+ <head>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   CHAPTER 11: MODULES, HEADER FILES, AND MISCELLANEOUS TOPICS
+  </title>
+ </head>
+ <body>
+  <div class="navigation">
+   <a class="nav-button" href="chapter_058.html">
+    ← Previous
+   </a>
+   <a class="nav-button" href="index.html">
+    Table of Contents
+   </a>
+   <a class="nav-button" href="chapter_060.html">
+    Next →
+   </a>
+  </div>
+  <div class="chapter-content">
+   <section aria-labelledby="b01_1" class="calibre2" epub:type="appendix" role="doc-appendix">
+    <section aria-labelledby="head-2-10" class="calibre2">
+     <h2 class="calibre6" id="head-2-10">
+      CHAPTER 11: MODULES, HEADER FILES, AND MISCELLANEOUS TOPICS
+     </h2>
+     <p class="calibre13" id="bapp01-para-0057">
+      This chapter is mostly focused on modules, but it also discusses header files, linkage, feature test macros for core language features, the
+      <code class="calibre21">
+       static
+      </code>
+      keyword, C-style variable-length argument lists, and preprocessor macros.
+     </p>
+     <span aria-label="1252" class="calibre20" epub:type="pagebreak" id="Page_1252" role="doc-pagebreak">
+     </span>
+     <section class="calibre2">
+      <span class="calibre" id="bapp01-sec-0030">
+      </span>
+      <h3 class="calibre27" id="head-3-19">
+       Things to Remember
+      </h3>
+      <ul class="check" id="bapp01-list-0012">
+       <li class="calibre9" id="bapp01-li-0118">
+        The many uses of
+        <code class="calibre21">
+         static
+        </code>
+       </li>
+       <li class="calibre9" id="bapp01-li-0119">
+        What modules are and why their use is preferred over using header files
+       </li>
+       <li class="calibre9" id="bapp01-li-0120">
+        Header file syntax and
+        <code class="calibre21">
+         #include
+        </code>
+       </li>
+       <li class="calibre9" id="bapp01-li-0121">
+        The concept of preprocessor macros and their disadvantages
+       </li>
+       <li class="calibre9" id="bapp01-li-0122">
+        The use of
+        <code class="calibre21">
+         #define
+        </code>
+        and
+        <code class="calibre21">
+         #pragma once
+        </code>
+       </li>
+       <li class="calibre9" id="bapp01-li-0123">
+        The different types of linkage: no linkage, external linkage, internal linkage, and module linkage
+       </li>
+       <li class="calibre9" id="bapp01-li-0124">
+        Why you shouldn't use C-style variable-length argument lists
+       </li>
+      </ul>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="bapp01-sec-0031">
+      </span>
+      <h3 class="calibre27" id="head-3-20">
+       Types of Questions
+      </h3>
+      <p class="calibre13" id="bapp01-para-0059">
+       Asking a candidate to define
+       <code class="calibre21">
+        static
+       </code>
+       is a classic C++ interview question. Because the keyword has several uses, it can be used to assess the breadth of your knowledge. You should definitely talk about
+       <code class="calibre21">
+        static
+       </code>
+       member functions and
+       <code class="calibre21">
+        static
+       </code>
+       data members and give good examples of them. You'll get extra points if you also explain
+       <code class="calibre21">
+        static
+       </code>
+       linkage and
+       <code class="calibre21">
+        static
+       </code>
+       function-local variables.
+      </p>
+      <p class="calibre13" id="bapp01-para-0060">
+       Modules are the perfect way to make code reusable and bolster clear separation of responsibilities. Be sure to know how to consume modules and how to author a basic module.
+      </p>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-11" class="calibre2">
+     <span class="calibre" id="bapp01-sec-0032">
+     </span>
+     <h2 class="calibre6" id="head-2-11">
+      CHAPTERS 12 AND 26: WRITING GENERIC CODE WITH TEMPLATES, AND ADVANCED TEMPLATES
+     </h2>
+     <p class="calibre13" id="bapp01-para-0061">
+      As one of the most arcane parts of C++, templates are a good way for interviewers to separate the C++ novices from the pros. While most interviewers will forgive you for not remembering some of the advanced template syntax, you should go into an interview knowing the basics.
+     </p>
+     <section class="calibre2">
+      <span class="calibre" id="bapp01-sec-0033">
+      </span>
+      <h3 class="calibre27" id="head-3-21">
+       Things to Remember
+      </h3>
+      <ul class="check" id="bapp01-list-0013">
+       <li class="calibre9" id="bapp01-li-0125">
+        How to use a class or function template
+       </li>
+       <li class="calibre9" id="bapp01-li-0126">
+        How to write a simple class or function template
+       </li>
+       <li class="calibre9" id="bapp01-li-0127">
+        The abbreviated function template syntax
+       </li>
+       <li class="calibre9" id="bapp01-li-0128">
+        Function template argument deduction
+       </li>
+       <li class="calibre9" id="bapp01-li-0129">
+        Class template argument deduction (CTAD)
+       </li>
+       <li class="calibre9" id="bapp01-li-0130">
+        Alias templates and why
+        <code class="calibre21">
+         using
+        </code>
+        is better than
+        <code class="calibre21">
+         typedef
+        </code>
+       </li>
+       <li class="calibre9" id="bapp01-li-0131">
+        The ideas behind concepts, and their basic use
+       </li>
+       <li class="calibre9" id="bapp01-li-0132">
+        What variadic templates and fold-expressions are
+       </li>
+       <li class="calibre9" id="bapp01-li-0133">
+        The ideas behind template metaprogramming
+       </li>
+       <li class="calibre9" id="bapp01-li-0134">
+        Type traits and what they can be used for
+       </li>
+      </ul>
+     </section>
+     <span aria-label="1253" class="calibre20" epub:type="pagebreak" id="Page_1253" role="doc-pagebreak">
+     </span>
+     <section class="calibre2">
+      <span class="calibre" id="bapp01-sec-0034">
+      </span>
+      <h3 class="calibre27" id="head-3-22">
+       Types of Questions
+      </h3>
+      <p class="calibre13" id="bapp01-para-0063">
+       Many interview questions start out with a simple problem and gradually add complexity. Often, interviewers have an endless amount of complexity that they are prepared to add, and they simply want to see how far you get. For example, an interviewer might begin a problem by asking you to create a class that provides sequential access to a fixed number of
+       <code class="calibre21">
+        int
+       </code>
+       s. Next, the class will need to grow to accommodate an arbitrary number of elements. Then, it will need to work with arbitrary data types, which is where templates come in. From there, the interviewer could take the problem in a number of directions, asking you to use operator overloading to provide array-like syntax or continuing down the template path by asking you to provide a default type for the template type parameters or to put type constraints on them. However, most interviewers understand that the template syntax can be difficult and will forgive you for syntactical errors.
+      </p>
+      <p class="calibre13" id="bapp01-para-0064">
+       The interviewer might ask you high-level questions related to template metaprogramming to find out whether you have heard about it. While explaining, you could give a small example such as calculating the factorial of a number at compile time. Don't worry if the syntax is not entirely correct. As long as you explain what it is supposed to do, you should be fine.
+      </p>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-12" class="calibre2">
+     <span class="calibre" id="bapp01-sec-0035">
+     </span>
+     <div class="calibre19" id="calibre_pb_8">
+     </div>
+    </section>
+   </section>
+  </div>
+ </body>
+</html>

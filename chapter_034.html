@@ -5,7 +5,7 @@
   <link href="style.css" rel="stylesheet" type="text/css"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <title>
-   CHAPTER 32: INCORPORATING DESIGN TECHNIQUES AND FRAMEWORKS
+   21String Localization and Regular Expressions
   </title>
  </head>
  <body>
@@ -21,31 +21,5217 @@
    </a>
   </div>
   <div class="chapter-content">
-   <section aria-labelledby="b01_1" class="calibre2" epub:type="appendix" role="doc-appendix">
-    <section aria-labelledby="head-2-24" class="calibre2">
-     <h2 class="calibre6" id="head-2-24">
-      CHAPTER 32: INCORPORATING DESIGN TECHNIQUES AND FRAMEWORKS
-     </h2>
-     <p class="calibre13" id="bapp01-para-0119">
-      Each of the techniques presented in
-      <a class="calibre5" href="c32.xhtml">
-       Chapter 32
-      </a>
-      makes a fine interview question. Rather than repeat what you already read in the chapter, I suggest that you skim over
-      <a class="calibre5" href="c32.xhtml">
-       Chapter 32
-      </a>
-      prior to an interview to make sure that you are able to understand each of the techniques.
+   <section aria-labelledby="c21_1" class="calibre2" epub:type="chapter" role="doc-chapter">
+    <header class="calibre10">
+     <h1 class="calibre16" id="c21_1">
+      <span aria-label="831" class="calibre17" epub:type="pagebreak" id="Page_831" role="doc-pagebreak">
+      </span>
+      <span class="calibre" id="c21">
+      </span>
+      <span class="calibre">
+       21
+      </span>
+      <br class="calibre12"/>
+      <span class="calibre">
+       String Localization and Regular Expressions
+      </span>
+     </h1>
+    </header>
+    <section aria-label="chapter opening" class="calibre2">
+     <span class="calibre" id="c21-sec-0001">
+     </span>
+     <section class="calibre2">
+      <aside class="calibre23">
+       <div class="top">
+        <hr class="calibre24"/>
+       </div>
+       <section class="feature1">
+        <h3 class="calibre30">
+         WHAT'S IN THIS CHAPTER?
+        </h3>
+        <ul class="check2" id="c21-list-0001">
+         <li class="calibre9" id="c21-li-0001">
+          How to localize your applications to reach a worldwide audience
+         </li>
+         <li class="calibre9" id="c21-li-0002">
+          How to use regular expressions to do powerful pattern matching
+         </li>
+         <li class="calibre9" id="c21-li-0003">
+          How to use regular expressions to validate strings, search substrings, find and replace strings, and more
+         </li>
+        </ul>
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <section class="calibre2">
+      <aside class="calibre23">
+       <div class="top">
+        <hr class="calibre24"/>
+       </div>
+       <section class="feature1">
+        <span class="calibre" id="c21-fea-0001">
+        </span>
+        <h3 class="calibre30" id="head-2-221">
+         WILEY.COM DOWNLOADS FOR THIS CHAPTER
+        </h3>
+        <span class="calibre" id="c21-sec-0003">
+        </span>
+        <p class="calibre25" id="c21-para-0004">
+         Please note that all the code examples for this chapter are available as part of this chapter's code download on the book's website at
+         <code class="calibre21">
+          <a class="calibre5" href="http://www.wiley.com/go/proc++6e">
+           www.wiley.com/go/proc++6e
+          </a>
+         </code>
+         on the Download Code tab.
+        </p>
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <p class="calibre13" id="c21-para-0005">
+      This chapter starts with a discussion of localization, which allows you to write software that can be localized to different regions around the world. An application that is properly localized displays numbers, dates, currencies, and so on in the appropriate format according to rules for a specific country or region.
      </p>
-     <p class="calibre13" id="bapp01-para-0120">
-      If you are being interviewed for a GUI-based job, you should know about the existence of frameworks such as MFC, Qt, and possibly others.
+     <p class="calibre13" id="c21-para-0006">
+      The second part of this chapter introduces the
+      <i class="calibre18">
+       regular expressions library
+      </i>
+      , which makes it easy to perform pattern matching on strings. It allows you to search for substrings matching a given pattern, but also to validate, parse, and transform strings. Regular expressions are powerful. I recommend that you use them, as they are less error prone than manually writing your own string processing code.
      </p>
     </section>
-    <section aria-labelledby="head-2-25" class="calibre2">
-     <span class="calibre" id="bapp01-sec-0072">
+    <span aria-label="832" class="calibre20" epub:type="pagebreak" id="Page_832" role="doc-pagebreak">
+    </span>
+    <section aria-labelledby="head-2-222" class="calibre2">
+     <span class="calibre" id="c21-sec-0004">
      </span>
-     <div class="calibre19" id="calibre_pb_20">
-     </div>
+     <h2 class="calibre6" id="head-2-222">
+      LOCALIZATION
+     </h2>
+     <p class="calibre13">
+      When you're learning how to program in C or C++, it's useful to think of a character as equivalent to a byte and to treat all characters as members of the American Standard Code for Information Interchange (ASCII) character set. ASCII is a 7-bit set usually stored in an 8-bit
+      <code class="calibre21">
+       char
+      </code>
+      type. In reality, experienced C++ programmers recognize that successful programs are used throughout the world. Even if you don't initially write your program with international audiences in mind, you shouldn't prevent yourself from
+      <i class="calibre18">
+       localizing
+      </i>
+      , or making the software
+      <i class="calibre18">
+       locale aware
+      </i>
+      , at a later date.
+     </p>
+     <section class="calibre2">
+      <aside class="calibre23">
+       <div class="top">
+        <hr class="calibre24"/>
+       </div>
+       <section class="feature">
+        <p class="calibre25" id="c21-para-0008">
+         <b class="calibre14">
+          NOTE
+         </b>
+         <i class="calibre18">
+          This chapter gives you an introduction to localization, different character encodings, and string code portability. It is outside the scope of this book to discuss all these topics in detail, because they warrant an entire book on their own
+         </i>
+         .
+        </p>
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c21-sec-0006">
+      </span>
+      <h3 class="calibre27" id="head-3-450">
+       Wide Characters
+      </h3>
+      <p class="calibre13" id="c21-para-0009">
+       The problem with viewing a character as a byte is that not all languages, or
+       <i class="calibre18">
+        character sets
+       </i>
+       , can be fully represented in 8 bits, or 1 byte. C++ has a built-in type called
+       <code class="calibre21">
+        wchar_t
+       </code>
+       that holds a
+       <i class="calibre18">
+        wide character
+       </i>
+       . Languages with non-ASCII (US) characters, such as Japanese and Arabic, can be represented in C++ with
+       <code class="calibre21">
+        wchar_t
+       </code>
+       . However, the C++ standard does not define the size for
+       <code class="calibre21">
+        wchar_t
+       </code>
+       . Some compilers use 16 bits, while others use 32 bits. Most of the time, it matches the size of the native Unicode character type on the underlying operating system. To write cross-platform code, it is not safe to assume that
+       <code class="calibre21">
+        wchar_t
+       </code>
+       is of a particular size.
+      </p>
+      <p class="calibre13">
+       If there is
+       <i class="calibre18">
+        any
+       </i>
+       chance that your program will be used in a non-Western character set context (hint: there is!), you should use wide characters from the beginning. When working with
+       <code class="calibre21">
+        wchar_t
+       </code>
+       , string and character literals are prefixed with the letter
+       <code class="calibre21">
+        L
+       </code>
+       to indicate that a wide-character encoding should be used. For example, to initialize a
+       <code class="calibre21">
+        wchar_t
+       </code>
+       character to the letter
+       <code class="calibre21">
+        m
+       </code>
+       , you write it like this:
+      </p>
+      <pre class="calibre26" id="c21-code-0001"><code class="calibre21">wchar_t myWideCharacter { L'm' };</code></pre>
+      <p class="calibre13" id="c21-para-0011">
+       There are wide-character versions of most of your favorite types and classes. The wide
+       <code class="calibre21">
+        string
+       </code>
+       class is
+       <code class="calibre21">
+        wstring
+       </code>
+       . The “prefix letter w” pattern applies to streams as well. Wide-character file output streams are handled with
+       <code class="calibre21">
+        wofstream
+       </code>
+       , and input is handled with
+       <code class="calibre21">
+        wifstream
+       </code>
+       . The joy of pronouncing these class names (
+       <i class="calibre18">
+        woof-stream? whiff-stream?
+       </i>
+       ) is reason enough to make your programs locale aware! Streams are discussed in detail in
+       <a class="calibre5" href="c13.xhtml">
+        Chapter 13
+       </a>
+       , “Demystifying C++ I/O.”
+      </p>
+      <p class="calibre13">
+       There are also wide-versions of
+       <code class="calibre21">
+        cout
+       </code>
+       ,
+       <code class="calibre21">
+        cin
+       </code>
+       ,
+       <code class="calibre21">
+        cerr
+       </code>
+       , and
+       <code class="calibre21">
+        clog
+       </code>
+       available, called
+       <code class="calibre21">
+        wcout
+       </code>
+       ,
+       <code class="calibre21">
+        wcin
+       </code>
+       ,
+       <code class="calibre21">
+        wcerr
+       </code>
+       , and
+       <code class="calibre21">
+        wclog
+       </code>
+       . Using them is no different than using the non-wide versions:
+      </p>
+      <pre class="calibre26" id="c21-code-0002"><code class="calibre21">wcout &lt;&lt; L"I am a wide-character string literal." &lt;&lt; endl;</code></pre>
+      <p class="calibre13">
+       <code class="calibre21">
+        print()
+       </code>
+       and
+       <code class="calibre21">
+        println()
+       </code>
+       don't support
+       <code class="calibre21">
+        wchar_t
+       </code>
+       string literals, but they do support UTF-8 string literals, discussed later in this chapter. On the other hand,
+       <code class="calibre21">
+        format()
+       </code>
+       does support wide-character strings:
+      </p>
+      <pre class="calibre26" id="c21-code-0003"><code class="calibre21">wcout &lt;&lt; format(L"myWideCharacter is {}", myWideCharacter) &lt;&lt; endl;</code></pre>
+     </section>
+     <span aria-label="833" class="calibre20" epub:type="pagebreak" id="Page_833" role="doc-pagebreak">
+     </span>
+     <section class="calibre2">
+      <span class="calibre" id="c21-sec-0007">
+      </span>
+      <h3 class="calibre27" id="head-3-451">
+       Non-Western Character Sets
+      </h3>
+      <p class="calibre13" id="c21-para-0014">
+       Wide characters are a great step forward because they increase the amount of space available to define a single character. The next step is to figure out how that space is used. In wide character sets, just like in ASCII, characters are represented by numbers, now called
+       <i class="calibre18">
+        code points
+       </i>
+       . The only difference is that each number does not fit in 8 bits. The map of characters to code points is quite a bit larger because it handles many different character sets in addition to the characters that English-speaking programmers are familiar with.
+      </p>
+      <p class="calibre13" id="c21-para-0015">
+       The Universal Character Set (UCS)—defined by the International Standard ISO 10646—and Unicode are both standardized sets of characters. They both identify characters by an unambiguous name and a code point. The same characters with the same numbers exist in both standards. At the time of this writing, the latest version of Unicode was version 15, which defines 149,186 characters. Both UCS and Unicode have specific
+       <i class="calibre18">
+        encodings
+       </i>
+       that you can use to represent specific code points. This is important: a code point is just a number; an encoding specifies how to represent that number as one or more bytes. For example, UTF-8 is an example of a Unicode encoding where Unicode characters are encoded using one to four 8-bit bytes. UTF-16 encodes Unicode characters as one or two 16-bit values, and UTF-32 encodes Unicode characters as exactly 32 bits.
+      </p>
+      <p class="calibre13">
+       Different applications can use different encodings. Unfortunately, as mentioned earlier in this chapter, the C++ standard does not specify a size for wide characters (
+       <code class="calibre21">
+        wchar_t
+       </code>
+       ). On Windows it is 16 bits, while on other platforms it could be 32 bits. You need to be aware of this when using wide characters for character encoding in cross-platform code. To help solve this issue, there are other character types:
+       <code class="calibre21">
+        char8_t
+       </code>
+       ,
+       <code class="calibre21">
+        char16_t
+       </code>
+       , and
+       <code class="calibre21">
+        char32_t
+       </code>
+       . The following list gives an overview of the available character types:
+      </p>
+      <ul class="check" id="c21-list-0002">
+       <li class="calibre9" id="c21-li-0004">
+        <b class="calibre14">
+         <code class="calibre21">
+          char:
+         </code>
+        </b>
+        Stores 8 bits. This type can be used to store ASCII characters or as a basic building block for storing UTF-8 encoded Unicode characters, where one Unicode character is encoded with up to four
+        <code class="calibre21">
+         char
+        </code>
+        s.
+       </li>
+       <li class="calibre9" id="c21-li-0005">
+        <b class="calibre14">
+         <code class="calibre21">
+          char
+          <i class="calibre18">
+           x
+          </i>
+          _t
+         </code>
+         :
+        </b>
+        Stores at least
+        <i class="calibre18">
+         x
+        </i>
+        bits where
+        <i class="calibre18">
+         x
+        </i>
+        can be 8, 16, or 32. This type can be used as the basic building block for UTF-
+        <i class="calibre18">
+         x
+        </i>
+        encoded Unicode characters, encoding one Unicode character with up to four
+        <code class="calibre21">
+         char8_t
+        </code>
+        s, up to two
+        <code class="calibre21">
+         char16_t
+        </code>
+        s, or one
+        <code class="calibre21">
+         char32_t
+        </code>
+        .
+       </li>
+       <li class="calibre9" id="c21-li-0006">
+        <b class="calibre14">
+         <code class="calibre21">
+          wchar_t
+         </code>
+         :
+        </b>
+        Stores a wide character of a compiler-specific size and encoding.
+       </li>
+      </ul>
+      <p class="calibre13" id="c21-para-0017">
+       The benefits of using the
+       <code class="calibre21">
+        char
+        <i class="calibre18">
+         x
+        </i>
+        _t
+       </code>
+       types instead of
+       <code class="calibre21">
+        wchar_t
+       </code>
+       is that the standard guarantees minimum sizes for the
+       <code class="calibre21">
+        char
+        <i class="calibre18">
+         x
+        </i>
+        _t
+       </code>
+       types, independent of the compiler. There is no minimum size guaranteed for
+       <code class="calibre21">
+        wchar_t
+       </code>
+       .
+      </p>
+      <p class="calibre13">
+       String literals can have a string prefix to turn them into a specific type. The complete set of supported string prefixes is as follows:
+      </p>
+      <ul class="check" id="c21-list-0003">
+       <li class="calibre9" id="c21-li-0007">
+        u8: A
+        <code class="calibre21">
+         char8_t
+        </code>
+        string literal with UTF-8 encoding
+       </li>
+       <li class="calibre9" id="c21-li-0008">
+        <b class="calibre14">
+         <code class="calibre21">
+          u
+         </code>
+         :
+        </b>
+        A
+        <code class="calibre21">
+         char16_t
+        </code>
+        string literal with UTF-16 encoding
+       </li>
+       <li class="calibre9" id="c21-li-0009">
+        <b class="calibre14">
+         <code class="calibre21">
+          U
+         </code>
+         :
+        </b>
+        A
+        <code class="calibre21">
+         char32_t
+        </code>
+        string literal with UTF-32 encoding
+       </li>
+       <li class="calibre9" id="c21-li-0010">
+        <b class="calibre14">
+         <code class="calibre21">
+          L
+         </code>
+         :
+        </b>
+        A
+        <code class="calibre21">
+         wchar_t
+        </code>
+        string literal with a compiler-dependent encoding
+       </li>
+      </ul>
+      <p class="calibre13">
+       <span aria-label="834" class="calibre20" epub:type="pagebreak" id="Page_834" role="doc-pagebreak">
+       </span>
+       All of these string literals can be combined with the raw string literal prefix,
+       <code class="calibre21">
+        R
+       </code>
+       , discussed in
+       <a class="calibre5" href="c02.xhtml">
+        Chapter 2
+       </a>
+       , “Working with Strings and String Views.” Here are some examples:
+      </p>
+      <pre class="calibre26" id="c21-code-0004"><code class="calibre21">const char8_t* s1 { u8R"(Raw UTF-8 string literal)" };</code>
+<code class="calibre21">const wchar_t* s2 { LR"(Raw wide string literal)" };</code>
+<code class="calibre21">const char16_t* s3 { uR"(Raw UTF-16 string literal)" };</code>
+<code class="calibre21">const char32_t* s4 { UR"(Raw UTF-32 string literal)" };</code></pre>
+      <p class="calibre13" id="c21-para-0020">
+       You can insert specific Unicode code points in non-raw string literals using several different escape sequences. The following table gives an overview of your options. The last column shows the encoding of the superscript two, ², character.
+      </p>
+      <table border="1" class="calibre31">
+       <thead class="calibre32">
+        <tr class="calibre33">
+         <th class="left" scope="col">
+          ESCAPE SEQUENCE
+         </th>
+         <th class="left" scope="col">
+          DESCRIPTION
+         </th>
+         <th class="left" scope="col">
+          EXAMPLE:
+          <sup class="calibre22">
+           2
+          </sup>
+         </th>
+        </tr>
+       </thead>
+       <tbody class="calibre34">
+        <tr class="calibre33">
+         <td class="bgcolor">
+          <span class="calibre21">
+           \nnn
+          </span>
+         </td>
+         <td class="bgcolor">
+          1 to 3 octal digits
+         </td>
+         <td class="bgcolor">
+          <span class="calibre21">
+           \262
+          </span>
+         </td>
+        </tr>
+        <tr class="calibre33">
+         <td class="bgcolor">
+          <img alt="C++23" class="calibre15" src="images/icon1.png"/>
+          <code class="calibre21">
+           \o{n…}
+          </code>
+         </td>
+         <td class="bgcolor">
+          Arbitrary number of octal digits
+         </td>
+         <td class="bgcolor">
+          <span class="calibre21">
+           \o{262}
+          </span>
+         </td>
+        </tr>
+        <tr class="calibre33">
+         <td class="bgcolor">
+          <span class="calibre21">
+           \xn…
+          </span>
+         </td>
+         <td class="bgcolor">
+          Arbitrary number of hexadecimal digits
+         </td>
+         <td class="bgcolor">
+          <span class="calibre21">
+           \xB2
+          </span>
+          or
+          <code class="calibre21">
+           \x00B2
+          </code>
+         </td>
+        </tr>
+        <tr class="calibre33">
+         <td class="bgcolor">
+          <img alt="C++23" class="calibre15" src="images/icon1.png"/>
+          <code class="calibre21">
+           \x{n…}
+          </code>
+         </td>
+         <td class="bgcolor">
+          Arbitrary number of hexadecimal digits
+         </td>
+         <td class="bgcolor">
+          <span class="calibre21">
+           \x{B2}
+          </span>
+          or
+          <code class="calibre21">
+           \x{00B2}
+          </code>
+         </td>
+        </tr>
+        <tr class="calibre33">
+         <td class="bgcolor">
+          <span class="calibre21">
+           \unnnn
+          </span>
+         </td>
+         <td class="bgcolor">
+          4 hexadecimal digits
+         </td>
+         <td class="bgcolor">
+          <span class="calibre21">
+           \u00B2
+          </span>
+         </td>
+        </tr>
+        <tr class="calibre33">
+         <td class="bgcolor">
+          <img alt="C++23" class="calibre15" src="images/icon1.png"/>
+          <code class="calibre21">
+           \u{n…}
+          </code>
+         </td>
+         <td class="bgcolor">
+          Arbitrary number of hexadecimal digits
+         </td>
+         <td class="bgcolor">
+          <span class="calibre21">
+           \u{B2}
+          </span>
+          or
+          <code class="calibre21">
+           \u{00B2}
+          </code>
+         </td>
+        </tr>
+        <tr class="calibre33">
+         <td class="bgcolor">
+          <span class="calibre21">
+           \Unnnnnnnn
+          </span>
+         </td>
+         <td class="bgcolor">
+          8 hexadecimal digits
+         </td>
+         <td class="bgcolor">
+          <span class="calibre21">
+           \U000000B2
+          </span>
+         </td>
+        </tr>
+        <tr class="calibre33">
+         <td class="bgcolor">
+          <img alt="C++23" class="calibre15" src="images/icon1.png"/>
+          <code class="calibre21">
+           \N{name}
+          </code>
+         </td>
+         <td class="bgcolor">
+          Universal character name
+         </td>
+         <td class="bgcolor">
+          <span class="calibre21">
+           \N{SUPERSCRIPT TWO}
+          </span>
+         </td>
+        </tr>
+       </tbody>
+      </table>
+      <p class="calibre13" id="c21-para-0031">
+       The
+       <code class="calibre21">
+        \o{n…}
+       </code>
+       ,
+       <code class="calibre21">
+        \x{n…}
+       </code>
+       , and
+       <code class="calibre21">
+        \u{n…}
+       </code>
+       notations introduced with C++23 are useful to avoid problems when the next character in a string literal happens to be a valid octal or hexadecimal digit. For the
+       <code class="calibre21">
+        \N{name}
+       </code>
+       notation, the name must be the official Unicode name of the character, which you can look up in any Unicode character reference.
+      </p>
+      <p class="calibre13">
+       Here are some more examples representing the formula
+       <code class="calibre21">
+        π r
+       </code>
+       <sup class="calibre22">
+        2
+       </sup>
+       . The
+       <code class="calibre21">
+        π
+       </code>
+       character has code
+       <code class="calibre21">
+        3C0
+       </code>
+       , and the superscript two character has code
+       <code class="calibre21">
+        B2
+       </code>
+       .
+      </p>
+      <pre class="calibre26" id="c21-code-0005"><code class="calibre21">const char8_t* formula1 { u8"\x3C0 r\xB2" };</code>
+<code class="calibre21">const char8_t* formula2 { u8"\u03C0 r\u00B2" };</code>
+<code class="calibre21">const char8_t* formula3 { u8"\N{GREEK SMALL LETTER PI} r\N{SUPERSCRIPT TWO}" };</code></pre>
+      <p class="calibre13" id="c21-para-0033">
+       Besides string literals, character literals can also have a prefix to turn them into specific types. The prefixes
+       <code class="calibre21">
+        u8
+       </code>
+       ,
+       <code class="calibre21">
+        u
+       </code>
+       ,
+       <code class="calibre21">
+        U
+       </code>
+       , and
+       <code class="calibre21">
+        L
+       </code>
+       are supported, for example:
+       <code class="calibre21">
+        u'a'
+       </code>
+       ,
+       <code class="calibre21">
+        U'a'
+       </code>
+       ,
+       <code class="calibre21">
+        L'a'
+       </code>
+       , and
+       <code class="calibre21">
+        u8'a'
+       </code>
+       .
+      </p>
+      <p class="calibre13">
+       In addition to the
+       <code class="calibre21">
+        std::string
+       </code>
+       class, there is also support for
+       <code class="calibre21">
+        wstring
+       </code>
+       ,
+       <code class="calibre21">
+        u8string
+       </code>
+       ,
+       <code class="calibre21">
+        u16string
+       </code>
+       , and
+       <code class="calibre21">
+        u32string
+       </code>
+       . They are defined as follows:
+      </p>
+      <ul class="check" id="c21-list-0004">
+       <li class="calibre9" id="c21-li-0011">
+        <code class="calibre21">
+         using string = basic_string&lt;char&gt;;
+        </code>
+       </li>
+       <li class="calibre9" id="c21-li-0012">
+        <code class="calibre21">
+         using wstring = basic_string&lt;wchar_t&gt;;
+        </code>
+       </li>
+       <li class="calibre9" id="c21-li-0013">
+        <code class="calibre21">
+         using u8string = basic_string&lt;char8_t&gt;;
+        </code>
+       </li>
+       <li class="calibre9" id="c21-li-0014">
+        <span aria-label="835" class="calibre20" epub:type="pagebreak" id="Page_835" role="doc-pagebreak">
+        </span>
+        <code class="calibre21">
+         using u16string = basic_string&lt;char16_t&gt;;
+        </code>
+       </li>
+       <li class="calibre9" id="c21-li-0015">
+        <code class="calibre21">
+         using u32string = basic_string&lt;char32_t&gt;;
+        </code>
+       </li>
+      </ul>
+      <p class="calibre13" id="c21-para-0035">
+       Similarly, the Standard Library provides
+       <code class="calibre21">
+        std::string_view
+       </code>
+       ,
+       <code class="calibre21">
+        wstring_view
+       </code>
+       ,
+       <code class="calibre21">
+        u8string_view
+       </code>
+       ,
+       <code class="calibre21">
+        u16string_view
+       </code>
+       , and
+       <code class="calibre21">
+        u32string_view
+       </code>
+       , all based on
+       <code class="calibre21">
+        basic_string_view
+       </code>
+       .
+      </p>
+      <p class="calibre13" id="c21-para-0036">
+       Multibyte strings are strings with characters composed of one or more bytes using a locale-dependent encoding. Locales are discussed later in this chapter. A multibyte string could use Unicode encoding, or any other kind of encoding such as Shift-JIS, EUC-JP, and so on. Conversion functions are available to convert between
+       <code class="calibre21">
+        char8_t
+       </code>
+       /
+       <code class="calibre21">
+        char16_t
+       </code>
+       /
+       <code class="calibre21">
+        char32_t
+       </code>
+       and multibyte strings, and vice versa:
+       <code class="calibre21">
+        mbrtoc8()
+       </code>
+       and
+       <code class="calibre21">
+        c8rtomb()
+       </code>
+       , and
+       <code class="calibre21">
+        mbrtoc16()
+       </code>
+       ,
+       <code class="calibre21">
+        c16rtomb()
+       </code>
+       ,
+       <code class="calibre21">
+        mbrtoc32()
+       </code>
+       , and
+       <code class="calibre21">
+        c32rtomb()
+       </code>
+       .
+      </p>
+      <p class="calibre13" id="c21-para-0037">
+       Unfortunately, the support for
+       <code class="calibre21">
+        char8_t
+       </code>
+       ,
+       <code class="calibre21">
+        char16_t
+       </code>
+       , and
+       <code class="calibre21">
+        char32_t
+       </code>
+       doesn't go much further. There are some conversion classes available (see later in this chapter), but, for example, there is nothing like a version of
+       <code class="calibre21">
+        cout
+       </code>
+       ,
+       <code class="calibre21">
+        cin
+       </code>
+       ,
+       <code class="calibre21">
+        println()
+       </code>
+       ,
+       <code class="calibre21">
+        format()
+       </code>
+       , and so on, that supports these character types; this makes it difficult to print such strings to a console or to read them from user input. If you want to do more with such strings, you need to resort to third-party libraries. International Components for Unicode (ICU) is one well-known library that provides Unicode and globalization support for your applications. (See
+       <code class="calibre21">
+        <a class="calibre5" href="http://icu-project.org">
+         icu-project.org
+        </a>
+       </code>
+       .)
+      </p>
+      <p class="calibre13">
+       <img alt="C++23" class="calibre15" src="images/icon1.png"/>
+       C++23 improves things slightly. It allows a
+       <code class="calibre21">
+        u8
+       </code>
+       UTF-8 string literal to initialize an array of type
+       <code class="calibre21">
+        const char
+       </code>
+       or
+       <code class="calibre21">
+        const unsigned char
+       </code>
+       , and functions like
+       <code class="calibre21">
+        std::format()
+       </code>
+       and
+       <code class="calibre21">
+        print()
+       </code>
+       do support
+       <code class="calibre21">
+        const char[]
+       </code>
+       . For example, the following initializes a
+       <code class="calibre21">
+        const char[]
+       </code>
+       array with a UTF-8 string literal and then prints it using
+       <code class="calibre21">
+        println()
+       </code>
+       . If your environment is set up to handle Japanese characters, then the output is “Hello world” in Japanese.
+      </p>
+      <pre class="calibre26" id="c21-code-0006"><code class="calibre21">const char hello[] { u8"こんにちは世界" };</code>
+<code class="calibre21">println("{}", hello);</code></pre>
+      <p class="calibre13">
+       If you would use
+       <code class="calibre21">
+        char8_t[]
+       </code>
+       instead of
+       <code class="calibre21">
+        char[]
+       </code>
+       as follows, you will get a compilation error as
+       <code class="calibre21">
+        println()
+       </code>
+       doesn't understand the
+       <code class="calibre21">
+        char8_t
+       </code>
+       type.
+      </p>
+      <pre class="calibre26" id="c21-code-0007"><code class="calibre21">const <b class="calibre14">char8_t</b> hello[] { u8"こんにちは世界" };</code>
+<code class="calibre21">println("{}", hello);  <span class="color">// Error: doesn't compile!</span></code></pre>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c21-sec-0008">
+      </span>
+      <h3 class="calibre27" id="head-3-452">
+       Localizing String Literals
+      </h3>
+      <p class="calibre13" id="c21-para-0041">
+       A critical aspect of localization is that you should never put any native-language string literals in your source code, except maybe for debug strings targeted at the developer. In Microsoft Windows applications, this is accomplished by putting all strings for an application in
+       <code class="calibre21">
+        STRINGTABLE
+       </code>
+       resources. Most other platforms offer similar capabilities. If you need to translate your application to another language, translating those resources should be all you need to do, without requiring any source changes. There are tools available that will help you with this translation process.
+      </p>
+      <p class="calibre13">
+       To make your source code localizable, you should not compose sentences out of string literals, even if the individual literals can be localized. Here is an example:
+      </p>
+      <pre class="calibre26" id="c21-code-0008"><code class="calibre21">unsigned n { 5 };</code>
+<code class="calibre21">wstring filename { L"file1.txt" };</code>
+<code class="calibre21">wcout &lt;&lt; n &lt;&lt; L" bytes read from " &lt;&lt; filename &lt;&lt; endl;</code></pre>
+      <p class="calibre13">
+       <span aria-label="836" class="calibre20" epub:type="pagebreak" id="Page_836" role="doc-pagebreak">
+       </span>
+       This statement cannot be localized to, for example, German because it requires a reordering of the words. The German translation is as follows:
+      </p>
+      <pre class="calibre26" id="c21-code-0009"><code class="calibre21">wcout &lt;&lt; n &lt;&lt; L" Bytes aus " &lt;&lt; filename &lt;&lt; L" gelezen" &lt;&lt; endl;</code></pre>
+      <p class="calibre13">
+       To make sure you can properly localize such strings, you could implement it as follows:
+      </p>
+      <pre class="calibre26" id="c21-code-0010"><code class="calibre21">vprint_unicode(loadResource(IDS_TRANSFERRED), make_format_args(n, filename));</code></pre>
+      <p class="calibre13" id="c21-para-0045">
+       <code class="calibre21">
+        IDS_TRANSFERRED
+       </code>
+       is the name of an entry in a string resource table. For the English version,
+       <code class="calibre21">
+        IDS_TRANSFERRED
+       </code>
+       could be defined as “
+       <code class="calibre21">
+        {0} bytes read from {1}
+       </code>
+       ”, while the German version of the resource could be defined as “
+       <code class="calibre21">
+        {0} Bytes aus {1} gelezen
+       </code>
+       ”. The
+       <code class="calibre21">
+        loadResource()
+       </code>
+       function loads the string resource with the given name, and
+       <code class="calibre21">
+        vprint_unicode()
+       </code>
+       (see
+       <a class="calibre5" href="c02.xhtml">
+        Chapter 2
+       </a>
+       ) substitutes
+       <code class="calibre21">
+        {0}
+       </code>
+       with the value of
+       <code class="calibre21">
+        n
+       </code>
+       and
+       <code class="calibre21">
+        {1}
+       </code>
+       with the value of
+       <code class="calibre21">
+        filename
+       </code>
+       .
+      </p>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c21-sec-0009">
+      </span>
+      <h3 class="calibre27" id="head-3-453">
+       Locales and Facets
+      </h3>
+      <p class="calibre13" id="c21-para-0046">
+       Character sets are only one of the differences in data representation between countries. Even countries that use similar character sets, such as Great Britain and the United States, still differ in how they represent certain data, such as dates and monetary values.
+      </p>
+      <p class="calibre13" id="c21-para-0047">
+       The standard C++ mechanism that groups specific data about a particular set of cultural parameters is called a
+       <i class="calibre18">
+        locale
+       </i>
+       . An individual component of a locale, such as date format, time format, number format, and so on, is called a
+       <i class="calibre18">
+        facet
+       </i>
+       . An example of a locale is US English. An example of a facet is the format used to display a date. Several built-in facets are common to all locales. C++ also provides a way to customize or add facets.
+      </p>
+      <p class="calibre13" id="c21-para-0048">
+       There are third-party libraries available that make it easier to work with locales. One example is
+       <code class="calibre21">
+        boost.locale
+       </code>
+       (
+       <?span Start cssStyle="text-decoration:underline"??>
+       <code class="calibre21">
+        boost.org
+       </code>
+       ), which is able to use ICU as its backend, supporting collations and conversions, converting strings to uppercase (instead of converting character by character to uppercase), and so on.
+      </p>
+      <section class="calibre2">
+       <span class="calibre" id="c21-sec-0010">
+       </span>
+       <h4 class="calibre29" id="head-4-336">
+        Locales
+       </h4>
+       <p class="calibre13" id="c21-para-0049">
+        When using I/O streams, data is formatted according to a particular locale. Locales are objects that can be attached to a stream, and they are defined in
+        <code class="calibre21">
+         &lt;locale&gt;
+        </code>
+        . Locale names are implementation specific. The POSIX standard is to separate a language and an area into two-letter sections with an optional encoding. For example, the locale for the English language as spoken in the United States is
+        <code class="calibre21">
+         en_US
+        </code>
+        , while the locale for the English language as spoken in Great Britain is
+        <code class="calibre21">
+         en_GB
+        </code>
+        . The locale for Japanese spoken in Japan with Japanese Industrial Standard encoding is
+        <code class="calibre21">
+         ja_JP.jis
+        </code>
+        .
+       </p>
+       <p class="calibre13">
+        Locale names on Windows can have two formats. The preferred format is similar to the POSIX format but uses a dash instead of an underscore. The second, old format looks as follows where everything between square brackets is optional:
+       </p>
+       <pre class="calibre26" id="c21-code-0011"><code class="calibre21">lang[_country_region[.code_page]]</code></pre>
+       <p class="calibre13">
+        The following table shows some examples of the POSIX, preferred Windows, and old Windows locale formats:
+       </p>
+       <table border="1" class="calibre31">
+        <thead class="calibre32">
+         <tr class="calibre33">
+          <th class="left" scope="col">
+           LANGUAGE
+          </th>
+          <th class="left" scope="col">
+           POSIX
+          </th>
+          <th class="left" scope="col">
+           WINDOWS
+          </th>
+          <th class="left" scope="col">
+           WINDOWS OLD
+          </th>
+         </tr>
+        </thead>
+        <tbody class="calibre34">
+         <tr class="calibre33">
+          <td class="bgcolor">
+           US English
+          </td>
+          <td class="bgcolor">
+           en_US
+          </td>
+          <td class="bgcolor">
+           en-US
+          </td>
+          <td class="bgcolor">
+           English_United States
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           Great Britain English
+          </td>
+          <td class="bgcolor">
+           en_GB
+          </td>
+          <td class="bgcolor">
+           en-GB
+          </td>
+          <td class="bgcolor">
+           English_Great Britain
+           <span aria-label="837" class="calibre20" epub:type="pagebreak" id="Page_837" role="doc-pagebreak">
+           </span>
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p class="calibre13" id="c21-para-0052">
+        Most operating systems have a mechanism to determine the locale as defined by the user. In C++, you can pass an empty string to the
+        <code class="calibre21">
+         std::locale
+        </code>
+        constructor to create a
+        <code class="calibre21">
+         locale
+        </code>
+        from the user's environment. Once this object is created, you can use it to query the
+        <code class="calibre21">
+         locale
+        </code>
+        , possibly making programmatic decisions based on it.
+       </p>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c21-sec-0011">
+       </span>
+       <h4 class="calibre29" id="head-4-337">
+        Global Locale
+       </h4>
+       <p class="calibre13" id="c21-para-0053">
+        The
+        <code class="calibre21">
+         std::locale::global()
+        </code>
+        function can be used to replace the global C++ locale in your application with a given locale. The default constructor of
+        <code class="calibre21">
+         std::locale
+        </code>
+        returns a copy of this global locale. Keep in mind, though, that the C++ Standard Library objects that use locales, for example streams such as
+        <code class="calibre21">
+         cout
+        </code>
+        , store a copy of the global locale at construction time. Changing the global locale afterward does not impact objects that were already created before. If needed, you can use the
+        <code class="calibre21">
+         imbue()
+        </code>
+        member function on streams (see the next section) to change their locale after construction.
+       </p>
+       <p class="calibre13">
+        Here is an example outputting a number with the default locale, changing the global locale to US English and outputting the same number again:
+       </p>
+       <pre class="calibre26" id="c21-code-0012"><code class="calibre21">void print()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    stringstream stream;</code>
+<code class="calibre21">    stream &lt;&lt; 32767;</code>
+<code class="calibre21">    println("{}", stream.str());</code>
+<code class="calibre21">}</code>
+<code class="calibre21"></code>
+<code class="calibre21">int main()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    print();</code>
+<code class="calibre21">    locale::global(locale { "en-US" }); <span class="color">// "en_US" for POSIX</span></code>
+<code class="calibre21">    print();</code>
+<code class="calibre21">}</code></pre>
+       <p class="calibre13">
+        The output is as follows:
+       </p>
+       <pre class="calibre26" id="c21-code-0013"><code class="calibre21">32767</code>
+<code class="calibre21">32,767</code></pre>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c21-sec-0012">
+       </span>
+       <h4 class="calibre29" id="head-4-338">
+        Using Locales
+       </h4>
+       <p class="calibre13">
+        The following code demonstrates how to use the user's locale for a stream by calling the
+        <code class="calibre21">
+         imbue()
+        </code>
+        member function on the stream. The result is that everything that is sent to
+        <code class="calibre21">
+         cout
+        </code>
+        is formatted according to the formatting rules of the user's environment:
+       </p>
+       <pre class="calibre26" id="c21-code-0014"><code class="calibre21">cout.imbue(locale { "" });</code>
+<code class="calibre21">cout &lt;&lt; "User's locale: " &lt;&lt; 32767 &lt;&lt; endl;</code></pre>
+       <p class="calibre13" id="c21-para-0057">
+        This means that if your system locale is English United States and you output the number 32767, the number is displayed as 32,767; however, if your system locale is Dutch Belgium, the same number is displayed as 32.767.
+       </p>
+       <p class="calibre13">
+        <span aria-label="838" class="calibre20" epub:type="pagebreak" id="Page_838" role="doc-pagebreak">
+        </span>
+        The default locale is the
+        <i class="calibre18">
+         classic/neutral
+        </i>
+        locale, and not the user's locale. The classic locale uses ANSI C conventions and has the name C. The classic C locale is similar to US English, but there are slight differences. For example, numbers are handled without any punctuation.
+       </p>
+       <pre class="calibre26" id="c21-code-0015"><code class="calibre21">cout.imbue(locale { "C" });</code>
+<code class="calibre21">cout &lt;&lt; "C locale: " &lt;&lt; 32767 &lt;&lt; endl;</code></pre>
+       <p class="calibre13">
+        The output of this code is as follows:
+       </p>
+       <pre class="calibre26" id="c21-code-0016"><code class="calibre21">C locale: 32767</code></pre>
+       <p class="calibre13">
+        The following code manually sets the US English locale, so the number 32767 is formatted with US English punctuation, independent of your system locale:
+       </p>
+       <pre class="calibre26" id="c21-code-0017"><code class="calibre21">cout.imbue(locale { "en-US" }); <span class="color">// "en_US" for POSIX</span></code>
+<code class="calibre21">cout &lt;&lt; "en-US locale: " &lt;&lt; 32767 &lt;&lt; endl;</code></pre>
+       <p class="calibre13">
+        The output of this code is as follows:
+       </p>
+       <pre class="calibre26" id="c21-code-0018"><code class="calibre21">en-US locale: 32,767</code></pre>
+       <p class="calibre13">
+        By default,
+        <code class="calibre21">
+         std::print()
+        </code>
+        and
+        <code class="calibre21">
+         println()
+        </code>
+        use the C locale. For example, the following prints 32767:
+       </p>
+       <pre class="calibre26" id="c21-code-0019"><code class="calibre21">println("println(): {}", 32767);</code></pre>
+       <p class="calibre13">
+        You can specify the
+        <code class="calibre21">
+         L
+        </code>
+        format specifier, in which case the global locale is used.
+       </p>
+       <pre class="calibre26" id="c21-code-0020"><code class="calibre21">println("println() using global locale: <b class="calibre14">{:L}</b>", 32767);</code></pre>
+       <p class="calibre13">
+        <code class="calibre21">
+         std::format()
+        </code>
+        also supports locales by using the
+        <code class="calibre21">
+         L
+        </code>
+        format specifier and optionally accepts a
+        <code class="calibre21">
+         locale
+        </code>
+        as first argument. When the
+        <code class="calibre21">
+         L
+        </code>
+        format specifier is used and a
+        <code class="calibre21">
+         locale
+        </code>
+        is passed to
+        <code class="calibre21">
+         format()
+        </code>
+        , that
+        <code class="calibre21">
+         locale
+        </code>
+        is used for formatting. If the
+        <code class="calibre21">
+         L
+        </code>
+        format specifier is used without passing a
+        <code class="calibre21">
+         locale
+        </code>
+        to
+        <code class="calibre21">
+         format()
+        </code>
+        , the global
+        <code class="calibre21">
+         locale
+        </code>
+        is used. For example, the following prints 32,767 according to English formatting rules:
+       </p>
+       <pre class="calibre26" id="c21-code-0021"><code class="calibre21">cout &lt;&lt; format(<b class="calibre14">locale { "en-US" }</b>, "format() with en-US locale: <b class="calibre14">{:L}</b>", 32767);</code></pre>
+       <p class="calibre13">
+        A
+        <code class="calibre21">
+         locale
+        </code>
+        object allows you to query information about the locale. For example, the following program creates a
+        <code class="calibre21">
+         locale
+        </code>
+        matching the user's environment. The
+        <code class="calibre21">
+         name()
+        </code>
+        member function is used to get a C++
+        <code class="calibre21">
+         string
+        </code>
+        that describes the locale. Then, the
+        <code class="calibre21">
+         find()
+        </code>
+        member function is used on the
+        <code class="calibre21">
+         string
+        </code>
+        object to find a given substring, which returns
+        <code class="calibre21">
+         string::npos
+        </code>
+        when the given substring is not found. The code checks for the Windows name and the POSIX name. One of two messages is printed, depending on whether the locale appears to be US English.
+       </p>
+       <pre class="calibre26" id="c21-code-0022"><code class="calibre21">locale loc { "" };</code>
+<code class="calibre21">if (loc.name().find("en_US") == string::npos &amp;&amp;</code>
+<code class="calibre21">    loc.name().find("en-US") == string::npos) {</code>
+<code class="calibre21">    println("Welcome non-US English speaker!");</code>
+<code class="calibre21">} else {</code>
+<code class="calibre21">    println("Welcome US English speaker!");</code>
+<code class="calibre21">}</code></pre>
+       <section class="calibre2">
+        <aside class="calibre23">
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+         <section class="feature">
+          <p class="calibre25" id="c21-para-0067">
+           <b class="calibre14">
+            NOTE
+           </b>
+           <i class="calibre18">
+            When you have to write data to a file that is supposed to be read back by a program, it's recommended to write it using the neutral
+           </i>
+           <code class="calibre21">
+            <i class="calibre18">
+             "
+            </i>
+            C
+            <i class="calibre18">
+             "
+            </i>
+           </code>
+           <i class="calibre18">
+            locale; otherwise, parsing will be difficult. On the other hand, when displaying data in a user interface, it's recommended to format the data according to the user locale,
+            <code class="calibre21">
+             ""
+            </code>
+            .
+           </i>
+          </p>
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+         </section>
+        </aside>
+       </section>
+      </section>
+      <span aria-label="839" class="calibre20" epub:type="pagebreak" id="Page_839" role="doc-pagebreak">
+      </span>
+      <section class="calibre2">
+       <span class="calibre" id="c21-sec-0014">
+       </span>
+       <h4 class="calibre29" id="head-4-339">
+        Character Classification
+       </h4>
+       <p class="calibre13">
+        <code class="calibre21">
+         &lt;locale&gt;
+        </code>
+        contains the following character classification functions:
+        <code class="calibre21">
+         std::isspace()
+        </code>
+        ,
+        <code class="calibre21">
+         isblank()
+        </code>
+        ,
+        <code class="calibre21">
+         iscntrl()
+        </code>
+        ,
+        <code class="calibre21">
+         isupper()
+        </code>
+        ,
+        <code class="calibre21">
+         islower()
+        </code>
+        ,
+        <code class="calibre21">
+         isalpha()
+        </code>
+        ,
+        <code class="calibre21">
+         isdigit()
+        </code>
+        ,
+        <code class="calibre21">
+         ispunct()
+        </code>
+        ,
+        <code class="calibre21">
+         isxdigit()
+        </code>
+        ,
+        <code class="calibre21">
+         isalnum()
+        </code>
+        ,
+        <code class="calibre21">
+         isprint()
+        </code>
+        , and
+        <code class="calibre21">
+         isgraph()
+        </code>
+        . They all accept two parameters: the character to classify and the locale to use for the classification. The exact meaning of the different character classes is discussed later in this chapter in the context of regular expressions. Here is an example of using
+        <code class="calibre21">
+         isupper()
+        </code>
+        with a French locale to verify whether a letter is uppercase or not:
+       </p>
+       <pre class="calibre26" id="c21-code-0023"><code class="calibre21">println("É {}", isupper(L'É', locale{ "fr-FR" }));</code>
+<code class="calibre21">println("é {}", isupper(L'é', locale{ "fr-FR" }));</code></pre>
+       <p class="calibre13">
+        The output is as follows:
+       </p>
+       <pre class="calibre26" id="c21-code-0024"><code class="calibre21">É true</code>
+<code class="calibre21">é false</code></pre>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c21-sec-0015">
+       </span>
+       <h4 class="calibre29" id="head-4-340">
+        Character Conversion
+       </h4>
+       <p class="calibre13">
+        <code class="calibre21">
+         &lt;locale&gt;
+        </code>
+        also defines two character conversion functions:
+        <code class="calibre21">
+         std::toupper()
+        </code>
+        and
+        <code class="calibre21">
+         tolower()
+        </code>
+        . They accept two parameters: the character to convert and the locale to use for the conversion. Here is an example:
+       </p>
+       <pre class="calibre26" id="c21-code-0025"><code class="calibre21">auto upper { toupper(L'é', locale { "fr-FR" }) };  <span class="color">// É</span></code></pre>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c21-sec-0016">
+       </span>
+       <h4 class="calibre29" id="head-4-341">
+        Using Facets
+       </h4>
+       <p class="calibre13">
+        You can use the
+        <code class="calibre21">
+         std::use_facet()
+        </code>
+        function template to obtain a particular facet for a particular locale. The template type argument specifies the facet to retrieve, while the function argument specifies the
+        <code class="calibre21">
+         locale
+        </code>
+        from which to retrieve the facet. For example, the following expression retrieves the standard monetary punctuation facet of the British English locale using the POSIX locale name:
+       </p>
+       <pre class="calibre26" id="c21-code-0026"><code class="calibre21">use_facet&lt;moneypunct&lt;wchar_t&gt;&gt;(locale { "en_GB" })</code></pre>
+       <p class="calibre13">
+        Note that the innermost template type determines the character type to use. The result is an object that contains all the information you want to know about British monetary punctuation. The data available in the standard facets is defined in
+        <code class="calibre21">
+         &lt;locale&gt;
+        </code>
+        . The following table lists the facet categories defined by the standard. Consult a Standard Library reference (see
+        <a class="calibre5" href="b02.xhtml">
+         Appendix B
+        </a>
+        , “Annotated Bibliography”) for details about the individual facets.
+       </p>
+       <table border="1" class="calibre31">
+        <thead class="calibre32">
+         <tr class="calibre33">
+          <th class="left" scope="col">
+           FACET
+          </th>
+          <th class="left" scope="col">
+           DESCRIPTION
+          </th>
+         </tr>
+        </thead>
+        <tbody class="calibre34">
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            ctype
+           </span>
+          </td>
+          <td class="bgcolor">
+           Character classification facets
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            codecvt
+           </span>
+          </td>
+          <td class="bgcolor">
+           Conversion facets; see next section
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            collate
+           </span>
+          </td>
+          <td class="bgcolor">
+           Comparing strings lexicographically
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            time_get
+           </span>
+          </td>
+          <td class="bgcolor">
+           Parsing dates and times
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            time_put
+           </span>
+          </td>
+          <td class="bgcolor">
+           Formatting dates and times
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            num_get
+           </span>
+          </td>
+          <td class="bgcolor">
+           Parsing numeric values
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            num_put
+           </span>
+          </td>
+          <td class="bgcolor">
+           Formatting numeric values
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            numpunct
+           </span>
+          </td>
+          <td class="bgcolor">
+           Defines the formatting rules for numeric values
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            money_get
+           </span>
+          </td>
+          <td class="bgcolor">
+           Parsing monetary values
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            money_put
+           </span>
+          </td>
+          <td class="bgcolor">
+           Formatting monetary values
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            moneypunct
+           </span>
+          </td>
+          <td class="bgcolor">
+           Defines the formatting rules for monetary values
+           <span aria-label="840" class="calibre20" epub:type="pagebreak" id="Page_840" role="doc-pagebreak">
+           </span>
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p class="calibre13">
+        The following code snippet brings together locales and facets by printing out the currency symbol in both US English and British English. Note that, depending on your environment, the British currency symbol may appear as a question mark, a box, or not at all. If your environment is set up to handle it, you may actually get the British pound symbol.
+       </p>
+       <pre class="calibre26" id="c21-code-0027"><code class="calibre21">locale locUSEng { "en-US" };       <span class="color">// "en_US" for POSIX</span></code>
+<code class="calibre21">locale locBritEng { "en-GB" };     <span class="color">// "en_GB" for POSIX</span></code>
+<code class="calibre21"></code>
+<code class="calibre21">wstring dollars { use_facet&lt;moneypunct&lt;wchar_t&gt;&gt;(locUSEng).curr_symbol() };</code>
+<code class="calibre21">wstring pounds { use_facet&lt;moneypunct&lt;wchar_t&gt;&gt;(locBritEng).curr_symbol() };</code>
+<code class="calibre21"></code>
+<code class="calibre21">wcout &lt;&lt; L"In the US, the currency symbol is " &lt;&lt; dollars &lt;&lt; endl;</code>
+<code class="calibre21">wcout &lt;&lt; L"In Great Britain, the currency symbol is " &lt;&lt; pounds &lt;&lt; endl;</code></pre>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c21-sec-0017">
+       </span>
+       <h4 class="calibre29" id="head-4-342">
+        Conversions
+       </h4>
+       <p class="calibre13">
+        The C++ standard provides the
+        <code class="calibre21">
+         codecvt
+        </code>
+        class template to help with converting between different character encodings.
+        <code class="calibre21">
+         &lt;locale&gt;
+        </code>
+        defines the following four encoding conversion classes:
+       </p>
+       <table border="1" class="calibre31">
+        <thead class="calibre32">
+         <tr class="calibre33">
+          <th class="left" scope="col">
+           CLASS
+          </th>
+          <th class="left" scope="col">
+           DESCRIPTION
+          </th>
+         </tr>
+        </thead>
+        <tbody class="calibre34">
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            codecvt&lt;char,char,mbstate_t&gt;
+           </span>
+          </td>
+          <td class="bgcolor">
+           Identity conversion, that is, no conversion
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <code class="calibre21">
+            codecvt&lt;char16_t,char,mbstate_t&gt;
+           </code>
+           <br class="calibre12"/>
+           <code class="calibre21">
+            codecvt&lt;char16_t,char8_t,mbstate_t&gt;
+           </code>
+          </td>
+          <td class="bgcolor">
+           Conversion between UTF-16 and UTF-8
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <code class="calibre21">
+            codecvt&lt;char32_t,char,mbstate_t&gt;
+           </code>
+           <br class="calibre12"/>
+           <code class="calibre21">
+            codecvt&lt;char32_t,char8_t,mbstate_t&gt;
+           </code>
+          </td>
+          <td class="bgcolor">
+           Conversion between UTF-32 and UTF-8
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            codecvt&lt;wchar_t,char,mbstate_t&gt;
+           </span>
+          </td>
+          <td class="bgcolor">
+           Conversion between wide (implementation-specific) and narrow character encodings
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p class="calibre13">
+        Unfortunately, these facets are rather complicated to use. As an example, the following code snippet converts a narrow string to a wide string:
+       </p>
+       <pre class="calibre26" id="c21-code-0028"><code class="calibre21">auto&amp; facet { use_facet&lt;codecvt&lt;wchar_t, char, mbstate_t&gt;&gt;(locale { }) };</code>
+<code class="calibre21">string narrowString { "Hello" };</code>
+<code class="calibre21">mbstate_t mb { };</code>
+<code class="calibre21">wstring wideString(narrowString.size(), '\0');</code>
+<code class="calibre21">const char* fromNext { nullptr };</code>
+<span aria-label="841" class="calibre20" epub:type="pagebreak" id="Page_841" role="doc-pagebreak"></span><code class="calibre21">wchar_t* toNext { nullptr };</code>
+<code class="calibre21">facet.in(mb,</code>
+<code class="calibre21">    narrowString.data(), narrowString.data() + narrowString.size(), fromNext,</code>
+<code class="calibre21">    wideString.data(), wideString.data() + wideString.size(), toNext);</code>
+<code class="calibre21">wideString.resize(toNext - wideString.data());</code>
+<code class="calibre21">wcout &lt;&lt; wideString &lt;&lt; endl;</code></pre>
+       <p class="calibre13" id="c21-para-0080">
+        Before C++17, the following three code conversion facets were defined in
+        <code class="calibre21">
+         &lt;codecvt&gt;
+        </code>
+        :
+        <code class="calibre21">
+         codecvt_utf8
+        </code>
+        ,
+        <code class="calibre21">
+         codecvt_utf16
+        </code>
+        , and
+        <code class="calibre21">
+         codecvt_utf8_utf16
+        </code>
+        . These could be used with two convenience conversion interfaces:
+        <code class="calibre21">
+         wstring_convert
+        </code>
+        and
+        <code class="calibre21">
+         wbuffer_convert
+        </code>
+        . However, C++17 has deprecated those three conversion facets (the entirety of
+        <code class="calibre21">
+         &lt;codecvt&gt;
+        </code>
+        ) and the two convenience interfaces, so they are not further discussed in this book. The C++ Standards Committee decided to deprecate this functionality because it does not handle errors very well. Ill-formed Unicode strings are a security risk, and in fact can be and have been used as an attack vector to compromise the security of systems. Also, the API is too obscure and too hard to understand. I recommend using third-party libraries, such as ICU, to work correctly with Unicode strings until the Standards Committee comes up with a suitable, safe, and easier-to-use replacement for the deprecated functionality.
+       </p>
+      </section>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-223" class="calibre2">
+     <span class="calibre" id="c21-sec-0018">
+     </span>
+     <h2 class="calibre6" id="head-2-223">
+      REGULAR EXPRESSIONS
+     </h2>
+     <p class="calibre13">
+      Regular expressions, defined in
+      <code class="calibre21">
+       &lt;regex&gt;
+      </code>
+      , are a powerful string-related feature of the Standard Library. They support a special mini-language for string processing and might seem complicated at first, but once you get to know them, they make working with strings easier. Regular expressions can be used for several string operations:
+     </p>
+     <ul class="check" id="c21-list-0005">
+      <li class="calibre9" id="c21-li-0016">
+       <b class="calibre14">
+        Validation:
+       </b>
+       Check if an input string is well formed. For example, is the input string a well-formed phone number?
+      </li>
+      <li class="calibre9" id="c21-li-0017">
+       <b class="calibre14">
+        Decision:
+       </b>
+       Check what kind of string an input represents. For example, is the input string the name of a JPEG or a PNG file?
+      </li>
+      <li class="calibre9" id="c21-li-0018">
+       <b class="calibre14">
+        Parsing:
+       </b>
+       Extract information from an input string. For example, extract the year, month, and day from a date.
+      </li>
+      <li class="calibre9" id="c21-li-0019">
+       <b class="calibre14">
+        Transformation:
+       </b>
+       Search substrings and replace them with a new formatted substring. For example, search all occurrences of “C++23” and replace them with “C++”.
+      </li>
+      <li class="calibre9" id="c21-li-0020">
+       <b class="calibre14">
+        Iteration:
+       </b>
+       Search all occurrences of a substring. For example, extract all phone numbers from an input string.
+      </li>
+      <li class="calibre9" id="c21-li-0021">
+       <b class="calibre14">
+        Tokenization:
+       </b>
+       Split a string into substrings based on a set of delimiters. For example, split a string on whitespace, commas, periods, and so on, to extract the individual words.
+      </li>
+     </ul>
+     <p class="calibre13" id="c21-para-0082">
+      Of course, you could write your own code to perform any of these operations on strings, but I recommend using the regular expressions functionality, because writing correct and safe code to process strings is tricky.
+     </p>
+     <p class="calibre13">
+      Before going into more detail on regular expressions, there is some important terminology you need to know. The following terms are used throughout the discussion:
+     </p>
+     <ul class="check" id="c21-list-0006">
+      <li class="calibre9" id="c21-li-0022">
+       <b class="calibre14">
+        Pattern:
+       </b>
+       The actual regular expression is a pattern represented by a string.
+      </li>
+      <li class="calibre9" id="c21-li-0023">
+       <span aria-label="842" class="calibre20" epub:type="pagebreak" id="Page_842" role="doc-pagebreak">
+       </span>
+       <b class="calibre14">
+        Match:
+       </b>
+       Determines whether there is a match between a given regular expression and all of the characters in a given sequence [first, last).
+      </li>
+      <li class="calibre9" id="c21-li-0024">
+       <b class="calibre14">
+        Search:
+       </b>
+       Determines whether there is some substring within a given sequence [first, last) that matches a given regular expression.
+      </li>
+      <li class="calibre9" id="c21-li-0025">
+       <b class="calibre14">
+        Replace:
+       </b>
+       Identifies substrings in a given sequence and replaces them with a corresponding new substring computed from another pattern, called a
+       <i class="calibre18">
+        substitution pattern
+       </i>
+       .
+      </li>
+     </ul>
+     <p class="calibre13">
+      There are several different grammars for regular expressions. C++ includes support for the following grammars:
+     </p>
+     <ul class="check" id="c21-list-0007">
+      <li class="calibre9" id="c21-li-0026">
+       <b class="calibre14">
+        ECMAScript:
+       </b>
+       The grammar based on the ECMAScript standard. ECMAScript is a scripting language standardized by ECMA-262. The core of JavaScript, ActionScript, Jscript, and so on, all use the ECMAScript language standard.
+      </li>
+      <li class="calibre9" id="c21-li-0027">
+       <b class="calibre14">
+        basic:
+       </b>
+       The basic POSIX grammar.
+      </li>
+      <li class="calibre9" id="c21-li-0028">
+       <b class="calibre14">
+        extended:
+       </b>
+       The extended POSIX grammar.
+      </li>
+      <li class="calibre9" id="c21-li-0029">
+       <b class="calibre14">
+        awk:
+       </b>
+       The grammar used by the POSIX awk utility.
+      </li>
+      <li class="calibre9" id="c21-li-0030">
+       <b class="calibre14">
+        grep:
+       </b>
+       The grammar used by the POSIX grep utility.
+      </li>
+      <li class="calibre9" id="c21-li-0031">
+       <b class="calibre14">
+        egrep:
+       </b>
+       The grammar used by the POSIX grep utility with the
+       <code class="calibre21">
+        -E
+       </code>
+       parameter.
+      </li>
+     </ul>
+     <p class="calibre13">
+      If you already know any of these regular expression grammars, you can use it straightaway in C++ by instructing the regular expression library to use that specific syntax (
+      <code class="calibre21">
+       syntax_option_type
+      </code>
+      ). The default grammar in C++ is ECMAScript, whose syntax is explained in detail in the following section. It is also the most powerful grammar. Explaining the other regular expression grammars falls outside the scope of this book.
+     </p>
+     <section class="calibre2">
+      <aside class="calibre23">
+       <div class="top">
+        <hr class="calibre24"/>
+       </div>
+       <section class="feature">
+        <p class="calibre25" id="c21-para-0086">
+         <b class="calibre14">
+          NOTE
+         </b>
+         <i class="calibre18">
+          If this is the first time you're hearing about regular expressions, just use the default ECMAScript syntax
+         </i>
+         .
+        </p>
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c21-sec-0020">
+      </span>
+      <h3 class="calibre27" id="head-3-454">
+       ECMAScript Syntax
+      </h3>
+      <p class="calibre13">
+       A regular expression pattern is a sequence of characters representing what you want to match. Any character in the regular expression matches itself except, for the following special characters:
+      </p>
+      <pre class="calibre26" id="c21-code-0029"><code class="calibre21">^ $ \ . * + ? ( ) [ ] { } |</code></pre>
+      <p class="calibre13">
+       These special characters are explained throughout the following discussion. If you need to match one of these special characters, you need to escape it using the
+       <code class="calibre21">
+        \
+       </code>
+       character, as in this example:
+      </p>
+      <pre class="calibre26" id="c21-code-0030"><code class="calibre21">\[ or \. or \* or \\</code></pre>
+      <section class="calibre2">
+       <span class="calibre" id="c21-sec-0021">
+       </span>
+       <h4 class="calibre29" id="head-4-343">
+        Anchor
+       </h4>
+       <p class="calibre13" id="c21-para-0089">
+        The special characters
+        <code class="calibre21">
+         ^
+        </code>
+        and
+        <code class="calibre21">
+         $
+        </code>
+        are called
+        <i class="calibre18">
+         anchors
+        </i>
+        . The
+        <code class="calibre21">
+         ^
+        </code>
+        character matches the position immediately following a line termination character, and
+        <code class="calibre21">
+         $
+        </code>
+        matches the position of a line termination character. By
+        <span aria-label="843" class="calibre20" epub:type="pagebreak" id="Page_843" role="doc-pagebreak">
+        </span>
+        default,
+        <code class="calibre21">
+         ^
+        </code>
+        and
+        <code class="calibre21">
+         $
+        </code>
+        also match the beginning and ending of a string, respectively, but this behavior can be disabled.
+       </p>
+       <p class="calibre13" id="c21-para-0090">
+        For example,
+        <code class="calibre21">
+         ^test$
+        </code>
+        matches only the string
+        <code class="calibre21">
+         test
+        </code>
+        , and not strings that contain
+        <code class="calibre21">
+         test
+        </code>
+        somewhere in the line, such as
+        <code class="calibre21">
+         1test
+        </code>
+        ,
+        <code class="calibre21">
+         test2
+        </code>
+        ,
+        <code class="calibre21">
+         test abc
+        </code>
+        , and so on.
+       </p>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c21-sec-0022">
+       </span>
+       <h4 class="calibre29" id="head-4-344">
+        Wildcard
+       </h4>
+       <p class="calibre13" id="c21-para-0091">
+        The
+        <i class="calibre18">
+         wildcard
+        </i>
+        character
+        <code class="calibre21">
+         .
+        </code>
+        can be used to match any single character except a newline character. For example, the regular expression
+        <code class="calibre21">
+         a.c
+        </code>
+        will match
+        <code class="calibre21">
+         abc
+        </code>
+        , and
+        <code class="calibre21">
+         a5c
+        </code>
+        , but will not match
+        <code class="calibre21">
+         ab5c
+        </code>
+        ,
+        <code class="calibre21">
+         ac
+        </code>
+        , and so on.
+       </p>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c21-sec-0023">
+       </span>
+       <h4 class="calibre29" id="head-4-345">
+        Alternation
+       </h4>
+       <p class="calibre13" id="c21-para-0092">
+        The
+        <code class="calibre21">
+         |
+        </code>
+        character can be used to specify the “or” relationship. For example,
+        <code class="calibre21">
+         a|b
+        </code>
+        matches
+        <code class="calibre21">
+         a
+        </code>
+        or
+        <code class="calibre21">
+         b
+        </code>
+        .
+       </p>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c21-sec-0024">
+       </span>
+       <h4 class="calibre29" id="head-4-346">
+        Grouping
+       </h4>
+       <p class="calibre13">
+        Parentheses,
+        <code class="calibre21">
+         ()
+        </code>
+        , are used to mark
+        <i class="calibre18">
+         subexpressions
+        </i>
+        , also called
+        <i class="calibre18">
+         capture groups
+        </i>
+        . Capture groups can be used for several purposes:
+       </p>
+       <ul class="check" id="c21-list-0008">
+        <li class="calibre9" id="c21-li-0032">
+         Capture groups can be used to identify individual subsequences of the original string; each marked subexpression (capture group) is returned in the result. For example, the regular expression
+         <code class="calibre21">
+          (.)(ab|cd)(.)
+         </code>
+         has three marked subexpressions. Performing a search operation with this regular expression on
+         <code class="calibre21">
+          1cd4
+         </code>
+         results in a match with four entries. The first entry is the entire match,
+         <code class="calibre21">
+          1cd4
+         </code>
+         , followed by three entries for the three marked subexpressions. These three entries are
+         <code class="calibre21">
+          1
+         </code>
+         ,
+         <code class="calibre21">
+          cd
+         </code>
+         , and
+         <code class="calibre21">
+          4
+         </code>
+         .
+        </li>
+        <li class="calibre9" id="c21-li-0033">
+         Capture groups can be used during matching for a purpose called
+         <i class="calibre18">
+          back references
+         </i>
+         (explained later).
+        </li>
+        <li class="calibre9" id="c21-li-0034">
+         Capture groups can be used to identify components during
+         <i class="calibre18">
+          replace operations
+         </i>
+         (explained later).
+        </li>
+       </ul>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c21-sec-0025">
+       </span>
+       <h4 class="calibre29" id="head-4-347">
+        Quantifier
+       </h4>
+       <p class="calibre13">
+        Parts of a regular expression can be repeated by using one of four
+        <i class="calibre18">
+         quantifiers
+        </i>
+        :
+       </p>
+       <ul class="check" id="c21-list-0009">
+        <li class="calibre9" id="c21-li-0035">
+         <code class="calibre21">
+          *
+         </code>
+         matches the preceding part
+         <i class="calibre18">
+          zero or more
+         </i>
+         times. For example,
+         <code class="calibre21">
+          a*b
+         </code>
+         matches
+         <code class="calibre21">
+          b
+         </code>
+         ,
+         <code class="calibre21">
+          ab
+         </code>
+         ,
+         <code class="calibre21">
+          aab
+         </code>
+         ,
+         <code class="calibre21">
+          aaaab
+         </code>
+         , and so on.
+        </li>
+        <li class="calibre9" id="c21-li-0036">
+         <code class="calibre21">
+          +
+         </code>
+         matches the preceding part
+         <i class="calibre18">
+          one or more
+         </i>
+         times. For example,
+         <code class="calibre21">
+          a+b
+         </code>
+         matches
+         <code class="calibre21">
+          ab
+         </code>
+         ,
+         <code class="calibre21">
+          aab
+         </code>
+         ,
+         <code class="calibre21">
+          aaaab
+         </code>
+         , and so on, but not
+         <code class="calibre21">
+          b
+         </code>
+         .
+        </li>
+        <li class="calibre9" id="c21-li-0037">
+         <code class="calibre21">
+          ?
+         </code>
+         matches the preceding part
+         <i class="calibre18">
+          zero or one
+         </i>
+         time. For example,
+         <code class="calibre21">
+          a?b
+         </code>
+         matches
+         <code class="calibre21">
+          b
+         </code>
+         and
+         <code class="calibre21">
+          ab
+         </code>
+         , but nothing else.
+        </li>
+        <li class="calibre9" id="c21-li-0038">
+         <code class="calibre21">
+          {…}
+         </code>
+         represents a
+         <i class="calibre18">
+          bounded quantifier
+         </i>
+         .
+         <code class="calibre21">
+          b{n}
+         </code>
+         matches
+         <code class="calibre21">
+          b
+         </code>
+         repeated
+         <i class="calibre18">
+          exactly n
+         </i>
+         times;
+         <code class="calibre21">
+          b{n,}
+         </code>
+         matches
+         <code class="calibre21">
+          b
+         </code>
+         repeated
+         <i class="calibre18">
+          n times or more
+         </i>
+         ; and
+         <code class="calibre21">
+          b{n,m}
+         </code>
+         matches
+         <code class="calibre21">
+          b
+         </code>
+         repeated
+         <i class="calibre18">
+          between n and m
+         </i>
+         times inclusive. For example,
+         <code class="calibre21">
+          b{3,4}
+         </code>
+         matches
+         <code class="calibre21">
+          bbb
+         </code>
+         and
+         <code class="calibre21">
+          bbbb
+         </code>
+         but not
+         <code class="calibre21">
+          b
+         </code>
+         ,
+         <code class="calibre21">
+          bb
+         </code>
+         ,
+         <code class="calibre21">
+          bbbbb
+         </code>
+         , and so on.
+        </li>
+       </ul>
+       <p class="calibre13" id="c21-para-0095">
+        These quantifiers are called
+        <i class="calibre18">
+         greedy
+        </i>
+        because they find the longest match while still matching the remainder of the regular expression. To make them
+        <i class="calibre18">
+         non-greedy
+        </i>
+        , a
+        <code class="calibre21">
+         ?
+        </code>
+        can be added behind the
+        <span aria-label="844" class="calibre20" epub:type="pagebreak" id="Page_844" role="doc-pagebreak">
+        </span>
+        quantifier, as in
+        <code class="calibre21">
+         *?
+        </code>
+        ,
+        <code class="calibre21">
+         +?
+        </code>
+        ,
+        <code class="calibre21">
+         ??
+        </code>
+        , and
+        <code class="calibre21">
+         {…}?
+        </code>
+        . A non-greedy quantifier repeats its pattern as few times as possible while still matching the remainder of the regular expression.
+       </p>
+       <p class="calibre13">
+        For example, the following table shows the difference between a greedy and a non-greedy regular expression, and the resulting submatches when running them on the input sequence
+        <code class="calibre21">
+         aaabbb
+        </code>
+        :
+       </p>
+       <table border="1" class="calibre31">
+        <thead class="calibre32">
+         <tr class="calibre33">
+          <th class="left" scope="col">
+           REGULAR EXPRESSION
+          </th>
+          <th class="left" scope="col">
+           SUBMATCHES
+          </th>
+         </tr>
+        </thead>
+        <tbody class="calibre34">
+         <tr class="calibre33">
+          <td class="bgcolor">
+           Greedy:
+           <span class="calibre21">
+            (a+)(ab)*(b+)
+           </span>
+          </td>
+          <td class="bgcolor">
+           <span class="calibre21">
+            "aaa" "" "bbb"
+           </span>
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           Non-greedy:
+           <span class="calibre21">
+            (a+?)(ab)*(b+)
+           </span>
+          </td>
+          <td class="bgcolor">
+           <span class="calibre21">
+            "aa" "ab" "bb"
+           </span>
+          </td>
+         </tr>
+        </tbody>
+       </table>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c21-sec-0026">
+       </span>
+       <h4 class="calibre29" id="head-4-348">
+        Precedence
+       </h4>
+       <p class="calibre13">
+        Just as with mathematical formulas, it's important to know the precedence of regular expression elements. Precedence is as follows:
+       </p>
+       <ul class="check" id="c21-list-0010">
+        <li class="calibre9" id="c21-li-0039">
+         <b class="calibre14">
+          Elements
+         </b>
+         like
+         <code class="calibre21">
+          b
+         </code>
+         are the basic building blocks of a regular expression.
+        </li>
+        <li class="calibre9" id="c21-li-0040">
+         <b class="calibre14">
+          Quantifiers
+         </b>
+         like
+         <code class="calibre21">
+          +
+         </code>
+         ,
+         <code class="calibre21">
+          *
+         </code>
+         ,
+         <code class="calibre21">
+          ?
+         </code>
+         , and
+         <code class="calibre21">
+          {…}
+         </code>
+         bind tightly to the element on the left; for example,
+         <code class="calibre21">
+          b+.
+         </code>
+        </li>
+        <li class="calibre9" id="c21-li-0041">
+         <b class="calibre14">
+          Concatenation
+         </b>
+         like
+         <code class="calibre21">
+          ab+c
+         </code>
+         binds after quantifiers.
+        </li>
+        <li class="calibre9" id="c21-li-0042">
+         <b class="calibre14">
+          Alternation
+         </b>
+         like
+         <code class="calibre21">
+          |
+         </code>
+         binds last.
+        </li>
+       </ul>
+       <p class="calibre13" id="c21-para-0098">
+        For example, the regular expression
+        <code class="calibre21">
+         ab+c|d
+        </code>
+        matches
+        <code class="calibre21">
+         abc
+        </code>
+        ,
+        <code class="calibre21">
+         abbc
+        </code>
+        ,
+        <code class="calibre21">
+         abbbc
+        </code>
+        , and so on, and also
+        <code class="calibre21">
+         d
+        </code>
+        . Parentheses can be used to change these precedence rules. For example,
+        <code class="calibre21">
+         ab+(c|d)
+        </code>
+        matches
+        <code class="calibre21">
+         abc
+        </code>
+        ,
+        <code class="calibre21">
+         abbc
+        </code>
+        ,
+        <code class="calibre21">
+         abbbc
+        </code>
+        , …,
+        <code class="calibre21">
+         abd
+        </code>
+        ,
+        <code class="calibre21">
+         abbd
+        </code>
+        ,
+        <code class="calibre21">
+         abbbd
+        </code>
+        , and so on. However, by using parentheses, you also mark it as a subexpression or capture group. It is possible to change the precedence rules without creating new capture groups by using
+        <code class="calibre21">
+         (?:
+        </code>
+        …
+        <code class="calibre21">
+         )
+        </code>
+        . For example,
+        <code class="calibre21">
+         ab+(?:c|d)
+        </code>
+        matches the same as the earlier
+        <code class="calibre21">
+         ab+(c|d)
+        </code>
+        but does not create an additional capture group.
+       </p>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c21-sec-0027">
+       </span>
+       <h4 class="calibre29" id="head-4-349">
+        Character Set Matches
+       </h4>
+       <p class="calibre13">
+        Instead of writing
+        <code class="calibre21">
+         (a|b|c|
+        </code>
+        …
+        <code class="calibre21">
+         |z)
+        </code>
+        , which is clumsy and introduces a capture group, a special syntax for specifying sets of characters or ranges of characters is available. In addition, a “not” form of the match is also available. A
+        <i class="calibre18">
+         character set
+        </i>
+        is specified between square brackets and allows you to write
+        <code class="calibre21">
+         [c
+        </code>
+        <sub class="calibre42">
+         1
+        </sub>
+        <code class="calibre21">
+         c
+        </code>
+        <sub class="calibre42">
+         2
+        </sub>
+        …
+        <code class="calibre21">
+         c
+        </code>
+        <sub class="calibre42">
+         n
+        </sub>
+        <code class="calibre21">
+         ]
+        </code>
+        , which matches any of the characters
+        <code class="calibre21">
+         c
+        </code>
+        <sub class="calibre42">
+         1
+        </sub>
+        ,
+        <code class="calibre21">
+         c
+        </code>
+        <sub class="calibre42">
+         2
+        </sub>
+        , …, or
+        <code class="calibre21">
+         c
+        </code>
+        <sub class="calibre42">
+         n
+        </sub>
+        . For example,
+        <code class="calibre21">
+         [abc]
+        </code>
+        matches any character
+        <code class="calibre21">
+         a
+        </code>
+        ,
+        <code class="calibre21">
+         b
+        </code>
+        , or
+        <code class="calibre21">
+         c
+        </code>
+        . If the first character is
+        <code class="calibre21">
+         ^
+        </code>
+        , it means “any but”:
+       </p>
+       <ul class="check" id="c21-list-0011">
+        <li class="calibre9" id="c21-li-0043">
+         <code class="calibre21">
+          ab[cde]
+         </code>
+         matches
+         <code class="calibre21">
+          abc
+         </code>
+         ,
+         <code class="calibre21">
+          abd
+         </code>
+         , and
+         <code class="calibre21">
+          abe
+         </code>
+         .
+        </li>
+        <li class="calibre9" id="c21-li-0044">
+         <code class="calibre21">
+          ab[^cde]
+         </code>
+         matches
+         <code class="calibre21">
+          abf
+         </code>
+         ,
+         <code class="calibre21">
+          abp
+         </code>
+         , and so on, but not
+         <code class="calibre21">
+          abc
+         </code>
+         ,
+         <code class="calibre21">
+          abd
+         </code>
+         , and
+         <code class="calibre21">
+          abe
+         </code>
+         .
+        </li>
+       </ul>
+       <p class="calibre13" id="c21-para-0100">
+        If you need to match the
+        <code class="calibre21">
+         ^
+        </code>
+        ,
+        <code class="calibre21">
+         [
+        </code>
+        , or
+        <code class="calibre21">
+         ]
+        </code>
+        characters themselves, you need to escape them; for example,
+        <code class="calibre21">
+         [\[\^\]]
+        </code>
+        matches the characters
+        <code class="calibre21">
+         [
+        </code>
+        ,
+        <code class="calibre21">
+         ^
+        </code>
+        , or
+        <code class="calibre21">
+         ]
+        </code>
+        .
+       </p>
+       <p class="calibre13" id="c21-para-0101">
+        If you want to specify all letters, you could use a character set like
+        <code class="calibre21">
+         [abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ]
+        </code>
+        ; however, this is clumsy, and doing this several times is awkward, especially if you make a typo and omit one of the letters accidentally. There are two solutions to this.
+       </p>
+       <p class="calibre13" id="c21-para-0102">
+        <span aria-label="845" class="calibre20" epub:type="pagebreak" id="Page_845" role="doc-pagebreak">
+        </span>
+        One solution is to use the
+        <i class="calibre18">
+         range specification
+        </i>
+        in square brackets; this allows you to write
+        <code class="calibre21">
+         [a-zA-Z]
+        </code>
+        , which recognizes all the letters in the range
+        <code class="calibre21">
+         a
+        </code>
+        to
+        <code class="calibre21">
+         z
+        </code>
+        and
+        <code class="calibre21">
+         A
+        </code>
+        to
+        <code class="calibre21">
+         Z
+        </code>
+        . If you need to match a hyphen, you need to escape it; for example,
+        <code class="calibre21">
+         [a-zA-Z\-]+
+        </code>
+        matches any word including a hyphenated word.
+       </p>
+       <p class="calibre13">
+        Another solution is to use one of the
+        <i class="calibre18">
+         character classes
+        </i>
+        . These are used to denote specific types of characters and are represented as
+        <code class="calibre21">
+         [:name:]
+        </code>
+        . Which character classes are available depends on the locale, but the names listed in the following table are always recognized. The exact meaning of these character classes is also dependent on the locale. This table assumes the standard C locale:
+       </p>
+       <table border="1" class="calibre31">
+        <thead class="calibre32">
+         <tr class="calibre33">
+          <th class="left" scope="col">
+           CHARACTER CLASS NAME
+          </th>
+          <th class="left" scope="col">
+           DESCRIPTION
+          </th>
+         </tr>
+        </thead>
+        <tbody class="calibre34">
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            digit
+           </span>
+          </td>
+          <td class="bgcolor">
+           Digits, which are 0, 1, 2, 3, 4, 5, 6, 7, 8, 9.
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            d
+           </span>
+          </td>
+          <td class="bgcolor">
+           Same as
+           <span class="calibre21">
+            digit
+           </span>
+           .
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            xdigit
+           </span>
+          </td>
+          <td class="bgcolor">
+           Digits (
+           <span class="calibre21">
+            digit
+           </span>
+           ) and the following letters used in hexadecimal numbers: a, b, c, d, e, f, A, B, C, D, E, F.
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            alpha
+           </span>
+          </td>
+          <td class="bgcolor">
+           Alphabetic characters. For the C locale, these are all lowercase and uppercase letters.
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            alnum
+           </span>
+          </td>
+          <td class="bgcolor">
+           A combination of the
+           <span class="calibre21">
+            alpha
+           </span>
+           class and the
+           <code class="calibre21">
+            digit
+           </code>
+           class.
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            w
+           </span>
+          </td>
+          <td class="bgcolor">
+           Same as
+           <span class="calibre21">
+            alnum
+           </span>
+           .
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            lower
+           </span>
+          </td>
+          <td class="bgcolor">
+           Lowercase letters, if applicable to the locale.
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            upper
+           </span>
+          </td>
+          <td class="bgcolor">
+           Uppercase letters, if applicable to the locale.
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            blank
+           </span>
+          </td>
+          <td class="bgcolor">
+           Blank characters, which are whitespace characters used to separate words within a line of text. For the C locale, these are space and
+           <span class="calibre21">
+            \t
+           </span>
+           (tab).
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            space
+           </span>
+          </td>
+          <td class="bgcolor">
+           Whitespace characters. For the C locale, these are space,
+           <span class="calibre21">
+            \t
+           </span>
+           ,
+           <code class="calibre21">
+            \n
+           </code>
+           ,
+           <code class="calibre21">
+            \r
+           </code>
+           ,
+           <code class="calibre21">
+            \v
+           </code>
+           , and
+           <code class="calibre21">
+            \f
+           </code>
+           .
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            s
+           </span>
+          </td>
+          <td class="bgcolor">
+           Same as
+           <span class="calibre21">
+            space
+           </span>
+           .
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            print
+           </span>
+          </td>
+          <td class="bgcolor">
+           Printable characters. These occupy a printing position—for example, on a display—and are the opposite of control characters (
+           <span class="calibre21">
+            cntrl
+           </span>
+           ). Examples are lowercase letters, uppercase letters, digits, punctuation characters, and space characters.
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            cntrl
+           </span>
+          </td>
+          <td class="bgcolor">
+           Control characters. These are the opposite of printable characters (
+           <span class="calibre21">
+            print
+           </span>
+           ), and don't occupy a printing position, for example, on a display. Some examples for the C locale are
+           <code class="calibre21">
+            \f
+           </code>
+           ,
+           <code class="calibre21">
+            \n
+           </code>
+           , and
+           <code class="calibre21">
+            \r
+           </code>
+           .
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            graph
+           </span>
+          </td>
+          <td class="bgcolor">
+           Characters with a graphical representation. These are all characters that are printable (
+           <span class="calibre21">
+            print
+           </span>
+           ), except the space character
+           <code class="calibre21">
+            ' '
+           </code>
+           .
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            punct
+           </span>
+          </td>
+          <td class="bgcolor">
+           Punctuation characters. For the C locale, these are all graphical characters (
+           <span class="calibre21">
+            graph
+           </span>
+           ) that are not alphanumeric (
+           <code class="calibre21">
+            alnum
+           </code>
+           ). Some examples are
+           <code class="calibre21">
+            !
+           </code>
+           ,
+           <code class="calibre21">
+            #
+           </code>
+           ,
+           <code class="calibre21">
+            @
+           </code>
+           ,
+           <code class="calibre21">
+            }
+           </code>
+           , and so on.
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p class="calibre13" id="c21-para-0104">
+        <span aria-label="846" class="calibre20" epub:type="pagebreak" id="Page_846" role="doc-pagebreak">
+        </span>
+        Character classes are used within character sets; for example,
+        <code class="calibre21">
+         [[:alpha:]]*
+        </code>
+        in English means the same as
+        <code class="calibre21">
+         [a-zA-Z]*
+        </code>
+        .
+       </p>
+       <p class="calibre13">
+        Because certain character classes are so common, e.g., digits, there are shorthand patterns for them. For example,
+        <code class="calibre21">
+         [:digit:]
+        </code>
+        and
+        <code class="calibre21">
+         [:d:]
+        </code>
+        have the same meaning as
+        <code class="calibre21">
+         [0-9]
+        </code>
+        . Some classes have an even shorter pattern using the escape notation. For example,
+        <code class="calibre21">
+         \d
+        </code>
+        means
+        <code class="calibre21">
+         [:digit:]
+        </code>
+        . Therefore, to recognize a sequence of one or more numbers, you can write any of the following patterns:
+       </p>
+       <ul class="check" id="c21-list-0012">
+        <li class="calibre9" id="c21-li-0045">
+         <code class="calibre21">
+          [0-9]+
+         </code>
+        </li>
+        <li class="calibre9" id="c21-li-0046">
+         <code class="calibre21">
+          [[:digit:]]+
+         </code>
+        </li>
+        <li class="calibre9" id="c21-li-0047">
+         <code class="calibre21">
+          [[:d:]]+
+         </code>
+        </li>
+        <li class="calibre9" id="c21-li-0048">
+         <code class="calibre21">
+          \d+
+         </code>
+        </li>
+       </ul>
+       <p class="calibre13">
+        The following table lists the available escape notations for character classes:
+       </p>
+       <table border="1" class="calibre31">
+        <thead class="calibre32">
+         <tr class="calibre33">
+          <th class="left" scope="col">
+           ESCAPE NOTATION
+          </th>
+          <th class="left" scope="col">
+           EQUIVALENT TO
+          </th>
+         </tr>
+        </thead>
+        <tbody class="calibre34">
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            \d
+           </span>
+          </td>
+          <td class="bgcolor">
+           <span class="calibre21">
+            [[:d:]]
+           </span>
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            \D
+           </span>
+          </td>
+          <td class="bgcolor">
+           <span class="calibre21">
+            [^[:d:]]
+           </span>
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            \s
+           </span>
+          </td>
+          <td class="bgcolor">
+           <span class="calibre21">
+            [[:s:]]
+           </span>
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            \S
+           </span>
+          </td>
+          <td class="bgcolor">
+           <span class="calibre21">
+            [^[:s:]]
+           </span>
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            \w
+           </span>
+          </td>
+          <td class="bgcolor">
+           <span class="calibre21">
+            [_[:w:]]
+           </span>
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            \W
+           </span>
+          </td>
+          <td class="bgcolor">
+           <span class="calibre21">
+            [^_[:w:]]
+           </span>
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p class="calibre13">
+        Here are some examples:
+       </p>
+       <ul class="check" id="c21-list-0013">
+        <li class="calibre9" id="c21-li-0049">
+         <code class="calibre21">
+          Test[5-8]
+         </code>
+         matches
+         <code class="calibre21">
+          Test5
+         </code>
+         ,
+         <code class="calibre21">
+          Test6
+         </code>
+         ,
+         <code class="calibre21">
+          Test7
+         </code>
+         , and
+         <code class="calibre21">
+          Test8
+         </code>
+         .
+        </li>
+        <li class="calibre9" id="c21-li-0050">
+         <code class="calibre21">
+          [[:lower:]]
+         </code>
+         matches
+         <code class="calibre21">
+          a
+         </code>
+         ,
+         <code class="calibre21">
+          b
+         </code>
+         , and so on, but not
+         <code class="calibre21">
+          A
+         </code>
+         ,
+         <code class="calibre21">
+          B
+         </code>
+         , and so on.
+        </li>
+        <li class="calibre9" id="c21-li-0051">
+         <code class="calibre21">
+          [^[:lower:]]
+         </code>
+         matches any character except lowercase letters like
+         <code class="calibre21">
+          a
+         </code>
+         ,
+         <code class="calibre21">
+          b
+         </code>
+         , and so on.
+        </li>
+        <li class="calibre9" id="c21-li-0052">
+         <code class="calibre21">
+          [[:lower:]5-7]
+         </code>
+         matches any lowercase letter like
+         <code class="calibre21">
+          a
+         </code>
+         ,
+         <code class="calibre21">
+          b
+         </code>
+         , and so on, and the numbers
+         <code class="calibre21">
+          5
+         </code>
+         ,
+         <code class="calibre21">
+          6
+         </code>
+         , and
+         <code class="calibre21">
+          7
+         </code>
+         .
+        </li>
+       </ul>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c21-sec-0028">
+       </span>
+       <h4 class="calibre29" id="head-4-350">
+        Word Boundary
+       </h4>
+       <p class="calibre13">
+        A
+        <i class="calibre18">
+         word boundary
+        </i>
+        can mean the following:
+       </p>
+       <ul class="check" id="c21-list-0014">
+        <li class="calibre9" id="c21-li-0053">
+         The first character of a word, which is one of the word characters, while the preceding character is not a word character. A word character is a letter, digit, or an underscore. For the standard C locale, this is equal to
+         <code class="calibre21">
+          [A-Za-z0-9_]
+         </code>
+         .
+        </li>
+        <li class="calibre9" id="c21-li-0054">
+         The end of a word, which is a non-word character, while the preceding character is a word character.
+        </li>
+        <li class="calibre9" id="c21-li-0055">
+         <span aria-label="847" class="calibre20" epub:type="pagebreak" id="Page_847" role="doc-pagebreak">
+         </span>
+         The beginning of the source string if the first character of the source string is one of the word characters. Matching the beginning of the source string is enabled by default, but you can disable it with
+         <code class="calibre21">
+          regex_constants::match_not_bow
+         </code>
+         , where
+         <code class="calibre21">
+          bow
+         </code>
+         stands for beginning-of-word.
+        </li>
+        <li class="calibre9" id="c21-li-0056">
+         The end of the source string if the last character of the source string is one of the word characters. Matching the end of the source string is enabled by default, but you can disable it with
+         <code class="calibre21">
+          regex_constants::match_not_eow
+         </code>
+         , where
+         <code class="calibre21">
+          eow
+         </code>
+         stands for end-of-word.
+        </li>
+       </ul>
+       <p class="calibre13" id="c21-para-0109">
+        You can use
+        <code class="calibre21">
+         \b
+        </code>
+        to match a word boundary, and you can use
+        <code class="calibre21">
+         \B
+        </code>
+        to match anything except a word boundary.
+       </p>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c21-sec-0029">
+       </span>
+       <h4 class="calibre29" id="head-4-351">
+        Back Reference
+       </h4>
+       <p class="calibre13">
+        A
+        <i class="calibre18">
+         back reference
+        </i>
+        allows you to reference a captured group inside the regular expression itself:
+        <code class="calibre21">
+         \n
+        </code>
+        refers to the
+        <i class="calibre18">
+         n
+        </i>
+        -th captured group, with
+        <code class="calibre21">
+         n &gt; 0
+        </code>
+        . For example, the regular expression
+        <code class="calibre21">
+         (\d+)-.*-\1
+        </code>
+        matches a string that has the following format:
+       </p>
+       <ul class="check" id="c21-list-0015">
+        <li class="calibre9" id="c21-li-0057">
+         One or more digits captured in a capture group
+         <code class="calibre21">
+          (\d+)
+         </code>
+        </li>
+        <li class="calibre9" id="c21-li-0058">
+         Followed by a dash
+         <code class="calibre21">
+          -
+         </code>
+        </li>
+        <li class="calibre9" id="c21-li-0059">
+         Followed by zero or more characters
+         <code class="calibre21">
+          .*
+         </code>
+        </li>
+        <li class="calibre9" id="c21-li-0060">
+         Followed by another dash
+         <code class="calibre21">
+          -
+         </code>
+        </li>
+        <li class="calibre9" id="c21-li-0061">
+         Followed by the same digits captured by the first capture group
+         <code class="calibre21">
+          \1
+         </code>
+        </li>
+       </ul>
+       <p class="calibre13" id="c21-para-0111">
+        This regular expression matches
+        <code class="calibre21">
+         123-abc-123
+        </code>
+        ,
+        <code class="calibre21">
+         1234-a-1234
+        </code>
+        , and so on, but does not match
+        <code class="calibre21">
+         123-abc-1234
+        </code>
+        ,
+        <code class="calibre21">
+         123-abc-321
+        </code>
+        , and so on.
+       </p>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c21-sec-0030">
+       </span>
+       <h4 class="calibre29" id="head-4-352">
+        Lookahead
+       </h4>
+       <p class="calibre13" id="c21-para-0112">
+        Regular expressions support
+        <i class="calibre18">
+         positive lookahead
+        </i>
+        (which uses ?=pattern) and
+        <i class="calibre18">
+         negative lookahead
+        </i>
+        (which uses ?!pattern). The characters following the lookahead must match (positive) or not match (negative) the lookahead pattern, but those characters are not yet consumed.
+       </p>
+       <p class="calibre13" id="c21-para-0113">
+        For example, the pattern
+        <code class="calibre21">
+         a(?!b)
+        </code>
+        contains a negative lookahead to match a letter
+        <code class="calibre21">
+         a
+        </code>
+        not followed by a
+        <code class="calibre21">
+         b
+        </code>
+        . The pattern
+        <code class="calibre21">
+         a(?=b)
+        </code>
+        contains a positive lookahead to match a letter
+        <code class="calibre21">
+         a
+        </code>
+        followed by a
+        <code class="calibre21">
+         b
+        </code>
+        , but
+        <code class="calibre21">
+         b
+        </code>
+        is not consumed so it does not become part of the match.
+       </p>
+       <p class="calibre13">
+        The following is a more realistic example. The regular expression matches an input sequence that consists of at least one lowercase letter, at least one uppercase letter, at least one punctuation character, and is at least eight characters long. Such a regular expression can, for example, be used to enforce that passwords satisfy certain criteria.
+       </p>
+       <pre class="calibre26" id="c21-code-0031"><code class="calibre21">(?=.*[[:lower:]])(?=.*[[:upper:]])(?=.*[[:punct:]]).{8,}</code></pre>
+       <p class="calibre13" id="c21-para-0115">
+        In one of the exercises at the end of this chapter, you'll experiment with this password-validation regular expression.
+       </p>
+      </section>
+      <span aria-label="848" class="calibre20" epub:type="pagebreak" id="Page_848" role="doc-pagebreak">
+      </span>
+      <section class="calibre2">
+       <span class="calibre" id="c21-sec-0031">
+       </span>
+       <h4 class="calibre29" id="head-4-353">
+        Regular Expressions and Raw String Literals
+       </h4>
+       <p class="calibre13" id="c21-para-0116">
+        As seen in the preceding sections, regular expressions often use special characters that must be escaped in normal C++ string literals. For example, if you write
+        <code class="calibre21">
+         \d
+        </code>
+        in a regular expression, it matches any digit. However, because
+        <code class="calibre21">
+         \
+        </code>
+        is a special character in C++, you need to escape it in a regular expression string literal as
+        <code class="calibre21">
+         \\d
+        </code>
+        ; otherwise, your C++ compiler tries to interpret the
+        <code class="calibre21">
+         \d
+        </code>
+        . It gets more complicated if you want a regular expression to match a single backslash character,
+        <code class="calibre21">
+         \
+        </code>
+        . Because
+        <code class="calibre21">
+         \
+        </code>
+        is a special character in the regular expression syntax itself, you need to escape it as
+        <code class="calibre21">
+         \\
+        </code>
+        . The
+        <code class="calibre21">
+         \
+        </code>
+        character is also a special character in C++ string literals, so you need to escape it, resulting in
+        <code class="calibre21">
+         \\\\
+        </code>
+        .
+       </p>
+       <p class="calibre13">
+        You can use raw string literals to make complicated regular expressions easier to read in C++ source code. (Raw string literals are discussed in
+        <a class="calibre5" href="c02.xhtml">
+         Chapter 2
+        </a>
+        .) For example, take the following regular expression:
+       </p>
+       <pre class="calibre26" id="c21-code-0032"><code class="calibre21">"( |\\n|\\r|\\\\)"</code></pre>
+       <p class="calibre13">
+        This regular expression matches spaces, newlines, carriage returns, and backslashes. It requires a lot of escape characters. Using raw string literals, this can be replaced with the following more readable regular expression:
+       </p>
+       <pre class="calibre26" id="c21-code-0033"><code class="calibre21">R"(( |\n|\r|\\))"</code></pre>
+       <p class="calibre13" id="c21-para-0119">
+        The raw string literal starts with
+        <code class="calibre21">
+         R"(
+        </code>
+        and ends with
+        <code class="calibre21">
+         )"
+        </code>
+        . Everything in between is the regular expression. Of course, you still need a double backslash at the end because the backslash needs to be escaped in the regular expression itself.
+       </p>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c21-sec-0032">
+       </span>
+       <h4 class="calibre29" id="head-4-354">
+        Common Regular Expressions
+       </h4>
+       <p class="calibre13" id="c21-para-0120">
+        Writing correct regular expressions is not always trivial. For common patterns such as validating passwords, phone numbers, Social Security numbers, IP addresses, email addresses, credit card numbers, dates, and so on, you don't have to. When you use your favorite Internet search engine and search for
+        <i class="calibre18">
+         regular expressions online
+        </i>
+        , you'll find several websites with collections of predefined patterns, such as
+        <?span Start cssStyle="text-decoration:underline"??>
+        <code class="calibre21">
+         regexr.com
+        </code>
+        ,
+        <?span Start cssStyle="text-decoration:underline"??>
+        <code class="calibre21">
+         regex101.com
+        </code>
+        ,
+        <?span Start cssStyle="text-decoration:underline"??>
+        <code class="calibre21">
+         regextester.com
+        </code>
+        , and many more. Quite a few of these sites allow you to test patterns online, so you can easily verify whether they are correct before using them in your code.
+       </p>
+       <p class="calibre13" id="c21-para-0121">
+        This concludes a brief description of the ECMAScript grammar. The following sections explain how to actually use regular expressions in C++ code.
+       </p>
+      </section>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c21-sec-0033">
+      </span>
+      <h3 class="calibre27" id="head-3-455">
+       The regex Library
+      </h3>
+      <p class="calibre13">
+       Everything for the regular expression library is defined in
+       <code class="calibre21">
+        &lt;regex&gt;
+       </code>
+       and in the
+       <code class="calibre21">
+        std
+       </code>
+       namespace. The basic template types defined by the regular expression library are:
+      </p>
+      <ul class="check" id="c21-list-0016">
+       <li class="calibre9" id="c21-li-0062">
+        <b class="calibre14">
+         <code class="calibre21">
+          basic_regex
+         </code>
+         :
+        </b>
+        An object representing a specific regular expression.
+       </li>
+       <li class="calibre9" id="c21-li-0063">
+        <b class="calibre14">
+         <code class="calibre21">
+          match_results
+         </code>
+         :
+        </b>
+        A substring that matched a regular expression, including all the captured groups. It is a collection of
+        <code class="calibre21">
+         sub_match
+        </code>
+        es.
+       </li>
+       <li class="calibre9" id="c21-li-0064">
+        <b class="calibre14">
+         <code class="calibre21">
+          sub_match
+         </code>
+         :
+        </b>
+        An object containing a pair of iterators into the input sequence. These iterators represent a matched capture group. The pair is an iterator pointing to the first character of a
+        <span aria-label="849" class="calibre20" epub:type="pagebreak" id="Page_849" role="doc-pagebreak">
+        </span>
+        matched capture group and an iterator pointing to one-past-the-last character of the matched capture group. It has an
+        <code class="calibre21">
+         str()
+        </code>
+        member function that returns the matched capture group as a string.
+       </li>
+      </ul>
+      <p class="calibre13">
+       The library provides three key algorithms:
+       <code class="calibre21">
+        regex_match()
+       </code>
+       ,
+       <code class="calibre21">
+        regex_search()
+       </code>
+       , and
+       <code class="calibre21">
+        regex_replace()
+       </code>
+       . All of these algorithms have different overloads that allow you to specify the source string as a
+       <code class="calibre21">
+        string
+       </code>
+       , a C-style string, or as a begin/end iterator pair. The iterators can be any of the following:
+      </p>
+      <ul class="check" id="c21-list-0017">
+       <li class="calibre9" id="c21-li-0065">
+        <code class="calibre21">
+         const char*
+        </code>
+        or
+        <code class="calibre21">
+         const wchar_t*
+        </code>
+       </li>
+       <li class="calibre9" id="c21-li-0066">
+        <code class="calibre21">
+         string::const_iterator
+        </code>
+        or
+        <code class="calibre21">
+         wstring::const_iterator
+        </code>
+       </li>
+      </ul>
+      <p class="calibre13" id="c21-para-0124">
+       In fact, any iterator that behaves as a bidirectional iterator can be used. See
+       <a class="calibre5" href="c17.xhtml">
+        Chapters 17
+       </a>
+       , “Understanding Iterators and the Ranges Library,” for details on iterators.
+      </p>
+      <p class="calibre13">
+       The library also defines the following two
+       <i class="calibre18">
+        regular expression iterators
+       </i>
+       , which play an important role in finding all occurrences of a pattern in a source string:
+      </p>
+      <ul class="check" id="c21-list-0018">
+       <li class="calibre9" id="c21-li-0067">
+        <b class="calibre14">
+         <code class="calibre21">
+          regex_iterator
+         </code>
+         :
+        </b>
+        Iterates over all the occurrences of a pattern in a source string.
+       </li>
+       <li class="calibre9" id="c21-li-0068">
+        <b class="calibre14">
+         <code class="calibre21">
+          regex_token_iterator
+         </code>
+         :
+        </b>
+        Iterates over all the capture groups of all occurrences of a pattern in a source string.
+       </li>
+      </ul>
+      <p class="calibre13">
+       To make the library easier to use, the standard defines a number of type aliases for the preceding templates:
+      </p>
+      <pre class="calibre26" id="c21-code-0034"><code class="calibre21">using regex  = basic_regex&lt;char&gt;;</code>
+<code class="calibre21">using wregex = basic_regex&lt;wchar_t&gt;;</code>
+<code class="calibre21"></code>
+<code class="calibre21">using csub_match  = sub_match&lt;const char*&gt;;</code>
+<code class="calibre21">using wcsub_match = sub_match&lt;const wchar_t*&gt;;</code>
+<code class="calibre21">using ssub_match  = sub_match&lt;string::const_iterator&gt;;</code>
+<code class="calibre21">using wssub_match = sub_match&lt;wstring::const_iterator&gt;;</code>
+<code class="calibre21"></code>
+<code class="calibre21">using cmatch  = match_results&lt;const char*&gt;;</code>
+<code class="calibre21">using wcmatch = match_results&lt;const wchar_t*&gt;;</code>
+<code class="calibre21">using smatch  = match_results&lt;string::const_iterator&gt;;</code>
+<code class="calibre21">using wsmatch = match_results&lt;wstring::const_iterator&gt;;</code>
+<code class="calibre21"></code>
+<code class="calibre21">using cregex_iterator  = regex_iterator&lt;const char*&gt;;</code>
+<code class="calibre21">using wcregex_iterator = regex_iterator&lt;const wchar_t*&gt;;</code>
+<code class="calibre21">using sregex_iterator  = regex_iterator&lt;string::const_iterator&gt;;</code>
+<code class="calibre21">using wsregex_iterator = regex_iterator&lt;wstring::const_iterator&gt;;</code>
+<code class="calibre21"></code>
+<code class="calibre21">using cregex_token_iterator  = regex_token_iterator&lt;const char*&gt;;</code>
+<code class="calibre21">using wcregex_token_iterator = regex_token_iterator&lt;const wchar_t*&gt;;</code>
+<code class="calibre21">using sregex_token_iterator  = regex_token_iterator&lt;string::const_iterator&gt;;</code>
+<code class="calibre21">using wsregex_token_iterator = regex_token_iterator&lt;wstring::const_iterator&gt;;</code></pre>
+      <p class="calibre13" id="c21-para-0127">
+       The following sections explain the
+       <code class="calibre21">
+        regex_match()
+       </code>
+       ,
+       <code class="calibre21">
+        regex_search()
+       </code>
+       , and
+       <code class="calibre21">
+        regex_replace()
+       </code>
+       algorithms, and the
+       <code class="calibre21">
+        regex_iterator
+       </code>
+       and
+       <code class="calibre21">
+        regex_token_iterator
+       </code>
+       classes.
+      </p>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c21-sec-0034">
+      </span>
+      <h3 class="calibre27" id="head-3-456">
+       regex_match()
+      </h3>
+      <p class="calibre13">
+       The
+       <code class="calibre21">
+        regex_match()
+       </code>
+       algorithm can be used to compare a given source string with a regular expression pattern. It returns
+       <code class="calibre21">
+        true
+       </code>
+       if the pattern matches the entire source string, and
+       <code class="calibre21">
+        false
+       </code>
+       otherwise.
+       <span aria-label="850" class="calibre20" epub:type="pagebreak" id="Page_850" role="doc-pagebreak">
+       </span>
+       There are seven overloads of the
+       <code class="calibre21">
+        regex_match()
+       </code>
+       algorithm accepting different kinds of arguments. They all have the following form:
+      </p>
+      <pre class="calibre26" id="c21-code-0035"><code class="calibre21">template&lt;…&gt;</code>
+<code class="calibre21">bool regex_match(InputSequence[, MatchResults], RegEx[, Flags]);</code></pre>
+      <p class="calibre13">
+       The
+       <code class="calibre21">
+        InputSequence
+       </code>
+       can be represented as follows:
+      </p>
+      <ul class="check" id="c21-list-0019">
+       <li class="calibre9" id="c21-li-0069">
+        A start and end iterator into a source string
+       </li>
+       <li class="calibre9" id="c21-li-0070">
+        An
+        <code class="calibre21">
+         std::string
+        </code>
+       </li>
+       <li class="calibre9" id="c21-li-0071">
+        A C-style string
+       </li>
+      </ul>
+      <p class="calibre13" id="c21-para-0130">
+       The optional
+       <code class="calibre21">
+        MatchResults
+       </code>
+       parameter is a reference to a
+       <code class="calibre21">
+        match_results
+       </code>
+       and receives the match. If
+       <code class="calibre21">
+        regex_match()
+       </code>
+       returns
+       <code class="calibre21">
+        false
+       </code>
+       , you are only allowed to call
+       <code class="calibre21">
+        match_results::empty()
+       </code>
+       or
+       <code class="calibre21">
+        match_results::size()
+       </code>
+       ; anything else is undefined. If
+       <code class="calibre21">
+        regex_match()
+       </code>
+       returns
+       <code class="calibre21">
+        true
+       </code>
+       , a match is found, and you can inspect the
+       <code class="calibre21">
+        match_results
+       </code>
+       object for what exactly got matched. This is explained with examples in the following subsections.
+      </p>
+      <p class="calibre13" id="c21-para-0131">
+       The
+       <code class="calibre21">
+        RegEx
+       </code>
+       parameter is the regular expression that needs to be matched. The optional
+       <code class="calibre21">
+        Flags
+       </code>
+       parameter specifies options for the matching algorithm. In most cases, you can keep the default. For more details, consult a Standard Library Reference.
+      </p>
+      <section class="calibre2">
+       <span class="calibre" id="c21-sec-0035">
+       </span>
+       <h4 class="calibre29" id="head-4-355">
+        regex_match() Examples
+       </h4>
+       <p class="calibre13">
+        The following program asks the user to enter a date in the format year/month/day, where year is four digits, month is a number between 1 and 12, and day is a number between 1 and 31. A regular expression together with the
+        <code class="calibre21">
+         regex_match()
+        </code>
+        algorithm is used to validate the user input. The details of the regular expression are explained after the code.
+       </p>
+       <pre class="calibre26" id="c21-code-0036"><code class="calibre21">regex r { "\\d{4}/(?:0?[1-9]|1[0-2])/(?:0?[1-9]|[1-2][0-9]|3[0-1])" };</code>
+<code class="calibre21">while (true) {</code>
+<code class="calibre21">    print("Enter a date (year/month/day) (q=quit): ");</code>
+<code class="calibre21">    string str;</code>
+<code class="calibre21">    if (!getline(cin, str) || str == "q") { break; }</code>
+<code class="calibre21"></code>
+<code class="calibre21">    <b class="calibre14">if (regex_match(str, r))</b> { println("  Valid date."); }</code>
+<code class="calibre21">    else { println("  Invalid date!"); }</code>
+<code class="calibre21">}</code></pre>
+       <p class="calibre13">
+        The first line creates the regular expression. The expression consists of three parts separated by a forward slash (
+        <code class="calibre21">
+         /
+        </code>
+        ) character: one part for year, one for month, and one for day. The following list explains these parts:
+       </p>
+       <ul class="check" id="c21-list-0020">
+        <li class="calibre9" id="c21-li-0072">
+         \d{4}: Matches any combination of four digits; for example, 1234, 2024, and so on.
+        </li>
+        <li class="calibre9" id="c21-li-0073">
+         <b class="calibre14">
+          <code class="calibre21">
+           (?:0?[1-9]|1[0-2])
+          </code>
+          :
+         </b>
+         This subpart of the regular expression is wrapped inside parentheses to make sure the precedence is correct. We don't need a capture group, so
+         <code class="calibre21">
+          (?:
+         </code>
+         …
+         <code class="calibre21">
+          )
+         </code>
+         is used. The inner expression consists of an alternation of two parts separated by the
+         <code class="calibre21">
+          |
+         </code>
+         character.
+         <ul class="check3" id="c21-list-0021">
+          <li class="calibre9" id="c21-li-0074">
+           <b class="calibre14">
+            <code class="calibre21">
+             0?[1-9]
+            </code>
+            :
+           </b>
+           Matches any number from 1 to 9 with an optional 0 in front of it. For example, it matches 1, 2, 9, 03, 04, and so on. It does not match 0, 10, 11, and so on.
+          </li>
+          <li class="calibre9" id="c21-li-0075">
+           1[0-2]: Matches 10, 11, or 12, and nothing else.
+          </li>
+         </ul>
+        </li>
+        <li class="calibre9" id="c21-li-0076">
+         <span aria-label="851" class="calibre20" epub:type="pagebreak" id="Page_851" role="doc-pagebreak">
+         </span>
+         <b class="calibre14">
+          <code class="calibre21">
+           (?:0?[1-9]|[1-2][0-9]|3[0-1])
+          </code>
+          :
+         </b>
+         This subpart is also wrapped inside a non-capture group and consists of an alternation of three parts.
+         <ul class="check3" id="c21-list-0022">
+          <li class="calibre9" id="c21-li-0077">
+           <b class="calibre14">
+            <code class="calibre21">
+             0?[1-9]
+            </code>
+            :
+           </b>
+           Again matches any number from 1 to 9 with an optional 0 in front of it.
+          </li>
+          <li class="calibre9" id="c21-li-0078">
+           <b class="calibre14">
+            <code class="calibre21">
+             [1-2][0-9]
+            </code>
+            :
+           </b>
+           Matches any number between 10 and 29 inclusive and nothing else.
+          </li>
+          <li class="calibre9" id="c21-li-0079">
+           <b class="calibre14">
+            <code class="calibre21">
+             3[0-1]
+            </code>
+            :
+           </b>
+           Matches 30 or 31 and nothing else.
+          </li>
+         </ul>
+        </li>
+       </ul>
+       <p class="calibre13" id="c21-para-0136">
+        The example then enters an infinite loop to ask the user to enter a date. Each date entered is given to the
+        <code class="calibre21">
+         regex_match()
+        </code>
+        algorithm. When
+        <code class="calibre21">
+         regex_match()
+        </code>
+        returns
+        <code class="calibre21">
+         true
+        </code>
+        , the user has entered a date that matches the date regular expression pattern.
+       </p>
+       <p class="calibre13" id="c21-para-0137">
+        This example can be extended by asking the
+        <code class="calibre21">
+         regex_match()
+        </code>
+        algorithm to return captured subexpressions in a results object. You first have to understand what a capture group does. By specifying a
+        <code class="calibre21">
+         match_results
+        </code>
+        object like
+        <code class="calibre21">
+         smatch
+        </code>
+        in a call to
+        <code class="calibre21">
+         regex_match()
+        </code>
+        , the elements of the
+        <code class="calibre21">
+         match_results
+        </code>
+        object are filled in when the regular expression matches the input string. To be able to extract these substrings, you must create capture groups using parentheses.
+       </p>
+       <p class="calibre13" id="c21-para-0138">
+        The first element,
+        <code class="calibre21">
+         [0]
+        </code>
+        , in a
+        <code class="calibre21">
+         match_results
+        </code>
+        object contains the string that matched the entire pattern. When using
+        <code class="calibre21">
+         regex_match()
+        </code>
+        and a match is found, this is the entire source sequence. When using
+        <code class="calibre21">
+         regex_search()
+        </code>
+        , discussed in the next section, this can be a substring in the source sequence that matches the regular expression. Element
+        <code class="calibre21">
+         [1]
+        </code>
+        is the substring matched by the first capture group,
+        <code class="calibre21">
+         [2]
+        </code>
+        by the second capture group, and so on. To get a string representation of the i
+        <sup class="calibre22">
+         th
+        </sup>
+        capture group from a
+        <code class="calibre21">
+         match_results
+        </code>
+        object
+        <code class="calibre21">
+         m
+        </code>
+        , you can use
+        <code class="calibre21">
+         m[i]
+        </code>
+        as in the following code, or
+        <code class="calibre21">
+         m[i].str()
+        </code>
+        .
+       </p>
+       <p class="calibre13">
+        The following code extracts the year, month, and day digits into three separate integer variables. The regular expression in the revised example has a few small changes. The first part matching the year is wrapped in a capture group, while the month and day parts are now also capture groups instead of non-capture groups. The call to
+        <code class="calibre21">
+         regex_match()
+        </code>
+        includes a
+        <code class="calibre21">
+         smatch
+        </code>
+        parameter, which receives the matched capture groups. Here is the adapted example:
+       </p>
+       <pre class="calibre26" id="c21-code-0037"><code class="calibre21"><b class="calibre14">regex r { "(\\d{4})/(0?[1-9]|1[0-2])/(0?[1-9]|[1-2][0-9]|3[0-1])" };</b></code>
+<code class="calibre21">while (true) {</code>
+<code class="calibre21">    print("Enter a date (year/month/day) (q=quit): ");</code>
+<code class="calibre21">    string str;</code>
+<code class="calibre21">    if (!getline(cin, str) || str == "q") { break; }</code>
+<code class="calibre21"></code>
+<code class="calibre21">    <b class="calibre14">if (smatch m; regex_match(str, m, r)) {</b></code>
+<code class="calibre21">        <b class="calibre14">int year { stoi(m[1]) };</b></code>
+<code class="calibre21">        <b class="calibre14">int month { stoi(m[2]) };</b></code>
+<code class="calibre21">        <b class="calibre14">int day { stoi(m[3]) };</b></code>
+<code class="calibre21">        <b class="calibre14">println("  Valid date: Year={}, month={}, day={}", year, month, day);</b></code>
+<code class="calibre21">    } else {</code>
+<code class="calibre21">        println("  Invalid date!");</code>
+<code class="calibre21">    }</code>
+<code class="calibre21">}</code></pre>
+       <p class="calibre13">
+        In this example, there are four elements in the
+        <code class="calibre21">
+         smatch
+        </code>
+        results objects:
+       </p>
+       <ul class="check" id="c21-list-0023">
+        <li class="calibre9" id="c21-li-0080">
+         <b class="calibre14">
+          <code class="calibre21">
+           [0]:
+          </code>
+         </b>
+         The string matching the full regular expression, which in this example is the full date
+        </li>
+        <li class="calibre9" id="c21-li-0081">
+         <b class="calibre14">
+          <code class="calibre21">
+           [1]:
+          </code>
+         </b>
+         The year
+        </li>
+        <li class="calibre9" id="c21-li-0082">
+         <b class="calibre14">
+          <code class="calibre21">
+           [2]:
+          </code>
+         </b>
+         The month
+        </li>
+        <li class="calibre9" id="c21-li-0083">
+         <b class="calibre14">
+          <code class="calibre21">
+           [3]:
+          </code>
+         </b>
+         The day
+        </li>
+       </ul>
+       <p class="calibre13">
+        <span aria-label="852" class="calibre20" epub:type="pagebreak" id="Page_852" role="doc-pagebreak">
+        </span>
+        When you execute this example, you can get the following output:
+       </p>
+       <pre class="calibre26" id="c21-code-0038"><code class="calibre21">Enter a date (year/month/day) (q=quit): 2024/12/01</code>
+<code class="calibre21">  Valid date: Year=2024, month=12, day=1</code>
+<code class="calibre21">Enter a date (year/month/day) (q=quit): 24/12/01</code>
+<code class="calibre21">  Invalid date!</code></pre>
+       <section class="calibre2">
+        <aside class="calibre23">
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+         <section class="feature">
+          <p class="calibre25">
+           <b class="calibre14">
+            NOTE
+           </b>
+           <i class="calibre18">
+            These date-matching examples check only if the date consists of a year (four digits), a month (1–12), and a day (1–31). They do not perform any validation for the number of days in a month, leap years, and so on. If you need that, you have to write code to validate the year, month, and day values that are extracted by
+           </i>
+           <code class="calibre21">
+            regex_match()
+           </code>
+           <i class="calibre18">
+            . If you implement such validation, then the regular expression could be simplified to just match 4 digits for the year, 1 or 2 digits for the month, and 1 or 2 digits for the day.
+           </i>
+          </p>
+          <pre class="calibre26" id="c21-code-0039"><code class="calibre21">    regex r { "(\\d{4})/(\\d{1,2})/(\\d{1,2})" };</code></pre>
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+         </section>
+        </aside>
+       </section>
+      </section>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c21-sec-0037">
+      </span>
+      <h3 class="calibre27" id="head-3-457">
+       regex_search()
+      </h3>
+      <p class="calibre13">
+       The
+       <code class="calibre21">
+        regex_match()
+       </code>
+       algorithm discussed in the previous section returns
+       <code class="calibre21">
+        true
+       </code>
+       if the entire source string matches the regular expression and
+       <code class="calibre21">
+        false
+       </code>
+       otherwise. If you want to search for a matching substring, you need to use
+       <code class="calibre21">
+        regex_search()
+       </code>
+       . There are seven overloads of
+       <code class="calibre21">
+        regex_search()
+       </code>
+       , and they all have the following form:
+      </p>
+      <pre class="calibre26" id="c21-code-0040"><code class="calibre21">template&lt;…&gt;</code>
+<code class="calibre21">bool regex_search(InputSequence[, MatchResults], RegEx[, Flags]);</code></pre>
+      <p class="calibre13" id="c21-para-0145">
+       All overloads return
+       <code class="calibre21">
+        true
+       </code>
+       when a match is found somewhere in the input sequence and
+       <code class="calibre21">
+        false
+       </code>
+       otherwise. The parameters are similar to the parameters for
+       <code class="calibre21">
+        regex_match()
+       </code>
+       .
+      </p>
+      <p class="calibre13">
+       Two overloads of
+       <code class="calibre21">
+        regex_search()
+       </code>
+       accept a begin and end iterator as the input sequence that you want to process. You might be tempted to use this version of
+       <code class="calibre21">
+        regex_search()
+       </code>
+       in a loop to find all occurrences of a pattern in a source string by manipulating these begin and end iterators for each
+       <code class="calibre21">
+        regex_search()
+       </code>
+       call. Never do this! It can cause problems when your regular expression uses anchors (
+       <code class="calibre21">
+        ^
+       </code>
+       or
+       <code class="calibre21">
+        $
+       </code>
+       ), word boundaries, and so on. It can also cause an infinite loop due to empty matches. Use a
+       <code class="calibre21">
+        regex_iterator
+       </code>
+       or
+       <code class="calibre21">
+        regex_token_iterator
+       </code>
+       as explained later in this chapter to extract all occurrences of a pattern from a source string.
+      </p>
+      <section class="calibre2">
+       <aside class="calibre23">
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+        <section class="feature">
+         <p class="calibre25" id="c21-para-0147">
+          <b class="calibre14">
+           WARNING
+          </b>
+          <i class="calibre18">
+           Never use
+          </i>
+          <code class="calibre21">
+           regex_search()
+          </code>
+          <i class="calibre18">
+           in a loop to find all occurrences of a pattern in a source string. Instead, use a
+          </i>
+          <code class="calibre21">
+           regex_iterator
+          </code>
+          <i class="calibre18">
+           or
+          </i>
+          <code class="calibre21">
+           regex_token_iterator
+          </code>
+          <i class="calibre18">
+           .
+          </i>
+         </p>
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c21-sec-0039">
+       </span>
+       <h4 class="calibre29" id="head-4-356">
+        regex_search() Examples
+       </h4>
+       <p class="calibre13">
+        The
+        <code class="calibre21">
+         regex_search()
+        </code>
+        algorithm can be used to extract a matching substring from an input sequence. For example, the following program extracts code comments from a string. The regular expression
+        <span aria-label="853" class="calibre20" epub:type="pagebreak" id="Page_853" role="doc-pagebreak">
+        </span>
+        searches for a substring that starts with
+        <code class="calibre21">
+         //
+        </code>
+        followed by optional whitespace,
+        <code class="calibre21">
+         \s*
+        </code>
+        , followed by one or more characters captured in a capture group,
+        <code class="calibre21">
+         (.+)
+        </code>
+        . This capture group captures only the comment substring. The
+        <code class="calibre21">
+         smatch
+        </code>
+        object
+        <code class="calibre21">
+         m
+        </code>
+        receives the search results. If successful,
+        <code class="calibre21">
+         m[1]
+        </code>
+        contains the comment that was found. You can check the
+        <code class="calibre21">
+         m[1].first
+        </code>
+        and
+        <code class="calibre21">
+         m[1].second
+        </code>
+        iterators to see where exactly the comment was found in the source string.
+       </p>
+       <pre class="calibre26" id="c21-code-0041"><code class="calibre21">regex r { "//\\s*(.+)$" };</code>
+<code class="calibre21">while (true) {</code>
+<code class="calibre21">    print("Enter a string with optional code comments (q=quit):\n &gt; ");</code>
+<code class="calibre21">    string str;</code>
+<code class="calibre21">    if (!getline(cin, str) || str == "q") { break; }</code>
+<code class="calibre21"></code>
+<code class="calibre21">    <b class="calibre14">if (smatch m; regex_search(str, m, r)) {</b></code>
+<code class="calibre21">        println("  Found comment '{}'", m[1].str());</code>
+<code class="calibre21">    } else {</code>
+<code class="calibre21">        println("  No comment found!");</code>
+<code class="calibre21">    }</code>
+<code class="calibre21">}</code></pre>
+       <p class="calibre13">
+        The output of this program can look as follows:
+       </p>
+       <pre class="calibre26" id="c21-code-0042"><code class="calibre21">Enter a string with optional code comments (q=quit):</code>
+<code class="calibre21">&gt; std::string str;   // Our source string</code>
+<code class="calibre21">  Found comment 'Our source string'</code>
+<code class="calibre21">Enter a string with optional code comments (q=quit):</code>
+<code class="calibre21">&gt; int a; // A comment with // in the middle</code>
+<code class="calibre21">  Found comment 'A comment with // in the middle'</code>
+<code class="calibre21">Enter a string with optional code comments (q=quit):</code>
+<code class="calibre21">&gt; std::vector values { 1, 2, 3 };</code>
+<code class="calibre21">  No comment found!</code></pre>
+       <p class="calibre13" id="c21-para-0150">
+        The
+        <code class="calibre21">
+         match_results
+        </code>
+        object also has a
+        <code class="calibre21">
+         prefix()
+        </code>
+        and
+        <code class="calibre21">
+         suffix()
+        </code>
+        member function, which return the string preceding or following the match, respectively.
+       </p>
+      </section>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c21-sec-0040">
+      </span>
+      <h3 class="calibre27" id="head-3-458">
+       regex_iterator
+      </h3>
+      <p class="calibre13" id="c21-para-0151">
+       As explained in the previous section, you should never use
+       <code class="calibre21">
+        regex_search()
+       </code>
+       in a loop to extract all occurrences of a pattern from a source sequence. Instead, you should use a
+       <code class="calibre21">
+        regex_iterator
+       </code>
+       or
+       <code class="calibre21">
+        regex_token_iterator
+       </code>
+       . They work similarly to iterators for Standard Library containers.
+      </p>
+      <section class="calibre2">
+       <span class="calibre" id="c21-sec-0041">
+       </span>
+       <h4 class="calibre29" id="head-4-357">
+        regex_iterator Examples
+       </h4>
+       <p class="calibre13" id="c21-para-0152">
+        The following example asks the user to enter a source string, extracts every word from the string, and prints all words between quotes. The regular expression in this case is
+        <code class="calibre21">
+         [\w]+
+        </code>
+        , which searches for one or more word-letters. This example uses
+        <code class="calibre21">
+         std::string
+        </code>
+        as a source, so it uses
+        <code class="calibre21">
+         sregex_iterator
+        </code>
+        for the iterators. A standard iterator loop is used, but in this case, the end iterator is done slightly differently from the end iterators of Standard Library containers. Normally, you specify an end iterator for a particular container, but for
+        <code class="calibre21">
+         regex_iterator
+        </code>
+        , there is only one “end” iterator. You get this end iterator by default constructing a
+        <code class="calibre21">
+         regex_iterator
+        </code>
+        .
+       </p>
+       <p class="calibre13">
+        The
+        <code class="calibre21">
+         for
+        </code>
+        loop creates a start iterator called
+        <code class="calibre21">
+         iter
+        </code>
+        , which accepts a begin and end iterator into the source string and a regular expression. The loop body is called for every match found, which is every word in this example. The
+        <code class="calibre21">
+         sregex_iterator
+        </code>
+        iterates over all the matches. By dereferencing
+        <span aria-label="854" class="calibre20" epub:type="pagebreak" id="Page_854" role="doc-pagebreak">
+        </span>
+        a
+        <code class="calibre21">
+         sregex_iterator
+        </code>
+        , you get a
+        <code class="calibre21">
+         smatch
+        </code>
+        object. Accessing the first element of this
+        <code class="calibre21">
+         smatch
+        </code>
+        object,
+        <code class="calibre21">
+         [0]
+        </code>
+        , gives you the matched substring:
+       </p>
+       <pre class="calibre26" id="c21-code-0043"><code class="calibre21">regex reg { "[\\w]+" };</code>
+<code class="calibre21">while (true) {</code>
+<code class="calibre21">    print("Enter a string to split (q=quit): ");</code>
+<code class="calibre21">    string str;</code>
+<code class="calibre21">    if (!getline(cin, str) || str == "q") { break; }</code>
+<code class="calibre21"></code>
+<code class="calibre21">    <b class="calibre14">const sregex_iterator end;</b></code>
+<code class="calibre21">    <b class="calibre14">for (sregex_iterator iter { cbegin(str), cend(str), reg };</b></code>
+<code class="calibre21">        <b class="calibre14">iter != end; ++iter) {</b></code>
+<code class="calibre21">        println("\"{}\"", (*iter)[0].str());</code>
+<code class="calibre21">    }</code>
+<code class="calibre21">}</code></pre>
+       <p class="calibre13">
+        The output of this program can look as follows:
+       </p>
+       <pre class="calibre26" id="c21-code-0044"><code class="calibre21">Enter a string to split (q=quit): This, is    a test.</code>
+<code class="calibre21">"This"</code>
+<code class="calibre21">"is"</code>
+<code class="calibre21">"a"</code>
+<code class="calibre21">"test"</code></pre>
+       <p class="calibre13" id="c21-para-0155">
+        As this example demonstrates, even simple regular expressions can perform some powerful string operations!
+       </p>
+       <p class="calibre13">
+        Note that both
+        <code class="calibre21">
+         regex_iterator
+        </code>
+        , and
+        <code class="calibre21">
+         regex_token_iterator
+        </code>
+        discussed in the next section, internally store a pointer to the given regular expression. Hence, they both explicitly delete any constructors accepting rvalue reference regular expressions to prevent you from constructing them with temporary
+        <code class="calibre21">
+         regex
+        </code>
+        objects. For example, the following does not compile:
+       </p>
+       <pre class="calibre26" id="c21-code-0045"><code class="calibre21">for (sregex_iterator iter { cbegin(str), cend(str), <b class="calibre14">regex { "[\\w]+" }</b> };</code>
+<code class="calibre21">    iter != end; ++iter) { … }</code></pre>
+      </section>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c21-sec-0042">
+      </span>
+      <h3 class="calibre27" id="head-3-459">
+       regex_token_iterator
+      </h3>
+      <p class="calibre13" id="c21-para-0157">
+       The previous section describes
+       <code class="calibre21">
+        regex_iterator
+       </code>
+       , which iterates through every match. On each iteration, you get a
+       <code class="calibre21">
+        match_results
+       </code>
+       object, which you can use to extract subexpressions for a match that are captured by capture groups.
+      </p>
+      <p class="calibre13">
+       A
+       <code class="calibre21">
+        regex_token_iterator
+       </code>
+       can be used to automatically iterate over all or selected capture groups across all matches. There are four constructors with the following format:
+      </p>
+      <pre class="calibre26" id="c21-code-0046"><code class="calibre21">regex_token_iterator(BidirectionalIterator a,</code>
+<code class="calibre21">                     BidirectionalIterator b,</code>
+<code class="calibre21">                     const regex_type&amp; re</code>
+<code class="calibre21">                     [, SubMatches</code>
+<code class="calibre21">                     [, Flags]]);</code></pre>
+      <p class="calibre13">
+       All of them require a begin and end iterator as input sequence, and a regular expression. The optional
+       <code class="calibre21">
+        SubMatches
+       </code>
+       parameter is used to specify which capture groups should be iterated over.
+       <code class="calibre21">
+        SubMatches
+       </code>
+       can be specified in four ways:
+      </p>
+      <ul class="check" id="c21-list-0024">
+       <li class="calibre9" id="c21-li-0084">
+        As a single integer representing the index of the capture group that you want to iterate over
+       </li>
+       <li class="calibre9" id="c21-li-0085">
+        As a
+        <code class="calibre21">
+         vector
+        </code>
+        with integers representing the indices of the capture groups that you want to iterate over
+       </li>
+       <li class="calibre9" id="c21-li-0086">
+        <span aria-label="855" class="calibre20" epub:type="pagebreak" id="Page_855" role="doc-pagebreak">
+        </span>
+        As an
+        <code class="calibre21">
+         initializer_list
+        </code>
+        with capture group indices
+       </li>
+       <li class="calibre9" id="c21-li-0087">
+        As a C-style array with capture group indices
+       </li>
+      </ul>
+      <p class="calibre13" id="c21-para-0160">
+       When you omit
+       <code class="calibre21">
+        SubMatches
+       </code>
+       or when you specify a 0 for
+       <code class="calibre21">
+        SubMatches
+       </code>
+       , you get an iterator that iterates over all capture groups with index 0, which are the substrings matching the full regular expression. The optional
+       <code class="calibre21">
+        Flags
+       </code>
+       parameter specifies options for the matching algorithm. In most cases, you can keep the default. Consult a Standard Library Reference for more details.
+      </p>
+      <section class="calibre2">
+       <span class="calibre" id="c21-sec-0043">
+       </span>
+       <h4 class="calibre29" id="head-4-358">
+        regex_token_iterator Examples
+       </h4>
+       <p class="calibre13">
+        The earlier
+        <code class="calibre21">
+         regex_iterator
+        </code>
+        example can be rewritten using a
+        <code class="calibre21">
+         regex_token_iterator
+        </code>
+        as follows. Instead of using
+        <code class="calibre21">
+         (*iter)[0].str()
+        </code>
+        in the loop body, you simply use
+        <code class="calibre21">
+         iter-&gt;str()
+        </code>
+        because a token iterator with 0 (= default)
+        <code class="calibre21">
+         submatch
+        </code>
+        index automatically iterates over all capture groups with index 0. The output of this code is the same as the output generated by the earlier
+        <code class="calibre21">
+         regex_iterator
+        </code>
+        example.
+       </p>
+       <pre class="calibre26" id="c21-code-0047"><code class="calibre21">regex reg { "[\\w]+" };</code>
+<code class="calibre21">while (true) {</code>
+<code class="calibre21">    print("Enter a string to split (q=quit): ");</code>
+<code class="calibre21">    string str;</code>
+<code class="calibre21">    if (!getline(cin, str) || str == "q") { break; }</code>
+<code class="calibre21"></code>
+<code class="calibre21">    <b class="calibre14">const sregex_token_iterator end;</b></code>
+<code class="calibre21">    <b class="calibre14">for (sregex_token_iterator iter { cbegin(str), cend(str), reg };</b></code>
+<code class="calibre21">        iter != end; ++iter) {</code>
+<code class="calibre21">        println("\"{}\"", <b class="calibre14">iter-&gt;str()</b>);</code>
+<code class="calibre21">    }</code>
+<code class="calibre21">}</code></pre>
+       <p class="calibre13">
+        The following example asks the user to enter a date and then uses a
+        <code class="calibre21">
+         regex_token_iterator
+        </code>
+        to iterate over the second and third capture groups (month and day), which are specified as a
+        <code class="calibre21">
+         vector
+        </code>
+        of integers. The regular expression used for dates is explained earlier in this chapter. The only difference is that
+        <code class="calibre21">
+         ^
+        </code>
+        and
+        <code class="calibre21">
+         $
+        </code>
+        anchors are added since we want to match the entire source sequence. Earlier, that was not necessary, because
+        <code class="calibre21">
+         regex_match()
+        </code>
+        automatically matches the entire input string.
+       </p>
+       <pre class="calibre26" id="c21-code-0048"><code class="calibre21">regex reg { "^(\\d{4})/(0?[1-9]|1[0-2])/(0?[1-9]|[1-2][0-9]|3[0-1])$" };</code>
+<code class="calibre21">while (true) {</code>
+<code class="calibre21">    print("Enter a date (year/month/day) (q=quit): ");</code>
+<code class="calibre21">    string str;</code>
+<code class="calibre21">    if (!getline(cin, str) || str == "q") { break; }</code>
+<code class="calibre21"></code>
+<code class="calibre21">    <b class="calibre14">vector indices { 2, 3 };</b></code>
+<code class="calibre21">    <b class="calibre14">const sregex_token_iterator end;</b></code>
+<code class="calibre21">    <b class="calibre14">for (sregex_token_iterator iter { cbegin(str), cend(str), reg, indices };</b></code>
+<code class="calibre21">        iter != end; ++iter) {</code>
+<code class="calibre21">        println("\"{}\"", iter-&gt;str());</code>
+<code class="calibre21">    }</code>
+<code class="calibre21">}</code></pre>
+       <p class="calibre13">
+        This code prints only the month and day of valid dates. Output generated by this example can look like this:
+       </p>
+       <pre class="calibre26" id="c21-code-0049"><code class="calibre21">Enter a date (year/month/day) (q=quit): 2024/1/13</code>
+<code class="calibre21">"1"</code>
+<code class="calibre21">"13"</code>
+<span aria-label="856" class="calibre20" epub:type="pagebreak" id="Page_856" role="doc-pagebreak"></span><code class="calibre21">Enter a date (year/month/day) (q=quit): 2024/1/32</code>
+<code class="calibre21">Enter a date (year/month/day) (q=quit): 2024/12/5</code>
+<code class="calibre21">"12"</code>
+<code class="calibre21">"5"</code></pre>
+       <p class="calibre13">
+        The
+        <code class="calibre21">
+         regex_token_iterator
+        </code>
+        can also be used to perform a
+        <i class="calibre18">
+         field splitting
+        </i>
+        or
+        <i class="calibre18">
+         tokenization
+        </i>
+        . It is a much safer and more flexible alternative compared to using the old, and not further discussed,
+        <code class="calibre21">
+         strtok()
+        </code>
+        function from C. Tokenization is enabled in the
+        <code class="calibre21">
+         regex_token_iterator
+        </code>
+        constructor by specifying
+        <code class="calibre21">
+         -1
+        </code>
+        as the capture group index to iterate over. In tokenization mode, the iterator iterates over all substrings of the input sequence that
+        <i class="calibre18">
+         do not match
+        </i>
+        the regular expression. The following code demonstrates this by tokenizing a string on the delimiters
+        <code class="calibre21">
+         ,
+        </code>
+        and
+        <code class="calibre21">
+         ;
+        </code>
+        with zero or more whitespace characters before or after a delimiter. The code demonstrates the tokenization in two ways: first by iterating over the tokens directly and then by creating a new
+        <code class="calibre21">
+         vector
+        </code>
+        containing all the tokens followed by printing the contents of the
+        <code class="calibre21">
+         vector
+        </code>
+        :
+       </p>
+       <pre class="calibre26" id="c21-code-0050"><code class="calibre21">regex reg { R"(\s*[,;]\s*)" };</code>
+<code class="calibre21">while (true) {</code>
+<code class="calibre21">    print("Enter a string to split on ',' and ';' (q=quit): ");</code>
+<code class="calibre21">    string str;</code>
+<code class="calibre21">    if (!getline(cin, str) || str == "q") { break; }</code>
+<code class="calibre21"></code>
+<code class="calibre21">    <span class="color">// Iterate over the tokens.</span></code>
+<code class="calibre21">    <b class="calibre14">const sregex_token_iterator end;</b></code>
+<code class="calibre21">    <b class="calibre14">for (sregex_token_iterator iter { cbegin(str), cend(str), reg, -1 };</b></code>
+<code class="calibre21">        iter != end; ++iter) {</code>
+<code class="calibre21">        print("\"{}\", ", iter-&gt;str()); </code>
+<code class="calibre21">    }</code>
+<code class="calibre21">    println("");</code>
+<code class="calibre21"></code>
+<code class="calibre21">    <span class="color">// Store all tokens in a vector.</span></code>
+<code class="calibre21">    vector&lt;string&gt; tokens {</code>
+<code class="calibre21">        <b class="calibre14">sregex_token_iterator { cbegin(str), cend(str), reg, -1 }</b>,</code>
+<code class="calibre21">        <b class="calibre14">sregex_token_iterator {}</b> };</code>
+<code class="calibre21">    <span class="color">// Print the contents of the tokens vector.</span></code>
+<code class="calibre21">    println("{:n}", tokens);</code>
+<code class="calibre21">}</code></pre>
+       <p class="calibre13">
+        The regular expression in this example is specified as a raw string literal and searches for patterns that match the following:
+       </p>
+       <ul class="check" id="c21-list-0025">
+        <li class="calibre9" id="c21-li-0088">
+         Zero or more whitespace characters
+        </li>
+        <li class="calibre9" id="c21-li-0089">
+         Followed by a
+         <code class="calibre21">
+          ,
+         </code>
+         or
+         <code class="calibre21">
+          ;
+         </code>
+         character
+        </li>
+        <li class="calibre9" id="c21-li-0090">
+         Followed by zero or more whitespace characters
+        </li>
+       </ul>
+       <p class="calibre13">
+        The output can be as follows:
+       </p>
+       <pre class="calibre26" id="c21-code-0051"><code class="calibre21">Enter a string to split on ',' and ';' (q=quit): This is,   a; test string.</code>
+<code class="calibre21">"This is", "a", "test string.", </code>
+<code class="calibre21">"This is", "a", "test string."</code></pre>
+       <p class="calibre13" id="c21-para-0167">
+        As you can see from this output, the string is split on
+        <code class="calibre21">
+         ,
+        </code>
+        and
+        <code class="calibre21">
+         ;
+        </code>
+        . All whitespace characters around the
+        <code class="calibre21">
+         ,
+        </code>
+        and
+        <code class="calibre21">
+         ;
+        </code>
+        are removed because the tokenization iterator iterates over all substrings that
+        <i class="calibre18">
+         do not match
+        </i>
+        the regular expression and because the regular expression matches
+        <code class="calibre21">
+         ,
+        </code>
+        and
+        <code class="calibre21">
+         ;
+        </code>
+        <i class="calibre18">
+         with
+        </i>
+        whitespace around them.
+       </p>
+      </section>
+     </section>
+     <span aria-label="857" class="calibre20" epub:type="pagebreak" id="Page_857" role="doc-pagebreak">
+     </span>
+     <section class="calibre2">
+      <span class="calibre" id="c21-sec-0044">
+      </span>
+      <h3 class="calibre27" id="head-3-460">
+       regex_replace()
+      </h3>
+      <p class="calibre13">
+       The
+       <code class="calibre21">
+        regex_replace()
+       </code>
+       algorithm requires a regular expression and a formatting string that is used to replace matching substrings. This formatting string can reference parts of the matched substrings by using the escape sequences in the following table.
+      </p>
+      <table border="1" class="calibre31">
+       <thead class="calibre32">
+        <tr class="calibre33">
+         <th class="left" scope="col">
+          ESCAPE SEQUENCE
+         </th>
+         <th class="left" scope="col">
+          REPLACED WITH
+         </th>
+        </tr>
+       </thead>
+       <tbody class="calibre34">
+        <tr class="calibre33">
+         <td class="bgcolor">
+          <span class="calibre21">
+           $n
+          </span>
+         </td>
+         <td class="bgcolor">
+          The string matching the
+          <i class="calibre18">
+           n
+          </i>
+          <sup class="calibre22">
+           th
+          </sup>
+          capture group; for example,
+          <span class="calibre21">
+           $1
+          </span>
+          for the first capture group,
+          <code class="calibre21">
+           $2
+          </code>
+          for the second, and so on.
+          <i class="calibre18">
+           n
+          </i>
+          must be greater than 0.
+         </td>
+        </tr>
+        <tr class="calibre33">
+         <td class="bgcolor">
+          <span class="calibre21">
+           $&amp;
+          </span>
+         </td>
+         <td class="bgcolor">
+          The string matching the entire regular expression.
+         </td>
+        </tr>
+        <tr class="calibre33">
+         <td class="bgcolor">
+          <span class="calibre21">
+           $`
+          </span>
+         </td>
+         <td class="bgcolor">
+          The part of the input sequence that appears to the left of the substring matching the regular expression.
+         </td>
+        </tr>
+        <tr class="calibre33">
+         <td class="bgcolor">
+          <span class="calibre21">
+           $´
+          </span>
+         </td>
+         <td class="bgcolor">
+          The part of the input sequence that appears to the right of the substring matching the regular expression.
+         </td>
+        </tr>
+        <tr class="calibre33">
+         <td class="bgcolor">
+          <span class="calibre21">
+           $$
+          </span>
+         </td>
+         <td class="bgcolor">
+          A single dollar sign.
+         </td>
+        </tr>
+       </tbody>
+      </table>
+      <p class="calibre13">
+       There are six overloads of
+       <code class="calibre21">
+        regex_replace()
+       </code>
+       . The difference between them is in the type of parameters. Four of them have the following format:
+      </p>
+      <pre class="calibre26" id="c21-code-0052"><code class="calibre21">template&lt;…&gt;</code>
+<code class="calibre21">string regex_replace(InputSequence, RegEx, FormatString[, Flags]);</code></pre>
+      <p class="calibre13" id="c21-para-0170">
+       These four overloads return the resulting string after performing the replacement. Both the
+       <code class="calibre21">
+        InputSequence
+       </code>
+       and the
+       <code class="calibre21">
+        FormatString
+       </code>
+       can be an
+       <code class="calibre21">
+        std::string
+       </code>
+       or a C-style string. The
+       <code class="calibre21">
+        RegEx
+       </code>
+       parameter is the regular expression that needs to be matched. The optional
+       <code class="calibre21">
+        Flags
+       </code>
+       parameter specifies options for the replace algorithm.
+      </p>
+      <p class="calibre13">
+       Two overloads of
+       <code class="calibre21">
+        regex_replace()
+       </code>
+       have the following format:
+      </p>
+      <pre class="calibre26" id="c21-code-0053"><code class="calibre21">OutputIterator regex_replace(OutputIterator,</code>
+<code class="calibre21">                             BidirectionalIterator first,</code>
+<code class="calibre21">                             BidirectionalIterator last,</code>
+<code class="calibre21">                             RegEx, FormatString[, Flags]);</code></pre>
+      <p class="calibre13" id="c21-para-0172">
+       These two overloads write the resulting string to the given output iterator and return this output iterator. The input sequence is given as a begin and end iterator. The other parameters are identical to the other four overloads of
+       <code class="calibre21">
+        regex_replace()
+       </code>
+       .
+      </p>
+      <section class="calibre2">
+       <span class="calibre" id="c21-sec-0045">
+       </span>
+       <h4 class="calibre29" id="head-4-359">
+        regex_replace() Examples
+       </h4>
+       <p class="calibre13">
+        As a first example, take the following HTML source string:
+       </p>
+       <pre class="calibre26" id="c21-code-0054"><code class="calibre21"> &lt;body&gt;&lt;h1&gt;Header&lt;/h1&gt;&lt;p&gt;Some text&lt;/p&gt; 
+&lt;/body&gt;</code></pre>
+       <p class="calibre13">
+        and the following regular expression:
+       </p>
+       <pre class="calibre26" id="c21-code-0055"><code class="calibre21">&lt;h1&gt;(.*)&lt;/h1&gt;&lt;p&gt;(.*)&lt;/p&gt;</code></pre>
+       <p class="calibre13">
+        <span aria-label="858" class="calibre20" epub:type="pagebreak" id="Page_858" role="doc-pagebreak">
+        </span>
+        The following table shows the different escape sequences and what they will be replaced with:
+       </p>
+       <table border="1" class="calibre31">
+        <thead class="calibre32">
+         <tr class="calibre33">
+          <th class="left" scope="col">
+           ESCAPE SEQUENCE
+          </th>
+          <th class="left" scope="col">
+           REPLACED WITH
+          </th>
+         </tr>
+        </thead>
+        <tbody class="calibre34">
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            $1
+           </span>
+          </td>
+          <td class="bgcolor">
+           <span class="calibre21">
+            Header
+           </span>
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            $2
+           </span>
+          </td>
+          <td class="bgcolor">
+           <span class="calibre21">
+            Some text
+           </span>
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            $&amp;
+           </span>
+          </td>
+          <td class="bgcolor">
+           <span class="calibre21">
+            &lt;h1&gt;Header&lt;/h1&gt;&lt;p&gt;Some text&lt;/p&gt;
+           </span>
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            $`
+           </span>
+          </td>
+          <td class="bgcolor">
+           <span class="calibre21">
+            &lt;body&gt;
+           </span>
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            $´
+           </span>
+          </td>
+          <td class="bgcolor">
+           <span class="calibre21">
+            &lt;/body&gt;
+           </span>
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p class="calibre13">
+        The following code demonstrates the use of
+        <code class="calibre21">
+         regex_replace()
+        </code>
+        :
+       </p>
+       <pre class="calibre26" id="c21-code-0056"><code class="calibre21">const string str { " 
+&lt;body&gt;&lt;h1&gt;Header&lt;/h1&gt;&lt;p&gt;Some text&lt;/p&gt; 
+&lt;/body&gt;" };</code>
+<code class="calibre21">regex r { "&lt;h1&gt;(.*)&lt;/h1&gt;&lt;p&gt;(.*)&lt;/p&gt;" };</code>
+<code class="calibre21"></code>
+<code class="calibre21"><b class="calibre14">const string replacement { "H1=$1 and P=$2" };</b>  <span class="color">// See earlier table.</span></code>
+<code class="calibre21"><b class="calibre14">string result { regex_replace(str, r, replacement) };</b></code>
+<code class="calibre21"></code>
+<code class="calibre21">println("Original string: '{}'", str);</code>
+<code class="calibre21">println("New string     : '{}'", result);</code></pre>
+       <p class="calibre13">
+        The output of this program is as follows:
+       </p>
+       <pre class="calibre26" id="c21-code-0057"><code class="calibre21">Original string: ' 
+&lt;body&gt;&lt;h1&gt;Header&lt;/h1&gt;&lt;p&gt;Some text&lt;/p&gt; 
+&lt;/body&gt;'</code>
+<code class="calibre21">New string     : ' 
+&lt;body&gt;H1=Header and P=Some text 
+&lt;/body&gt;'</code></pre>
+       <p class="calibre13">
+        The
+        <code class="calibre21">
+         regex_replace()
+        </code>
+        algorithm accepts a number of flags to change its behavior. The most important flags are given in the following table:
+       </p>
+       <table border="1" class="calibre31">
+        <thead class="calibre32">
+         <tr class="calibre33">
+          <th class="left" scope="col">
+           FLAG
+          </th>
+          <th class="left" scope="col">
+           DESCRIPTION
+          </th>
+         </tr>
+        </thead>
+        <tbody class="calibre34">
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            format_default
+           </span>
+          </td>
+          <td class="bgcolor">
+           The default is to replace all occurrences of the pattern and to also copy everything to the output that does not match the pattern.
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            format_no_copy
+           </span>
+          </td>
+          <td class="bgcolor">
+           Replaces all occurrences of the pattern but does not copy anything to the output that does not match the pattern.
+          </td>
+         </tr>
+         <tr class="calibre33">
+          <td class="bgcolor">
+           <span class="calibre21">
+            format_first_only
+           </span>
+          </td>
+          <td class="bgcolor">
+           Replaces only the first occurrence of the pattern.
+          </td>
+         </tr>
+        </tbody>
+       </table>
+       <p class="calibre13">
+        The call to
+        <code class="calibre21">
+         regex_replace()
+        </code>
+        in the previous code snippet can be modified to use the
+        <code class="calibre21">
+         format_no_copy
+        </code>
+        flag:
+       </p>
+       <pre class="calibre26" id="c21-code-0058"><code class="calibre21"><b class="calibre14">string result { regex_replace(str, r, replacement,</b></code>
+<code class="calibre21">    <b class="calibre14">regex_constants::format_no_copy) };</b></code></pre>
+       <p class="calibre13">
+        The output now is as follows:
+       </p>
+       <pre class="calibre26" id="c21-code-0059"><code class="calibre21">Original string: ' 
+&lt;body&gt;&lt;h1&gt;Header&lt;/h1&gt;&lt;p&gt;Some text&lt;/p&gt; 
+&lt;/body&gt;'</code>
+<code class="calibre21">New string     : 'H1=Header and P=Some text'</code></pre>
+       <p class="calibre13">
+        Another example using
+        <code class="calibre21">
+         regex_replace()
+        </code>
+        is to replace each word boundary in a string with a newline character so that the output contains only one word per line. The following code snippet
+        <span aria-label="859" class="calibre20" epub:type="pagebreak" id="Page_859" role="doc-pagebreak">
+        </span>
+        demonstrates this without using any loops to process a given input string. The code first creates a regular expression that matches individual words. When a match is found with
+        <code class="calibre21">
+         regex_replace()
+        </code>
+        , it is substituted with
+        <code class="calibre21">
+         $1\n
+        </code>
+        where
+        <code class="calibre21">
+         $1
+        </code>
+        is replaced with the matched word. Note also the use of the
+        <code class="calibre21">
+         format_no_copy
+        </code>
+        flag to prevent copying whitespace and other non-word characters from the source string to the output.
+       </p>
+       <pre class="calibre26" id="c21-code-0060"><code class="calibre21">regex reg { "([\\w]+)" };</code>
+<code class="calibre21">const string replacement { "$1\n" };</code>
+<code class="calibre21">while (true) {</code>
+<code class="calibre21">    print("Enter a string to split over multiple lines (q=quit): ");</code>
+<code class="calibre21">    string str;</code>
+<code class="calibre21">    if (!getline(cin, str) || str == "q") { break; }</code>
+<code class="calibre21"></code>
+<code class="calibre21">    <b class="calibre14">println("{}", regex_replace(str, reg, replacement,</b></code>
+<code class="calibre21">        <b class="calibre14">regex_constants::format_no_copy));</b></code>
+<code class="calibre21">}</code></pre>
+       <p class="calibre13">
+        The output of this program can be as follows:
+       </p>
+       <pre class="calibre26" id="c21-code-0061"><code class="calibre21">Enter a string to split over multiple lines (q=quit):   This is   a test.</code>
+<code class="calibre21">This</code>
+<code class="calibre21">is</code>
+<code class="calibre21">a</code>
+<code class="calibre21">test</code></pre>
+      </section>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-224" class="calibre2">
+     <span class="calibre" id="c21-sec-0046">
+     </span>
+     <h2 class="calibre6" id="head-2-224">
+      SUMMARY
+     </h2>
+     <p class="calibre13" id="c21-para-0183">
+      This chapter gave you an appreciation for coding with localization in mind. As anyone who has been through a localization effort will tell you, adding support for a new language or locale is infinitely easier if you have planned ahead, for example, by using Unicode characters and being mindful of locales.
+     </p>
+     <p class="calibre13" id="c21-para-0184">
+      The second part of this chapter explained the regular expressions library. Once you know the syntax of regular expressions, it becomes much easier to work with strings. Regular expressions allow you to validate strings, search for substrings inside an input sequence, perform find-and-replace operations, and so on. It is highly recommended that you get to know regular expressions and start using them instead of writing your own string manipulation routines. They will make your life easier.
+     </p>
+    </section>
+    <section aria-labelledby="head-2-225" class="calibre2">
+     <span class="calibre" id="c21-sec-0047">
+     </span>
+     <h2 class="calibre6" id="head-2-225">
+      EXERCISES
+     </h2>
+     <p class="calibre13" id="c21-para-0185">
+      By solving the following exercises, you can practice the material discussed in this chapter. Solutions to all exercises are available with the code download on the book's website at
+      <code class="calibre21">
+       <a class="calibre5" href="http://www.wiley.com/go/proc++6e">
+        www.wiley.com/go/proc++6e
+       </a>
+      </code>
+      . However, if you are stuck on an exercise, first reread parts of this chapter to try to find an answer yourself before looking at the solution from the website.
+     </p>
+     <section class="calibre2">
+      <span class="calibre" id="c21-exsec-0001">
+      </span>
+      <ol class="none1">
+       <li class="calibre9" id="c21-ex-0001">
+        <b class="calibre14">
+         Exercise 21-1:
+        </b>
+        Use an appropriate facet to figure out the decimal separator for formatting numbers according to the user's environment. Consult a Standard Library reference to learn about the exact member functions of your chosen facet.
+       </li>
+       <li class="calibre9" id="c21-ex-0002">
+        <span aria-label="860" class="calibre20" epub:type="pagebreak" id="Page_860" role="doc-pagebreak">
+        </span>
+        <b class="calibre14">
+         Exercise 21-2:
+        </b>
+        Write an application that asks the user to enter a phone number as formatted in the United States. Here's an example: 202-555-0108. Use a regular expression to validate the format of the phone number, that is, three digits, followed by a dash, three more digits, another dash, and a final four digits. If it's a valid phone number, print out the three parts on separate lines. For example, for the earlier phone number, the result must be as follows:
+        <pre class="calibre26" id="c21-code-0062"><code class="calibre21">202</code>
+<code class="calibre21">555</code>
+<code class="calibre21">0108</code></pre>
+       </li>
+       <li class="calibre9" id="c21-ex-0003">
+        <b class="calibre14">
+         Exercise 21-3:
+        </b>
+        Write an application that asks the user for a piece of source code that can span multiple lines and that can contain
+        <code class="calibre21">
+         //
+        </code>
+        style comments. To signal the end of the input, use a sentinel character, for example
+        <code class="calibre21">
+         @
+        </code>
+        . You can use
+        <code class="calibre21">
+         std::getline()
+        </code>
+        with
+        <code class="calibre21">
+         '@'
+        </code>
+        as delimiter to read in multiple lines of text from the standard input console. Finally, use a regular expression to remove comments from all lines of the code snippet. Make sure your code properly works on a snippet such as the following:
+        <pre class="calibre26" id="c21-code-0063"><code class="calibre21">string str; // A comment // Some more comments.</code>
+<code class="calibre21">str = "Hello"; // Hello.</code></pre>
+        <p class="listpara" id="c21-para-0189">
+         The result for this input must be as follows:
+        </p>
+        <pre class="calibre26"><code class="calibre21">string str;</code>
+<code class="calibre21">str = "Hello";</code></pre>
+       </li>
+       <li class="calibre9" id="c21-ex-0004">
+        <b class="calibre14">
+         Exercise 21-4:
+        </b>
+        The section “
+        <a class="calibre5" href="#c21-sec-0030">
+         Lookahead
+        </a>
+        ” earlier in this chapter mentioned a password-validation regular expression. Write a program to test this regular expression. Ask the user to enter a password and validate it. Once you've verified that the regular expression works, add one more validation rule to it: a password must also consist of at least two digits.
+       </li>
+      </ol>
+     </section>
     </section>
    </section>
   </div>

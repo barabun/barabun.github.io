@@ -5,7 +5,7 @@
   <link href="style.css" rel="stylesheet" type="text/css"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <title>
-   CHAPTER 1: A CRASH COURSE IN C++ AND THE STANDARD LIBRARY
+   5Designing with Classes
   </title>
  </head>
  <body>
@@ -21,419 +21,1859 @@
    </a>
   </div>
   <div class="chapter-content">
-   <section aria-labelledby="b01_1" class="calibre2" epub:type="appendix" role="doc-appendix">
-    <section aria-labelledby="head-2-1" class="calibre2">
-     <h2 class="calibre6" id="head-2-1">
-      CHAPTER 1: A CRASH COURSE IN C++ AND THE STANDARD LIBRARY
+   <section aria-labelledby="c05_1" class="calibre2" epub:type="chapter" role="doc-chapter">
+    <header class="calibre10">
+     <h1 class="calibre16" id="c05_1">
+      <span aria-label="177" class="calibre17" epub:type="pagebreak" id="Page_177" role="doc-pagebreak">
+      </span>
+      <span class="calibre" id="c05">
+      </span>
+      <span class="calibre">
+       5
+      </span>
+      <br class="calibre12"/>
+      <span class="calibre">
+       Designing with Classes
+      </span>
+     </h1>
+    </header>
+    <section aria-label="chapter opening" class="calibre2">
+     <span class="calibre" id="c05-sec-0001">
+     </span>
+     <section class="calibre2">
+      <aside class="calibre23">
+       <div class="top">
+        <hr class="calibre24"/>
+       </div>
+       <section class="feature1">
+        <h3 class="calibre30">
+         WHAT'S IN THIS CHAPTER?
+        </h3>
+        <ul class="check2" id="c05-list-0001">
+         <li class="calibre9" id="c05-li-0001">
+          What object-oriented programming design is
+         </li>
+         <li class="calibre9" id="c05-li-0002">
+          What classes, objects, properties, and behaviors are
+         </li>
+         <li class="calibre9" id="c05-li-0003">
+          How you can define relationships between different classes
+         </li>
+        </ul>
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <p class="calibre13" id="c05-para-0004">
+      Now that you have developed an appreciation for good software design from
+      <a class="calibre5" href="c04.xhtml">
+       Chapter 4
+      </a>
+      , “Designing Professional C++ Programs,” it's time to pair the notion of classes with the concept of good design. The difference between programmers who use classes in their code and those who truly grasp object-oriented programming comes down to the way their classes relate to each other and to the overall design of the program.
+     </p>
+     <p class="calibre13" id="c05-para-0005">
+      This chapter begins with a brief description of procedural programming (C-style), followed by a detailed discussion of object-oriented programming (OOP). Even if you've been using classes for years, you will want to read this chapter for some new ideas regarding how to think about classes. I will discuss the different kinds of relationships between classes, including pitfalls programmers often succumb to when building an object-oriented program.
+     </p>
+     <p class="calibre13" id="c05-para-0006">
+      When thinking about procedural programming or object-oriented programming, the most important point to remember is that they just represent different ways of reasoning about what's going on in your program. Too often, programmers get bogged down in the syntax and jargon of OOP before they adequately understand what a class is and what objects are. This chapter is light on code and heavy on concepts and ideas.
+      <a class="calibre5" href="c08.xhtml">
+       Chapters 8
+      </a>
+      , “Gaining Proficiency with Classes and Objects,”
+      <a class="calibre5" href="c09.xhtml">
+       9
+      </a>
+      , “Mastering Classes and Objects,” and
+      <a class="calibre5" href="c10_split_000.xhtml">
+       10
+      </a>
+      , “Discovering Inheritance Techniques,” go deeper in on C++ class syntax.
+     </p>
+    </section>
+    <span aria-label="178" class="calibre20" epub:type="pagebreak" id="Page_178" role="doc-pagebreak">
+    </span>
+    <section aria-labelledby="head-2-82" class="calibre2">
+     <span class="calibre" id="c05-sec-0003">
+     </span>
+     <h2 class="calibre6" id="head-2-82">
+      AM I THINKING PROCEDURALLY?
      </h2>
-     <p class="calibre13" id="bapp01-para-0004">
-      A technical interview will often include some basic C++ questions to weed out the candidates who put C++ on their résumé simply because they've heard of the language. These questions might be asked during a
+     <p class="calibre13" id="c05-para-0007">
+      A procedural language, such as C, divides code into small pieces, each of which (ideally) accomplishes a single task. Without procedures in C, all your code would be lumped together inside
+      <code class="calibre21">
+       main()
+      </code>
+      . Your code would be difficult to read, and your co-workers would be annoyed, to say the least.
+     </p>
+     <p class="calibre13">
+      The computer doesn't care if all your code is in
+      <code class="calibre21">
+       main()
+      </code>
+      or if it's split into bite-sized pieces with descriptive names and comments. Procedures are an abstraction that exists to help you, the programmer, as well as those who read and maintain your code. The concept is built around a fundamental question about your program—
       <i class="calibre18">
-       phone screen
+       What does this program do?
       </i>
-      , when a developer or recruiter calls you before bringing you in for an in-person interview. They could also be asked via e-mail or in person. When answering these questions, remember that the interviewer is just trying to establish that you've actually learned and used C++. You generally don't need to get every detail right to earn high marks.
+      By answering that question in English, you are thinking procedurally. For example, you might begin designing a stock selection program by answering as follows: First, the program obtains stock quotes from the Internet. Then, it sorts this data by specific metrics. Next, it performs analysis on the sorted data. Finally, it outputs a list of buy and sell recommendations. When you start coding, you might directly turn this mental model into C functions:
+      <code class="calibre21">
+       retrieveQuotes()
+      </code>
+      ,
+      <code class="calibre21">
+       sortQuotes()
+      </code>
+      ,
+      <code class="calibre21">
+       analyzeQuotes()
+      </code>
+      , and
+      <code class="calibre21">
+       outputRecommendations()
+      </code>
+      .
      </p>
      <section class="calibre2">
-      <span class="calibre" id="bapp01-sec-0003">
+      <aside class="calibre23">
+       <div class="top">
+        <hr class="calibre24"/>
+       </div>
+       <section class="feature">
+        <p class="calibre25" id="c05-para-0009">
+         <b class="calibre14">
+          NOTE
+         </b>
+         <i class="calibre18">
+          Even though C refers to procedures as “functions,” C is not a functional language. The term functional is different from procedural and refers to languages like Lisp, which use an entirely different abstraction.
+         </i>
+        </p>
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <p class="calibre13" id="c05-para-0010">
+      The procedural approach tends to work well when your program follows a specific list of steps. However, in large, modern applications, there is rarely a linear sequence of events. Often a user is able to perform any command at any time. Procedural thinking also says nothing about data representation. In the previous example, there was no discussion of what a stock quote actually is.
+     </p>
+     <p class="calibre13" id="c05-para-0011">
+      If the procedural mode of thought sounds like the way you approach a program, don't worry. Once you realize that OOP is simply an alternative, more flexible way of thinking about software, it'll come naturally.
+     </p>
+    </section>
+    <section aria-labelledby="head-2-83" class="calibre2">
+     <span class="calibre" id="c05-sec-0005">
+     </span>
+     <h2 class="calibre6" id="head-2-83">
+      THE OBJECT-ORIENTED PHILOSOPHY
+     </h2>
+     <p class="calibre13" id="c05-para-0012">
+      Unlike the procedural approach, which is based on the question “What does this program do?” the object-oriented approach asks another question: “What real-world objects am I modeling?” OOP is based on the notion that you should divide your program not into tasks but into models of physical objects. While this seems abstract at first, it becomes clearer when you consider physical objects in terms of their
+      <i class="calibre18">
+       classes
+      </i>
+      ,
+      <i class="calibre18">
+       components
+      </i>
+      ,
+      <i class="calibre18">
+       properties
+      </i>
+      , and
+      <i class="calibre18">
+       behaviors
+      </i>
+      .
+     </p>
+     <section class="calibre2">
+      <span class="calibre" id="c05-sec-0006">
       </span>
-      <h3 class="calibre27" id="head-3-1">
-       Things to Remember
+      <h3 class="calibre27" id="head-3-136">
+       Classes
       </h3>
-      <ul class="check" id="bapp01-list-0001">
-       <li class="calibre9" id="bapp01-li-0001">
-        Use of functions
-       </li>
-       <li class="calibre9" id="bapp01-li-0002">
-        Uniform initialization
-       </li>
-       <li class="calibre9" id="bapp01-li-0003">
-        Basic use of modules
-       </li>
-       <li class="calibre9" id="bapp01-li-0004">
-        Use of the standard named module
-        <code class="calibre21">
-         std
-        </code>
-        (C++23)
-       </li>
-       <li class="calibre9" id="bapp01-li-0005">
-        <span aria-label="1240" class="calibre20" epub:type="pagebreak" id="Page_1240" role="doc-pagebreak">
-        </span>
-        How to print text to the screen using the modern
-        <code class="calibre21">
-         std::print()
-        </code>
-        and
-        <code class="calibre21">
-         println()
-        </code>
-        functions (C++23)
-       </li>
-       <li class="calibre9" id="bapp01-li-0006">
-        How to print text to the screen using
-        <code class="calibre21">
-         std::cout
-        </code>
-       </li>
-       <li class="calibre9" id="bapp01-li-0007">
-        Use of namespaces and nested namespaces
-       </li>
-       <li class="calibre9" id="bapp01-li-0008">
-        Language basics, such as loop syntax, including the range-based
-        <code class="calibre21">
-         for
-        </code>
-        loop, conditional statements, the conditional operator, and variables
-       </li>
-       <li class="calibre9" id="bapp01-li-0009">
-        Use of the three-way comparison operator
-       </li>
-       <li class="calibre9" id="bapp01-li-0010">
-        Enumerations
-       </li>
-       <li class="calibre9" id="bapp01-li-0011">
-        The difference between the stack and the free store
-       </li>
-       <li class="calibre9" id="bapp01-li-0012">
-        The many uses of
-        <code class="calibre21">
-         const
-        </code>
-       </li>
-       <li class="calibre9" id="bapp01-li-0013">
-        What pointers and references are and their differences
-       </li>
-       <li class="calibre9" id="bapp01-li-0014">
-        The need for references to be bound to a variable when they are declared and that the binding cannot be changed
-       </li>
-       <li class="calibre9" id="bapp01-li-0015">
-        The advantages of pass-by-reference over pass-by-value
-       </li>
-       <li class="calibre9" id="bapp01-li-0016">
-        Structured bindings
-       </li>
-       <li class="calibre9" id="bapp01-li-0017">
-        The
-        <code class="calibre21">
-         auto
-        </code>
-        keyword, and its use with structured bindings and to deduce the type of an expression or a function's return type
-       </li>
-       <li class="calibre9" id="bapp01-li-0018">
-        Basic use of Standard Library containers such as
-        <code class="calibre21">
-         std::array
-        </code>
-        and
-        <code class="calibre21">
-         vector
-        </code>
-       </li>
-       <li class="calibre9" id="bapp01-li-0019">
-        Using
-        <code class="calibre21">
-         std::pair
-        </code>
-        and
-        <code class="calibre21">
-         optional
-        </code>
-       </li>
-       <li class="calibre9" id="bapp01-li-0020">
-        How type aliases and
-        <code class="calibre21">
-         typedef
-        </code>
-        s work
-       </li>
-       <li class="calibre9" id="bapp01-li-0021">
-        The general idea behind attributes
-       </li>
-      </ul>
+      <p class="calibre13" id="c05-para-0013">
+       A class helps distinguish an object from its definition. Consider the orange. There's a difference between talking about oranges in general as tasty fruit that grows on trees and talking about a specific orange, such as the one that's currently dripping juice on my keyboard.
+      </p>
+      <p class="calibre13" id="c05-para-0014">
+       <span aria-label="179" class="calibre20" epub:type="pagebreak" id="Page_179" role="doc-pagebreak">
+       </span>
+       When answering the question “What are oranges?” you are talking about the
+       <i class="calibre18">
+        class
+       </i>
+       of things known as oranges. All oranges are fruit. All oranges grow on trees. All oranges are some shade of orange. All oranges have some particular flavor. A class is simply the encapsulation of what defines a classification of objects.
+      </p>
+      <p class="calibre13" id="c05-para-0015">
+       When describing a specific orange, you are talking about an
+       <i class="calibre18">
+        object
+       </i>
+       . All objects belong to a particular class. Because the object on my desk is an orange, I know that it belongs to the orange class. Thus, I know that it is a fruit that grows on trees. I can further say that it is a medium shade of orange and ranks “mighty tasty” in flavor. An object is an
+       <i class="calibre18">
+        instance
+       </i>
+       of a class—a particular item with characteristics that distinguish it from other instances of the same class.
+      </p>
+      <p class="calibre13" id="c05-para-0016">
+       As a more concrete example, reconsider the stock selection application from earlier. In OOP, “stock quote” is a class because it defines the abstract notion of what makes up a quote. A specific quote, such as “current Microsoft stock quote,” would be an object because it is a particular instance of the class.
+      </p>
+      <p class="calibre13" id="c05-para-0017">
+       From a C background, think of classes and objects as analogous to types and variables. In fact,
+       <a class="calibre5" href="c01_split_000.xhtml">
+        Chapter 1
+       </a>
+       , “A Crash Course in C++ and the Standard Library,” shows that the syntax for classes is similar to the syntax for C structs.
+      </p>
      </section>
      <section class="calibre2">
-      <span class="calibre" id="bapp01-sec-0004">
+      <span class="calibre" id="c05-sec-0007">
       </span>
-      <h3 class="calibre27" id="head-3-2">
-       Types of Questions
+      <h3 class="calibre27" id="head-3-137">
+       Components
       </h3>
-      <p class="calibre13" id="bapp01-para-0006">
-       Basic C++ questions will often come in the form of a vocabulary test. The interviewer may ask you to define C++ terms, such as
-       <code class="calibre21">
-        auto
-       </code>
-       or
-       <code class="calibre21">
-        enum class
-       </code>
-       . She may be looking for the textbook answer, but you can often score extra points by giving sample usage or extra detail. For example, when asked to define the
-       <code class="calibre21">
-        auto
-       </code>
-       keyword, you can score extra points by not only explaining the use of
-       <code class="calibre21">
-        auto
-       </code>
-       to define variables, but also its use with function return type deduction and structured bindings.
-      </p>
-      <p class="calibre13" id="bapp01-para-0007">
-       The other form that basic C++ competence questions can take is a short program that you write in front of the interviewer. An interviewer may give you a warm-up question, such as, “Write
+      <p class="calibre13" id="c05-para-0018">
+       If you consider a complex real-world object, such as an airplane, it should be fairly easy to see that it is made up of smaller
        <i class="calibre18">
-        Hello, World
+        components
        </i>
-       in C++.” When you get a seemingly simple question like this, make sure that you score all the extra points you can by showing that you are namespace-savvy and up-to-date with the latest standards; i.e., you use the modern
+       . There's the fuselage, the controls, the landing gear, the engines, and numerous other parts. The ability to think of objects in terms of their smaller components is essential to OOP, just as the breaking up of complicated tasks into smaller procedures is fundamental to procedural programming.
+      </p>
+      <p class="calibre13" id="c05-para-0019">
+       A component is essentially the same thing as a class, just smaller and more specific. A good object-oriented program might have an
        <code class="calibre21">
-        std::print()
+        Airplane
        </code>
-       and
+       class, but this class would be huge if it fully described an airplane. Instead, the
        <code class="calibre21">
-        println()
+        Airplane
        </code>
-       functions instead of the C-style
+       class deals with many smaller, more manageable, components. Each of these components might have further subcomponents. For example, the landing gear is a component of an airplane, and the wheel is a component of the landing gear.
+      </p>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c05-sec-0008">
+      </span>
+      <h3 class="calibre27" id="head-3-138">
+       Properties
+      </h3>
+      <p class="calibre13" id="c05-para-0020">
+       <i class="calibre18">
+        Properties
+       </i>
+       are what distinguish one object from another. Going back to the
        <code class="calibre21">
-        printf()
+        Orange
        </code>
-       function, and you know that a single import of
+       class, recall that all oranges are defined as having some shade of orange and a particular flavor. These two characteristics are properties. All oranges have the same properties, just with different values. My orange has a “mighty tasty” flavor, but yours may have a “terribly unpleasant” flavor.
+      </p>
+      <p class="calibre13" id="c05-para-0021">
+       You can also think about properties on the class level. As recognized earlier, all oranges are fruit and grow on trees. These are properties of the fruit class, whereas the specific shade of orange is determined by the particular fruit object. Class properties are shared by all objects of a class, while object properties are present in all objects of the class, but with different values.
+      </p>
+      <p class="calibre13" id="c05-para-0022">
+       In the stock selection example, a stock quote has several object properties, including the name of the company, its ticker symbol, the current price, and other statistics.
+      </p>
+      <p class="calibre13" id="c05-para-0023">
+       <span aria-label="180" class="calibre20" epub:type="pagebreak" id="Page_180" role="doc-pagebreak">
+       </span>
+       Properties are the characteristics that describe an object. They answer the question, “What makes this object different?”
+      </p>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c05-sec-0009">
+      </span>
+      <h3 class="calibre27" id="head-3-139">
+       Behaviors
+      </h3>
+      <p class="calibre13" id="c05-para-0024">
+       <i class="calibre18">
+        Behaviors
+       </i>
+       answer either of two questions: “What does this object do?” or “What can I do to this object?” In the case of an orange, it doesn't do a whole lot, but we can do things to it. One behavior is that it can be eaten. Like properties, you can think of behaviors on the class level or the object level. All oranges can pretty much be eaten in the same way. However, they might differ in some other behavior, such as being rolled down an incline, where the behavior of a perfectly round orange would differ from that of a more oblate one.
+      </p>
+      <p class="calibre13" id="c05-para-0025">
+       The stock selection example provides some more practical behaviors. If you recall, when thinking procedurally, I determined that my program needed to analyze stock quotes as one of its functions. Thinking in OOP, you might decide that a stock quote object can analyze itself. Analysis becomes a behavior of the stock quote object.
+      </p>
+      <p class="calibre13" id="c05-para-0026">
+       In object-oriented programming, the bulk of functional code is moved out of procedures and into classes. By building classes that have certain behaviors and defining how they interact, OOP offers a much richer mechanism for attaching code to the data on which it operates. Behaviors for classes are implemented in
+       <i class="calibre18">
+        class member functions
+       </i>
+       .
+      </p>
+      <p class="calibre13" id="c05-para-0027">
+       As
+       <a class="calibre5" href="c04.xhtml">
+        Chapter 4
+       </a>
+       explains, C++ is a multi-paradigm language supporting both object-oriented programming and procedural programming. Thus, C++ does not force you to put everything into classes, like languages such as Java do. In C++, you are free to use classes when OOP makes sense, but there is nothing wrong with combining it with procedural programming and keeping certain functionality in stand-alone functions. In fact, a lot of the functionality of the C++ Standard Library is provided as stand-alone functions, e.g., all its algorithms.
+      </p>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c05-sec-0010">
+      </span>
+      <h3 class="calibre27" id="head-3-140">
+       Bringing It All Together
+      </h3>
+      <p class="calibre13" id="c05-para-0028">
+       With these concepts, you could take another look at the stock selection program and redesign it in an object-oriented manner.
+      </p>
+      <p class="calibre13" id="c05-para-0029">
+       As discussed, “stock quote” would be a fine class to start with. To obtain the list of quotes, the program needs the notion of a group of stock quotes, which is often called a
+       <i class="calibre18">
+        collection
+       </i>
+       . So, a better design might be to have a class that represents a “collection of stock quotes,” which is made up of smaller components that represent a single “stock quote.”
+      </p>
+      <p class="calibre13" id="c05-para-0030">
+       Moving on to properties, the collection class would have at least one property—the actual list of quotes received. It might also have additional properties, such as the exact date and time of the most recent retrieval. As for behaviors, the “collection of stock quotes” would be able to talk to a server to get the quotes and provide a sorted list of quotes. These are the “retrieve quotes” and “sort quotes” behaviors.
+      </p>
+      <p class="calibre13" id="c05-para-0031">
+       The stock quote class would have the properties discussed earlier—name, symbol, current price, and so on. Also, it would have an analyze behavior. You might consider other behaviors, such as buying and selling the stock.
+      </p>
+      <p class="calibre13" id="c05-para-0032">
+       <span aria-label="181" class="calibre20" epub:type="pagebreak" id="Page_181" role="doc-pagebreak">
+       </span>
+       It is often useful to create diagrams showing the relationship between components.
+       <a class="calibre5" href="#c05-fig-0001" id="R_c05-fig-0001">
+        Figure 5.1
+       </a>
+       uses the UML class diagram syntax, see
+       <a class="calibre5" href="b04.xhtml">
+        Appendix D
+       </a>
+       , “Introduction to UML,” to indicate that a
        <code class="calibre21">
-        std
+        StockQuoteCollection
        </code>
-       gives access to the entire Standard Library. However, upgrading a code base with every new C++ standard takes time, so a lot of companies don't always use the latest C++ standard. That means you still need to know how to do things using older standards. For the “Hello, World” program, you should also demonstrate that you can write it using
+       contains zero or more (0..*)
        <code class="calibre21">
-        std::cout
+        StockQuote
        </code>
-       and
+       objects, and that a
        <code class="calibre21">
-        #include
+        StockQuote
        </code>
-       instead of
+       object belongs to a single (1)
        <code class="calibre21">
-        std::println()
-       </code>
-       and
-       <code class="calibre21">
-        import
+        StockQuoteCollection
        </code>
        .
       </p>
-      <p class="calibre13" id="bapp01-para-0008">
-       <span aria-label="1241" class="calibre20" epub:type="pagebreak" id="Page_1241" role="doc-pagebreak">
-       </span>
-       Asking a candidate to define
-       <code class="calibre21">
-        const
-       </code>
-       is a classic C++ interview question. The keyword provides a sliding scale with which an interviewer can assess an answer. For example, a fair candidate will talk about
-       <code class="calibre21">
-        const
-       </code>
-       variables. A good candidate will explain
-       <code class="calibre21">
-        const
-       </code>
-       member functions and pass-by-reference-to-
-       <code class="calibre21">
-        const
-       </code>
-       and explain why this can be more efficient than pass-by-value. A great candidate might talk about the relationship of
-       <code class="calibre21">
-        const
-       </code>
-       to thread-safety (discussed in
-       <a class="calibre5" href="c27.xhtml">
-        Chapter 27
+      <figure class="calibre36">
+       <img alt="An illustration of two tables. A table of three rows and one column. 1. The title is StockQuoteCollection. It includes vector, date, time, and void. 2. The title is StockQuote. It involves string, currency, and void." class="center" src="images/c05f001.png"/>
+       <figcaption class="calibre37">
+        <p class="calibre13">
+         <span class="figurelabel">
+          <a class="calibre5" href="#R_c05-fig-0001" id="c05-fig-0001" role="doc-backlink">
+           <b class="calibre14">
+            FIGURE 5.1
+           </b>
+          </a>
+         </span>
+        </p>
+       </figcaption>
+      </figure>
+      <p class="calibre13" id="c05-para-0033">
+       Let's look at a second example. As described earlier, an orange has properties such as its color and flavor, as well as behaviors such as being eaten and rolled. You can come up with many more behaviors such as being tossed, peeled, or squeezed. Another property of an orange could be a collection of its seeds.
+       <a class="calibre5" href="#c05-fig-0002" id="R_c05-fig-0002">
+        Figure 5.2
        </a>
-       , “Multithreaded Programming with C++”), show how to define
+       shows a possible UML class diagram for the
        <code class="calibre21">
-        static const
+        Orange
        </code>
-       data members (discussed in
-       <a class="calibre5" href="c09.xhtml">
-        Chapter 9
-       </a>
-       , “Mastering Classes and Objects”), or differentiate
+       and
        <code class="calibre21">
-        const
+        Seed
        </code>
-       from
+       classes, including the relationship that an
        <code class="calibre21">
-        constexpr
+        Orange
        </code>
-       (see
-       <a class="calibre5" href="c09.xhtml">
-        Chapter 9
-       </a>
-       ).
+       contains zero or more (0..*)
+       <code class="calibre21">
+        Seed
+       </code>
+       s and that a
+       <code class="calibre21">
+        Seed
+       </code>
+       belongs to a single (1)
+       <code class="calibre21">
+        Orange
+       </code>
+       .
       </p>
-      <p class="calibre13">
-       Certain topics described in this chapter also come in find-the-bug type problems. Be on the lookout for misuse of references. For example, imagine a class that contains a reference as a data member:
-      </p>
-      <pre class="calibre26" id="bapp01-code-0001"><code class="calibre21">class Gwenyth</code>
-<code class="calibre21">{</code>
-<code class="calibre21">    private:</code>
-<code class="calibre21">        int&amp; m_caversham;</code>
-<code class="calibre21">};</code>
-<code class="calibre21">int main()</code>
-<code class="calibre21">{</code>
-<code class="calibre21">    Gwenyth g;</code>
-<code class="calibre21">}</code></pre>
-      <p class="calibre13">
-       The statement in
-       <code class="calibre21">
-        main()
-       </code>
-       won't compile, and the compiler will spit out an error saying that it attempts to reference a deleted function. Because
-       <code class="calibre21">
-        m_caversham
-       </code>
-       is a reference, it needs to be bound to a variable when the class is constructed. The compiler-generated default constructor cannot do that, so the compiler implicitly deletes the default constructor of
-       <code class="calibre21">
-        Gwenyth
-       </code>
-       . You need to provide a constructor and initialize the reference in the constructor initializer. The class could take the variable to be referenced as a parameter to the constructor:
-      </p>
-      <pre class="calibre26" id="bapp01-code-0002"><code class="calibre21">class Gwenyth</code>
-<code class="calibre21">{</code>
-<code class="calibre21">    public:</code>
-<code class="calibre21">        explicit <b class="calibre14">Gwenyth(int&amp; i) : m_caversham { i } { }</b></code>
-<code class="calibre21">    private:</code>
-<code class="calibre21">        int&amp; m_caversham;</code>
-<code class="calibre21">};</code></pre>
+      <figure class="calibre36">
+       <img alt="An illustration of two tables. A table of three rows and one column. 1. The title is Orange. 2. The title is Seed. It includes vector, color, flavor, and void." class="center" src="images/c05f002.png"/>
+       <figcaption class="calibre37">
+        <p class="calibre13">
+         <span class="figurelabel">
+          <a class="calibre5" href="#R_c05-fig-0002" id="c05-fig-0002" role="doc-backlink">
+           <b class="calibre14">
+            FIGURE 5.2
+           </b>
+          </a>
+         </span>
+        </p>
+       </figcaption>
+      </figure>
      </section>
     </section>
-    <section aria-labelledby="head-2-2" class="calibre2">
-     <span class="calibre" id="bapp01-sec-0005">
+    <section aria-labelledby="head-2-84" class="calibre2">
+     <span class="calibre" id="c05-sec-0011">
      </span>
-     <h2 class="calibre6" id="head-2-2">
-      CHAPTERS 2 AND 21: WORKING WITH STRINGS AND STRING VIEWS, AND STRING LOCALIZATION AND REGULAR EXPRESSIONS
+     <h2 class="calibre6" id="head-2-84">
+      LIVING IN A WORLD OF CLASSES
      </h2>
-     <p class="calibre13" id="bapp01-para-0011">
-      Strings are important and are used in almost every kind of application. An interviewer will most likely ask at least one question related to string handling in C++.
+     <p class="calibre13" id="c05-para-0034">
+      Programmers who transition from a procedural thought process to the object-oriented paradigm often experience an epiphany about the combination of properties and behaviors into classes. Some programmers find themselves revisiting the design of programs they're working on and rewriting certain pieces as classes. Others might be tempted to throw all the code away and restart the project as a fully object-oriented application.
+     </p>
+     <p class="calibre13" id="c05-para-0035">
+      There are two major approaches to developing software with classes. To some people, classes simply represent a nice encapsulation of data and functionality. These programmers sprinkle classes throughout their programs to make the code more readable and easier to maintain. Programmers taking this approach slice out isolated pieces of code and replace them with classes like a surgeon implanting a pacemaker. There is nothing inherently wrong with this approach. These people see classes as a tool that is beneficial in many situations. Certain parts of a program just “feel like a class,” like the stock quote. These are the parts that can be isolated and described in real-world terms.
+     </p>
+     <p class="calibre13" id="c05-para-0036">
+      Other programmers adopt the OOP paradigm fully and turn everything into a class. In their minds, some classes correspond to real-world things, such as an orange or a stock quote, while others encapsulate more abstract concepts, such as a sorter or an undo class.
+     </p>
+     <p class="calibre13" id="c05-para-0037">
+      <span aria-label="182" class="calibre20" epub:type="pagebreak" id="Page_182" role="doc-pagebreak">
+      </span>
+      The ideal approach is probably somewhere in between these extremes. Your first object-oriented program might really have been a traditional procedural program with a few classes sprinkled in. Or perhaps you went whole hog and made everything a class, from a class representing an
+      <code class="calibre21">
+       int
+      </code>
+      to a class representing the main application. Over time, you will find a happy medium.
      </p>
      <section class="calibre2">
-      <span class="calibre" id="bapp01-sec-0006">
+      <span class="calibre" id="c05-sec-0012">
       </span>
-      <h3 class="calibre27" id="head-3-3">
-       Things to Remember
+      <h3 class="calibre27" id="head-3-141">
+       Over-Classification
       </h3>
-      <ul class="check" id="bapp01-list-0002">
-       <li class="calibre9" id="bapp01-li-0022">
-        The
-        <code class="calibre21">
-         std::string
-        </code>
-        and
-        <code class="calibre21">
-         string_view
-        </code>
-        classes
+      <p class="calibre13" id="c05-para-0038">
+       There is often a fine line between designing a creative object-oriented system and annoying everybody else on your team by turning every little thing into a class. As Freud used to say, sometimes a variable is just a variable. Okay, that's a paraphrase of what he said.
+      </p>
+      <p class="calibre13" id="c05-para-0039">
+       Perhaps you're designing the next bestselling tic-tac-toe game. You're going all-out OOP on this one, so you sit down with a cup of coffee and a notepad to sketch out your classes and objects. In games like this, there's often a class that oversees game play and is able to detect the winner. To represent the game board, you might envision a
+       <code class="calibre21">
+        Grid
+       </code>
+       class that will keep track of the markers and their locations. In fact, a component of the grid could be the
+       <code class="calibre21">
+        Piece
+       </code>
+       class that represents an X or an O.
+      </p>
+      <p class="calibre13" id="c05-para-0040">
+       Wait, back up! This design proposes to have a class that represents an X or an O. That is perhaps class overkill. After all, can't a
+       <code class="calibre21">
+        char
+       </code>
+       represent an X or an O just as well? Better yet, why can't the
+       <code class="calibre21">
+        Grid
+       </code>
+       just use a two-dimensional array of an enumeration type? Does a
+       <code class="calibre21">
+        Piece
+       </code>
+       class just complicate the code? Take a look at the following table representing the proposed piece class:
+      </p>
+      <table border="1" class="calibre31">
+       <thead class="calibre32">
+        <tr class="calibre33">
+         <th class="left" scope="col">
+          CLASS
+         </th>
+         <th class="left" scope="col">
+          ASSOCIATED COMPONENTS
+         </th>
+         <th class="left" scope="col">
+          PROPERTIES
+         </th>
+         <th class="left" scope="col">
+          BEHAVIORS
+         </th>
+        </tr>
+       </thead>
+       <tbody class="calibre34">
+        <tr class="calibre33">
+         <td class="left1">
+          Piece
+         </td>
+         <td class="left1">
+          None
+         </td>
+         <td class="left1">
+          X or O
+         </td>
+         <td class="left1">
+          None
+         </td>
+        </tr>
+       </tbody>
+      </table>
+      <p class="calibre13" id="c05-para-0042">
+       The table is a bit sparse, strongly hinting that what we have here may be too granular to be a full-fledged class.
+      </p>
+      <p class="calibre13" id="c05-para-0043">
+       On the other hand, a forward-thinking programmer might argue that while
+       <code class="calibre21">
+        Piece
+       </code>
+       is a pretty meager class as it currently stands, making it into a class allows future expansion without any real penalty. Perhaps down the road, additional properties could be added such as the color of the
+       <code class="calibre21">
+        Piece
+       </code>
+       or whether the
+       <code class="calibre21">
+        Piece
+       </code>
+       was the most recently moved.
+      </p>
+      <p class="calibre13" id="c05-para-0044">
+       Another solution might be to think about the
+       <i class="calibre18">
+        state
+       </i>
+       of a grid square instead of using pieces. The state of a square can be Empty, X, or O. To make the design future-proof, you could design an abstract base class
+       <code class="calibre21">
+        State
+       </code>
+       with concrete derived classes
+       <code class="calibre21">
+        StateEmpty
+       </code>
+       ,
+       <code class="calibre21">
+        StateX
+       </code>
+       , and
+       <code class="calibre21">
+        StateO
+       </code>
+       . With this design, extra properties can be added in the future to the base class or to the individual classes.
+      </p>
+      <p class="calibre13" id="c05-para-0045">
+       Obviously, there is no right answer. The important point is that these are issues that you should consider when designing your application. Remember that classes exist to help programmers manage their code. If classes are being used for no reason other than to make the code “more object-oriented,” something is wrong.
+      </p>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c05-sec-0013">
+      </span>
+      <h3 class="calibre27" id="head-3-142">
+       Overly General Classes
+      </h3>
+      <p class="calibre13" id="c05-para-0046">
+       Perhaps a worse annoyance than classes that shouldn't be classes is classes that are too general. All OOP students start with examples like “orange”—things that are classes, no question about it. In real-life coding, classes can get pretty abstract. Many OOP programs have an “application class,”
+       <span aria-label="183" class="calibre20" epub:type="pagebreak" id="Page_183" role="doc-pagebreak">
+       </span>
+       despite that an application isn't really something you can envision in material form. Yet it may be useful to represent the application as a class because the application itself has certain properties and behaviors.
+      </p>
+      <p class="calibre13" id="c05-para-0047">
+       An overly general class is a class that doesn't represent a particular thing at all. The programmer may be attempting to make a class that is flexible or reusable, but ends up with one that is confusing. For example, imagine a program that organizes and displays media. It can catalog your photos, organize your digital music and movie collection, and serve as a personal journal. The overly general approach is to think of all these things as “media” objects and build a single class that can accommodate all of the supported formats. This single class might have a property called “data” that contains the raw bits of the image, song, movie, or journal entry, depending on the type of media. The class might have a behavior called “perform” that appropriately draws the image, plays the song, plays the movie, or brings up the journal entry for editing.
+      </p>
+      <p class="calibre13" id="c05-para-0048">
+       The clues that this single class is too general are in the names of the properties and behaviors. The word
+       <i class="calibre18">
+        data
+       </i>
+       has little meaning by itself—you have to use a general term here because this class has been overextended to three very different uses. Similarly,
+       <i class="calibre18">
+        perform
+       </i>
+       will do very different things for the different types of media. Clearly, this class is trying to do too much.
+      </p>
+      <p class="calibre13" id="c05-para-0049">
+       Nevertheless, when designing a program to organize media, there for sure will be a
+       <code class="calibre21">
+        Media
+       </code>
+       class in your application. This
+       <code class="calibre21">
+        Media
+       </code>
+       class will contain the common properties that all types of media have, such as a name, a preview, a link to the corresponding media file, and so on. What this
+       <code class="calibre21">
+        Media
+       </code>
+       class should not contain though is the details about handling specific media. It should not contain code to display an image, or to play a song or a movie. Instead, there should be other classes in your design such as a
+       <code class="calibre21">
+        Picture
+       </code>
+       class and a
+       <code class="calibre21">
+        Movie
+       </code>
+       class. Those specific classes then contain the actual media-specific functionality such as displaying a picture or playing a movie. Obviously, those media-specific classes are somehow related to the
+       <code class="calibre21">
+        Media
+       </code>
+       class, and that's exactly the topic of the next section on how to express relationships between classes.
+      </p>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-85" class="calibre2">
+     <span class="calibre" id="c05-sec-0014">
+     </span>
+     <h2 class="calibre6" id="head-2-85">
+      CLASS RELATIONSHIPS
+     </h2>
+     <p class="calibre13" id="c05-para-0050">
+      As a programmer, you will certainly encounter cases where different classes have characteristics in common, or seem somehow related to each other. Object-oriented languages provide a number of mechanisms for dealing with such relationships between classes. The tricky part is to understand what the relationship actually is. There are two main types of class relationships—a
+      <i class="calibre18">
+       has-a
+      </i>
+      relationship and an
+      <i class="calibre18">
+       is-a
+      </i>
+      relationship.
+     </p>
+     <section class="calibre2">
+      <span class="calibre" id="c05-sec-0015">
+      </span>
+      <h3 class="calibre27" id="head-3-143">
+       The Has-a Relationship
+      </h3>
+      <p class="calibre13" id="c05-para-0051">
+       Classes engaged in a has-a relationship follow the pattern A has a B, or A contains a B. In this type of relationship, you can envision one class as part of another. Components, as defined earlier, generally represent a has-a relationship because they describe classes that are made up of other classes.
+      </p>
+      <p class="calibre13" id="c05-para-0052">
+       A real-world example of this might be the relationship between a zoo and a monkey. You could say that a zoo has a monkey or a zoo contains a monkey. A simulation of a zoo in code would have a zoo class, which has a monkey component.
+      </p>
+      <p class="calibre13" id="c05-para-0053">
+       Often, thinking about user interface scenarios is helpful in understanding class relationships. This is so because even though not all UIs are implemented in OOP (though these days, most are), the
+       <span aria-label="184" class="calibre20" epub:type="pagebreak" id="Page_184" role="doc-pagebreak">
+       </span>
+       visual elements on the screen translate well into classes. One UI analogy for a has-a relationship is a window that contains a button. The button and the window are clearly two separate classes, but they are obviously related in some way. Because the button is inside the window, you say that the window has a button.
+      </p>
+      <p class="calibre13" id="c05-para-0054">
+       <a class="calibre5" href="#c05-fig-0003" id="R_c05-fig-0003">
+        Figure 5.3
+       </a>
+       shows a real-world and a user interface has-a relationship.
+      </p>
+      <figure class="calibre36">
+       <img alt="A set of two illustrations. 1. A snapshot of notepad. Do you want to save changes to untitled? Note: A window has a button. 2. A diagram of an airplane. Note: An airplane has a wing, hopefully two." class="center" src="images/c05f003.png"/>
+       <figcaption class="calibre37">
+        <p class="calibre13">
+         <span class="figurelabel">
+          <a class="calibre5" href="#R_c05-fig-0003" id="c05-fig-0003" role="doc-backlink">
+           <b class="calibre14">
+            FIGURE 5.3
+           </b>
+          </a>
+         </span>
+        </p>
+       </figcaption>
+      </figure>
+      <p class="calibre13">
+       There are two types of has-a relationships:
+      </p>
+      <ul class="check" id="c05-list-0002">
+       <li class="calibre9" id="c05-li-0004">
+        <b class="calibre14">
+         Aggregation:
+        </b>
+        With aggregation, the aggregated objects (components) can continue to live when the aggregator is destroyed. For example, suppose a zoo object contains a bunch of animal objects. When the zoo object is destroyed because it went bankrupt, the animal objects are (ideally) not destroyed; they are moved to another zoo.
        </li>
-       <li class="calibre9" id="bapp01-li-0023">
-        To prefer
-        <code class="calibre21">
-         const string&amp;
-        </code>
-        or
-        <code class="calibre21">
-         string
-        </code>
-        as function return type instead of
-        <code class="calibre21">
-         string_view
-        </code>
-       </li>
-       <li class="calibre9" id="bapp01-li-0024">
-        Differences between the C++
-        <code class="calibre21">
-         std::string
-        </code>
-        class and C-style (
-        <code class="calibre21">
-         char*
-        </code>
-        ) strings, including why C-style strings should be avoided
-       </li>
-       <li class="calibre9" id="bapp01-li-0025">
-        <span aria-label="1242" class="calibre20" epub:type="pagebreak" id="Page_1242" role="doc-pagebreak">
-        </span>
-        Conversion of strings to numeric types such as integers and floating-point numbers, and vice versa
-       </li>
-       <li class="calibre9" id="bapp01-li-0026">
-        String formatting using
-        <code class="calibre21">
-         std::format()
-        </code>
-       </li>
-       <li class="calibre9" id="bapp01-li-0027">
-        String printing using
-        <code class="calibre21">
-         std::print()
-        </code>
-        and
-        <code class="calibre21">
-         println()
-        </code>
-        (C++23)
-       </li>
-       <li class="calibre9" id="bapp01-li-0028">
-        How to format and print entire ranges at once (C++23)
-       </li>
-       <li class="calibre9" id="bapp01-li-0029">
-        Raw string literals
-       </li>
-       <li class="calibre9" id="bapp01-li-0030">
-        The importance of localization
-       </li>
-       <li class="calibre9" id="bapp01-li-0031">
-        Ideas behind Unicode
-       </li>
-       <li class="calibre9" id="bapp01-li-0032">
-        The high-level concepts of locales and facets
-       </li>
-       <li class="calibre9" id="bapp01-li-0033">
-        What regular expressions are
+       <li class="calibre9" id="c05-li-0005">
+        <b class="calibre14">
+         Composition:
+        </b>
+        With composition, if an object composed of other objects is destroyed, those other objects are destroyed as well. For example, if a window object containing buttons is destroyed, those button objects are destroyed as well.
        </li>
       </ul>
      </section>
      <section class="calibre2">
-      <span class="calibre" id="bapp01-sec-0007">
+      <span class="calibre" id="c05-sec-0016">
       </span>
-      <h3 class="calibre27" id="head-3-4">
-       Types of Questions
+      <h3 class="calibre27" id="head-3-144">
+       The Is-a Relationship (Inheritance)
       </h3>
-      <p class="calibre13" id="bapp01-para-0013">
-       An interviewer could ask you to explain how you can append two strings together. With this question, the interviewer wants to find out whether you are thinking as a C++ programmer or as a C programmer. If you get such a question, you should explain the
+      <p class="calibre13" id="c05-para-0056">
+       The is-a relationship is such a fundamental concept of object-oriented programming that it has many names, including
+       <i class="calibre18">
+        deriving
+       </i>
+       ,
+       <i class="calibre18">
+        subclassing
+       </i>
+       ,
+       <i class="calibre18">
+        extending
+       </i>
+       , and
+       <i class="calibre18">
+        inheriting
+       </i>
+       . Classes model the fact that the real world contains objects with properties and behaviors. Inheritance models the fact that these objects tend to be organized in hierarchies. These hierarchies indicate is-a relationships.
+      </p>
+      <p class="calibre13" id="c05-para-0057">
+       Fundamentally, inheritance follows the pattern A is a B or A is really quite a bit like B—it can get tricky. To stick with the simple case, revisit the zoo, but assume that there are other animals besides monkeys. That statement alone has already constructed the relationship—a monkey is an animal. Similarly, a giraffe is an animal, a kangaroo is an animal, and a penguin is an animal. So what? Well, the magic of inheritance comes when you realize that monkeys, giraffes, kangaroos, and penguins have certain things in common. These commonalities are characteristics of animals in general.
+      </p>
+      <p class="calibre13" id="c05-para-0058">
+       What this means for the programmer is that you can define an
        <code class="calibre21">
-        std::string
+        Animal
        </code>
-       class and show how to use it to append two strings. It's also worth mentioning that the
+       class that encapsulates all of the properties (size, location, diet, and so on) and behaviors (move, eat, sleep) that pertain to every
+       <span aria-label="185" class="calibre20" epub:type="pagebreak" id="Page_185" role="doc-pagebreak">
+       </span>
+       animal. The specific animals, such as monkeys, become derived classes of
        <code class="calibre21">
-        string
+        Animal
        </code>
-       class handles all memory management for you automatically, and contrasting this to C-style strings.
-      </p>
-      <p class="calibre13" id="bapp01-para-0014">
-       Most interviewers won't ask specific details about localization. If you do receive a question about your experience with localization, be sure to mention the importance of considering worldwide use from the beginning of the project.
-      </p>
-      <p class="calibre13" id="bapp01-para-0015">
-       You might also be asked about the general idea behind locales and facets. Most likely, you will not have to explain the exact syntax, but you should explain that they allow you to format text and numbers according to the rules of a certain language or country.
-      </p>
-      <p class="calibre13" id="bapp01-para-0016">
-       You might get a question about Unicode, but almost certainly it will be a question to explain the ideas and the basic concepts behind Unicode instead of implementation details. So, make sure you understand the high-level concepts of Unicode and that you can explain their use in the context of localization. You should also know about the different options for encoding Unicode characters, such as UTF-8 and UTF-16, without specific details.
-      </p>
-      <p class="calibre13" id="bapp01-para-0017">
-       As discussed in
-       <a class="calibre5" href="c21.xhtml">
-        Chapter 21
+       because a monkey contains all the characteristics of an animal. Remember, a monkey is an animal plus some additional characteristics that make it distinct.
+       <a class="calibre5" href="#c05-fig-0004" id="R_c05-fig-0004">
+        Figure 5.4
        </a>
-       , regular expressions can have a daunting syntax. It is unlikely that an interviewer will ask you about little details of regular expressions. However, you should be able to explain the concept of regular expressions and what kind of string manipulations you can do with them.
+       shows an inheritance diagram for animals. The arrows indicate the direction of the is-a relationship.
+      </p>
+      <figure class="calibre36">
+       <img alt="A flowchart illustrates the animals. It includes the following. 1. Monkey. 2. Giraffe. 3. Kangaroo. 4. Penguin." class="center" src="images/c05f004.png"/>
+       <figcaption class="calibre37">
+        <p class="calibre13">
+         <span class="figurelabel">
+          <a class="calibre5" href="#R_c05-fig-0004" id="c05-fig-0004" role="doc-backlink">
+           <b class="calibre14">
+            FIGURE 5.4
+           </b>
+          </a>
+         </span>
+        </p>
+       </figcaption>
+      </figure>
+      <p class="calibre13" id="c05-para-0059">
+       Just as monkeys and giraffes are different types of animals, a user interface often has different types of buttons. A checkbox, for example, is a button. Assuming that a button is simply a UI element that can be clicked to perform an action, a
+       <code class="calibre21">
+        Checkbox
+       </code>
+       extends the
+       <code class="calibre21">
+        Button
+       </code>
+       class by adding state—whether the box is checked or unchecked.
+      </p>
+      <p class="calibre13">
+       When relating classes in an is-a relationship, one goal is to factor common functionality into the
+       <i class="calibre18">
+        base class
+       </i>
+       , the class that other classes extend. If you find that all of your derived classes have code that is similar or exactly the same, consider how you could move some or all of that code into the base class. That way, any changes that need to be made only happen in one place and future derived classes get the shared functionality “for free.”
+      </p>
+      <section class="calibre2">
+       <aside class="calibre23">
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+        <section class="feature">
+         <p class="calibre25" id="c05-para-0061">
+          <b class="calibre14">
+           NOTE
+          </b>
+          <i class="calibre18">
+           Sometimes, it is clear whether a relationship represents a has-a or an is-a relationship. Other times, it is not so clear. If you can choose, has-a is preferred over is-a, as explained with an example later in this section.
+          </i>
+         </p>
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c05-sec-0018">
+       </span>
+       <h4 class="calibre29" id="head-4-114">
+        Inheritance Techniques
+       </h4>
+       <p class="calibre13" id="c05-para-0062">
+        The preceding examples cover a few of the techniques used in inheritance without formalizing them. When deriving classes, there are several ways that the programmer can distinguish a class from its
+        <i class="calibre18">
+         parent class
+        </i>
+        , also called
+        <i class="calibre18">
+         base class
+        </i>
+        or
+        <i class="calibre18">
+         superclass
+        </i>
+        . A derived class may use one or more of these techniques, and they are recognized by completing the sentence, “A is a B that is ….”
+       </p>
+       <section class="calibre2">
+        <span class="calibre" id="c05-sec-0019">
+        </span>
+        <h5 class="calibre35" id="head-5-33">
+         Adding Functionality
+        </h5>
+        <p class="calibre13" id="c05-para-0063">
+         A derived class can augment its parent by adding additional functionality. For example, a monkey is an animal that can swing from trees. In addition to having all of the member functions of
+         <code class="calibre21">
+          Animal
+         </code>
+         , the
+         <code class="calibre21">
+          Monkey
+         </code>
+         class also has a
+         <code class="calibre21">
+          swingFromTrees()
+         </code>
+         member function, which is specific to only the
+         <code class="calibre21">
+          Monkey
+         </code>
+         class.
+        </p>
+       </section>
+       <section class="calibre2">
+        <span class="calibre" id="c05-sec-0020">
+        </span>
+        <h5 class="calibre35" id="head-5-34">
+         Replacing Functionality
+        </h5>
+        <p class="calibre13" id="c05-para-0064">
+         A derived class can replace or
+         <i class="calibre18">
+          override
+         </i>
+         a member function of its parent entirely. For example, most animals move by walking, so you might give the
+         <code class="calibre21">
+          Animal
+         </code>
+         class a
+         <code class="calibre21">
+          move()
+         </code>
+         member function that simulates walking. If that's the case, a kangaroo is an animal that moves by hopping instead of walking. All the other properties and member functions of the
+         <code class="calibre21">
+          Animal
+         </code>
+         base class still apply, but the
+         <code class="calibre21">
+          Kangaroo
+         </code>
+         derived class simply changes the way that the
+         <code class="calibre21">
+          move()
+         </code>
+         member function works. Of course, if you find yourself replacing all of the functionality of your base class, it may be an indication that inheriting was not the correct thing to do after all, unless the base class is an
+         <i class="calibre18">
+          abstract base class
+         </i>
+         . An abstract
+         <span aria-label="186" class="calibre20" epub:type="pagebreak" id="Page_186" role="doc-pagebreak">
+         </span>
+         base class forces each of the derived classes to implement all member functions that do not have an implementation in the abstract base class. You cannot create instances of an abstract base class. Abstract base classes are discussed in
+         <a class="calibre5" href="c10_split_000.xhtml">
+          Chapter 10
+         </a>
+         , “Discovering Inheritance Techniques.”
+        </p>
+       </section>
+       <section class="calibre2">
+        <span class="calibre" id="c05-sec-0021">
+        </span>
+        <h5 class="calibre35" id="head-5-35">
+         Adding Properties
+        </h5>
+        <p class="calibre13" id="c05-para-0065">
+         A derived class can also add new properties to the ones that are inherited from the base class. For example, a penguin has all the properties of an animal but also has a beak size property.
+        </p>
+       </section>
+       <section class="calibre2">
+        <span class="calibre" id="c05-sec-0022">
+        </span>
+        <h5 class="calibre35" id="head-5-36">
+         Replacing Properties
+        </h5>
+        <p class="calibre13" id="c05-para-0066">
+         C++ provides a way of overriding properties similar to the way you can override member functions. However, doing so is rarely appropriate, because it hides the property from the base class; that is, the base class can have a specific value for a property with a certain name, while the derived class can have another value for another property but with the same name. Hiding is explained in more detail in
+         <a class="calibre5" href="c10_split_000.xhtml">
+          Chapter 10
+         </a>
+         . It's important not to get the notion of replacing a property confused with the notion of derived classes having different values for properties. For example, all animals have a diet property that indicates what they eat. Monkeys eat bananas and penguins eat fish, but neither of these is replacing the diet property—they simply differ in the value assigned to the property.
+        </p>
+       </section>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c05-sec-0023">
+       </span>
+       <h4 class="calibre29" id="head-4-115">
+        Polymorphism
+       </h4>
+       <p class="calibre13" id="c05-para-0067">
+        <i class="calibre18">
+         Polymorphism
+        </i>
+        is the notion that objects that adhere to a standard set of properties and member functions can be used interchangeably. A class definition is like a contract between objects and the code that interacts with them. By definition, any
+        <code class="calibre21">
+         Monkey
+        </code>
+        object must support the properties and member functions of the
+        <code class="calibre21">
+         Monkey
+        </code>
+        class.
+       </p>
+       <p class="calibre13" id="c05-para-0068">
+        This notion extends to base classes as well. Because all monkeys are animals, all
+        <code class="calibre21">
+         Monkey
+        </code>
+        objects support the properties and member functions of the
+        <code class="calibre21">
+         Animal
+        </code>
+        class as well.
+       </p>
+       <p class="calibre13" id="c05-para-0069">
+        Polymorphism is a beautiful part of object-oriented programming because it truly takes advantage of what inheritance offers. In a zoo simulation, you could programmatically loop through all of the animals in the zoo and have each animal move once. Because all animals are members of the
+        <code class="calibre21">
+         Animal
+        </code>
+        class, they all know how to move. Some of the animals have overridden the move member function, but that's the best part—your code simply tells each animal to move without knowing or caring what type of animal it is. Each one moves whichever way it knows how.
+       </p>
+      </section>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c05-sec-0024">
+      </span>
+      <h3 class="calibre27" id="head-3-145">
+       The Fine Line Between Has-a and Is-a
+      </h3>
+      <p class="calibre13" id="c05-para-0070">
+       In the real world, it's pretty easy to classify has-a and is-a relationships between objects. Nobody would claim that an orange has a fruit—an orange is a fruit. In code, things sometimes aren't so clear.
+      </p>
+      <p class="calibre13" id="c05-para-0071">
+       Consider a hypothetical class that represents an associative array, a data structure that efficiently maps a key to a value. For example, an insurance company could use an
+       <code class="calibre21">
+        AssociativeArray
+       </code>
+       class to map member IDs to names so that given an ID, it's easy to find the corresponding member name. The member ID is the
+       <i class="calibre18">
+        key
+       </i>
+       , and the member name is the
+       <i class="calibre18">
+        value
+       </i>
+       .
+      </p>
+      <p class="calibre13">
+       In a standard associative array implementation, a key is associated with a single value. If the ID 14534 maps to the member name “Kleper, Scott,” it cannot also map to the member name “Kleper, Marni.” In most implementations, if you tried to add a second value for a key that already has a
+       <span aria-label="187" class="calibre20" epub:type="pagebreak" id="Page_187" role="doc-pagebreak">
+       </span>
+       value, the first value would go away. In other words, if the ID 14534 mapped to “Kleper, Scott” and you then assigned the ID 14534 to “Kleper, Marni,” then Scott would effectively be uninsured. This is demonstrated in the following sequence, which shows two calls to a hypothetical
+       <code class="calibre21">
+        insert()
+       </code>
+       member function and the resulting contents of the associative array:
+      </p>
+      <pre class="calibre26" id="c05-code-0001"><code class="calibre21">myArray.insert(14534, "Kleper, Scott");</code></pre>
+      <table border="1" class="calibre31">
+       <thead class="calibre32">
+        <tr class="calibre33">
+         <th class="left" scope="col">
+          KEYS
+         </th>
+         <th class="left" scope="col">
+          VALUES
+         </th>
+        </tr>
+       </thead>
+       <tbody class="calibre34">
+        <tr class="calibre33">
+         <td class="left1">
+          14534
+         </td>
+         <td class="left1">
+          “Kleper, Scott” [string]
+         </td>
+        </tr>
+       </tbody>
+      </table>
+      <pre class="calibre26" id="c05-code-0002"><code class="calibre21"> </code>
+<code class="calibre21">myArray.insert(14534, "Kleper, Marni");</code></pre>
+      <table border="1" class="calibre31">
+       <thead class="calibre32">
+        <tr class="calibre33">
+         <th class="left" scope="col">
+          KEYS
+         </th>
+         <th class="left" scope="col">
+          VALUES
+         </th>
+        </tr>
+       </thead>
+       <tbody class="calibre34">
+        <tr class="calibre33">
+         <td class="left1">
+          14534
+         </td>
+         <td class="left1">
+          “Kleper, Marni” [string]
+         </td>
+        </tr>
+       </tbody>
+      </table>
+      <pre class="calibre26" id="c05-code-0003"><code class="calibre21"> </code></pre>
+      <p class="calibre13">
+       It's not difficult to imagine uses for a data structure that's like an associative array but allows multiple values for a given key. In the insurance example, a family might have several names that correspond to the same ID. Because such a data structure is similar to an associative array, it would be nice to leverage that functionality somehow. An associative array can have only a single value as a key, but that value can be anything. Instead of a string, the value could be a collection (such as a
+       <code class="calibre21">
+        vector
+       </code>
+       ) containing the multiple values for the key. Every time you add a new member for an existing ID, you add the name to the collection. This would work as shown in the following sequence:
+      </p>
+      <pre class="calibre26" id="c05-code-0004"><code class="calibre21">Collection collection;                 <span class="color">// Make a new collection.</span></code>
+<code class="calibre21">collection.insert("Kleper, Scott");    <span class="color">// Add a new element to the collection.</span></code>
+<code class="calibre21">myArray.insert(14534, collection);     <span class="color">// Insert the collection into the array.</span></code></pre>
+      <table border="1" class="calibre31">
+       <thead class="calibre32">
+        <tr class="calibre33">
+         <th class="left" scope="col">
+          KEYS
+         </th>
+         <th class="left" scope="col">
+          VALUES
+         </th>
+        </tr>
+       </thead>
+       <tbody class="calibre34">
+        <tr class="calibre33">
+         <td class="left1">
+          14534
+         </td>
+         <td class="left1">
+          {“Kleper, Scott”} [Collection]
+         </td>
+        </tr>
+       </tbody>
+      </table>
+      <pre class="calibre26" id="c05-code-0005"><code class="calibre21"> </code>
+<code class="calibre21">Collection collection { myArray.get(14534) };  <span class="color">// Retrieve the existing collection.</span></code>
+<code class="calibre21">collection.insert("Kleper, Marni");         <span class="color">// Add a new element to the collection.</span></code>
+<code class="calibre21">myArray.insert(14534, collection);  <span class="color">// Replace the collection with the updated one.</span></code></pre>
+      <table border="1" class="calibre31">
+       <thead class="calibre32">
+        <tr class="calibre33">
+         <th class="left" scope="col">
+          KEYS
+         </th>
+         <th class="left" scope="col">
+          VALUES
+         </th>
+        </tr>
+       </thead>
+       <tbody class="calibre34">
+        <tr class="calibre33">
+         <td class="left1">
+          14534
+         </td>
+         <td class="left1">
+          {“Kleper, Scott”, “Kleper, Marni”} [Collection]
+         </td>
+        </tr>
+       </tbody>
+      </table>
+      <pre class="calibre26" id="c05-code-0006"><code class="calibre21"> </code></pre>
+      <p class="calibre13" id="c05-para-0078">
+       Messing around with a collection instead of a string is tedious and requires a lot of repetitive code. It would be preferable to wrap up this multiple-value functionality in a separate class, perhaps called a
+       <code class="calibre21">
+        MultiAssociativeArray
+       </code>
+       . The
+       <code class="calibre21">
+        MultiAssociativeArray
+       </code>
+       class would work just like
+       <span aria-label="188" class="calibre20" epub:type="pagebreak" id="Page_188" role="doc-pagebreak">
+       </span>
+       <code class="calibre21">
+        AssociativeArray
+       </code>
+       except that behind the scenes, it would store each value as a collection of strings instead of a single string. Clearly,
+       <code class="calibre21">
+        MultiAssociativeArray
+       </code>
+       is somehow related to
+       <code class="calibre21">
+        AssociativeArray
+       </code>
+       because it is still using an associative array to store the data. What might be unclear is whether that constitutes an is-a or a has-a relationship.
+      </p>
+      <p class="calibre13" id="c05-para-0079">
+       To start with the is-a relationship, imagine that
+       <code class="calibre21">
+        MultiAssociativeArray
+       </code>
+       is a derived class of
+       <code class="calibre21">
+        AssociativeArray
+       </code>
+       . This will turn out to be a bad idea, but let's run with it as an example of a bad design.
+       <code class="calibre21">
+        MultiAssociativeArray
+       </code>
+       would have to override the member function that adds an entry into the array so that it would either create a collection and add the new element or retrieve the existing collection and add the new element to it. It would also have to override the member function that retrieves a value. There is a complication, though: the overridden
+       <code class="calibre21">
+        get()
+       </code>
+       member function should return a single value, not a collection. Which value should a
+       <code class="calibre21">
+        MultiAssociativeArray
+       </code>
+       return? One option is to return the first value associated with a given key. An additional
+       <code class="calibre21">
+        getAll()
+       </code>
+       member function could be added to retrieve all values associated with a key. This might seem like a reasonable design. Even though it overrides all the member functions of the base class, it still makes use of the base class's member functions from within the derived class.
+       <a class="calibre5" href="#c05-fig-0005" id="R_c05-fig-0005">
+        Figure 5.5
+       </a>
+       shows this approach as a UML class diagram.
+      </p>
+      <figure class="calibre36">
+       <img alt="A set of two tables. 1. The title is AssociativeArray. It includes insert and get. 2. The title is MultiAssociativeArray. It involves insert, get, and get all." class="center" src="images/c05f005.png"/>
+       <figcaption class="calibre37">
+        <p class="calibre13">
+         <span class="figurelabel">
+          <a class="calibre5" href="#R_c05-fig-0005" id="c05-fig-0005" role="doc-backlink">
+           <b class="calibre14">
+            FIGURE 5.5
+           </b>
+          </a>
+         </span>
+        </p>
+       </figcaption>
+      </figure>
+      <p class="calibre13" id="c05-para-0080">
+       Now consider it as a has-a relationship.
+       <code class="calibre21">
+        MultiAssociativeArray
+       </code>
+       is its own class, but it contains an
+       <code class="calibre21">
+        AssociativeArray
+       </code>
+       object. It probably has an interface similar to
+       <code class="calibre21">
+        AssociativeArray
+       </code>
+       , but it need not be the same. Behind the scenes, when a user adds something to the
+       <code class="calibre21">
+        MultiAssociativeArray
+       </code>
+       , it is really wrapped in a collection and put in an
+       <code class="calibre21">
+        AssociativeArray
+       </code>
+       object. This seems perfectly reasonable and is shown in
+       <a class="calibre5" href="#c05-fig-0006" id="R_c05-fig-0006">
+        Figure 5.6
+       </a>
+       .
+      </p>
+      <figure class="calibre36">
+       <img alt="A set of two tables. 1. The title is MultiAssociativeArray. It includes insert and get-all. 2. The title is AssociativeArray. It involves insert and get." class="center" src="images/c05f006.png"/>
+       <figcaption class="calibre37">
+        <p class="calibre13">
+         <span class="figurelabel">
+          <a class="calibre5" href="#R_c05-fig-0006" id="c05-fig-0006" role="doc-backlink">
+           <b class="calibre14">
+            FIGURE 5.6
+           </b>
+          </a>
+         </span>
+        </p>
+       </figcaption>
+      </figure>
+      <p class="calibre13" id="c05-para-0081">
+       So, which solution is right? There seems to be no clear answer, but decades of experience have taught us that has-a is usually the better of the two alternatives. The main reason is to allow modifications to the exposed interface without worrying about maintaining associative array functionality. For example, in
+       <a class="calibre5" href="#c05-fig-0006">
+        Figure 5.6
+       </a>
+       , the
+       <code class="calibre21">
+        get()
+       </code>
+       member function is changed to
+       <code class="calibre21">
+        getAll()
+       </code>
+       , making it clear that this gets all the values for a particular key in a
+       <code class="calibre21">
+        MultiAssociativeArray
+       </code>
+       . Additionally, with a has-a relationship, you don't have to worry about any associative array functionality bleeding through. For example, with an is-a relationship, if the associative array class supported a member function that would get the total number of values, it would report the number of collections unless
+       <code class="calibre21">
+        MultiAssociativeArray
+       </code>
+       knew to override it.
+      </p>
+      <p class="calibre13" id="c05-para-0082">
+       That said, one could try to make an argument that a
+       <code class="calibre21">
+        MultiAssociativeArray
+       </code>
+       actually is an
+       <code class="calibre21">
+        AssociativeArray
+       </code>
+       with some new functionality, and it should have been an is-a relationship. The point is that there is sometimes a fine line between the two relationships, and you will need to consider how the class is going to be used and whether what you are building just leverages some functionality from another class or really is that class with modified or new functionality.
+      </p>
+      <p class="calibre13" id="c05-para-0083">
+       <span aria-label="189" class="calibre20" epub:type="pagebreak" id="Page_189" role="doc-pagebreak">
+       </span>
+       The following table represents the arguments for and against taking either approach for the
+       <code class="calibre21">
+        MultiAssociativeArray
+       </code>
+       class:
+      </p>
+      <table border="1" class="calibre31">
+       <thead class="calibre32">
+        <tr class="calibre33">
+         <th class="left" scope="col">
+         </th>
+         <th class="left" scope="col">
+          IS-A
+         </th>
+         <th class="left" scope="col">
+          HAS-A
+         </th>
+        </tr>
+       </thead>
+       <tbody class="calibre34">
+        <tr class="calibre33">
+         <td class="left1">
+          Reasons For
+         </td>
+         <td class="left1">
+          Fundamentally, it‘s the same abstraction with different characteristics.
+          <br class="calibre12"/>
+          It provides (almost) the same member functions as
+          <code class="calibre21">
+           AssociativeArray
+          </code>
+          .
+         </td>
+         <td class="left1">
+          <code class="calibre21">
+           MultiAssociativeArray
+          </code>
+          can have whatever member functions are useful without needing to worry about what member functions
+          <code class="calibre21">
+           AssociativeArray
+          </code>
+          has.
+          <br class="calibre12"/>
+          The implementation could change to something other than an
+          <code class="calibre21">
+           AssociativeArray
+          </code>
+          without changing the exposed member functions.
+         </td>
+        </tr>
+        <tr class="calibre33">
+         <td class="left1">
+          Reasons Against
+         </td>
+         <td class="left1">
+          An associative array by definition has one value per key. To say
+          <code class="calibre21">
+           MultiAssociativeArray
+          </code>
+          is an associative array is blasphemy!
+          <br class="calibre12"/>
+          <code class="calibre21">
+           MultiAssociativeArray
+          </code>
+          overrides both member functions of
+          <code class="calibre21">
+           AssociativeArray
+          </code>
+          , a strong sign that something about the design is wrong.
+          <br class="calibre12"/>
+          Unknown or inappropriate properties or member functions of
+          <code class="calibre21">
+           AssociativeArray
+          </code>
+          could “bleed through” to
+          <code class="calibre21">
+           MultiAssociativeArray
+          </code>
+          .
+         </td>
+         <td class="left1">
+          In a sense,
+          <code class="calibre21">
+           MultiAssociativeArray
+          </code>
+          reinvents the wheel by coming up with new member functions.
+          <br class="calibre12"/>
+          Some additional properties and member functions of
+          <code class="calibre21">
+           AssociativeArray
+          </code>
+          might have been useful.
+         </td>
+        </tr>
+       </tbody>
+      </table>
+      <p class="calibre13" id="c05-para-0094">
+       The reasons against using an is-a relationship in this case are very strong. Additionally, the
+       <i class="calibre18">
+        Liskov substitution principle
+       </i>
+       (LSP) can help you decide between an is-a and a has-a relationship. This principle states that you should be able to use a derived class instead of a base class without altering the behavior. Applied to this example, it states that this must be a has-a relationship, because you cannot just start using a
+       <code class="calibre21">
+        MultiAssociativeArray
+       </code>
+       where before you were using an
+       <code class="calibre21">
+        AssociativeArray
+       </code>
+       . If you would do so, the behavior would change. For example, the
+       <code class="calibre21">
+        insert()
+       </code>
+       member function of
+       <code class="calibre21">
+        AssociativeArray
+       </code>
+       removes an earlier value with the same key that is already in the array, while
+       <code class="calibre21">
+        MultiAssociativeArray
+       </code>
+       does not remove such values.
+      </p>
+      <p class="calibre13">
+       The two solutions explained in detail in this section are actually not the only two possible solutions. Other options could be for
+       <code class="calibre21">
+        AssociativeArray
+       </code>
+       to contain a
+       <code class="calibre21">
+        MultiAssociativeArray
+       </code>
+       , or both
+       <code class="calibre21">
+        AssociativeArray
+       </code>
+       and
+       <code class="calibre21">
+        MultiAssociativeArray
+       </code>
+       could inherit from a common base class, and so on. There are often a multitude of solutions that you can come up with for a certain design.
+       <span aria-label="190" class="calibre20" epub:type="pagebreak" id="Page_190" role="doc-pagebreak">
+       </span>
+      </p>
+      <section class="calibre2">
+       <aside class="calibre23">
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+        <section class="feature">
+         <p class="calibre25" id="c05-para-0096">
+          <b class="calibre14">
+           WARNING
+          </b>
+          <i class="calibre18">
+           If you do have a choice between the two types of relationships, I recommend, after years of experience, opting for a has-a relationship over an is-a relationship.
+          </i>
+         </p>
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <p class="calibre13" id="c05-para-0097">
+       Note that the
+       <code class="calibre21">
+        AssociativeArray
+       </code>
+       and
+       <code class="calibre21">
+        MultiAssociativeArray
+       </code>
+       are used here to demonstrate the difference between the is-a and has-a relationships. In your own code, it is recommended to use one of the standard associative array classes instead of writing your own. The C++ Standard Library provides
+       <code class="calibre21">
+        std::map
+       </code>
+       , which you should use instead of
+       <code class="calibre21">
+        AssociativeArray
+       </code>
+       , and
+       <code class="calibre21">
+        std::multimap
+       </code>
+       , which you should use instead of
+       <code class="calibre21">
+        MultiAssociativeArray
+       </code>
+       . Both of these standard classes are discussed in
+       <a class="calibre5" href="c18_split_000.xhtml">
+        Chapter 18
+       </a>
+       , “Standard Library Containers.”
+      </p>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c05-sec-0026">
+      </span>
+      <h3 class="calibre27" id="head-3-146">
+       The Not-a Relationship
+      </h3>
+      <p class="calibre13" id="c05-para-0098">
+       As you consider what type of relationship classes have, you should consider whether they actually have a relationship at all. Don't let your zeal for object-oriented design turn into a lot of needless class/derived-class relationships.
+      </p>
+      <p class="calibre13" id="c05-para-0099">
+       One pitfall occurs when things are obviously related in the real world but have no actual relationship in code. Object-oriented hierarchies need to model
+       <i class="calibre18">
+        functional
+       </i>
+       relationships, not artificial ones.
+       <a class="calibre5" href="#c05-fig-0007" id="R_c05-fig-0007">
+        Figure 5.7
+       </a>
+       shows relationships that are meaningful as ontologies or hierarchies but are unlikely to represent meaningful relationships in code.
+      </p>
+      <span aria-label="191" class="calibre20" epub:type="pagebreak" id="Page_191" role="doc-pagebreak">
+      </span>
+      <figure class="calibre36">
+       <img alt="A set of two flowcharts. 1. It includes music, rock, jazz, blues rock, pop, folk rock, and smooth jazz. 2. It involves C E O, V P of sales, V P of engineering, sales associate, pre-sales, project lead, and engineer." class="center" src="images/c05f007.png"/>
+       <figcaption class="calibre37">
+        <p class="calibre13">
+         <span class="figurelabel">
+          <a class="calibre5" href="#R_c05-fig-0007" id="c05-fig-0007" role="doc-backlink">
+           <b class="calibre14">
+            FIGURE 5.7
+           </b>
+          </a>
+         </span>
+        </p>
+       </figcaption>
+      </figure>
+      <p class="calibre13" id="c05-para-0100">
+       The best way to avoid needless inheritance is to sketch out your design first. For every class and derived class, write down what properties and member functions you're planning on putting into the class. You should rethink your design if you find that a class has no particular properties or member functions of its own, or if all of those properties and member functions are completely overridden by its derived classes, except when working with abstract base classes as mentioned earlier.
+      </p>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c05-sec-0027">
+      </span>
+      <h3 class="calibre27" id="head-3-147">
+       Hierarchies
+      </h3>
+      <p class="calibre13" id="c05-para-0101">
+       Just as a class
+       <code class="calibre21">
+        A
+       </code>
+       can be a base class of
+       <code class="calibre21">
+        B
+       </code>
+       ,
+       <code class="calibre21">
+        B
+       </code>
+       can also be a base class of
+       <code class="calibre21">
+        C
+       </code>
+       . Object-oriented hierarchies can model multilevel relationships like this. A zoo simulation with more animals might be designed with every animal as a derived class of a common
+       <code class="calibre21">
+        Animal
+       </code>
+       class, as shown in
+       <a class="calibre5" href="#c05-fig-0008" id="R_c05-fig-0008">
+        Figure 5.8
+       </a>
+       .
+      </p>
+      <figure class="calibre36">
+       <img alt="A flowchart illustrates the animals. It includes the following. 1. Monkey. 2. Giraffe. 3. Kangaroo. 4. Penguin." class="center" src="images/c05f008.png"/>
+       <figcaption class="calibre37">
+        <p class="calibre13">
+         <span class="figurelabel">
+          <a class="calibre5" href="#R_c05-fig-0008" id="c05-fig-0008" role="doc-backlink">
+           <b class="calibre14">
+            FIGURE 5.8
+           </b>
+          </a>
+         </span>
+        </p>
+       </figcaption>
+      </figure>
+      <p class="calibre13" id="c05-para-0102">
+       As you code each of these derived classes, you might find that a lot of them are similar. When this occurs, you should consider putting in a common parent. Realizing that
+       <code class="calibre21">
+        Lion
+       </code>
+       and
+       <code class="calibre21">
+        Panther
+       </code>
+       both move the same way and have the same diet might indicate a need for a possible
+       <code class="calibre21">
+        BigCat
+       </code>
+       class. You could further subdivide the
+       <code class="calibre21">
+        Animal
+       </code>
+       class to include
+       <code class="calibre21">
+        WaterAnimal
+       </code>
+       and
+       <code class="calibre21">
+        Marsupial
+       </code>
+       .
+       <a class="calibre5" href="#c05-fig-0009" id="R_c05-fig-0009">
+        Figure 5.9
+       </a>
+       shows a more hierarchical design that leverages this commonality.
+      </p>
+      <figure class="calibre36">
+       <img alt="A flowchart illustrates the animals. It includes the following. 1. Monkey. 2. Bogcats. 3. Giraffe. 4. Marsupial. 5. water animal. 6. Lion. 7. Panther. 8. Dolphin, 9. Penguin. 10. Koala. 11. Kangaroo." class="center" src="images/c05f009.png"/>
+       <figcaption class="calibre37">
+        <p class="calibre13">
+         <span class="figurelabel">
+          <a class="calibre5" href="#R_c05-fig-0009" id="c05-fig-0009" role="doc-backlink">
+           <b class="calibre14">
+            FIGURE 5.9
+           </b>
+          </a>
+         </span>
+        </p>
+       </figcaption>
+      </figure>
+      <p class="calibre13" id="c05-para-0103">
+       A biologist looking at this hierarchy may be disappointed—a penguin isn't really in the same family as a dolphin. However, it underlines a good point—in code, you need to balance real-world relationships with shared-functionality relationships. Even though two things might be closely related in the real world, they might have a not-a relationship in code because they really don't share functionality. You could just as easily divide animals into mammals and fish, but that wouldn't factor any commonality to the base class.
+      </p>
+      <p class="calibre13" id="c05-para-0104">
+       Another important point is that there could be other ways of organizing the hierarchy. The preceding design is organized mostly by how the animals move. If it were instead organized by the animals’ diet
+       <span aria-label="192" class="calibre20" epub:type="pagebreak" id="Page_192" role="doc-pagebreak">
+       </span>
+       or height, the hierarchy could be very different. In the end, what matters is how the classes will be used. The needs will dictate the design of the class hierarchy.
+      </p>
+      <p class="calibre13">
+       A good object-oriented hierarchy accomplishes the following:
+      </p>
+      <ul class="check" id="c05-list-0003">
+       <li class="calibre9" id="c05-li-0006">
+        Organizes classes into meaningful functional relationships
+       </li>
+       <li class="calibre9" id="c05-li-0007">
+        Supports code reuse by factoring common functionality to base classes
+       </li>
+       <li class="calibre9" id="c05-li-0008">
+        Avoids having derived classes that override much of the parent's functionality, unless the parent is an abstract base class
+       </li>
+      </ul>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c05-sec-0028">
+      </span>
+      <h3 class="calibre27" id="head-3-148">
+       Multiple Inheritance
+      </h3>
+      <p class="calibre13" id="c05-para-0106">
+       Every example so far has had a single inheritance chain. In other words, a given class has, at most, one immediate parent class. This does not have to be the case. Through multiple inheritance, a class can have more than one base class.
+      </p>
+      <p class="calibre13" id="c05-para-0107">
+       <a class="calibre5" href="#c05-fig-0010" id="R_c05-fig-0010">
+        Figure 5.10
+       </a>
+       shows a multiple inheritance design. There is still a base class called
+       <code class="calibre21">
+        Animal
+       </code>
+       , which is further divided by size. A separate hierarchy categorizes by diet, and a third takes care of movement. Each type of animal is then a derived class of all three of these classes, as shown by different lines.
+      </p>
+      <figure class="calibre36">
+       <img alt="A flowchart illustrates multiple inheritance design. It includes the following. 1. Mover. 2. Eater. 3. Animal. 4. Lion. 5. Koala. 6. Kangaroo." class="center" src="images/c05f010.png"/>
+       <figcaption class="calibre37">
+        <p class="calibre13">
+         <span class="figurelabel">
+          <a class="calibre5" href="#R_c05-fig-0010" id="c05-fig-0010" role="doc-backlink">
+           <b class="calibre14">
+            FIGURE 5.10
+           </b>
+          </a>
+         </span>
+        </p>
+       </figcaption>
+      </figure>
+      <p class="calibre13" id="c05-para-0108">
+       In a user interface context, imagine an image that the user can click. This class seems to be both a button and an image so the implementation might involve inheriting from both the
+       <code class="calibre21">
+        Image
+       </code>
+       class and the
+       <code class="calibre21">
+        Button
+       </code>
+       class, as shown in
+       <a class="calibre5" href="#c05-fig-0011" id="R_c05-fig-0011">
+        Figure 5.11
+       </a>
+       .
+      </p>
+      <figure class="calibre36">
+       <img alt="A flowchart of the image class and the button class. The picture button includes buttons and images." class="center" src="images/c05f011.png"/>
+       <figcaption class="calibre37">
+        <p class="calibre13">
+         <span class="figurelabel">
+          <a class="calibre5" href="#R_c05-fig-0011" id="c05-fig-0011" role="doc-backlink">
+           <b class="calibre14">
+            FIGURE 5.11
+           </b>
+          </a>
+         </span>
+        </p>
+       </figcaption>
+      </figure>
+      <p class="calibre13" id="c05-para-0109">
+       Multiple inheritance can be useful in certain cases, but it also has a number of disadvantages that you should always keep in mind. Many programmers dislike multiple inheritance. C++ has explicit support for such relationships, though the Java language does away with them altogether, except for inheriting from multiple interfaces (abstract base classes). There are several reasons to which multiple inheritance critics point.
+      </p>
+      <p class="calibre13" id="c05-para-0110">
+       First, visualizing multiple inheritance is complicated. As you can see in
+       <a class="calibre5" href="#c05-fig-0010">
+        Figure 5.10
+       </a>
+       , even a simple class diagram can become complicated when there are multiple hierarchies and crossing lines.
+       <span aria-label="193" class="calibre20" epub:type="pagebreak" id="Page_193" role="doc-pagebreak">
+       </span>
+       Class hierarchies are supposed to make it easier for the programmer to understand the relationships between code. With multiple inheritance, a class could have several parents that are in no way related to each other. With so many classes contributing code to your object, can you really keep track of what's going on?
+      </p>
+      <p class="calibre13" id="c05-para-0111">
+       Second, multiple inheritance can destroy otherwise clean hierarchies. In the animal example, switching to a multiple inheritance approach means that the
+       <code class="calibre21">
+        Animal
+       </code>
+       base class is less meaningful because the code that describes animals is now separated into three separate hierarchies. While the design illustrated in
+       <a class="calibre5" href="#c05-fig-0010">
+        Figure 5.10
+       </a>
+       shows three clean hierarchies, it's not difficult to imagine how they could get messy. For example, what if you realize that all
+       <code class="calibre21">
+        Jumper
+       </code>
+       s not only move in the same way, but they also eat the same things? Because there are separate hierarchies, there is no way to join the concepts of movement and diet without adding yet another derived class.
+      </p>
+      <p class="calibre13" id="c05-para-0112">
+       Third, implementation of multiple inheritance is complicated. What if two of your base classes implement the same member function in different ways? Can you have two base classes that are themselves a derived class of a common base class? These possibilities complicate the implementation because structuring such intricate relationships in code is difficult both for the author and a reader.
+      </p>
+      <p class="calibre13" id="c05-para-0113">
+       The reason that other languages can leave out multiple inheritance is that it is usually avoidable. By rethinking your hierarchies, you can often avoid introducing multiple inheritance when you have control over the design of a project.
+      </p>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c05-sec-0029">
+      </span>
+      <h3 class="calibre27" id="head-3-149">
+       Mixin Classes
+      </h3>
+      <p class="calibre13" id="c05-para-0114">
+       Mixin classes represent another type of relationship between classes. In C++, one way to implement a mixin class is syntactically just like multiple inheritance, but the semantics are refreshingly different. A mixin class answers the question, “What
+       <i class="calibre18">
+        else
+       </i>
+       is this class able to do?” and the answer often ends with “-able.” Mixin classes are a way that you can add functionality to a class without committing to a full is-a relationship. You can think of it as a
+       <i class="calibre18">
+        shares-with
+       </i>
+       relationship.
+      </p>
+      <p class="calibre13" id="c05-para-0115">
+       Going back to the zoo example, you might want to introduce the notion that some animals are “pettable.” That is, there are some animals that visitors to the zoo can pet, presumably without being bitten or mauled. You might want all pettable animals to support the behavior “be pet.” Because pettable animals don't have anything else in common and you don't want to break the existing hierarchy you've designed,
+       <code class="calibre21">
+        Pettable
+       </code>
+       makes a great mixin class.
+      </p>
+      <p class="calibre13" id="c05-para-0116">
+       Mixin classes are used frequently in user interfaces. Instead of saying that a
+       <code class="calibre21">
+        PictureButton
+       </code>
+       class is both an
+       <code class="calibre21">
+        Image
+       </code>
+       and a
+       <code class="calibre21">
+        Button
+       </code>
+       , you might say that it's an
+       <code class="calibre21">
+        Image
+       </code>
+       that is
+       <code class="calibre21">
+        Clickable
+       </code>
+       . A folder icon on your desktop could be an
+       <code class="calibre21">
+        Image
+       </code>
+       that is
+       <code class="calibre21">
+        Draggable
+       </code>
+       and
+       <code class="calibre21">
+        Clickable
+       </code>
+       . Software developers tend to make up a lot of fun adjectives.
+      </p>
+      <p class="calibre13" id="c05-para-0117">
+       The difference between a mixin class and a base class has more to do with how you think about the class than any code difference. In general, mixin classes are easier to digest than multiple inheritance because they are very limited in scope. The
+       <code class="calibre21">
+        Pettable
+       </code>
+       mixin class just adds one behavior to any existing class. The
+       <code class="calibre21">
+        Clickable
+       </code>
+       mixin class might just add “mouse down” and “mouse up” behaviors. Additionally, mixin classes rarely have a large hierarchy so there's no cross-contamination of functionality.
+       <a class="calibre5" href="c32.xhtml">
+        Chapter 32
+       </a>
+       , “Incorporating Design Techniques and Frameworks,” goes into more detail on mixin classes.
       </p>
      </section>
     </section>
-    <section aria-labelledby="head-2-3" class="calibre2">
-     <span class="calibre" id="bapp01-sec-0008">
+    <span aria-label="194" class="calibre20" epub:type="pagebreak" id="Page_194" role="doc-pagebreak">
+    </span>
+    <section aria-labelledby="head-2-86" class="calibre2">
+     <span class="calibre" id="c05-sec-0030">
      </span>
-     <div class="calibre19" id="calibre_pb_1">
-     </div>
+     <h2 class="calibre6" id="head-2-86">
+      SUMMARY
+     </h2>
+     <p class="calibre13" id="c05-para-0118">
+      In this chapter, you've gained an appreciation for the design of object-oriented programs without a lot of code getting in the way. The concepts you've learned are applicable to almost any object-oriented language. Some of it may have been a review to you, or it may be a new way of formalizing a familiar concept. Perhaps you picked up some new approaches to old problems or new arguments in favor of the concepts you've been preaching to your team all along. Even if you've never used classes in your code, or have used them only sparingly, you now know more about how to design object-oriented programs than many experienced C++ programmers.
+     </p>
+     <p class="calibre13" id="c05-para-0119">
+      The relationships between classes are important to study, not just because well-linked classes contribute to code reuse and reduce clutter, but also because you will be working in a team. Classes that relate in meaningful ways are easier to read and maintain. You may decide to use the “Class Relationships” section as a reference when you design your programs.
+     </p>
+     <p class="calibre13" id="c05-para-0120">
+      The next chapter continues the design theme by explaining how to design your code with reuse in mind.
+     </p>
+    </section>
+    <section aria-labelledby="head-2-87" class="calibre2">
+     <span class="calibre" id="c05-sec-0031">
+     </span>
+     <h2 class="calibre6" id="head-2-87">
+      EXERCISES
+     </h2>
+     <p class="calibre13" id="c05-para-0121">
+      By solving the following exercises, you can practice the material discussed in this chapter. Solutions to all exercises are available with the code download on the book's website at
+      <code class="calibre21">
+       <a class="calibre5" href="http://www.wiley.com/go/proc++6e">
+        www.wiley.com/go/proc++6e
+       </a>
+      </code>
+      . However, if you are stuck on an exercise, first reread parts of this chapter to try to find an answer yourself before looking at the solution from the website.
+     </p>
+     <p class="calibre13" id="c05-para-0122">
+      For the exercises in this chapter, there is no single correct solution. As you have learned in the course of this chapter, a specific problem often has several design solutions with different trade-offs. The solutions accompanying these exercises explain one possible design, but that doesn't mean the solutions you came up with must match those.
+     </p>
+     <section class="calibre2">
+      <span class="calibre" id="c05-exsec-0001">
+      </span>
+      <ol class="none1">
+       <li class="calibre9" id="c05-ex-0001">
+        <b class="calibre14">
+         Exercise 5-1:
+        </b>
+        Suppose you want to write a car racing game. You will need some kind of model for the car itself. Assume for this exercise there is only one type of car. Each instance of that car needs to keep track of several properties, such as the current power output of its engine, the current fuel usage, the tire pressure, whether or not its driving lights are switched on, whether the windshield wipers are active, and so on. The game should allow players to configure their car with different engines, different tires, custom driving lights and windshield wipers, and so on. How would you model such a car and why?
+       </li>
+       <li class="calibre9" id="c05-ex-0002">
+        <b class="calibre14">
+         Exercise 5-2:
+        </b>
+        Continuing the racing game from Exercise 5-1, you of course want to include support for human-driven cars, but also cars driven by an artificial intelligence (AI). How would you model this in your game?
+       </li>
+       <li class="calibre9" id="c05-ex-0003">
+        <b class="calibre14">
+         Exercise 5-3:
+        </b>
+        Suppose part of a human resources (HR) application has the following three classes:
+        <ul class="check" id="c05-list-0005">
+         <li class="calibre9" id="c05-li-0010">
+          <b class="calibre14">
+           <code class="calibre21">
+            Employee
+           </code>
+           :
+          </b>
+          Keeping track of employee ID, salary, date when employee started working, and so on
+         </li>
+         <li class="calibre9" id="c05-li-0011">
+          <b class="calibre14">
+           <code class="calibre21">
+            Person
+           </code>
+           :
+          </b>
+          Keeping track of a name and address
+         </li>
+         <li class="calibre9" id="c05-li-0012">
+          <b class="calibre14">
+           <code class="calibre21">
+            Manager
+           </code>
+           :
+          </b>
+          Keeping track of which employees are in their team
+          <span aria-label="195" class="calibre20" epub:type="pagebreak" id="Page_195" role="doc-pagebreak">
+          </span>
+          <p class="listpara" id="c05-para-0129">
+           What do you think of the high-level class diagram in
+           <a class="calibre5" href="#c05-fig-0012" id="R_c05-fig-0012">
+            Figure 5.12
+           </a>
+           ? Are there any changes you would make to it? The diagram doesn't show any properties or behaviors of the different classes, as that's the topic of Exercise 5-4.
+          </p>
+          <figure class="calibre36">
+           <img alt="A flowchart of the high-level class diagram. The manager column includes employee and person." class="center" src="images/c05f012.png"/>
+           <figcaption class="calibre37">
+            <p class="calibre13">
+             <span class="figurelabel">
+              <a class="calibre5" href="#R_c05-fig-0012" id="c05-fig-0012" role="doc-backlink">
+               <b class="calibre14">
+                FIGURE 5.12
+               </b>
+              </a>
+             </span>
+            </p>
+           </figcaption>
+          </figure>
+         </li>
+        </ul>
+       </li>
+       <li class="calibre9" id="c05-ex-0004">
+        <b class="calibre14">
+         Exercise 5-4:
+        </b>
+        Start from the final class diagram for Exercise 5-3. Add a couple of behaviors and properties to the class diagram. Finally, model the fact that a manager manages a team of employees.
+       </li>
+      </ol>
+     </section>
     </section>
    </section>
   </div>

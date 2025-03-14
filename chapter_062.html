@@ -1,0 +1,233 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html>
+<html epub:prefix="z3998: http://www.daisy.org/z3998/2012/vocab/structure/#" lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+ <head>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   CHAPTER 15: OVERLOADING C++ OPERATORS
+  </title>
+ </head>
+ <body>
+  <div class="navigation">
+   <a class="nav-button" href="chapter_061.html">
+    ← Previous
+   </a>
+   <a class="nav-button" href="index.html">
+    Table of Contents
+   </a>
+   <a class="nav-button" href="chapter_063.html">
+    Next →
+   </a>
+  </div>
+  <div class="chapter-content">
+   <section aria-labelledby="b01_1" class="calibre2" epub:type="appendix" role="doc-appendix">
+    <section aria-labelledby="head-2-14" class="calibre2">
+     <h2 class="calibre6" id="head-2-14">
+      CHAPTER 15: OVERLOADING C++ OPERATORS
+     </h2>
+     <p class="calibre13" id="bapp01-para-0075">
+      It's possible, though somewhat unlikely, that you will have to perform something more difficult than a simple operator overload during an interview. Some interviewers like to have an advanced question on hand that they don't really expect anybody to answer correctly. The intricacies of operator overloading make great, nearly impossible questions because few programmers get the syntax right without looking it up. That means it's a great area to review before an interview.
+     </p>
+     <span aria-label="1255" class="calibre20" epub:type="pagebreak" id="Page_1255" role="doc-pagebreak">
+     </span>
+     <section class="calibre2">
+      <span class="calibre" id="bapp01-sec-0042">
+      </span>
+      <h3 class="calibre27" id="head-3-27">
+       Things to Remember
+      </h3>
+      <ul class="check" id="bapp01-list-0016">
+       <li class="calibre9" id="bapp01-li-0149">
+        Overloading stream operators, because they are commonly overloaded operators, and are conceptually unique
+       </li>
+       <li class="calibre9" id="bapp01-li-0150">
+        What a functor is (a callable object) and how to create one
+       </li>
+       <li class="calibre9" id="bapp01-li-0151">
+        What the benefit is of making a class's function call operator
+        <code class="calibre21">
+         static
+        </code>
+        (C++23)
+       </li>
+       <li class="calibre9" id="bapp01-li-0152">
+        Choosing between a member function operator and a global function
+       </li>
+       <li class="calibre9" id="bapp01-li-0153">
+        How some operators can be expressed in terms of others (for example,
+        <code class="calibre21">
+         operator&lt;=
+        </code>
+        can be written by negating the result of
+        <code class="calibre21">
+         operator&gt;
+        </code>
+        )
+       </li>
+       <li class="calibre9" id="bapp01-li-0154">
+        The multidimensional subscript operator and what it can be used for (C++23)
+       </li>
+       <li class="calibre9" id="bapp01-li-0155">
+        The fact that you can define your own user-defined literals, but without the syntactical details
+       </li>
+      </ul>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="bapp01-sec-0043">
+      </span>
+      <h3 class="calibre27" id="head-3-28">
+       Types of Questions
+      </h3>
+      <p class="calibre13" id="bapp01-para-0077">
+       It's impossible to predict the exact questions that you'll get, but the number of operators is finite. As long as you've seen an example of overloading each operator that makes sense to overload, you'll do fine!
+      </p>
+      <p class="calibre13" id="bapp01-para-0078">
+       One possible question is to write a simple class, for instance, a
+       <code class="calibre21">
+        Fraction
+       </code>
+       class to store mathematical fractions. The interviewer might then ask you to add support for some operators such as addition and subtraction. If you're unsure how to add or subtract fractions, ask the interviewer as that's not the point of the question; the point is writing overloaded operators.
+      </p>
+      <p class="calibre13" id="bapp01-para-0079">
+       Besides asking you to implement an overloaded operator, you could be asked high-level questions about operator overloading. A find-the-bug question could contain an operator that is overloaded to do something that is conceptually wrong for that particular operator. In addition to syntax, keep the use cases and theory of operator overloading in mind.
+      </p>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-15" class="calibre2">
+     <span class="calibre" id="bapp01-sec-0044">
+     </span>
+     <h2 class="calibre6" id="head-2-15">
+      CHAPTERS 16–20 AND 25: THE STANDARD LIBRARY
+     </h2>
+     <p class="calibre13" id="bapp01-para-0080">
+      As you've seen, certain aspects of the Standard Library can be difficult to work with. Few interviewers would expect you to recite the details of Standard Library classes unless you claim to be a Standard Library expert. If you know that the job you're interviewing for makes heavy use of the Standard Library, you might want to write some Standard Library code the day before to refresh your memory. Otherwise, recalling the high-level design of the Standard Library and its basic usage should suffice.
+     </p>
+     <section class="calibre2">
+      <span class="calibre" id="bapp01-sec-0045">
+      </span>
+      <h3 class="calibre27" id="head-3-29">
+       Things to Remember
+      </h3>
+      <ul class="check" id="bapp01-list-0017">
+       <li class="calibre9" id="bapp01-li-0156">
+        The different types of containers and their relationships with iterators
+       </li>
+       <li class="calibre9" id="bapp01-li-0157">
+        Use of
+        <code class="calibre21">
+         vector
+        </code>
+        , which is the most frequently used Standard Library class
+       </li>
+       <li class="calibre9" id="bapp01-li-0158">
+        The
+        <code class="calibre21">
+         span
+        </code>
+        class and why you should use it
+       </li>
+       <li class="calibre9" id="bapp01-li-0159">
+        What an
+        <code class="calibre21">
+         mdspan
+        </code>
+        is (C++23)
+       </li>
+       <li class="calibre9" id="bapp01-li-0160">
+        <span aria-label="1256" class="calibre20" epub:type="pagebreak" id="Page_1256" role="doc-pagebreak">
+        </span>
+        Use of associative containers, such as
+        <code class="calibre21">
+         map
+        </code>
+       </li>
+       <li class="calibre9" id="bapp01-li-0161">
+        The differences between associative containers, e.g.,
+        <code class="calibre21">
+         map
+        </code>
+        , unordered associative containers, e.g.,
+        <code class="calibre21">
+         unordered_map
+        </code>
+        , and flat associative container adapters (C++23), e.g.,
+        <code class="calibre21">
+         flat_map
+        </code>
+       </li>
+       <li class="calibre9" id="bapp01-li-0162">
+        How to work with function pointers, function objects (callable objects), and lambda expressions
+       </li>
+       <li class="calibre9" id="bapp01-li-0163">
+        What transparent operator functors are
+       </li>
+       <li class="calibre9" id="bapp01-li-0164">
+        The purpose of Standard Library algorithms and some of the built-in algorithms
+       </li>
+       <li class="calibre9" id="bapp01-li-0165">
+        The use of lambda expressions in combination with Standard Library algorithms
+       </li>
+       <li class="calibre9" id="bapp01-li-0166">
+        The remove-erase idiom
+       </li>
+       <li class="calibre9" id="bapp01-li-0167">
+        The fact that a lot of Standard Library algorithms have an option to execute them in parallel to improve performance
+       </li>
+       <li class="calibre9" id="bapp01-li-0168">
+        The ways in which you can extend the Standard Library (details are most likely unnecessary)
+       </li>
+       <li class="calibre9" id="bapp01-li-0169">
+        What ranges, projections, views, and range factories are
+       </li>
+       <li class="calibre9" id="bapp01-li-0170">
+        The expressiveness of the Ranges library
+       </li>
+       <li class="calibre9" id="bapp01-li-0171">
+        Your own opinions about the Standard Library
+       </li>
+      </ul>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="bapp01-sec-0046">
+      </span>
+      <h3 class="calibre27" id="head-3-30">
+       Types of Questions
+      </h3>
+      <p class="calibre13" id="bapp01-para-0082">
+       If interviewers are dead set on asking detailed Standard Library questions, there really are no bounds to the types of questions they could ask. If you're feeling uncertain about syntax, though, you should state the obvious during the interview: “In real life, of course, I'd look that up in
+       <i class="calibre18">
+        Professional C++
+       </i>
+       , but I'm pretty sure it works like this …” At least that way, the interviewer is reminded that he should forgive the details, as long as you get the basic idea right.
+      </p>
+      <p class="calibre13" id="bapp01-para-0083">
+       High-level questions about the Standard Library are often used to gauge how much you've used the Standard Library without making you recall all the details. For example, casual users of the Standard Library may be familiar with associative and non-associative containers. A slightly more advanced user would be able to define an iterator, describe how iterators work with containers, and describe the remove-erase idiom. Other high-level questions could ask you about your experience with Standard Library algorithms, or whether you've customized the Standard Library. An interviewer might also gauge your knowledge about function objects and lambda expressions, and their use with Standard Library algorithms. When talking about lambda expressions, you can score extra points if you explain the use of the
+       <code class="calibre21">
+        auto
+       </code>
+       keyword to define generic lambda expressions.
+      </p>
+      <p class="calibre13" id="bapp01-para-0084">
+       You might also be asked to explain the benefits of using the ranges library. Remember, it basically allows you to write code that describes
+       <i class="calibre18">
+        what
+       </i>
+       you want to do instead of
+       <i class="calibre18">
+        how
+       </i>
+       you want to do it.
+      </p>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-16" class="calibre2">
+     <span class="calibre" id="bapp01-sec-0047">
+     </span>
+     <div class="calibre19" id="calibre_pb_11">
+     </div>
+    </section>
+   </section>
+  </div>
+ </body>
+</html>

@@ -5,7 +5,7 @@
   <link href="style.css" rel="stylesheet" type="text/css"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <title>
-   WILEY END USER LICENSE AGREEMENT
+   31Conquering Debugging
   </title>
  </head>
  <body>
@@ -16,31 +16,3136 @@
    <a class="nav-button" href="index.html">
     Table of Contents
    </a>
-   <a class="nav-button" href="index.html">
+   <a class="nav-button" href="chapter_047.html">
     Next →
    </a>
   </div>
   <div class="chapter-content">
-   <section aria-labelledby="eula_1" class="calibre2">
+   <section aria-labelledby="c31_1" class="calibre2" epub:type="chapter" role="doc-chapter">
     <header class="calibre10">
-     <h1 class="calibre16" id="eula_1">
-      <span aria-label="1327" class="calibre17" epub:type="pagebreak" id="Page_1327" role="doc-pagebreak">
+     <h1 class="calibre16" id="c31_1">
+      <span aria-label="1117" class="calibre17" epub:type="pagebreak" id="Page_1117" role="doc-pagebreak">
       </span>
-      <span class="calibre" id="eula">
+      <span class="calibre" id="c31">
       </span>
-      <b class="calibre14">
-       WILEY END USER LICENSE AGREEMENT
-      </b>
+      <span class="calibre">
+       31
+      </span>
+      <br class="calibre12"/>
+      <span class="calibre">
+       Conquering Debugging
+      </span>
      </h1>
     </header>
     <section aria-label="chapter opening" class="calibre2">
-     <p class="calibre13">
-      Go to
-      <a class="calibre5" href="http://www.wiley.com/go/eula">
-       www.wiley.com/go/eula
-      </a>
-      to access Wiley’s ebook EULA.
+     <span class="calibre" id="c31-sec-0001">
+     </span>
+     <section class="calibre2">
+      <aside class="calibre23">
+       <div class="top">
+        <hr class="calibre24"/>
+       </div>
+       <section class="feature1">
+        <h3 class="calibre30">
+         WHAT'S IN THIS CHAPTER?
+        </h3>
+        <ul class="check2" id="c31-list-0001">
+         <li class="calibre9" id="c31-li-0001">
+          The fundamental law of debugging, and bug taxonomies
+         </li>
+         <li class="calibre9" id="c31-li-0002">
+          Tips for avoiding bugs
+         </li>
+         <li class="calibre9" id="c31-li-0003">
+          How to plan for bugs
+         </li>
+         <li class="calibre9" id="c31-li-0004">
+          The different kinds of memory errors
+         </li>
+         <li class="calibre9" id="c31-li-0005">
+          How to use a debugger to pinpoint code causing a bug
+         </li>
+        </ul>
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <section class="calibre2">
+      <aside class="calibre23">
+       <div class="top">
+        <hr class="calibre24"/>
+       </div>
+       <section class="feature1">
+        <span class="calibre" id="c31-fea-0001">
+        </span>
+        <h3 class="calibre30" id="head-2-309">
+         WILEY.COM DOWNLOADS FOR THIS CHAPTER
+        </h3>
+        <span class="calibre" id="c31-sec-0003">
+        </span>
+        <p class="calibre25" id="c31-para-0004">
+         Please note that all the code examples for this chapter are available as part of this chapter's code download on the book's website at
+         <code class="calibre21">
+          <a class="calibre5" href="http://www.wiley.com/go/proc++6e">
+           www.wiley.com/go/proc++6e
+          </a>
+         </code>
+         on the Download Code tab.
+        </p>
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <p class="calibre13" id="c31-para-0005">
+      Your code will contain bugs. Every professional programmer would like to write bug-free code, but the reality is that few software engineers succeed in this endeavor. As computer users know, bugs are endemic in computer software. The software that you write is probably no exception. Therefore, unless you plan to bribe your co-workers into fixing all your bugs, you cannot be a professional C++ programmer without knowing how to debug C++ code. One factor that often distinguishes experienced programmers from novices is their debugging skills.
      </p>
+     <p class="calibre13" id="c31-para-0006">
+      Despite the obvious importance of debugging, it is rarely given enough attention in courses and books. Debugging seems to be the type of skill that everyone wants you to know, but no one knows how to teach. This chapter attempts to provide concrete debugging guidelines and techniques.
+     </p>
+     <p class="calibre13" id="c31-para-0007">
+      This chapter starts with the fundamental law of debugging and bug taxonomies, followed by tips for avoiding bugs. Techniques for planning for bugs include error logging, debug traces,
+      <span aria-label="1118" class="calibre20" epub:type="pagebreak" id="Page_1118" role="doc-pagebreak">
+      </span>
+      assertions, and crash dumps. Specific tips are given for debugging the problems that arise, including techniques for reproducing bugs and debugging reproducible bugs, nonreproducible bugs, memory errors, and multithreaded programs. The chapter concludes with a step-by-step debugging example.
+     </p>
+    </section>
+    <section aria-labelledby="head-2-310" class="calibre2">
+     <span class="calibre" id="c31-sec-0004">
+     </span>
+     <h2 class="calibre6" id="head-2-310">
+      THE FUNDAMENTAL LAW OF DEBUGGING
+     </h2>
+     <p class="calibre13">
+      The first rule of debugging is to be honest with yourself and admit that your code will contain bugs! This realistic assessment enables you to put your best effort into preventing bugs from crawling into your code in the first place, while you simultaneously include the necessary features to make debugging as easy as possible.
+     </p>
+     <section class="calibre2">
+      <aside class="calibre23">
+       <div class="top">
+        <hr class="calibre24"/>
+       </div>
+       <section class="feature">
+        <p class="calibre25" id="c31-para-0009">
+         <b class="calibre14">
+          WARNING
+         </b>
+         <i class="calibre18">
+          The fundamental law of debugging states that you should avoid bugs when you're coding, but plan for bugs in your code
+         </i>
+         .
+        </p>
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+       </section>
+      </aside>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-311" class="calibre2">
+     <span class="calibre" id="c31-sec-0006">
+     </span>
+     <h2 class="calibre6" id="head-2-311">
+      BUG TAXONOMIES
+     </h2>
+     <p class="calibre13" id="c31-para-0010">
+      A
+      <i class="calibre18">
+       bug
+      </i>
+      in a computer program is incorrect run-time behavior. This undesirable behavior includes both
+      <i class="calibre18">
+       catastrophic
+      </i>
+      and
+      <i class="calibre18">
+       noncatastrophic bugs
+      </i>
+      . Examples of catastrophic bugs are program crashes, data corruption, operating system failures, or some other horrific outcome. A catastrophic bug can also manifest itself external to the software or computer system running the software; for example, medical software might contain a catastrophic bug causing a massive radiation overdose to a patient. Noncatastrophic bugs are bugs that cause the program to behave incorrectly in more subtle ways; for example, a web browser might return the wrong web page, or a spreadsheet application might calculate the standard deviation of a column incorrectly. These are also called
+      <i class="calibre18">
+       logical bugs
+      </i>
+      .
+     </p>
+     <p class="calibre13" id="c31-para-0011">
+      There are also
+      <i class="calibre18">
+       cosmetic bugs
+      </i>
+      , where something is visually not correct, but otherwise works correctly. For example, a button in a user interface is kept enabled when it shouldn't be—but clicking it does nothing. All computations are perfectly correct, the program does not crash, but it doesn't look as “nice” as it should.
+     </p>
+     <p class="calibre13" id="c31-para-0012">
+      The underlying cause, or
+      <i class="calibre18">
+       root cause
+      </i>
+      , of a bug is the mistake in the program that causes this incorrect behavior. The process of debugging a program includes both determining the root cause of the bug and fixing the code so that the bug will not occur again.
+     </p>
+    </section>
+    <section aria-labelledby="head-2-312" class="calibre2">
+     <span class="calibre" id="c31-sec-0007">
+     </span>
+     <h2 class="calibre6" id="head-2-312">
+      AVOID BUGS
+     </h2>
+     <p class="calibre13">
+      It's impossible to write completely bug-free code, so debugging skills are important. However, a few tips can help you to minimize the number of bugs:
+     </p>
+     <ul class="check" id="c31-list-0002">
+      <li class="calibre9" id="c31-li-0006">
+       <b class="calibre14">
+        Read this book from cover to cover:
+       </b>
+       Learn the C++ language intimately, especially pointers and memory management. Then, recommend this book to your friends and co-workers so they avoid bugs too.
+      </li>
+      <li class="calibre9" id="c31-li-0007">
+       <b class="calibre14">
+        Design before you code:
+       </b>
+       Starting to write code for a feature without thinking about the design at all tends to lead to convoluted designs that are harder to understand and are more
+       <span aria-label="1119" class="calibre20" epub:type="pagebreak" id="Page_1119" role="doc-pagebreak">
+       </span>
+       error prone. It also makes you more likely to omit possible edge cases and error conditions. Thus, before you start writing code, think about the design. And, once you start the implementation, don't be afraid to change the design if you come across an issue that you didn't think of before. There is nothing wrong with making changes to the design once you start the implementation.
+      </li>
+      <li class="calibre9" id="c31-li-0008">
+       <b class="calibre14">
+        Do code reviews:
+       </b>
+       In a professional environment, every single line of code should be peer reviewed. Sometimes it takes a fresh perspective to notice problems.
+      </li>
+      <li class="calibre9" id="c31-li-0009">
+       <b class="calibre14">
+        Test, test, and test again:
+       </b>
+       Thoroughly test your code, and have
+       <i class="calibre18">
+        others
+       </i>
+       test your code! They are more likely to find problems you haven't thought of.
+      </li>
+      <li class="calibre9" id="c31-li-0010">
+       <b class="calibre14">
+        Write automated unit tests:
+       </b>
+       Unit tests are designed to test isolated functionality. You should write unit tests for all implemented features. Run these unit tests automatically as part of your continuous integration setup, or automatically after each local compilation.
+       <a class="calibre5" href="c30.xhtml">
+        Chapter 30
+       </a>
+       , “Becoming Adept at Testing,” discusses unit testing in detail.
+      </li>
+      <li class="calibre9" id="c31-li-0011">
+       <b class="calibre14">
+        Expect error conditions, and handle them appropriately:
+       </b>
+       In particular, plan for and handle errors when working with files and network connections. They will occur. See
+       <a class="calibre5" href="c13.xhtml">
+        chapters 13
+       </a>
+       , “Demystifying C++ I/O,” and
+       <a class="calibre5" href="c14.xhtml">
+        14
+       </a>
+       , “Handling Errors.”
+      </li>
+      <li class="calibre9" id="c31-li-0012">
+       <b class="calibre14">
+        Use smart pointers to avoid resource leaks:
+       </b>
+       Smart pointers automatically free resources when they are not needed anymore.
+      </li>
+      <li class="calibre9" id="c31-li-0013">
+       <b class="calibre14">
+        Don't ignore compiler warnings:
+       </b>
+       Configure your compiler to compile with a high warning level. Do not blindly ignore warnings. Ideally, you should enable an option in your compiler to treat warnings as errors. This forces you to address each warning immediately. With GCC or Clang you can pass
+       <code class="calibre21">
+        -Werror
+       </code>
+       to the compiler to treat all warnings as errors. In Visual C++, open the properties of your project, go to Configuration Properties ➪ C/C++ ➪ General, and enable the option Treat Warnings As Errors.
+      </li>
+      <li class="calibre9" id="c31-li-0014">
+       <b class="calibre14">
+        Use static code analysis:
+       </b>
+       A static code analyzer helps to pinpoint problems in your code by analyzing your source code. Ideally, static code analysis is done in real time while typing code in your integrated development environment (IDE) to detect problems early. It can also be set up to run automatically by your build process. There are quite a few different analyzers available on the Internet, both free and commercial.
+      </li>
+      <li class="calibre9" id="c31-li-0015">
+       <b class="calibre14">
+        Use good coding style:
+       </b>
+       Strive for readability and clarity, use meaningful names, don't use abbreviations, add code comments (not only interface comments), use the
+       <code class="calibre21">
+        override
+       </code>
+       and
+       <code class="calibre21">
+        explicit
+       </code>
+       keywords, and so on. This makes it easier for other people to understand your code.
+      </li>
+     </ul>
+    </section>
+    <section aria-labelledby="head-2-313" class="calibre2">
+     <span class="calibre" id="c31-sec-0008">
+     </span>
+     <h2 class="calibre6" id="head-2-313">
+      PLAN FOR BUGS
+     </h2>
+     <p class="calibre13" id="c31-para-0014">
+      Your programs should contain functionality that enables easier debugging when the inevitable bugs arise. This section describes some examples of such functionality and presents sample implementations, where appropriate, that you can incorporate into your own programs.
+     </p>
+     <section class="calibre2">
+      <span class="calibre" id="c31-sec-0009">
+      </span>
+      <h3 class="calibre27" id="head-3-554">
+       Error Logging
+      </h3>
+      <p class="calibre13" id="c31-para-0015">
+       Imagine this scenario: You have just released a new version of your flagship product, and one of the first users reports that the program “stopped working.” You attempt to pry more information
+       <span aria-label="1120" class="calibre20" epub:type="pagebreak" id="Page_1120" role="doc-pagebreak">
+       </span>
+       from the user and eventually discover that the program died in the middle of an operation. The user can't quite remember what he was doing or if there were any error messages. How will you debug this problem?
+      </p>
+      <p class="calibre13" id="c31-para-0016">
+       Now imagine the same scenario, but in addition to the limited information from the user, you are also able to examine the error log on the user's computer. In the log you see a message from your program that says, “Error: unable to open config.xml file.” Looking at the code near the spot where that error message was generated, you find a line in which you read from the file without checking whether the file was opened successfully. You've found the root cause of your bug!
+      </p>
+      <p class="calibre13" id="c31-para-0017">
+       <i class="calibre18">
+        Error logging
+       </i>
+       is the process of writing error messages to persistent storage so that they will be available following an application, or even machine, crash. Despite the example scenario, you might still have doubts about this strategy. Won't it be obvious by your program's behavior if it encounters errors? Won't the user notice if something goes wrong? As the preceding example shows, user reports are not always accurate or complete. In addition, many programs, such as the operating system kernel and long-running daemons like
+       <code class="calibre21">
+        inetd
+       </code>
+       (internet service daemon) or
+       <code class="calibre21">
+        syslogd
+       </code>
+       on Unix, are not interactive and run unattended on a machine. The only way these programs can communicate with users is through error logging. In many cases, a program might also want to automatically recover from certain errors and hide those errors from the user. Still, having logs of those errors available can be invaluable to improve the overall stability of the program.
+      </p>
+      <p class="calibre13">
+       Thus, your program should log errors as it encounters them. That way, if a user reports a bug, you will be able to examine the log files on the machine to see if your program reported any errors prior to encountering the bug. Unfortunately, error logging is platform-dependent: C++ does not contain a standard logging mechanism. Examples of platform-specific logging mechanisms include the
+       <code class="calibre21">
+        syslog
+       </code>
+       facility in Unix and the event reporting API in Windows. You should consult the documentation for your development platform. There are also some open-source implementations of cross-platform logging frameworks. Here are two examples:
+      </p>
+      <ul class="check" id="c31-list-0003">
+       <li class="calibre9" id="c31-li-0016">
+        log4cpp at
+        <code class="calibre21">
+         <a class="calibre5" href="http://log4cpp.sourceforge.net">
+          log4cpp.sourceforge.net
+         </a>
+        </code>
+       </li>
+       <li class="calibre9" id="c31-li-0017">
+        Boost.Log at
+        <code class="calibre21">
+         <a class="calibre5" href="http://boost.org">
+          boost.org
+         </a>
+        </code>
+       </li>
+      </ul>
+      <p class="calibre13" id="c31-para-0019">
+       Now that you're convinced that logging is a great feature to add to your programs, you might be tempted to log messages every few lines in your code so that, in the event of any bug, you'll be able to trace the code path that was executing. These types of log messages are appropriately called
+       <i class="calibre18">
+        traces
+       </i>
+       .
+      </p>
+      <p class="calibre13" id="c31-para-0020">
+       However, you should not write these traces to log files for two reasons. First, writing to persistent storage is slow. Even on systems that write the logs asynchronously, logging that much information will slow down your program. Second, and most important, most of the information that you would put in your traces is not appropriate for the end user to see. It will just confuse the user, leading to unwarranted service calls. That said, tracing is an important debugging technique under the correct circumstances, as described in the next section.
+      </p>
+      <p class="calibre13">
+       Here are some specific guidelines for the types of errors you should log:
+      </p>
+      <ul class="check" id="c31-list-0004">
+       <li class="calibre9" id="c31-li-0018">
+        Unrecoverable errors, such as a system call failing unexpectedly.
+       </li>
+       <li class="calibre9" id="c31-li-0019">
+        Errors for which an administrator can take action, such as low memory, an incorrectly formatted data file, an inability to write to disk, or a network connection being down.
+       </li>
+       <li class="calibre9" id="c31-li-0020">
+        <span aria-label="1121" class="calibre20" epub:type="pagebreak" id="Page_1121" role="doc-pagebreak">
+        </span>
+        Unexpected errors such as a code path that you never expected to take or variables with unexpected values. On the other hand, your code should “expect” users to enter invalid data and should handle it appropriately. An unexpected error represents a bug in your program.
+       </li>
+       <li class="calibre9" id="c31-li-0021">
+        Potential security breaches, such as a network connection attempted from an unauthorized address, or too many network connections attempted (denial of service).
+       </li>
+      </ul>
+      <p class="calibre13" id="c31-para-0022">
+       A natural question you might be asking yourself is: What should be included in a logged error? At the very least, each logged error should contain the date and time the error occurred and the error message itself. In multithreaded applications, it's useful to log the ID of the thread that caused the error as well. Starting with C++23, the Standard Library includes
+       <code class="calibre21">
+        std::stacktrace
+       </code>
+       , discussed in
+       <a class="calibre5" href="c14.xhtml">
+        Chapter 14
+       </a>
+       , which allows you to get a stack trace at any moment during the execution of your program. You could include such a stack trace, or at least part of it, with each logged error.
+      </p>
+      <p class="calibre13" id="c31-para-0023">
+       It is also useful to log warnings, or recoverable errors, giving you the option to investigate if they can possibly be avoided.
+      </p>
+      <p class="calibre13" id="c31-para-0024">
+       Most logging APIs allow you to specify a
+       <i class="calibre18">
+        log level
+       </i>
+       or
+       <i class="calibre18">
+        error level
+       </i>
+       , typically at least “error,” “warning,” or “info”. You can log non-error conditions under a log level that is less severe than “error.” For example, you might want to log significant state changes in your application, or startup and shutdown of the program. You also might consider giving your users a way to adjust the log level of your program at run time so that they can customize the amount of logging that occurs.
+      </p>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c31-sec-0010">
+      </span>
+      <h3 class="calibre27" id="head-3-555">
+       Debug Traces
+      </h3>
+      <p class="calibre13">
+       When debugging complicated problems, public error messages generally do not contain enough information. You often need a complete trace of the code path taken, or values of variables before the bug showed up. In addition to basic messages, it's sometimes helpful to include the following information in debug traces:
+      </p>
+      <ul class="check" id="c31-list-0005">
+       <li class="calibre9" id="c31-li-0022">
+        The thread ID, if it's a multithreaded program
+       </li>
+       <li class="calibre9" id="c31-li-0023">
+        The name of the function that generates the trace
+       </li>
+       <li class="calibre9" id="c31-li-0024">
+        The name of the source file in which that function lives
+       </li>
+      </ul>
+      <p class="calibre13">
+       You can add this tracing to your program through a special
+       <i class="calibre18">
+        debug mode
+       </i>
+       , or via a
+       <i class="calibre18">
+        ring buffer
+       </i>
+       . Both of these techniques are explained in detail in the following sections. Note that in multithreaded programs you have to make your trace logging thread-safe. See
+       <a class="calibre5" href="c27.xhtml">
+        Chapter 27
+       </a>
+       , “Multithreaded Programming with C++,” for details on multithreaded programming.
+      </p>
+      <section class="calibre2">
+       <aside class="calibre23">
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+        <section class="feature">
+         <p class="calibre25" id="c31-para-0027">
+          <b class="calibre14">
+           WARNING
+          </b>
+          <i class="calibre18">
+           Trace files can be written in text format, but if you do, be careful with logging too much detail. You don't want to leak intellectual property through your log files! Logging too much implementation details can also be dangerous if hackers can get a hold of the trace output!
+          </i>
+         </p>
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <span aria-label="1122" class="calibre20" epub:type="pagebreak" id="Page_1122" role="doc-pagebreak">
+      </span>
+      <section class="calibre2">
+       <span class="calibre" id="c31-sec-0012">
+       </span>
+       <h4 class="calibre29" id="head-4-429">
+        Debug Mode
+       </h4>
+       <p class="calibre13" id="c31-para-0028">
+        A first technique to add debug traces is to provide a debug mode for your program. In debug mode, the program writes trace output to standard error or to a file, and perhaps does extra checking during execution. There are several ways to add a debug mode to your program. All following examples are writing traces in text format.
+       </p>
+       <section class="calibre2">
+        <span class="calibre" id="c31-sec-0013">
+        </span>
+        <h5 class="calibre35" id="head-5-175">
+         Start-Time Debug Mode
+        </h5>
+        <p class="calibre13" id="c31-para-0029">
+         Start-time debug mode allows your application to run with or without debug mode depending on a command-line argument. This strategy includes the debug code in the “release” binary and allows debug mode to be enabled at a customer site. However, it does require users to restart the program to run it in debug mode, which may prevent you from obtaining useful information about certain bugs.
+        </p>
+        <p class="calibre13" id="c31-para-0030">
+         The following example is a simple program implementing a start-time debug mode. This program doesn't do anything useful; it is only for demonstrating the technique.
+        </p>
+        <p class="calibre13">
+         All logging functionality is wrapped in a
+         <code class="calibre21">
+          Logger
+         </code>
+         class. This class has two
+         <code class="calibre21">
+          static
+         </code>
+         data members: the name of the log file and a Boolean saying whether logging is enabled or disabled. The class has a public
+         <code class="calibre21">
+          static log()
+         </code>
+         member function template. Variadic templates like this one are discussed in
+         <a class="calibre5" href="c26.xhtml">
+          Chapter 26
+         </a>
+         , “Advanced Templates.” The log file is opened, flushed, and closed on each call to
+         <code class="calibre21">
+          log()
+         </code>
+         . This might lower performance a bit; however, it does guarantee correct logging, which is more important.
+        </p>
+        <pre class="calibre26" id="c31-code-0001"><code class="calibre21">class Logger</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        static void enableLogging(bool enable) { ms_loggingEnabled = enable; }</code>
+<code class="calibre21">        static bool isLoggingEnabled() { return ms_loggingEnabled; }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        template &lt;typename… Args&gt;</code>
+<code class="calibre21">        static void log(const Args&amp;… args)</code>
+<code class="calibre21">        {</code>
+<code class="calibre21">            if (!ms_loggingEnabled) { return; }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">            ofstream logfile { ms_debugFilename, ios_base::app };</code>
+<code class="calibre21">            if (logfile.fail()) {</code>
+<code class="calibre21">                println(cerr, "Unable to open debug file!");</code>
+<code class="calibre21">                return;</code>
+<code class="calibre21">            }</code>
+<code class="calibre21">            print(logfile, "{:L} UTC: ", chrono::system_clock::now());</code>
+<code class="calibre21">            <span class="color">// Use a fold-expression; see <a class="calibre5" href="c26.xhtml">Chapter 26</a>.</span></code>
+<code class="calibre21">            (logfile &lt;&lt; … &lt;&lt; args);</code>
+<code class="calibre21">            logfile &lt;&lt; endl;</code>
+<code class="calibre21">        }</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        static inline const string ms_debugFilename { "debugfile.out" };</code>
+<code class="calibre21">        static inline bool ms_loggingEnabled { false };</code>
+<code class="calibre21">};</code></pre>
+        <p class="calibre13">
+         The following helper macro is defined to make it easy to log something. It's a macro accepting a variable number of arguments. You get access to those arguments using
+         <code class="calibre21">
+          __VA_ARGS__
+         </code>
+         . The macro
+         <span aria-label="1123" class="calibre20" epub:type="pagebreak" id="Page_1123" role="doc-pagebreak">
+         </span>
+         uses
+         <code class="calibre21">
+          __func__
+         </code>
+         , a predefined variable defined by the C++ standard that contains the name of the current function.
+        </p>
+        <pre class="calibre26" id="c31-code-0002"><code class="calibre21">#define LOG(…) Logger::log(__func__, "(): ", __VA_ARGS__)</code></pre>
+        <p class="calibre13">
+         This macro replaces every call to
+         <code class="calibre21">
+          LOG()
+         </code>
+         in your code with a call to
+         <code class="calibre21">
+          Logger::log()
+         </code>
+         . The macro automatically includes the function name as first argument to
+         <code class="calibre21">
+          Logger::log()
+         </code>
+         . For example, suppose you call the macro as follows:
+        </p>
+        <pre class="calibre26" id="c31-code-0003"><code class="calibre21">LOG("The value is: ", value);</code></pre>
+        <p class="calibre13">
+         The
+         <code class="calibre21">
+          LOG()
+         </code>
+         macro replaces this with the following:
+        </p>
+        <pre class="calibre26" id="c31-code-0004"><code class="calibre21">Logger::log(__func__, "(): ", "The value is: ", value);</code></pre>
+        <p class="calibre13">
+         Start-time debug mode needs to parse the command-line arguments to find out whether it should enable debug mode. Unfortunately, there is no standard functionality in C++ for parsing command-line arguments. This program uses a simple
+         <code class="calibre21">
+          isDebugSet()
+         </code>
+         function to check for the debug flag among all the command-line arguments, but a function to parse all command-line arguments would need to be more sophisticated.
+        </p>
+        <pre class="calibre26" id="c31-code-0005"><code class="calibre21">bool isDebugSet(int argc, char** argv)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    auto parameters { views::counted(argv, argc) };</code>
+<code class="calibre21">    return ranges::contains(parameters, string_view { "-d" });</code>
+<code class="calibre21">}</code></pre>
+        <p class="calibre13">
+         Some arbitrary test code is used to exercise the debug mode in this example. Two classes are defined,
+         <code class="calibre21">
+          ComplicatedClass
+         </code>
+         and
+         <code class="calibre21">
+          UserCommand
+         </code>
+         . Both classes define an
+         <code class="calibre21">
+          operator&lt;&lt;
+         </code>
+         to write instances of them to a stream. The
+         <code class="calibre21">
+          Logger
+         </code>
+         class uses this operator to dump objects to the log file.
+        </p>
+        <pre class="calibre26" id="c31-code-0006"><code class="calibre21">class ComplicatedClass { <span class="color">/* … */</span> };</code>
+<code class="calibre21">ostream&amp; operator&lt;&lt;(ostream&amp; outStream, const ComplicatedClass&amp; src)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    outStream &lt;&lt; "ComplicatedClass";</code>
+<code class="calibre21">    return outStream;</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class UserCommand { <span class="color">/* … */</span> };</code>
+<code class="calibre21">ostream&amp; operator&lt;&lt;(ostream&amp; outStream, const UserCommand&amp; src)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    outStream &lt;&lt; "UserCommand";</code>
+<code class="calibre21">    return outStream;</code>
+<code class="calibre21">}</code></pre>
+        <p class="calibre13">
+         Here is some test code with a number of log calls:
+        </p>
+        <pre class="calibre26" id="c31-code-0007"><code class="calibre21">UserCommand getNextCommand(ComplicatedClass* obj)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    UserCommand cmd;</code>
+<code class="calibre21">    return cmd;</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<span aria-label="1124" class="calibre20" epub:type="pagebreak" id="Page_1124" role="doc-pagebreak"></span><code class="calibre21">void processUserCommand(const UserCommand&amp; cmd)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    <span class="color">// Details omitted for brevity.</span></code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21">void trickyFunction(ComplicatedClass* obj)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    LOG("given argument: ", *obj);</code>
+<code class="calibre21"> </code>
+<code class="calibre21">    for (size_t i { 0 }; i &lt; 100; ++i) {</code>
+<code class="calibre21">        UserCommand cmd { getNextCommand(obj) };</code>
+<code class="calibre21">        LOG("retrieved cmd ", i, ": ", cmd);</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        try {</code>
+<code class="calibre21">            processUserCommand(cmd);</code>
+<code class="calibre21">        } catch (const exception&amp; e) {</code>
+<code class="calibre21">            LOG("exception from processUserCommand(): ", e.what());</code>
+<code class="calibre21">        }</code>
+<code class="calibre21">    }</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21">int main(int argc, char** argv)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    Logger::enableLogging(isDebugSet(argc, argv));</code>
+<code class="calibre21"> </code>
+<code class="calibre21">    if (Logger::isLoggingEnabled()) {</code>
+<code class="calibre21">        <span class="color">// Print the command-line arguments to the trace.</span></code>
+<code class="calibre21">        for (size_t i { 0 }; i &lt; argc; ++i) {</code>
+<code class="calibre21">            LOG("Argument: ", argv[i]);</code>
+<code class="calibre21">        }</code>
+<code class="calibre21">    }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">    ComplicatedClass obj;</code>
+<code class="calibre21">    trickyFunction(&amp;obj);</code>
+<code class="calibre21"> </code>
+<code class="calibre21">    <span class="color">// Rest of the function not shown.</span></code>
+<code class="calibre21">}</code></pre>
+        <p class="calibre13">
+         There are two ways to run this application:
+        </p>
+        <pre class="calibre26" id="c31-code-0008"><code class="calibre21">&gt; STDebug</code>
+<code class="calibre21">&gt; STDebug -d</code></pre>
+        <p class="calibre13">
+         Debug mode is activated only when the
+         <code class="calibre21">
+          -d
+         </code>
+         argument is specified on the command line.
+        </p>
+        <section class="calibre2">
+         <aside class="calibre23">
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+          <section class="feature">
+           <p class="calibre25" id="c31-para-0040">
+            <b class="calibre14">
+             WARNING
+            </b>
+            <i class="calibre18">
+             Macros in C++ should be avoided as much as possible because they can be hard to debug. However, for logging purposes, using a simple macro can be acceptable, and it makes using the logging code much easier. Even so, with
+            </i>
+            <code class="calibre21">
+             std::source:location
+            </code>
+            <i class="calibre18">
+             , discussed in
+             <a class="calibre5" href="c14.xhtml">
+              Chapter 14
+             </a>
+             , the example can be modified to avoid the use of a macro. This is the topic of one of the exercises at the end of this chapter
+            </i>
+            .
+           </p>
+           <div class="top">
+            <hr class="calibre24"/>
+           </div>
+          </section>
+         </aside>
+        </section>
+       </section>
+       <span aria-label="1125" class="calibre20" epub:type="pagebreak" id="Page_1125" role="doc-pagebreak">
+       </span>
+       <section class="calibre2">
+        <span class="calibre" id="c31-sec-0015">
+        </span>
+        <h5 class="calibre35" id="head-5-176">
+         Compile-Time Debug Mode
+        </h5>
+        <p class="calibre13" id="c31-para-0041">
+         Instead of enabling or disabling debug mode through a command-line argument, you could also use a preprocessor symbol such as
+         <code class="calibre21">
+          DEBUG_MODE
+         </code>
+         and
+         <code class="calibre21">
+          #ifdef
+         </code>
+         s to selectively compile the debug code into your program. To generate a debug version of this program, you would have to compile it with the symbol
+         <code class="calibre21">
+          DEBUG_MODE
+         </code>
+         defined. Your compiler allows you to define symbols during compilation; consult your compiler's documentation for details. For example, GCC allows you to specify
+         <code class="calibre21">
+          –Dsymbol
+         </code>
+         through the command line. Microsoft Visual C++ allows you to specify the symbols through the Visual Studio IDE or by specifying
+         <code class="calibre21">
+          /D symbol
+         </code>
+         if you use the Visual C++ command-line tools. Instead of using a custom
+         <code class="calibre21">
+          DEBUG_MODE
+         </code>
+         symbol, you could also use the
+         <code class="calibre21">
+          NDEBUG
+         </code>
+         symbol, which is defined by a compiler for release builds and not for debug builds.
+        </p>
+        <p class="calibre13" id="c31-para-0042">
+         The advantage of this technique is that your debug code is not compiled into the “release” binary and so does not increase its size. The disadvantage is that there is no way to enable debugging at a customer site for testing or following the discovery of a bug.
+        </p>
+        <p class="calibre13">
+         An example implementation is given in
+         <code class="calibre21">
+          CTDebug.cpp
+         </code>
+         in the downloadable source code archive. One important remark on this implementation is that it contains the following definition for the
+         <code class="calibre21">
+          LOG()
+         </code>
+         macro:
+        </p>
+        <pre class="calibre26" id="c31-code-0009"><code class="calibre21">#ifdef DEBUG_MODE</code>
+<code class="calibre21">    #define LOG(…) Logger::log(__func__, "(): ", __VA_ARGS__)</code>
+<code class="calibre21">#else</code>
+<code class="calibre21">    #define LOG(…) (void)0</code>
+<code class="calibre21">#endif</code></pre>
+        <p class="calibre13">
+         That is, if
+         <code class="calibre21">
+          DEBUG_MODE
+         </code>
+         is not defined, then all calls to
+         <code class="calibre21">
+          LOG()
+         </code>
+         are replaced with nothing, called
+         <i class="calibre18">
+          no-ops
+         </i>
+         .
+        </p>
+        <section class="calibre2">
+         <aside class="calibre23">
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+          <section class="feature">
+           <p class="calibre25" id="c31-para-0045">
+            <b class="calibre14">
+             WARNING
+            </b>
+            <i class="calibre18">
+             Be careful not to put any code that must be executed for correct program functioning inside your
+            </i>
+            <code class="calibre21">
+             LOG()
+            </code>
+            <i class="calibre18">
+             calls. For example, the following line of code could be asking for trouble:
+            </i>
+           </p>
+           <pre class="calibre26" id="c31-code-0010"><code class="calibre21">        LOG("Result: ", calculateResult());</code></pre>
+           <p class="calibre25" id="c31-para-0047">
+            <i class="calibre18">
+             If
+            </i>
+            <code class="calibre21">
+             DEBUG_MODE
+            </code>
+            <i class="calibre18">
+             is not defined, the preprocessor replaces all
+            </i>
+            <code class="calibre21">
+             LOG()
+            </code>
+            <i class="calibre18">
+             calls with no-ops, which means that the call to
+            </i>
+            <code class="calibre21">
+             calculateResult()
+            </code>
+            <i class="calibre18">
+             is removed as well!
+            </i>
+           </p>
+           <div class="top">
+            <hr class="calibre24"/>
+           </div>
+          </section>
+         </aside>
+        </section>
+        <p class="calibre13">
+         As logging code is removed if
+         <code class="calibre21">
+          DEBUG_MODE
+         </code>
+         is not defined, it could mean that certain variables might be unused, which can trigger compiler warnings. Using the
+         <code class="calibre21">
+          [[maybe_unused]]
+         </code>
+         attribute (see
+         <a class="calibre5" href="c01_split_000.xhtml">
+          Chapter 1
+         </a>
+         , “A Crash Course in C++ and the Standard Library”) avoids such warnings. For example:
+        </p>
+        <pre class="calibre26" id="c31-code-0011"><code class="calibre21">int main(<b class="calibre14">[[maybe_unused]]</b> int argc, <b class="calibre14">[[maybe_unused]]</b> char** argv)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">#ifdef DEBUG_MODE</code>
+<code class="calibre21">    <span class="color">// Print the command-line arguments to the trace.</span></code>
+<code class="calibre21">    for (size_t i { 0 }; i &lt; argc; ++i) { LOG("Argument: ", argv[i]); }</code>
+<code class="calibre21">#endif</code>
+<code class="calibre21">    ComplicatedClass obj;</code>
+<span aria-label="1126" class="calibre20" epub:type="pagebreak" id="Page_1126" role="doc-pagebreak"></span><code class="calibre21">    trickyFunction(&amp;obj);</code>
+<code class="calibre21">    <span class="color">// Rest of the function not shown.</span></code>
+<code class="calibre21">}</code></pre>
+       </section>
+       <section class="calibre2">
+        <span class="calibre" id="c31-sec-0018">
+        </span>
+        <h5 class="calibre35" id="head-5-177">
+         Run-Time Debug Mode
+        </h5>
+        <p class="calibre13" id="c31-para-0049">
+         The most flexible way to provide a debug mode is to allow it to be enabled or disabled at run time. One way to provide this feature is to supply an asynchronous interface that controls debug mode on the fly. This interface could be an asynchronous command that makes an interprocess call into the application (for example, using sockets, signals, or remote procedure calls). This interface could also take the form of a menu command in the user interface. C++ provides no standard way to perform interprocess communication or to implement user interfaces, so an example of this technique is not shown.
+        </p>
+       </section>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c31-sec-0019">
+       </span>
+       <h4 class="calibre29" id="head-4-430">
+        Ring Buffers
+       </h4>
+       <p class="calibre13" id="c31-para-0050">
+        Debug mode is useful for debugging reproducible problems and for running tests. However, bugs often appear when the program is running in non-debug mode, and by the time you or the customer enables debug mode, it is too late to gain any information about the bug. One solution to this problem is to enable tracing in your program at all times. You usually need only the most recent traces to debug a program, so you should store only the most recent traces at any point in a program's execution. One way to provide for this is through careful use of log file rotations.
+       </p>
+       <p class="calibre13" id="c31-para-0051">
+        However, for performance reasons, it's better that you don't log these traces continuously to disk. Instead, store them in memory and provide a mechanism to dump all the trace messages to standard error or to a log file if the need arises.
+       </p>
+       <p class="calibre13" id="c31-para-0052">
+        A common technique is to use a
+        <i class="calibre18">
+         ring buffer
+        </i>
+        , or
+        <i class="calibre18">
+         circular buffer
+        </i>
+        , to store a fixed number of messages, or messages in a fixed amount of memory. When the buffer fills up, it starts writing messages at the beginning of the buffer again, overwriting the older messages. This cycle can repeat indefinitely. The following sections provide an implementation of a ring buffer and show you how you can use it in your programs.
+       </p>
+       <section class="calibre2">
+        <span class="calibre" id="c31-sec-0020">
+        </span>
+        <h5 class="calibre35" id="head-5-178">
+         Ring Buffer Interface
+        </h5>
+        <p class="calibre13">
+         The following
+         <code class="calibre21">
+          RingBuffer
+         </code>
+         class provides a simple ring buffer storing messages. The client specifies the number of entries in the constructor and adds messages with the
+         <code class="calibre21">
+          addEntry()
+         </code>
+         member function. Once the number of entries exceeds the number allowed, new entries overwrite the oldest entries in the buffer. The buffer also provides the option to output entries to a stream as they are added to the buffer. The client can specify an output stream in the constructor and can reset it with the
+         <code class="calibre21">
+          setOutput()
+         </code>
+         member function. Finally, the
+         <code class="calibre21">
+          operator&lt;&lt;
+         </code>
+         streams the entire buffer to an output stream. This implementation uses a variadic template member function, discussed in
+         <a class="calibre5" href="c26.xhtml">
+          Chapter 26
+         </a>
+         .
+        </p>
+        <pre class="calibre26" id="c31-code-0012"><code class="calibre21">export class RingBuffer final</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        <span class="color">// Constructs a ring buffer with space for numEntries.</span></code>
+<code class="calibre21">        <span class="color">// Entries are written to *outStream as they are queued (optional).</span></code>
+<code class="calibre21">        explicit RingBuffer(std::size_t numEntries = DefaultNumEntries,</code>
+<code class="calibre21">            std::ostream* outStream = nullptr);</code>
+<code class="calibre21"> </code>
+<span aria-label="1127" class="calibre20" epub:type="pagebreak" id="Page_1127" role="doc-pagebreak"></span><code class="calibre21">        <span class="color">// Adds an entry to the ring buffer, possibly overwriting the</span></code>
+<code class="calibre21">        <span class="color">// oldest entry in the buffer (if the buffer is full).</span></code>
+<code class="calibre21">        template &lt;typename… Args&gt;</code>
+<code class="calibre21">        void addEntry(const Args&amp;… args)</code>
+<code class="calibre21">        {</code>
+<code class="calibre21">            std::ostringstream oss;</code>
+<code class="calibre21">            std::print(oss, "{:L} UTC: ", std::chrono::system_clock::now());</code>
+<code class="calibre21">            <span class="color">// Use a fold-expression; see <a class="calibre5" href="c26.xhtml">Chapter 26</a>.</span></code>
+<code class="calibre21">            (oss &lt;&lt; … &lt;&lt; args);</code>
+<code class="calibre21">            addStringEntry(std::move(oss).str());</code>
+<code class="calibre21">        }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        <span class="color">// Streams the buffer entries, separated by newlines, to outStream.</span></code>
+<code class="calibre21">        friend std::ostream&amp; operator&lt;&lt;(std::ostream&amp; outStream, RingBuffer&amp; rb);</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        <span class="color">// Streams entries as they are added to the given stream.</span></code>
+<code class="calibre21">        <span class="color">// Specify nullptr to disable this feature.</span></code>
+<code class="calibre21">        <span class="color">// Returns the old output stream.</span></code>
+<code class="calibre21">        std::ostream* setOutput(std::ostream* newOutStream);</code>
+<code class="calibre21"> </code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        std::vector&lt;std::string&gt; m_entries;</code>
+<code class="calibre21">        std::vector&lt;std::string&gt;::iterator m_next;</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        std::ostream* m_outStream { nullptr };</code>
+<code class="calibre21">        bool m_wrapped { false };</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        static constexpr std::size_t DefaultNumEntries { 500 };</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        void addStringEntry(std::string entry);</code>
+<code class="calibre21">};</code></pre>
+       </section>
+       <section class="calibre2">
+        <span class="calibre" id="c31-sec-0021">
+        </span>
+        <h5 class="calibre35" id="head-5-179">
+         Ring Buffer Implementation
+        </h5>
+        <p class="calibre13" id="c31-para-0054">
+         This implementation of the ring buffer stores a fixed number of
+         <code class="calibre21">
+          string
+         </code>
+         objects. This approach certainly is not the most efficient solution. Other possibilities would be to provide a fixed number of bytes of memory for the buffer. However, this implementation should be sufficient unless you're writing a high-performance application.
+        </p>
+        <p class="calibre13" id="c31-para-0055">
+         For multithreaded programs, it's useful to add the ID of the thread to each trace entry. Of course, the ring buffer has to be made thread-safe before using it in a multithreaded application. See
+         <a class="calibre5" href="c27.xhtml">
+          Chapter 27
+         </a>
+         for multithreaded programming.
+        </p>
+        <p class="calibre13">
+         Here are the implementations:
+        </p>
+        <pre class="calibre26" id="c31-code-0013"><code class="calibre21"><span class="color">// Initialize the vector to hold exactly numEntries. The vector size</span></code>
+<code class="calibre21"><span class="color">// does not need to change during the lifetime of the object.</span></code>
+<code class="calibre21"><span class="color">// Initialize the other members.</span></code>
+<code class="calibre21">RingBuffer::RingBuffer(size_t numEntries, ostream* outStream)</code>
+<code class="calibre21">    : m_entries { numEntries }, m_outStream { outStream }, m_wrapped { false }</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    if (numEntries == 0) {</code>
+<code class="calibre21">        throw invalid_argument { "Number of entries must be &gt; 0." };</code>
+<code class="calibre21">    }</code>
+<span aria-label="1128" class="calibre20" epub:type="pagebreak" id="Page_1128" role="doc-pagebreak"></span><code class="calibre21">    m_next = begin(m_entries);</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21"><span class="color">// The addStringEntry algorithm is pretty simple: add the entry to the next</span></code>
+<code class="calibre21"><span class="color">// free spot, then reset m_next to indicate the free spot after</span></code>
+<code class="calibre21"><span class="color">// that. If m_next reaches the end of the vector, it starts over at 0.</span></code>
+<code class="calibre21"><span class="color">//</span></code>
+<code class="calibre21"><span class="color">// The buffer needs to know if the buffer has wrapped or not so</span></code>
+<code class="calibre21"><span class="color">// that it knows whether to print the entries past m_next in operator&lt;&lt;.</span></code>
+<code class="calibre21">void RingBuffer::addStringEntry(string entry)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    <span class="color">// If there is a valid m_outStream, write this entry to it.</span></code>
+<code class="calibre21">    if (m_outStream) { *m_outStream &lt;&lt; entry &lt;&lt; endl; }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">    <span class="color">// Move the entry to the next free spot and increment</span></code>
+<code class="calibre21">    <span class="color">// m_next to point to the free spot after that.</span></code>
+<code class="calibre21">    *m_next = move(entry);</code>
+<code class="calibre21">    ++m_next;</code>
+<code class="calibre21"> </code>
+<code class="calibre21">    <span class="color">// Check if we've reached the end of the buffer. If so, we need to wrap.</span></code>
+<code class="calibre21">    if (m_next == end(m_entries)) {</code>
+<code class="calibre21">        m_next = begin(m_entries);</code>
+<code class="calibre21">        m_wrapped = true;</code>
+<code class="calibre21">    }</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21"><span class="color">// Set the output stream.</span></code>
+<code class="calibre21">ostream* RingBuffer::setOutput(ostream* newOutStream)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    return exchange(m_outStream, newOutStream);</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21"><span class="color">// operator&lt;&lt; uses an ostream_iterator to "copy" entries directly</span></code>
+<code class="calibre21"><span class="color">// from the vector to the output stream.</span></code>
+<code class="calibre21"><span class="color">//</span></code>
+<code class="calibre21"><span class="color">// operator&lt;&lt; must print the entries in order. If the buffer has wrapped,</span></code>
+<code class="calibre21"><span class="color">// the earliest entry is one past the most recent entry, which is the entry</span></code>
+<code class="calibre21"><span class="color">// indicated by m_next. So, first print from entry m_next to the end.</span></code>
+<code class="calibre21"><span class="color">//</span></code>
+<code class="calibre21"><span class="color">// Then (even if the buffer hasn't wrapped) print from beginning to m_next-1.</span></code>
+<code class="calibre21">ostream&amp; operator&lt;&lt;(ostream&amp; outStream, RingBuffer&amp; rb)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    if (rb.m_wrapped) {</code>
+<code class="calibre21">        <span class="color">// If the buffer has wrapped, print the elements from</span></code>
+<code class="calibre21">        <span class="color">// the earliest entry to the end.</span></code>
+<code class="calibre21">        copy(rb.m_next, end(rb.m_entries),</code>
+<code class="calibre21">            ostream_iterator&lt;string&gt;{ outStream, "\n" });</code>
+<code class="calibre21">    }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">    <span class="color">// Now, print up to the most recent entry.</span></code>
+<code class="calibre21">    <span class="color">// Go up to m_next because the range is not inclusive on the right side.</span></code>
+<code class="calibre21">    copy(begin(rb.m_entries), rb.m_next,</code>
+<code class="calibre21">        ostream_iterator&lt;string&gt;{ outStream, "\n" });</code>
+<code class="calibre21"> </code>
+<code class="calibre21">    return outStream;</code>
+<code class="calibre21">}</code></pre>
+       </section>
+       <span aria-label="1129" class="calibre20" epub:type="pagebreak" id="Page_1129" role="doc-pagebreak">
+       </span>
+       <section class="calibre2">
+        <span class="calibre" id="c31-sec-0022">
+        </span>
+        <h5 class="calibre35" id="head-5-180">
+         Using the Ring Buffer
+        </h5>
+        <p class="calibre13">
+         To use the ring buffer, you can create an instance of it and start adding messages to it. When you want to print the buffer, just use
+         <code class="calibre21">
+          operator&lt;&lt;
+         </code>
+         to print it to the appropriate
+         <code class="calibre21">
+          ostream
+         </code>
+         . Here is the earlier start-time debug mode program modified to use a ring buffer instead. Changes are highlighted. The definitions of the
+         <code class="calibre21">
+          ComplicatedClass
+         </code>
+         and
+         <code class="calibre21">
+          UserCommand
+         </code>
+         classes, and the functions
+         <code class="calibre21">
+          getNextCommand()
+         </code>
+         ,
+         <code class="calibre21">
+          processUserCommand()
+         </code>
+         , and
+         <code class="calibre21">
+          trickyFunction()
+         </code>
+         are not shown. They are the same as before.
+        </p>
+        <pre class="calibre26" id="c31-code-0014"><code class="calibre21"><b class="calibre14">RingBuffer debugBuffer;</b></code>
+<code class="calibre21"> </code>
+<code class="calibre21"><b class="calibre14">#define LOG(…) debugBuffer.addEntry(__func__, "(): ", __VA_ARGS__)</b></code>
+<code class="calibre21"> </code>
+<code class="calibre21">int main(int argc, char** argv)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    <span class="color">// Log the command-line arguments.</span></code>
+<code class="calibre21">    for (size_t i { 0 }; i &lt; argc; ++i) {</code>
+<code class="calibre21">        LOG("Argument: ", argv[i]);</code>
+<code class="calibre21">    }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">    ComplicatedClass obj;</code>
+<code class="calibre21">    trickyFunction(&amp;obj);</code>
+<code class="calibre21"> </code>
+<code class="calibre21">    <span class="color">// Print the current contents of the debug buffer to cout.</span></code>
+<code class="calibre21">    <b class="calibre14">cout &lt;&lt; debugBuffer;</b></code>
+<code class="calibre21">}</code></pre>
+       </section>
+       <section class="calibre2">
+        <span class="calibre" id="c31-sec-0023">
+        </span>
+        <h5 class="calibre35" id="head-5-181">
+         Displaying the Ring Buffer Contents
+        </h5>
+        <p class="calibre13" id="c31-para-0058">
+         Storing trace debug messages in memory is a great start, but for them to be useful, you need a way to access these traces for debugging.
+        </p>
+        <p class="calibre13" id="c31-para-0059">
+         Your program should provide a “hook” to tell it to export the messages. This hook could be similar to the interface you would use to enable debugging at run time. Additionally, if your program encounters a fatal error that causes it to exit, it could export the ring buffer automatically to a log file before exiting.
+        </p>
+        <p class="calibre13" id="c31-para-0060">
+         Another way to retrieve these messages is to obtain a memory dump of the program. Each platform handles memory dumps differently, so you should consult a reference or expert for your platform.
+        </p>
+       </section>
+      </section>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c31-sec-0024">
+      </span>
+      <h3 class="calibre27" id="head-3-556">
+       Assertions
+      </h3>
+      <p class="calibre13">
+       <code class="calibre21">
+        &lt;cassert&gt;
+       </code>
+       defines an
+       <code class="calibre21">
+        assert()
+       </code>
+       macro. It takes a Boolean expression and, if the expression evaluates to
+       <code class="calibre21">
+        false
+       </code>
+       , prints an error message and terminates the program. If the expression evaluates to
+       <code class="calibre21">
+        true
+       </code>
+       , it does nothing.
+      </p>
+      <section class="calibre2">
+       <aside class="calibre23">
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+        <section class="feature">
+         <p class="calibre25" id="c31-para-0062">
+          <b class="calibre14">
+           WARNING
+          </b>
+          <i class="calibre18">
+           Normally, you should avoid any library functions or macros that can terminate your program. The
+          </i>
+          <code class="calibre21">
+           assert()
+          </code>
+          <i class="calibre18">
+           macro is an exception. If an assertion triggers, it means that some assumption is wrong or that something is catastrophically, unrecoverably wrong, and the only sane thing to do is to terminate the application at that very moment, instead of continuing.
+          </i>
+         </p>
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <p class="calibre13">
+       <span aria-label="1130" class="calibre20" epub:type="pagebreak" id="Page_1130" role="doc-pagebreak">
+       </span>
+       Assertions allow you to “force” your program to exhibit a bug at the exact point where that bug originates. If you didn't assert at that point, your program might proceed with those incorrect values, and the bug might not show up until much later. Thus, assertions allow you to detect bugs earlier than you otherwise would.
+      </p>
+      <section class="calibre2">
+       <aside class="calibre23">
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+        <section class="feature">
+         <p class="calibre25" id="c31-para-0064">
+          <b class="calibre14">
+           NOTE
+          </b>
+          <i class="calibre18">
+           The behavior of the standard
+          </i>
+          <code class="calibre21">
+           assert()
+          </code>
+          <i class="calibre18">
+           macro depends on the
+          </i>
+          <code class="calibre21">
+           NDEBUG
+          </code>
+          <i class="calibre18">
+           preprocessor symbol: if the symbol is not defined, the assertion takes place; otherwise, it is ignored. Compilers often define this symbol when compiling “release” builds. If you want to leave assertions in release builds, you may have to change your compiler settings or write your own version of
+          </i>
+          <code class="calibre21">
+           assert()
+          </code>
+          <i class="calibre18">
+           that isn't affected by the value of
+          </i>
+          <code class="calibre21">
+           NDEBUG
+          </code>
+          <i class="calibre18">
+           .
+          </i>
+         </p>
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <p class="calibre13" id="c31-para-0065">
+       <code class="calibre21">
+        assert()
+       </code>
+       is a C-style macro whose implementation depends on whether client code defines the
+       <code class="calibre21">
+        NDEBUG
+       </code>
+       preprocessor symbol or not. That makes
+       <code class="calibre21">
+        &lt;cassert&gt;
+       </code>
+       an example of a
+       <i class="calibre18">
+        non-modular, non-importable header
+       </i>
+       , as explained in
+       <a class="calibre5" href="c11.xhtml">
+        Chapter 11
+       </a>
+       , “Modules, Header Files, and Miscellaneous Topics.” Use
+       <code class="calibre21">
+        #include &lt;cassert&gt;
+       </code>
+       instead of
+       <code class="calibre21">
+        import &lt;cassert&gt;
+       </code>
+       to get access to the
+       <code class="calibre21">
+        assert()
+       </code>
+       macro.
+      </p>
+      <p class="calibre13" id="c31-para-0066">
+       You could use assertions in your code whenever you are “assuming” something about the state of your variables. For example, if you call a library function that is supposed to return a pointer and claims never to return
+       <code class="calibre21">
+        nullptr
+       </code>
+       , throw in an
+       <code class="calibre21">
+        assert()
+       </code>
+       after the function call to make sure that the pointer isn't
+       <code class="calibre21">
+        nullptr
+       </code>
+       .
+      </p>
+      <p class="calibre13" id="c31-para-0067">
+       However, you should assume as little as possible. For example, if you are writing a library function, don't assert that the parameters are valid. Instead, check the parameters, and return an error code or throw an exception if they are invalid.
+      </p>
+      <p class="calibre13" id="c31-para-0068">
+       As a rule, assertions should be used only for cases that are truly problematic and should therefore never be ignored when they occur during development. If you hit an assertion during development, fix it, don't just disable the assertion.
+      </p>
+      <p class="calibre13">
+       Let's look at a couple of examples on how to use
+       <code class="calibre21">
+        assert()
+       </code>
+       . Here is a
+       <code class="calibre21">
+        process()
+       </code>
+       function that requires three elements in a
+       <code class="calibre21">
+        vector
+       </code>
+       passed to the function:
+      </p>
+      <pre class="calibre26" id="c31-code-0015"><code class="calibre21">void process(const vector&lt;int&gt;&amp; coordinate)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    assert(coordinate.size() == 3);</code>
+<code class="calibre21">    <span class="color">// …</span></code>
+<code class="calibre21">}</code></pre>
+      <p class="calibre13">
+       If the
+       <code class="calibre21">
+        process()
+       </code>
+       function is called with a
+       <code class="calibre21">
+        vector
+       </code>
+       that has less or more elements than three, the assertion fails and generates a message similar to the following (the exact message depends on the compiler that is used):
+      </p>
+      <pre class="calibre26" id="c31-code-0016"><code class="calibre21">Assertion failed: coordinate.size() == 3, file D:\test\test.cpp, line 12</code></pre>
+      <p class="calibre13">
+       If you want a custom error message, you can use the following trick using the comma operator and a set of extra parentheses:
+      </p>
+      <pre class="calibre26" id="c31-code-0017"><code class="calibre21">assert(<b class="calibre14">("A custom message…",</b> coordinate.size() == 3<b class="calibre14">)</b>);</code></pre>
+      <p class="calibre13">
+       <span aria-label="1131" class="calibre20" epub:type="pagebreak" id="Page_1131" role="doc-pagebreak">
+       </span>
+       The output then will be something as follows:
+      </p>
+      <pre class="calibre26" id="c31-code-0018"><code class="calibre21">Assertion failed: ("A custom message…", coordinate.size() == 3), file D:\test\test.cpp, line 106</code></pre>
+      <p class="calibre13">
+       If at some point in your code you want that an assert always fails with a certain error message, you can use the following trick:
+      </p>
+      <pre class="calibre26" id="c31-code-0019"><code class="calibre21">assert(!"This should never happen.");</code></pre>
+      <section class="calibre2">
+       <aside class="calibre23">
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+        <section class="feature">
+         <p class="calibre25" id="c31-para-0075">
+          <b class="calibre14">
+           WARNING
+          </b>
+          <i class="calibre18">
+           Be careful not to put any code that must be executed for correct program functioning inside assertions. For example, the following line of code could be asking for trouble:
+          </i>
+         </p>
+         <pre class="calibre26" id="c31-code-0020"><code class="calibre21">        assert(calculateResult() != 0);</code></pre>
+         <p class="calibre25" id="c31-para-0077">
+          <i class="calibre18">
+           If a release build of your code strips assertions, then the call to
+          </i>
+          <code class="calibre21">
+           calculateResult()
+          </code>
+          <i class="calibre18">
+           is stripped as well!
+          </i>
+         </p>
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+        </section>
+       </aside>
+      </section>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c31-sec-0029">
+      </span>
+      <h3 class="calibre27" id="head-3-557">
+       Crash Dumps
+      </h3>
+      <p class="calibre13" id="c31-para-0078">
+       Make sure your programs create
+       <i class="calibre18">
+        crash dumps
+       </i>
+       , also called
+       <i class="calibre18">
+        memory dumps
+       </i>
+       or
+       <i class="calibre18">
+        core dumps
+       </i>
+       . A crash dump is a dump file that is created when your application crashes. It contains information about which threads were running at the time of the crash, a call stack of all the threads, and so on. How you create such dumps is platform dependent, so you should consult the documentation of your platform or use a third-party library that takes care of it for you. Breakpad (
+       <code class="calibre21">
+        <a class="calibre5" href="http://github.com/google/breakpad/">
+         github.com/google/breakpad/
+        </a>
+       </code>
+       ) is an example of such an open-source cross-platform library that can write and process crash dumps.
+      </p>
+      <p class="calibre13" id="c31-para-0079">
+       Also make sure you set up a
+       <i class="calibre18">
+        symbol server
+       </i>
+       and a
+       <i class="calibre18">
+        version control server
+       </i>
+       . The symbol server is used to store debugging symbols of released binaries of your software. These symbols are used later to interpret crash dumps received from customers. The version control server, discussed in
+       <a class="calibre5" href="c28.xhtml">
+        Chapter 28
+       </a>
+       , “Maximizing Software Engineering Methods,” stores all revisions of your source code. When debugging crash dumps, this version control server is used to download the correct source code for the revision of your software that created the crash dump.
+      </p>
+      <p class="calibre13" id="c31-para-0080">
+       The exact procedure of analyzing crash dumps depends on your platform and compiler, so consult their documentation.
+      </p>
+      <p class="calibre13" id="c31-para-0081">
+       From my personal experience, I have found that a crash dump is often worth more than a thousand bug reports.
+      </p>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-314" class="calibre2">
+     <span class="calibre" id="c31-sec-0030">
+     </span>
+     <h2 class="calibre6" id="head-2-314">
+      DEBUGGING TECHNIQUES
+     </h2>
+     <p class="calibre13" id="c31-para-0082">
+      Debugging a program can be incredibly frustrating. However, with a systematic approach it becomes significantly easier. Your first step in trying to debug a program should always be to reproduce the bug. Depending on whether you can reproduce the bug, your subsequent approach will differ. The
+      <span aria-label="1132" class="calibre20" epub:type="pagebreak" id="Page_1132" role="doc-pagebreak">
+      </span>
+      next four sections explain how to reproduce bugs, how to debug reproducible bugs, how to debug nonreproducible bugs, and how to debug regressions. Additional sections explain details about debugging memory errors and debugging multithreaded programs. The final sections show a step-by-step debugging example.
+     </p>
+     <section class="calibre2">
+      <span class="calibre" id="c31-sec-0031">
+      </span>
+      <h3 class="calibre27" id="head-3-558">
+       Reproducing Bugs
+      </h3>
+      <p class="calibre13" id="c31-para-0083">
+       If you can reproduce a bug consistently, it will be much easier to determine the root cause. Sometimes a bug might be reproducible by Alice but not by Bob. That in itself can be a clue for Alice to find the root cause. Finding the root cause of bugs that are not reproducible is difficult, if not impossible.
+      </p>
+      <p class="calibre13" id="c31-para-0084">
+       As a first step to reproduce the bug, run the program on a similar environment (hardware, operating system, and so on) and with the same inputs as the run when the bug first appeared. Be sure to include all inputs, from the program's startup to the time of the bug's appearance. A common mistake is to attempt to reproduce the bug by performing only the triggering action. This technique may not reproduce the bug because the bug might be caused by an entire sequence of actions.
+      </p>
+      <p class="calibre13" id="c31-para-0085">
+       For example, if your web browser dies when you request a certain web page, it may be due to memory corruption triggered by that particular request's network address. On the other hand, it may be because your program records all requests in a queue, with space for one million entries, and this entry was number 1,000,001. Starting the program over and sending one request certainly wouldn't trigger the bug in that case.
+      </p>
+      <p class="calibre13">
+       Sometimes it is impossible to emulate the entire sequence of events that leads to the bug. Perhaps the bug was reported by someone who can't remember everything that she did. Alternatively, maybe the program was running for too long to emulate every input. In that case, do your best to reproduce the bug. It takes some guesswork and can be time-consuming, but effort at this point will save time later in the debugging process. Here are some techniques you can try:
+      </p>
+      <ul class="check" id="c31-list-0006">
+       <li class="calibre9" id="c31-li-0025">
+        Repeat the triggering action in the correct environment and with as many inputs as possible similar to the initial report.
+       </li>
+       <li class="calibre9" id="c31-li-0026">
+        Do a quick review of the code related to the bug. More often than not, you'll find a likely cause that will guide you in reproducing the problem.
+       </li>
+       <li class="calibre9" id="c31-li-0027">
+        Run automated tests that exercise similar functionality. Reproducing bugs is one benefit of automated tests. If it takes 24 hours of testing before the bug shows up, it's preferable to let those tests run on their own rather than spend 24 hours of your time trying to reproduce the bug.
+       </li>
+       <li class="calibre9" id="c31-li-0028">
+        If you have the necessary hardware available, running slight variations of tests concurrently on different machines can sometimes save time.
+       </li>
+       <li class="calibre9" id="c31-li-0029">
+        Run stress tests that exercise similar functionality. If your program is a web server that died on a particular request, try running as many browsers as possible simultaneously that make that request.
+       </li>
+      </ul>
+      <p class="calibre13" id="c31-para-0087">
+       After you are able to reproduce the bug consistently, you should attempt to find the smallest sequence that triggers the bug. You can start with the minimum sequence, containing only the triggering action, and slowly expand the sequence to cover the entire sequence from startup until the bug is triggered. This will result in the simplest and most efficient test case to reproduce it, which makes it simpler to find the root cause of the problem and easier to verify the fix.
+      </p>
+     </section>
+     <span aria-label="1133" class="calibre20" epub:type="pagebreak" id="Page_1133" role="doc-pagebreak">
+     </span>
+     <section class="calibre2">
+      <span class="calibre" id="c31-sec-0032">
+      </span>
+      <h3 class="calibre27" id="head-3-559">
+       Debugging Reproducible Bugs
+      </h3>
+      <p class="calibre13">
+       When you can reproduce a bug consistently and efficiently, it's time to figure out the problem in the code that causes the bug. Your goal at this point is to find the exact lines of code that trigger the problem. You can use two different strategies:
+      </p>
+      <ul class="check" id="c31-list-0007">
+       <li class="calibre9" id="c31-li-0030">
+        <b class="calibre14">
+         Use a debugger:
+        </b>
+        Debuggers allow you to step through the execution of your program and to view the state of memory and the values of variables at various points. They are often indispensable tools for finding the root cause of bugs. When you have access to the source code, you should use a
+        <i class="calibre18">
+         symbolic debugger
+        </i>
+        : a debugger that utilizes the variable names, class names, and other symbols in your code. To use a symbolic debugger, you must instruct your compiler to generate debug symbols. Check the documentation of your compiler for details on how to enable symbol generation.
+       </li>
+       <li class="calibre9" id="c31-li-0031">
+        <b class="calibre14">
+         Log debug messages:
+        </b>
+        By adding enough debug messages to your program and watching its output when you reproduce the bug, you should be able to pinpoint the exact lines of code where the bug occurs. If you have a debugger at your disposal, adding debug messages is usually not recommended because it requires modifications to the program and can be time-consuming. However, if you have already instrumented your program with debug messages as described earlier, you might be able to find the root cause of your bug by running your program in debug mode while reproducing the bug. Note that bugs sometimes disappear simply when you enable logging because the act of enabling logging can slightly change the timings of your application.
+       </li>
+      </ul>
+      <p class="calibre13" id="c31-para-0089">
+       The debugging example at the end of this chapter demonstrates both these approaches.
+      </p>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c31-sec-0033">
+      </span>
+      <h3 class="calibre27" id="head-3-560">
+       Debugging Nonreproducible Bugs
+      </h3>
+      <p class="calibre13">
+       Fixing bugs that are not reproducible is significantly more difficult than fixing reproducible bugs. You often have little information and must employ a lot of guesswork. Nevertheless, a few strategies can aid you:
+      </p>
+      <ul class="check" id="c31-list-0008">
+       <li class="calibre9" id="c31-li-0032">
+        Try to turn a nonreproducible bug into a reproducible bug. By using educated guesses, you can often determine approximately where the bug lies. It's worthwhile to spend some time trying to reproduce the bug. Once you have a reproducible bug, you can figure out its root cause by using the techniques described earlier.
+       </li>
+       <li class="calibre9" id="c31-li-0033">
+        Analyze error logs. This is easy to do if you have instrumented your program with error log generation, as described earlier. You should sift through this information because any errors that were logged directly before the bug occurred are likely to have contributed to the bug itself. If you're lucky (or if you coded your program well), your program will have logged the exact reason for the bug at hand.
+       </li>
+       <li class="calibre9" id="c31-li-0034">
+        Obtain and analyze traces. Again, this is easy to do if you have instrumented your program with tracing output, for example, via a ring buffer as described earlier. At the time of the bug's occurrence, you ideally obtained a copy of the traces. These traces should lead you right to the location of the bug in your code.
+       </li>
+       <li class="calibre9" id="c31-li-0035">
+        Examine a
+        <i class="calibre18">
+         crash/memory dump
+        </i>
+        file, if it exists. Some platforms automatically generate memory dump files of applications that terminate abnormally. On Unix and Linux, these
+        <span aria-label="1134" class="calibre20" epub:type="pagebreak" id="Page_1134" role="doc-pagebreak">
+        </span>
+        memory dumps are called
+        <i class="calibre18">
+         core files
+        </i>
+        . Each platform provides tools for analyzing these memory dumps. They can, for example, be used to view the stack trace of the application and the contents of its memory before the application died.
+       </li>
+       <li class="calibre9" id="c31-li-0036">
+        Inspect the code. Unfortunately, this is often the only strategy to determine the cause of a nonreproducible bug. Surprisingly, it often works. When you examine code, even code that you wrote yourself, with the perspective of the bug that just occurred, you can often find mistakes that you overlooked previously. I don't recommend spending hours staring at your code, but tracing through the code path manually can often lead you directly to the problem.
+       </li>
+       <li class="calibre9" id="c31-li-0037">
+        Use a memory-watching tool, such as one of the tools described in the section “
+        <a class="calibre5" href="#c31-sec-0035">
+         Debugging Memory Problems
+        </a>
+        ,” later in this chapter. Such tools often alert you to memory errors that don't always cause your program to misbehave but could potentially be the cause of the bug in question.
+       </li>
+       <li class="calibre9" id="c31-li-0038">
+        File or update a bug report. Even if you can't find the root cause of the bug right away, the report will be a useful record of your attempts if the problem is encountered again.
+       </li>
+       <li class="calibre9" id="c31-li-0039">
+        If you are unable to find the root cause of the bug, be sure to add extra logging or tracing so that you will have a better chance next time the bug occurs.
+       </li>
+      </ul>
+      <p class="calibre13" id="c31-para-0091">
+       Once you have found the root cause of a nonreproducible bug, you should create a reproducible test case and move it to the “reproducible bugs” category. It is important to be able to reproduce a bug before you actually fix it. Otherwise, how will you test the fix? A common mistake when debugging nonreproducible bugs is to fix the wrong problem in the code. Because you can't reproduce the bug, you don't know if you've really fixed it, so you shouldn't be surprised when it shows up again a month later.
+      </p>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c31-sec-0034">
+      </span>
+      <h3 class="calibre27" id="head-3-561">
+       Debugging Regressions
+      </h3>
+      <p class="calibre13" id="c31-para-0092">
+       If a feature contains a
+       <i class="calibre18">
+        regression
+       </i>
+       bug, it means that the feature used to work correctly, but at some point unexpectedly stopped working.
+      </p>
+      <p class="calibre13" id="c31-para-0093">
+       A useful debugging technique for investigating regressions is to look at the change log of relevant files. If you know at what time the feature was still working, look at all the change logs since that time. You might notice something suspicious that could lead you to the root cause.
+      </p>
+      <p class="calibre13" id="c31-para-0094">
+       Another approach that can save you a lot of time when debugging regressions is to use a binary search approach with older versions of the software (often called
+       <i class="calibre18">
+        bisecting
+       </i>
+       ) to try to figure out when it started to go wrong. You can use binaries of older versions if you keep them, or you can revert the source code to an older revision. Once you know when it started to go wrong, inspect the change logs to see what changed at that time. This mechanism is possible only when you can reproduce the bug.
+      </p>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c31-sec-0035">
+      </span>
+      <h3 class="calibre27" id="head-3-562">
+       Debugging Memory Problems
+      </h3>
+      <p class="calibre13" id="c31-para-0095">
+       Most catastrophic bugs, such as application crashes, are caused by memory errors. Many non-catastrophic bugs are triggered by memory errors as well. Some memory bugs are obvious. For example, if your program attempts to dereference a null pointer, the default action is to terminate the program. However, nearly every platform enables you to respond to catastrophic errors and take remedial action. The amount of effort you devote to the response depends on the importance of this kind of recovery to your end users. For example, a text editor really needs to make a best attempt to
+       <span aria-label="1135" class="calibre20" epub:type="pagebreak" id="Page_1135" role="doc-pagebreak">
+       </span>
+       save the modified buffers (possibly under a “recovered” name), while for other programs, users may find the default behavior acceptable, even if it is unpleasant.
+      </p>
+      <p class="calibre13" id="c31-para-0096">
+       Some memory bugs are more insidious. If you write past the end of an array in C++, your program will probably not crash at that point. However, if that array was on the stack, you may have written into a different variable or array, changing values that won't show up until later in the program. Alternatively, if the array was on the free store, you could cause memory corruption in the free store, which will cause errors later when you attempt to allocate or free more memory dynamically.
+      </p>
+      <p class="calibre13">
+       <a class="calibre5" href="c07.xhtml">
+        Chapter 7
+       </a>
+       , “Memory Management,” introduces some of the common memory errors from the perspective of what to avoid when you're coding. This section discusses memory errors from the perspective of identifying problems in code that exhibits bugs. You should be familiar with the discussion in
+       <a class="calibre5" href="c07.xhtml">
+        Chapter 7
+       </a>
+       before continuing with this section.
+      </p>
+      <section class="calibre2">
+       <aside class="calibre23">
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+        <section class="feature">
+         <p class="calibre25" id="c31-para-0098">
+          <b class="calibre14">
+           WARNING
+          </b>
+          <i class="calibre18">
+           Most, if not all, of the following memory problems can be avoided by using smart pointers instead of raw pointers
+          </i>
+          .
+         </p>
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c31-sec-0037">
+       </span>
+       <h4 class="calibre29" id="head-4-431">
+        Categories of Memory Errors
+       </h4>
+       <p class="calibre13" id="c31-para-0099">
+        To debug memory problems, you should be familiar with the types of errors that can occur. This section describes the major categories of memory errors. Each category lists different types of memory errors, including a small code example demonstrating each error, and a list of possible
+        <i class="calibre18">
+         symptoms
+        </i>
+        that you might observe. Note that a symptom is not the same thing as a bug: a symptom is an observable behavior caused by a bug.
+       </p>
+       <section class="calibre2">
+        <span class="calibre" id="c31-sec-0038">
+        </span>
+        <h5 class="calibre35" id="head-5-182">
+         Memory-Freeing Errors
+        </h5>
+        <p class="calibre13" id="c31-para-0100">
+         The following table summarizes five major errors that involve freeing memory:
+        </p>
+        <table border="1" class="calibre31">
+         <thead class="calibre32">
+          <tr class="calibre33">
+           <th class="left" scope="col">
+            ERROR TYPE
+           </th>
+           <th class="left" scope="col">
+            SYMPTOMS
+           </th>
+           <th class="left" scope="col">
+            EXAMPLE
+           </th>
+          </tr>
+         </thead>
+         <tbody class="calibre34">
+          <tr class="calibre33">
+           <td class="bgcolor">
+            Memory leak
+           </td>
+           <td class="bgcolor">
+            Process memory usage grows over time. Process runs more slowly over time. Eventually, depending on the OS, operations and system calls fail because of lack of memory.
+           </td>
+           <td class="bgcolor">
+            <pre class="pre" id="c31-code-6021"><code class="calibre21">void memoryLeak()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">  int* p { new int[1000] };</code>
+<code class="calibre21">  return; <span class="color">// Not freeing p!</span></code>
+<code class="calibre21">}</code></pre>
+           </td>
+          </tr>
+          <tr class="calibre33">
+           <td class="bgcolor">
+            Using mismatched allocation and free operations
+           </td>
+           <td class="bgcolor">
+            Does not usually cause a crash immediately. This type of error can cause memory corruption on some platforms, which might show up as a crash later in the program. Certain mismatches can also cause memory leaks.
+           </td>
+           <td class="bgcolor">
+            <pre class="pre" id="c31-code-6022"><code class="calibre21">void mismatchedFree()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">  int* p1{(int*)malloc(sizeof(int))};</code>
+<code class="calibre21">  int* p2{new int};</code>
+<code class="calibre21">  int* p3{new int[1000]};</code>
+<code class="calibre21">  delete p1;  <span class="color">// Should use free()!</span></code>
+<code class="calibre21">  delete[] p2;<span class="color">// Should use delete!</span></code>
+<code class="calibre21">  free(p3);   <span class="color">// Should use delete[]!</span></code>
+<code class="calibre21">}</code></pre>
+           </td>
+          </tr>
+          <tr class="calibre33">
+           <td class="bgcolor">
+            Freeing memory more than once
+           </td>
+           <td class="bgcolor">
+            Can cause a crash if the memory at that location has been handed out in another allocation between the two calls to delete.
+           </td>
+           <td class="bgcolor">
+            <pre class="pre" id="c31-code-6023"><code class="calibre21">void doubleFree()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">  int* p1 { new int[1000] };</code>
+<code class="calibre21">  delete[] p1;</code>
+<code class="calibre21">  int* p2 { new int[1000] };</code>
+<code class="calibre21">  delete[] p1; <span class="color">// Freeing p1 twice!</span></code>
+<code class="calibre21">} <span class="color">// Leaking memory of p2!</span></code></pre>
+           </td>
+          </tr>
+          <tr class="calibre33">
+           <td class="bgcolor">
+            Freeing unallocated memory
+           </td>
+           <td class="bgcolor">
+            Usually causes a crash.
+           </td>
+           <td class="bgcolor">
+            <pre class="pre" id="c31-code-6024"><code class="calibre21">void freeUnallocated()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">  int* p{reinterpret_cast&lt;int*&gt;(10)};</code>
+<code class="calibre21">  delete p; <span class="color">// p not a valid pointer!</span></code>
+<code class="calibre21">}</code></pre>
+           </td>
+          </tr>
+          <tr class="calibre33">
+           <td class="bgcolor">
+            Freeing stack memory
+           </td>
+           <td class="bgcolor">
+            Technically a special case of freeing unallocated memory. This usually causes a crash.
+           </td>
+           <td class="bgcolor">
+            <pre class="pre" id="c31-code-6025"><code class="calibre21">void freeStack()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">  int x;</code>
+<code class="calibre21">  int* p { &amp;x };</code>
+<code class="calibre21">  delete p; <span class="color">// Freeing stack memory!</span></code>
+<code class="calibre21">}</code></pre>
+            <span aria-label="1136" class="calibre20" epub:type="pagebreak" id="Page_1136" role="doc-pagebreak">
+            </span>
+           </td>
+          </tr>
+         </tbody>
+        </table>
+        <p class="calibre13" id="c31-para-0113">
+         The crashes mentioned in this table can have different manifestations depending on your platform, such as segmentation faults, bus errors, access violations, and so on.
+        </p>
+        <p class="calibre13" id="c31-para-0114">
+         As you can see, some of the errors do not cause immediate program termination. These bugs are more subtle, leading to problems later in the program's execution.
+        </p>
+       </section>
+       <section class="calibre2">
+        <span class="calibre" id="c31-sec-0039">
+        </span>
+        <h5 class="calibre35" id="head-5-183">
+         Memory-Access Errors
+        </h5>
+        <p class="calibre13" id="c31-para-0115">
+         Another category of memory errors involves the actual reading and writing of memory:
+        </p>
+        <table border="1" class="calibre31">
+         <thead class="calibre32">
+          <tr class="calibre33">
+           <th class="left" scope="col">
+            ERROR TYPE
+           </th>
+           <th class="left" scope="col">
+            SYMPTOMS
+           </th>
+           <th class="left" scope="col">
+            EXAMPLE
+           </th>
+          </tr>
+         </thead>
+         <tbody class="calibre34">
+          <tr class="calibre33">
+           <td class="bgcolor">
+            Accessing invalid memory
+           </td>
+           <td class="bgcolor">
+            Almost always causes the program to crash immediately.
+           </td>
+           <td class="bgcolor">
+            <pre class="pre" id="c31-code-6026"><code class="calibre21">void accessInvalid()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">  int* p {reinterpret_cast&lt;int*&gt;(10)};</code>
+<code class="calibre21">  *p = 5; <span class="color">// p is not a valid pointer!</span></code>
+<code class="calibre21">}</code></pre>
+           </td>
+          </tr>
+          <tr class="calibre33">
+           <td class="bgcolor">
+            Accessing freed memory
+           </td>
+           <td class="bgcolor">
+            Does not usually cause a crash. If the memory has been handed out in another allocation, this error type can cause “strange” and potentially dangerous values to appear unexpectedly.
+           </td>
+           <td class="bgcolor">
+            <pre class="pre" id="c31-code-6027"><code class="calibre21">void accessFreed()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">  int* p1 { new int };</code>
+<code class="calibre21">  delete p1;</code>
+<code class="calibre21">  *p1 = 5; <span class="color">// The memory pointed to</span></code>
+<code class="calibre21">           <span class="color">// by p1 has been freed!</span></code>
+<code class="calibre21">}</code></pre>
+           </td>
+          </tr>
+          <tr class="calibre33">
+           <td class="bgcolor">
+            Accessing memory in a different allocation
+           </td>
+           <td class="bgcolor">
+            Does not usually cause a crash. This error type can cause “strange” and potentially dangerous values to appear unexpectedly in other variables or temporary objects, or even change the control flow of the program.
+           </td>
+           <td class="bgcolor">
+            <pre class="pre" id="c31-code-6028"><code class="calibre21">void accessElsewhere()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">  int x, y[10], z;</code>
+<code class="calibre21">  x = 0;</code>
+<code class="calibre21">  z = 0;</code>
+<code class="calibre21">  for (int i { 0 }; i &lt;= 10; ++i) {</code>
+<code class="calibre21">    y[i] = 5; <span class="color">// BUG for i==10! element</span></code>
+<code class="calibre21">             <span class="color">// 10 is past end of array</span></code>
+<code class="calibre21">  }</code>
+<code class="calibre21">}</code></pre>
+           </td>
+          </tr>
+          <tr class="calibre33">
+           <td class="bgcolor">
+            Reading uninitialized memory
+           </td>
+           <td class="bgcolor">
+            Does not cause a crash, unless you use the uninitialized value as a pointer or array index and dereference it (as in the example). Even then, it will not always cause a crash.
+           </td>
+           <td class="bgcolor">
+            <pre class="pre" id="c31-code-6029"><code class="calibre21">void readUninitialized()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">  int* p;</code>
+<code class="calibre21">  print("{}",*p);<span class="color">// p is uninitialized!</span></code>
+<code class="calibre21">}</code></pre>
+            <span aria-label="1137" class="calibre20" epub:type="pagebreak" id="Page_1137" role="doc-pagebreak">
+            </span>
+           </td>
+          </tr>
+         </tbody>
+        </table>
+        <p class="calibre13" id="c31-para-0126">
+         Memory-access errors don't always cause a crash. They can instead lead to subtle errors, in which the program does not terminate but instead produces erroneous results. Erroneous results can lead to serious consequences, for example, when external devices—such as robotic arms, X-ray machines, radiation treatments, life support systems, and so on—are being controlled by the computer.
+        </p>
+        <p class="calibre13" id="c31-para-0127">
+         Note that the symptoms discussed here for both memory-freeing and memory-access errors are the default symptoms for release builds of your program. Debug builds will most likely behave differently, and when you run the program inside a debugger, the debugger might break into the code when an error occurs.
+        </p>
+       </section>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c31-sec-0040">
+       </span>
+       <h4 class="calibre29" id="head-4-432">
+        Tips for Debugging Memory Errors
+       </h4>
+       <p class="calibre13" id="c31-para-0128">
+        Memory-related bugs often show up in slightly different places in the code each time you run the program. This is usually the case with free store memory corruption. Free store memory corruption is like a time bomb, ready to explode at some attempt to allocate, free, or use memory on the free store. So, when you see a bug that is reproducible but that shows up in slightly different places, you should suspect memory corruption.
+       </p>
+       <p class="calibre13" id="c31-para-0129">
+        If you suspect a memory bug, your best option is to use a memory-checking tool for C++. Debuggers often provide options to run the program while checking for memory errors. For example, if you run a debug build of your application in the Microsoft Visual C++ debugger, it will catch almost all types of errors discussed in the previous sections. Additionally, there are some excellent third-party tools such as Purify from Rational Software (now owned by IBM) and Valgrind for Linux (discussed in
+        <a class="calibre5" href="c07.xhtml">
+         Chapter 7
+        </a>
+        ). Microsoft also provides a free download called
+        <i class="calibre18">
+         Application Verifier
+        </i>
+        (Part of the Windows SDK,
+        <code class="calibre21">
+         <a class="calibre5" href="https://developer.microsoft.com/windows/downloads/windows-sdk/">
+          https://developer.microsoft.com/windows/downloads/windows-sdk
+         </a>
+        </code>
+        ), which can be
+        <span aria-label="1138" class="calibre20" epub:type="pagebreak" id="Page_1138" role="doc-pagebreak">
+        </span>
+        used with release builds of your applications in a Windows environment. It is a run-time verification tool to help you find subtle programming errors like the previously discussed memory errors. These debuggers and tools work by interposing their own memory-allocation and -freeing routines to check for any misuse of dynamic memory, such as freeing unallocated memory, dereferencing unallocated memory, or writing off the end of an array.
+       </p>
+       <p class="calibre13" id="c31-para-0130">
+        If you don't have a memory-checking tool at your disposal and the normal strategies for debugging are not helping, you may need to resort to code inspection. First, narrow down the part of the code containing the bug. Then, as a general rule, look at all raw pointers. Provided that you work on moderate- to good-quality code, most pointers should already be wrapped in smart pointers. If you do encounter raw pointers, take a closer look at how they are used, because they might be the cause of the error. Here are some more items to look for in your code.
+       </p>
+       <section class="calibre2">
+        <span class="calibre" id="c31-sec-0041">
+        </span>
+        <h5 class="calibre35" id="head-5-184">
+         Object and Class-Related Errors
+        </h5>
+        <ul class="check" id="c31-list-0009">
+         <li class="calibre9" id="c31-li-0040">
+          Verify that your classes with dynamically allocated memory have destructors that free exactly the memory that's allocated in the object: no more, and no less.
+         </li>
+         <li class="calibre9" id="c31-li-0041">
+          Ensure that your classes handle copying and assignment correctly with copy constructors and assignment operators, as described in
+          <a class="calibre5" href="c09.xhtml">
+           Chapter 9
+          </a>
+          , “Mastering Classes and Objects.” Make sure move constructors and move assignment operators properly set pointers in the source object to
+          <code class="calibre21">
+           nullptr
+          </code>
+          so that their destructors don't try to free that memory.
+         </li>
+         <li class="calibre9" id="c31-li-0042">
+          Check for suspicious casts. If you are casting a pointer to an object from one type to another, make sure that it's valid. When possible, use
+          <code class="calibre21">
+           dynamic_cast
+          </code>
+          s.
+         </li>
+        </ul>
+        <section class="calibre2">
+         <aside class="calibre23">
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+          <section class="feature">
+           <p class="calibre25" id="c31-para-0132">
+            <b class="calibre14">
+             WARNING
+            </b>
+            <i class="calibre18">
+             Whenever you see raw pointers being used to handle ownership of resources, I highly recommend you replace those raw pointers with smart pointers and try to refactor your classes to follow the rule of zero, as discussed in
+             <a class="calibre5" href="c09.xhtml">
+              Chapter 9
+             </a>
+             . This removes the types of errors explained in the first and second bullet points in the preceding list
+            </i>
+            .
+           </p>
+           <div class="top">
+            <hr class="calibre24"/>
+           </div>
+          </section>
+         </aside>
+        </section>
+       </section>
+       <section class="calibre2">
+        <span class="calibre" id="c31-sec-0043">
+        </span>
+        <h5 class="calibre35" id="head-5-185">
+         General Memory Errors
+        </h5>
+        <ul class="check" id="c31-list-0010">
+         <li class="calibre9" id="c31-li-0043">
+          Make sure that every call to
+          <code class="calibre21">
+           new
+          </code>
+          is matched with exactly one call to
+          <code class="calibre21">
+           delete
+          </code>
+          and every call to
+          <code class="calibre21">
+           new[]
+          </code>
+          is matched with one call to
+          <code class="calibre21">
+           delete[]
+          </code>
+          . Similarly, every call to
+          <code class="calibre21">
+           malloc
+          </code>
+          ,
+          <code class="calibre21">
+           alloc
+          </code>
+          , or
+          <code class="calibre21">
+           calloc
+          </code>
+          should be matched with one call to
+          <code class="calibre21">
+           free
+          </code>
+          . To avoid freeing memory multiple times or using freed memory, it's recommended to set your pointer to
+          <code class="calibre21">
+           nullptr
+          </code>
+          after freeing its memory. Of course, the best solution is to simply avoid using raw pointers to handle ownership of resources and instead use smart pointers.
+         </li>
+         <li class="calibre9" id="c31-li-0044">
+          Check for buffer overruns. Whenever you iterate over an array or write into or read from a C-style string, verify that you are not accessing memory past the end of the array or string. These problems can often be avoided by using Standard Library containers and strings.
+         </li>
+         <li class="calibre9" id="c31-li-0045">
+          Check for dereferencing of invalid pointers.
+         </li>
+         <li class="calibre9" id="c31-li-0046">
+          <span aria-label="1139" class="calibre20" epub:type="pagebreak" id="Page_1139" role="doc-pagebreak">
+          </span>
+          When declaring a pointer (or really any scalar type) on the stack, make sure you always initialize it as part of its declaration. For example, use
+          <code class="calibre21">
+           T* p{nullptr};
+          </code>
+          or
+          <code class="calibre21">
+           T* p{new T};
+          </code>
+          but never
+          <code class="calibre21">
+           T* p;
+          </code>
+          . Better yet, use smart pointers!
+         </li>
+         <li class="calibre9" id="c31-li-0047">
+          Similarly, make sure your classes always initialize pointer data members with in-class initializers or in their constructors, by either allocating memory in the constructor or setting the pointers to
+          <code class="calibre21">
+           nullptr
+          </code>
+          . Also here, the best solution is to use smart pointers.
+         </li>
+        </ul>
+       </section>
+      </section>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c31-sec-0044">
+      </span>
+      <h3 class="calibre27" id="head-3-563">
+       Debugging Multithreaded Programs
+      </h3>
+      <p class="calibre13">
+       C++ includes a threading support library that provides mechanisms for threading and synchronization between threads. This threading support library is discussed in
+       <a class="calibre5" href="c27.xhtml">
+        Chapter 27
+       </a>
+       . Multithreaded C++ programs are common, so it is important to think about the special issues involved in debugging a multithreaded program. Bugs in multithreaded programs are often caused by variations in timings in the operating system scheduling and can be difficult to reproduce. Thus, debugging multithreaded programs requires a special set of techniques:
+      </p>
+      <ul class="check" id="c31-list-0011">
+       <li class="calibre9" id="c31-li-0048">
+        <b class="calibre14">
+         Use a debugger:
+        </b>
+        A debugger makes it relatively easy to diagnose certain multithreaded problems, for example, deadlocks. When a deadlock appears, break into the debugger and inspect the different threads. You will be able to see which threads are blocked and on which line in the code they are blocked. Combining this with trace logs that show you how you came into the deadlock situation should be enough to fix deadlocks.
+       </li>
+       <li class="calibre9" id="c31-li-0049">
+        <b class="calibre14">
+         Use log-based debugging:
+        </b>
+        When debugging multithreaded programs, log-based debugging can sometimes be more effective than using a debugger to debug certain problems. You can add log statements to your program before and after critical sections, and before acquiring and after releasing locks. Log-based debugging is extremely useful in investigating race conditions. However, the act of adding log statements slightly changes run-time timings, which might hide the bug.
+       </li>
+       <li class="calibre9" id="c31-li-0050">
+        <b class="calibre14">
+         Insert forced sleeps and context switches:
+        </b>
+        If you are having trouble consistently reproducing a problem or you have a hunch about the root cause but want to verify it, you can force certain thread-scheduling behavior by making your threads sleep for specific amounts of time.
+        <code class="calibre21">
+         &lt;thread&gt;
+        </code>
+        defines
+        <code class="calibre21">
+         sleep_until()
+        </code>
+        and
+        <code class="calibre21">
+         sleep_for()
+        </code>
+        in the
+        <code class="calibre21">
+         std::this_thread
+        </code>
+        namespace, which you can use to sleep. The time to sleep is specified as an
+        <code class="calibre21">
+         std::time_point
+        </code>
+        or an
+        <code class="calibre21">
+         std::duration
+        </code>
+        respectively, both part of the chrono library discussed in
+        <a class="calibre5" href="c22.xhtml">
+         Chapter 22
+        </a>
+        , “Date and Time Utilities.” Sleeping for several seconds right before releasing a lock, immediately before signaling a condition variable, or directly before accessing shared data can reveal race conditions that would otherwise go undetected. If this debugging technique reveals the root cause, it must be fixed so that it works correctly after removing these forced sleeps and context switches. Never leave these forced sleeps and context switches in your code! That would be the wrong “fix” for the problem.
+       </li>
+       <li class="calibre9" id="c31-li-0051">
+        <b class="calibre14">
+         Perform code review:
+        </b>
+        Reviewing your thread synchronization code often helps in finding and fixing race conditions. Try to prove over and over that what happened is not possible, until you see how it is. It doesn't hurt to write down these “proofs” in code comments. Also, ask a co-worker to do pair debugging; she might see something you are overlooking.
+       </li>
+      </ul>
+     </section>
+     <span aria-label="1140" class="calibre20" epub:type="pagebreak" id="Page_1140" role="doc-pagebreak">
+     </span>
+     <section class="calibre2">
+      <span class="calibre" id="c31-sec-0045">
+      </span>
+      <h3 class="calibre27" id="head-3-564">
+       Debugging Example: Article Citations
+      </h3>
+      <p class="calibre13" id="c31-para-0135">
+       This section presents a buggy program and shows you the steps to take in order to debug it and fix the problem.
+      </p>
+      <p class="calibre13" id="c31-para-0136">
+       Suppose that you're part of a team writing a web page that allows users to search for research articles that cite a particular paper. This type of service is useful for authors who are trying to find work similar to their own. Once they find one paper representing a related work, they can look for every paper that cites that one to find other related work.
+      </p>
+      <p class="calibre13">
+       In this project, you are responsible for the code that reads the raw citation data from text files. For simplicity, assume that the citation information for each paper is found in its own file. Furthermore, assume that the first line of each file contains the author, title, and publication information for the paper; that the second line is always empty; and that all subsequent lines contain the citations from the article (one on each line). Here is an example file for one of the most important papers in computer science:
+      </p>
+      <pre class="calibre26" id="c31-code-0039"><code class="calibre21">Alan Turing, "On Computable Numbers, with an Application to the Entscheidungsproblem", Proceedings of the London Mathematical Society, Series 2, Vol.42 (1936-37), 230-265.</code>
+<code class="calibre21"> </code>
+<code class="calibre21">Gödel, "Über formal unentscheidbare Sätze der Principia Mathematica und verwandter Systeme, I", Monatshefte Math. Phys., 38 (1931), 173-198.</code>
+<code class="calibre21">Alonzo Church. "An unsolvable problem of elementary number theory", American J. of Math., 58 (1936), 345-363.</code>
+<code class="calibre21">Alonzo Church. "A note on the Entscheidungsproblem", J. of Symbolic Logic, 1 (1936), 40-41.</code>
+<code class="calibre21">E.W. Hobson, "Theory of functions of a real variable (2nd ed., 1921)", 87-88.</code></pre>
+      <section class="calibre2">
+       <span class="calibre" id="c31-sec-0046">
+       </span>
+       <h4 class="calibre29" id="head-4-433">
+        Buggy Implementation of an ArticleCitations Class
+       </h4>
+       <p class="calibre13">
+        You may decide to structure your program by writing an
+        <code class="calibre21">
+         ArticleCitations
+        </code>
+        class that reads the file and stores the information. This class stores the article information from the first line in one string, and the citations in a C-style array of strings.
+       </p>
+       <section class="calibre2">
+        <aside class="calibre23">
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+         <section class="feature">
+          <p class="calibre25" id="c31-para-0139">
+           <b class="calibre14">
+            WARNING
+           </b>
+           <i class="calibre18">
+            The design decision to use a C-style array is obviously a
+           </i>
+           bad one!
+           <i class="calibre18">
+            You should opt for one of the Standard Library containers to store the citations. This is just used here as a demonstration of memory problems. There are other obvious issues with this implementation, such as not using the copy-and-swap idiom (see
+            <a class="calibre5" href="c09.xhtml">
+             Chapter 9
+            </a>
+            ) to implement the assignment operator. But, for the purpose of illustrating a buggy application, it's perfect.
+           </i>
+          </p>
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+         </section>
+        </aside>
+       </section>
+       <p class="calibre13">
+        The
+        <code class="calibre21">
+         ArticleCitations
+        </code>
+        class definition, defined in an
+        <code class="calibre21">
+         article_citations
+        </code>
+        module, looks like this:
+       </p>
+       <pre class="calibre26" id="c31-code-0040"><code class="calibre21">export class ArticleCitations</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        explicit ArticleCitations(const std::string&amp; filename);</code>
+<code class="calibre21">        virtual ˜ArticleCitations();</code>
+<span aria-label="1141" class="calibre20" epub:type="pagebreak" id="Page_1141" role="doc-pagebreak"></span><code class="calibre21">        ArticleCitations(const ArticleCitations&amp; src);</code>
+<code class="calibre21">        ArticleCitations&amp; operator=(const ArticleCitations&amp; rhs);</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        const std::string&amp; getArticle() const;</code>
+<code class="calibre21">        int getNumCitations() const;</code>
+<code class="calibre21">        const std::string&amp; getCitation(int i) const;</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        void readFile(const std::string&amp; filename);</code>
+<code class="calibre21">        void copy(const ArticleCitations&amp; src);</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        std::string m_article;</code>
+<code class="calibre21">        std::string* m_citations { nullptr };</code>
+<code class="calibre21">        int m_numCitations { 0 };</code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13">
+        The implementation is as follows. Keep in mind that this program is buggy! Don't use it verbatim or as a model.
+       </p>
+       <pre class="calibre26" id="c31-code-0041"><code class="calibre21">ArticleCitations::ArticleCitations(const string&amp; filename)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    <span class="color">// All we have to do is read the file.</span></code>
+<code class="calibre21">    readFile(filename);</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21">ArticleCitations::ArticleCitations(const ArticleCitations&amp; src)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    copy(src);</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21">ArticleCitations&amp; ArticleCitations::operator=(const ArticleCitations&amp; rhs)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    <span class="color">// Check for self-assignment.</span></code>
+<code class="calibre21">    if (this == &amp;rhs) {</code>
+<code class="calibre21">        return *this;</code>
+<code class="calibre21">    }</code>
+<code class="calibre21">    <span class="color">// Free the old memory.</span></code>
+<code class="calibre21">    delete [] m_citations;</code>
+<code class="calibre21">    <span class="color">// Copy the data.</span></code>
+<code class="calibre21">    copy(rhs);</code>
+<code class="calibre21">    return *this;</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21">void ArticleCitations::copy(const ArticleCitations&amp; src)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    <span class="color">// Copy the article name, author, etc.</span></code>
+<code class="calibre21">    m_article = src.m_article;</code>
+<code class="calibre21">    <span class="color">// Copy the number of citations.</span></code>
+<code class="calibre21">    m_numCitations = src.m_numCitations;</code>
+<code class="calibre21">    <span class="color">// Allocate an array of the correct size.</span></code>
+<code class="calibre21">    m_citations = new string[m_numCitations];</code>
+<code class="calibre21">    <span class="color">// Copy each element of the array.</span></code>
+<code class="calibre21">    for (int i { 0 }; i &lt; m_numCitations; ++i) {</code>
+<code class="calibre21">        m_citations[i] = src.m_citations[i];</code>
+<code class="calibre21">    }</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<span aria-label="1142" class="calibre20" epub:type="pagebreak" id="Page_1142" role="doc-pagebreak"></span><code class="calibre21">ArticleCitations::˜ArticleCitations()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    delete [] m_citations;</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21">void ArticleCitations::readFile(const string&amp; filename)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    <span class="color">// Open the file and check for failure.</span></code>
+<code class="calibre21">    ifstream inputFile { filename };</code>
+<code class="calibre21">    if (inputFile.fail()) {</code>
+<code class="calibre21">        throw invalid_argument { "Unable to open file" };</code>
+<code class="calibre21">    }</code>
+<code class="calibre21">    <span class="color">// Read the article author, title, etc. line.</span></code>
+<code class="calibre21">    getline(inputFile, m_article);</code>
+<code class="calibre21"> </code>
+<code class="calibre21">    <span class="color">// Skip the whitespace before the citations start.</span></code>
+<code class="calibre21">    inputFile &gt;&gt; ws;</code>
+<code class="calibre21"> </code>
+<code class="calibre21">    int count { 0 };</code>
+<code class="calibre21">    <span class="color">// Save the current position so we can return to it.</span></code>
+<code class="calibre21">    streampos citationsStart { inputFile.tellg() };</code>
+<code class="calibre21">    <span class="color">// First count the number of citations.</span></code>
+<code class="calibre21">    while (!inputFile.eof()) {</code>
+<code class="calibre21">        <span class="color">// Skip whitespace before the next entry.</span></code>
+<code class="calibre21">        inputFile &gt;&gt; ws;</code>
+<code class="calibre21">        string temp;</code>
+<code class="calibre21">        getline(inputFile, temp);</code>
+<code class="calibre21">        if (!temp.empty()) {</code>
+<code class="calibre21">            ++count;</code>
+<code class="calibre21">        }</code>
+<code class="calibre21">    }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">    if (count != 0) {</code>
+<code class="calibre21">        <span class="color">// Allocate an array of strings to store the citations.</span></code>
+<code class="calibre21">        m_citations = new string[count];</code>
+<code class="calibre21">        m_numCitations = count;</code>
+<code class="calibre21">        <span class="color">// Seek back to the start of the citations.</span></code>
+<code class="calibre21">        inputFile.seekg(citationsStart);</code>
+<code class="calibre21">        <span class="color">// Read each citation and store it in the new array.</span></code>
+<code class="calibre21">        for (count = 0; count &lt; m_numCitations; ++count) {</code>
+<code class="calibre21">            string temp;</code>
+<code class="calibre21">            getline(inputFile, temp);</code>
+<code class="calibre21">            if (!temp.empty()) {</code>
+<code class="calibre21">                m_citations[count] = temp;</code>
+<code class="calibre21">            }</code>
+<code class="calibre21">        }</code>
+<code class="calibre21">    } else {</code>
+<code class="calibre21">        m_numCitations = -1;</code>
+<code class="calibre21">    }</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21">const string&amp; ArticleCitations::getArticle() const { return m_article; }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">int ArticleCitations::getNumCitations() const { return m_numCitations; }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">const string&amp; ArticleCitations::getCitation(int i) const { return m_citations[i]; }</code></pre>
+      </section>
+      <span aria-label="1143" class="calibre20" epub:type="pagebreak" id="Page_1143" role="doc-pagebreak">
+      </span>
+      <section class="calibre2">
+       <span class="calibre" id="c31-sec-0048">
+       </span>
+       <h4 class="calibre29" id="head-4-434">
+        Testing the ArticleCitations Class
+       </h4>
+       <p class="calibre13">
+        The following program asks the user for a filename, constructs an
+        <code class="calibre21">
+         ArticleCitations
+        </code>
+        instance for that file, and passes this instance by value to the
+        <code class="calibre21">
+         processCitations()
+        </code>
+        function, which prints out all the information. Passing the instance by value to the function is done for this buggy example. In production code, you should pass by reference-to-
+        <code class="calibre21">
+         const
+        </code>
+        .
+       </p>
+       <pre class="calibre26" id="c31-code-0042"><code class="calibre21">void processCitations(ArticleCitations cit)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    println("{}", cit.getArticle());</code>
+<code class="calibre21">    for (int i { 0 }; i &lt; cit.getNumCitations(); ++i) {</code>
+<code class="calibre21">        println("{}", cit.getCitation(i));</code>
+<code class="calibre21">    }</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21">int main()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    while (true) {</code>
+<code class="calibre21">        print("Enter a file name (\"STOP\" to stop): ");</code>
+<code class="calibre21">        string filename;</code>
+<code class="calibre21">        cin &gt;&gt; filename;</code>
+<code class="calibre21">        if (filename == "STOP") { break; }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        ArticleCitations cit { filename };</code>
+<code class="calibre21">        processCitations(cit);</code>
+<code class="calibre21">    }</code>
+<code class="calibre21">}</code></pre>
+       <p class="calibre13">
+        You decide to test the program on the Alan Turing example (stored in a file called
+        <code class="calibre21">
+         paper1.txt
+        </code>
+        ). Here is the output:
+       </p>
+       <pre class="calibre26" id="c31-code-0043"><code class="calibre21">Enter a file name ("STOP" to stop): <b class="calibre14">paper1.txt</b></code>
+<code class="calibre21">Alan Turing, "On Computable Numbers, with an Application to the Entscheidungsproblem", Proceedings of the London Mathematical Society, Series 2, Vol.42 (1936-37), 230-265.</code>
+<code class="calibre21"><span class="color">[ 4 empty lines omitted for brevity ]</span></code>
+<code class="calibre21">Enter a file name ("STOP" to stop): <b class="calibre14">STOP</b></code></pre>
+       <p class="calibre13" id="c31-para-0144">
+        That doesn't look right. There are supposed to be four citations printed instead of four blank lines.
+       </p>
+       <section class="calibre2">
+        <span class="calibre" id="c31-sec-0049">
+        </span>
+        <h5 class="calibre35" id="head-5-186">
+         Message-Based Debugging
+        </h5>
+        <p class="calibre13">
+         For this bug, you decide to try log-based debugging, and because this is a console application, you decide to just print messages using
+         <code class="calibre21">
+          println()
+         </code>
+         . In this case, it makes sense to start by looking at the function that reads the citations from the file. If that doesn't work right, then obviously the object won't have the citations. You can modify
+         <code class="calibre21">
+          readFile()
+         </code>
+         as follows:
+        </p>
+        <pre class="calibre26" id="c31-code-0044"><code class="calibre21">void ArticleCitations::readFile(const string&amp; filename)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    <span class="color">// Code omitted for brevity.</span></code>
+<code class="calibre21"> </code>
+<code class="calibre21">    <span class="color">// First count the number of citations.</span></code>
+<code class="calibre21">    <b class="calibre14">println("readFile(): counting number of citations");</b></code>
+<code class="calibre21">    while (!inputFile.eof()) {</code>
+<code class="calibre21">        <span class="color">// Skip whitespace before the next entry.</span></code>
+<span aria-label="1144" class="calibre20" epub:type="pagebreak" id="Page_1144" role="doc-pagebreak"></span><code class="calibre21">        inputFile&gt;&gt; ws;</code>
+<code class="calibre21">        string temp;</code>
+<code class="calibre21">        getline(inputFile, temp);</code>
+<code class="calibre21">        if (!temp.empty()) {</code>
+<code class="calibre21">            <b class="calibre14">println("Citation {}: {}", count, temp);</b></code>
+<code class="calibre21">            ++count;</code>
+<code class="calibre21">        }</code>
+<code class="calibre21">    }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">    <b class="calibre14">println("Found {} citations", count);</b></code>
+<code class="calibre21">    <b class="calibre14">println("readFile(): reading citations");</b></code>
+<code class="calibre21">    if (count != 0) {</code>
+<code class="calibre21">        <span class="color">// Allocate an array of strings to store the citations.</span></code>
+<code class="calibre21">        m_citations = new string[count];</code>
+<code class="calibre21">        m_numCitations = count;</code>
+<code class="calibre21">        <span class="color">// Seek back to the start of the citations.</span></code>
+<code class="calibre21">        inputFile.seekg(citationsStart);</code>
+<code class="calibre21">        <span class="color">// Read each citation and store it in the new array.</span></code>
+<code class="calibre21">        for (count = 0; count &lt; m_numCitations; ++count) {</code>
+<code class="calibre21">            string temp;</code>
+<code class="calibre21">            getline(inputFile, temp);</code>
+<code class="calibre21">            if (!temp.empty()) {</code>
+<code class="calibre21">                <b class="calibre14">println("{}", temp);</b></code>
+<code class="calibre21">                m_citations[count] = temp;</code>
+<code class="calibre21">            }</code>
+<code class="calibre21">        }</code>
+<code class="calibre21">    } else {</code>
+<code class="calibre21">        m_numCitations = -1;</code>
+<code class="calibre21">    }</code>
+<code class="calibre21">    <b class="calibre14">println("readFile(): finished");</b></code>
+<code class="calibre21">}</code></pre>
+        <p class="calibre13">
+         Running the same test with this program gives the following output:
+        </p>
+        <pre class="calibre26" id="c31-code-0045"><code class="calibre21">Enter a file name ("STOP" to stop): <b class="calibre14">paper1.txt</b></code>
+<code class="calibre21">readFile(): counting number of citations</code>
+<code class="calibre21">Citation 0: Gödel, "Über formal unentscheidbare Sätze der Principia Mathematica und verwandter Systeme, I", Monatshefte Math. Phys., 38 (1931), 173-198.</code>
+<code class="calibre21">Citation 1: Alonzo Church. "An unsolvable problem of elementary number theory", American J. of Math., 58 (1936), 345-363.</code>
+<code class="calibre21">Citation 2: Alonzo Church. "A note on the Entscheidungsproblem", J. of Symbolic Logic, 1 (1936), 40-41.</code>
+<code class="calibre21">Citation 3: E.W. Hobson, "Theory of functions of a real variable (2nd ed., 1921)", 87-88.</code>
+<code class="calibre21">Found 4 citations</code>
+<code class="calibre21">readFile(): reading citations</code>
+<code class="calibre21">readFile(): finished</code>
+<code class="calibre21">Alan Turing, "On Computable Numbers, with an Application to the Entscheidungsproblem", Proceedings of the London Mathematical Society, Series 2, Vol.42 (1936-37), 230-265.</code>
+<code class="calibre21"><span class="color">[ 4 empty lines omitted for brevity ]</span></code>
+<code class="calibre21">Enter a file name ("STOP" to stop): <b class="calibre14">STOP</b></code></pre>
+        <p class="calibre13">
+         <span aria-label="1145" class="calibre20" epub:type="pagebreak" id="Page_1145" role="doc-pagebreak">
+         </span>
+         As you can see from the output, the first time the program reads the citations from the file, to count them, it reads them correctly. However, the second time, they are not read correctly; nothing is printed between “readFile(): reading citations” and “readFile(): finished” — why not? One way to delve deeper into this issue is to add some debugging code to check the state of the file stream after each attempt to read a citation:
+        </p>
+        <pre class="calibre26" id="c31-code-0046"><code class="calibre21"><b class="calibre14">void printStreamState(const istream&amp; inputStream)</b></code>
+<code class="calibre21"><b class="calibre14">{</b></code>
+<code class="calibre21">    <b class="calibre14">if (inputStream.good()) { println("stream state is good"); }</b></code>
+<code class="calibre21">    <b class="calibre14">if (inputStream.bad()) { println("stream state is bad"); }</b></code>
+<code class="calibre21">    <b class="calibre14">if (inputStream.fail()) { println("stream state is fail"); }</b></code>
+<code class="calibre21">    <b class="calibre14">if (inputStream.eof()) { println("stream state is eof"); }</b></code>
+<code class="calibre21"><b class="calibre14">}</b></code>
+<code class="calibre21"> </code>
+<code class="calibre21">void ArticleCitations::readFile(const string&amp; filename)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    <span class="color">// Code omitted for brevity.</span></code>
+<code class="calibre21"> </code>
+<code class="calibre21">    <span class="color">// First count the number of citations.</span></code>
+<code class="calibre21">    println("readFile(): counting number of citations");</code>
+<code class="calibre21">    while (!inputFile.eof()) {</code>
+<code class="calibre21">        <span class="color">// Skip whitespace before the next entry.</span></code>
+<code class="calibre21">        inputFile &gt;&gt; ws;</code>
+<code class="calibre21">        <b class="calibre14">printStreamState(inputFile);</b></code>
+<code class="calibre21">        string temp;</code>
+<code class="calibre21">        getline(inputFile, temp);</code>
+<code class="calibre21">        <b class="calibre14">printStreamState(inputFile);</b></code>
+<code class="calibre21">        if (!temp.empty()) {</code>
+<code class="calibre21">            println("Citation {}: {}", count, temp);</code>
+<code class="calibre21">            ++count;</code>
+<code class="calibre21">        }</code>
+<code class="calibre21">    }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">    println("Found {} citations", count);</code>
+<code class="calibre21">    println("readFile(): reading citations");</code>
+<code class="calibre21">    if (count != 0) {</code>
+<code class="calibre21">        <span class="color">// Allocate an array of strings to store the citations.</span></code>
+<code class="calibre21">        m_citations = new string[count];</code>
+<code class="calibre21">        m_numCitations = count;</code>
+<code class="calibre21">        <span class="color">// Seek back to the start of the citations.</span></code>
+<code class="calibre21">        inputFile.seekg(citationsStart);</code>
+<code class="calibre21">        <span class="color">// Read each citation and store it in the new array.</span></code>
+<code class="calibre21">        for (count = 0; count &lt; m_numCitations; ++count) {</code>
+<code class="calibre21">            string temp;</code>
+<code class="calibre21">            getline(inputFile, temp);</code>
+<code class="calibre21">            <b class="calibre14">printStreamState(inputFile);</b></code>
+<code class="calibre21">            if (!temp.empty()) {</code>
+<code class="calibre21">                println("{}", temp);</code>
+<code class="calibre21">                m_citations[count] = temp;</code>
+<code class="calibre21">            }</code>
+<code class="calibre21">        }</code>
+<span aria-label="1146" class="calibre20" epub:type="pagebreak" id="Page_1146" role="doc-pagebreak"></span><code class="calibre21">    } else {</code>
+<code class="calibre21">        m_numCitations = -1;</code>
+<code class="calibre21">    }</code>
+<code class="calibre21">    println("readFile(): finished");</code>
+<code class="calibre21">}</code></pre>
+        <p class="calibre13">
+         When you run your program this time, you find some interesting information:
+        </p>
+        <pre class="calibre26" id="c31-code-0047"><code class="calibre21">Enter a file name ("STOP" to stop): <b class="calibre14">paper1.txt</b></code>
+<code class="calibre21">readFile(): counting number of citations</code>
+<code class="calibre21"><b class="calibre14">stream state is good</b></code>
+<code class="calibre21"><b class="calibre14">stream state is good</b></code>
+<code class="calibre21">Citation 0: Gödel, "Über formal unentscheidbare Sätze der Principia Mathematica und verwandter Systeme, I", Monatshefte Math. Phys., 38 (1931), 173-198.</code>
+<code class="calibre21"><b class="calibre14">stream state is good</b></code>
+<code class="calibre21"><b class="calibre14">stream state is good</b></code>
+<code class="calibre21">Citation 1: Alonzo Church. "An unsolvable problem of elementary number theory", American J. of Math., 58 (1936), 345-363.</code>
+<code class="calibre21"><b class="calibre14">stream state is good</b></code>
+<code class="calibre21"><b class="calibre14">stream state is good</b></code>
+<code class="calibre21">Citation 2: Alonzo Church. "A note on the Entscheidungsproblem", J. of Symbolic Logic, 1 (1936), 40-41.</code>
+<code class="calibre21"><b class="calibre14">stream state is good</b></code>
+<code class="calibre21"><b class="calibre14">stream state is good</b></code>
+<code class="calibre21">Citation 3: E.W. Hobson, "Theory of functions of a real variable (2nd ed., 1921)", 87-88.</code>
+<code class="calibre21"><b class="calibre14">stream state is eof</b></code>
+<code class="calibre21"><b class="calibre14">stream state is fail</b></code>
+<code class="calibre21"><b class="calibre14">stream state is eof</b></code>
+<code class="calibre21">Found 4 citations </code>
+<code class="calibre21">readFile(): reading citations</code>
+<code class="calibre21"><b class="calibre14">stream state is fail</b></code>
+<code class="calibre21"><b class="calibre14">stream state is fail</b></code>
+<code class="calibre21"><b class="calibre14">stream state is fail</b></code>
+<code class="calibre21"><b class="calibre14">stream state is fail</b></code>
+<code class="calibre21">readFile(): finished</code>
+<code class="calibre21">Alan Turing, "On Computable Numbers, with an Application to the Entscheidungsproblem", Proceedings of the London Mathematical Society, Series 2, Vol.42 (1936-37), 230-265.</code>
+<code class="calibre21"><span class="color">[ 4 empty lines omitted for brevity ]</span></code>
+<code class="calibre21">Enter a file name ("STOP" to stop): <b class="calibre14">STOP</b></code></pre>
+        <p class="calibre13" id="c31-para-0149">
+         It looks like the stream state is good until after the final citation is read for the first time. Because the
+         <code class="calibre21">
+          paper1.txt
+         </code>
+         file contains an empty last line, the
+         <code class="calibre21">
+          while
+         </code>
+         loop is executed one more time after having read the last citation. In this last loop,
+         <code class="calibre21">
+          inputFile &gt;&gt; ws
+         </code>
+         reads the whitespace of the last line, which causes the stream state to become
+         <code class="calibre21">
+          eof
+         </code>
+         . Then, the code still tries to read a line using
+         <code class="calibre21">
+          getline()
+         </code>
+         , which causes the stream state to become
+         <code class="calibre21">
+          fail
+         </code>
+         and
+         <code class="calibre21">
+          eof
+         </code>
+         . That is expected. What is not expected is that the stream state remains
+         <code class="calibre21">
+          fail
+         </code>
+         after all attempts to read the citations a second time. That doesn't appear to make sense at first: the code uses
+         <code class="calibre21">
+          seekg()
+         </code>
+         to seek back to the beginning of the citations before reading them a second time.
+        </p>
+        <p class="calibre13" id="c31-para-0150">
+         However,
+         <a class="calibre5" href="c13.xhtml">
+          Chapter 13
+         </a>
+         explains that streams maintain their error states until you clear them explicitly;
+         <code class="calibre21">
+          seekg()
+         </code>
+         doesn't clear the
+         <code class="calibre21">
+          fail
+         </code>
+         state automatically. When in an error state, streams fail to read data correctly, which explains why the stream state is also
+         <code class="calibre21">
+          fail
+         </code>
+         after trying to read the citations a second time.
+         <span aria-label="1147" class="calibre20" epub:type="pagebreak" id="Page_1147" role="doc-pagebreak">
+         </span>
+         A closer look at the code reveals that it fails to call
+         <code class="calibre21">
+          clear()
+         </code>
+         on the
+         <code class="calibre21">
+          istream
+         </code>
+         after reaching the end of the file. If you modify the code by adding a call to
+         <code class="calibre21">
+          clear()
+         </code>
+         , it will read the citations properly.
+        </p>
+        <p class="calibre13">
+         Here is the corrected
+         <code class="calibre21">
+          readFile()
+         </code>
+         implementation without the debugging print statements:
+        </p>
+        <pre class="calibre26" id="c31-code-0048"><code class="calibre21">void ArticleCitations::readFile(const string&amp; filename)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    <span class="color">// Code omitted for brevity.</span></code>
+<code class="calibre21"> </code>
+<code class="calibre21">    if (count != 0) {</code>
+<code class="calibre21">        <span class="color">// Allocate an array of strings to store the citations.</span></code>
+<code class="calibre21">        m_citations = new string[count];</code>
+<code class="calibre21">        m_numCitations = count;</code>
+<code class="calibre21">        <span class="color">// Clear the stream state.</span></code>
+<code class="calibre21">        <b class="calibre14">inputFile.clear();</b></code>
+<code class="calibre21">        <span class="color">// Seek back to the start of the citations.</span></code>
+<code class="calibre21">        inputFile.seekg(citationsStart);</code>
+<code class="calibre21">        <span class="color">// Read each citation and store it in the new array.</span></code>
+<code class="calibre21">        for (count = 0; count &lt; m_numCitations; ++count) {</code>
+<code class="calibre21">            string temp;</code>
+<code class="calibre21">            getline(inputFile, temp);</code>
+<code class="calibre21">            if (!temp.empty()) {</code>
+<code class="calibre21">                m_citations[count] = temp;</code>
+<code class="calibre21">            }</code>
+<code class="calibre21">        }</code>
+<code class="calibre21">    } else {</code>
+<code class="calibre21">        m_numCitations = -1;</code>
+<code class="calibre21">    }</code>
+<code class="calibre21">}</code></pre>
+        <p class="calibre13" id="c31-para-0152">
+         Running the same test again on
+         <code class="calibre21">
+          paper1.txt
+         </code>
+         now shows the correct four citations.
+        </p>
+       </section>
+       <section class="calibre2">
+        <span class="calibre" id="c31-sec-0050">
+        </span>
+        <h5 class="calibre35" id="head-5-187">
+         Using the GDB Debugger on Linux
+        </h5>
+        <p class="calibre13">
+         Now that your
+         <code class="calibre21">
+          ArticleCitations
+         </code>
+         class seems to work well on one citations file, you decide to blaze ahead and test some special cases, starting with a file with no citations. The file looks like this and is stored in a file named
+         <code class="calibre21">
+          paper2.txt
+         </code>
+         :
+        </p>
+        <pre class="calibre26" id="c31-code-0049"><code class="calibre21">Author with no citations</code></pre>
+        <p class="calibre13">
+         When you try to run your program on this file, depending on your version of Linux and your compiler, you might get a crash that looks something like the following:
+        </p>
+        <pre class="calibre26" id="c31-code-0050"><code class="calibre21">Enter a file name ("STOP" to stop): <b class="calibre14">paper2.txt</b></code>
+<code class="calibre21">terminate called after throwing an instance of 'std::bad_alloc'</code>
+<code class="calibre21">  what():  std::bad_alloc</code>
+<code class="calibre21">Aborted (core dumped)</code></pre>
+        <p class="calibre13">
+         The message “core dumped” means that the program crashed. This time you decide to give the debugger a shot. The Gnu Debugger (GDB) is widely available on Unix and Linux platforms. First, you must compile your program with debugging information (
+         <code class="calibre21">
+          -g
+         </code>
+         with g++). Then you can launch the program under GDB. Here's an example session using the debugger to find the root cause of this problem. This example assumes your compiled executable is called
+         <code class="calibre21">
+          buggyprogram
+         </code>
+         . Text that you have to type is shown in bold.
+        </p>
+        <pre class="calibre26" id="c31-code-0051"><code class="calibre21"><b class="calibre14">&gt; gdb buggyprogram</b></code>
+<code class="calibre21"><i class="calibre18">[ Start-up messages omitted for brevity ]</i></code>
+<span aria-label="1148" class="calibre20" epub:type="pagebreak" id="Page_1148" role="doc-pagebreak"></span><code class="calibre21">Reading symbols from /home/marc/c++/gdb/buggyprogram…done.</code>
+<code class="calibre21">(gdb) <b class="calibre14">run</b></code>
+<code class="calibre21">Starting program: buggyprogram</code>
+<code class="calibre21">Enter a file name ("STOP" to stop): <b class="calibre14">paper2.txt</b></code>
+<code class="calibre21">terminate called after throwing an instance of 'std::bad_alloc'</code>
+<code class="calibre21">  what():  std::bad_alloc</code>
+<code class="calibre21">Program received signal SIGABRT, Aborted.</code>
+<code class="calibre21">0x00007ffff7535c39 in raise () from /lib64/libc.so.6</code>
+<code class="calibre21">(gdb)</code></pre>
+        <p class="calibre13">
+         When the program crashes, the debugger breaks the execution and allows you to poke around in the state of the program at that time. The
+         <code class="calibre21">
+          backtrace
+         </code>
+         or
+         <code class="calibre21">
+          bt
+         </code>
+         command shows the current stack trace. The last operation is at the top, with frame number zero (#0).
+        </p>
+        <pre class="calibre26" id="c31-code-0052"><code class="calibre21">(gdb) <b class="calibre14">bt</b></code>
+<code class="calibre21">#0  0x00007ffff7535c39 in raise () from /lib64/libc.so.6</code>
+<code class="calibre21">#1  0x00007ffff7537348 in abort () from /lib64/libc.so.6</code>
+<code class="calibre21">#2  0x00007ffff7b35f85 in __gnu_cxx::__verbose_terminate_handler() () from /lib64/libstdc++.so.6</code>
+<code class="calibre21">#3  0x00007ffff7b33ee6 in ?? () from /lib64/libstdc++.so.6</code>
+<code class="calibre21">#4  0x00007ffff7b33f13 in std::terminate() () from /lib64/libstdc++.so.6</code>
+<code class="calibre21">#5  0x00007ffff7b3413f in __cxa_throw () from /lib64/libstdc++.so.6</code>
+<code class="calibre21">#6  0x00007ffff7b346cd in operator new(unsigned long) () from /lib64/libstdc++.so.6</code>
+<code class="calibre21">#7  0x00007ffff7b34769 in operator new[](unsigned long) () from /lib64/libstdc++.so.6</code>
+<code class="calibre21"><b class="calibre14">#8  0x00000000004016ea in ArticleCitations::copy (this=0x7fffffffe090, src=…) at ArticleCitations.cpp:39</b></code>
+<code class="calibre21">#9  0x00000000004015b5 in ArticleCitations::ArticleCitations (this=0x7fffffffe090, src=…)</code>
+<code class="calibre21">    at ArticleCitations.cpp:15</code>
+<code class="calibre21">#10 0x0000000000401d0c in main () at ArticleCitationsTest.cpp:23</code></pre>
+        <p class="calibre13">
+         When you get a stack trace like this, you should try to find the first stack frame from the top that is in your own code. In this example, this is stack frame #8. From this frame, you can see that there seems to be a problem in the
+         <code class="calibre21">
+          copy()
+         </code>
+         member function of
+         <code class="calibre21">
+          ArticleCitations
+         </code>
+         . This member function is invoked because
+         <code class="calibre21">
+          main()
+         </code>
+         calls
+         <code class="calibre21">
+          processCitations()
+         </code>
+         and passes the argument by value, which triggers a call to the copy constructor, which calls
+         <code class="calibre21">
+          copy()
+         </code>
+         . Of course, in production code you should pass a reference-to-
+         <code class="calibre21">
+          const
+         </code>
+         , but pass-by-value is used in this example of a buggy program. You can tell the debugger to switch to stack frame #8 with the
+         <code class="calibre21">
+          frame
+         </code>
+         command, which requires the index of the frame that you want to jump to:
+        </p>
+        <pre class="calibre26" id="c31-code-0053"><code class="calibre21">(gdb) <b class="calibre14">frame 8</b></code>
+<code class="calibre21">#8  0x00000000004016ea in ArticleCitations::copy (this=0x7fffffffe090, src=…) at ArticleCitations.cpp:39</code>
+<code class="calibre21">39    m_citations = new string[m_numCitations];</code></pre>
+        <p class="calibre13">
+         This output shows that the following line caused a problem:
+        </p>
+        <pre class="calibre26" id="c31-code-0054"><code class="calibre21">m_citations = new string[m_numCitations];</code></pre>
+        <p class="calibre13">
+         Now, you can use the
+         <code class="calibre21">
+          list
+         </code>
+         command to show the code in the current stack frame around the offending line:
+        </p>
+        <pre class="calibre26" id="c31-code-0055"><code class="calibre21">(gdb) <b class="calibre14">list</b></code>
+<code class="calibre21">34    <span class="color">// Copy the article name, author, etc.</span></code>
+<code class="calibre21">35    m_article = src.m_article;</code>
+<code class="calibre21">36    <span class="color">// Copy the number of citations.</span></code>
+<span aria-label="1149" class="calibre20" epub:type="pagebreak" id="Page_1149" role="doc-pagebreak"></span><code class="calibre21">37    m_numCitations = src.m_numCitations;</code>
+<code class="calibre21">38    <span class="color">// Allocate an array of the correct size.</span></code>
+<code class="calibre21">39    m_citations = new string[m_numCitations];</code>
+<code class="calibre21">40    <span class="color">// Copy each element of the array.</span></code>
+<code class="calibre21">41    for (int i { 0 }; i &lt; m_numCitations; ++i) {</code>
+<code class="calibre21">42        m_citations[i] = src.m_citations[i];</code>
+<code class="calibre21">43    }</code></pre>
+        <p class="calibre13">
+         In GDB, you can print values available in the current scope with the
+         <code class="calibre21">
+          print
+         </code>
+         command. To find the root cause of the problem, you can try printing some of the variables. The error happens inside the
+         <code class="calibre21">
+          copy()
+         </code>
+         member function, so checking the value of the
+         <code class="calibre21">
+          src
+         </code>
+         parameter is a good start:
+        </p>
+        <pre class="calibre26" id="c31-code-0056"><code class="calibre21">(gdb) <b class="calibre14">print src</b></code>
+<code class="calibre21">$1 = (const ArticleCitations &amp;) @0x7fffffffe060: {</code>
+<code class="calibre21">  _vptr.ArticleCitations = 0x401fb0 &lt;vtable for ArticleCitations+16&gt;,</code>
+<code class="calibre21">  m_article = "Author with no citations", m_citations = 0x000000000000,</code>
+<code class="calibre21">  m_numCitations = -1}</code></pre>
+        <p class="calibre13">
+         A-ha! Here's the problem. This article isn't supposed to have any citations. Why is
+         <code class="calibre21">
+          m_numCitations
+         </code>
+         set to the strange value
+         <code class="calibre21">
+          -1
+         </code>
+         ? Take another look at the code in
+         <code class="calibre21">
+          readFile()
+         </code>
+         for the case where there are no citations. In that case, it looks like
+         <code class="calibre21">
+          m_numCitations
+         </code>
+         is erroneously set to
+         <code class="calibre21">
+          -1
+         </code>
+         . The fix is easy: you always need to initialize
+         <code class="calibre21">
+          m_numCitations
+         </code>
+         to
+         <code class="calibre21">
+          0
+         </code>
+         , instead of setting it to
+         <code class="calibre21">
+          -1
+         </code>
+         when there are no citations. Another problem is that
+         <code class="calibre21">
+          readFile()
+         </code>
+         can be called multiple times on the same
+         <code class="calibre21">
+          ArticleCitations
+         </code>
+         object, so you also need to free a previously allocated
+         <code class="calibre21">
+          m_citations
+         </code>
+         array. Here is the fixed code:
+        </p>
+        <pre class="calibre26" id="c31-code-0057"><code class="calibre21">void ArticleCitations::readFile(const string&amp; filename)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    <span class="color">// Code omitted for brevity.</span></code>
+<code class="calibre21"> </code>
+<code class="calibre21">    <b class="calibre14">delete [] m_citations;</b>  <span class="color">// Free previously allocated citations.</span></code>
+<code class="calibre21">    <b class="calibre14">m_citations = nullptr;</b></code>
+<code class="calibre21">    <b class="calibre14">m_numCitations = 0;</b></code>
+<code class="calibre21">    if (count != 0) {</code>
+<code class="calibre21">        <span class="color">// Allocate an array of strings to store the citations.</span></code>
+<code class="calibre21">        m_citations = new string[count];</code>
+<code class="calibre21">        m_numCitations = count;</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        <span class="color">// Code omitted for brevity.</span></code>
+<code class="calibre21">    }</code>
+<code class="calibre21">}</code></pre>
+        <p class="calibre13" id="c31-para-0162">
+         As this example shows, bugs don't always show up right away. It often takes a debugger and some persistence to find them.
+        </p>
+       </section>
+       <section class="calibre2">
+        <span class="calibre" id="c31-sec-0051">
+        </span>
+        <h5 class="calibre35" id="head-5-188">
+         Using the Visual C++ 2022 Debugger
+        </h5>
+        <p class="calibre13" id="c31-para-0163">
+         This section explains the same debugging procedure as described in the previous section but uses the Microsoft Visual C++ 2022 debugger instead of GDB.
+        </p>
+        <p class="calibre13" id="c31-para-0164">
+         First, you need to create a project. Either click the New Project button in the Visual Studio 2022's welcome screen or select File ➪ New ➪ Project. In the Create A New Project dialog, search for the Console App project template with tags C++, Windows, and Console, and click Next. Enter
+         <b class="calibre14">
+          ArticleCitations
+         </b>
+         as the name for the project, choose a folder where to save the project, and click Create. Once your project is created, you can see a list of project files in the Solution Explorer. If this docking window is not visible, select View ➪ Solution Explorer. The project will already contain a file called
+         <span aria-label="1150" class="calibre20" epub:type="pagebreak" id="Page_1150" role="doc-pagebreak">
+         </span>
+         <code class="calibre21">
+          ArticleCitations.cpp
+         </code>
+         listed under Source Files in the Solution Explorer tree. Select this file in the Solution Explorer and delete it, as you will add your own files.
+        </p>
+        <p class="calibre13" id="c31-para-0165">
+         Now let's add our files. Right-click the ArticleCitations project in the Solution Explorer and select Add ➪ Existing Item. Add all the files from the
+         <code class="calibre21">
+          06_ArticleCitations\04_AfterLogDebugging
+         </code>
+         folder in the downloadable source code archive to the project. Your Solution Explorer should look similar to
+         <a class="calibre5" href="#c31-fig-0001" id="R_c31-fig-0001">
+          Figure 31.1
+         </a>
+         .
+        </p>
+        <figure class="calibre36">
+         <img alt="A snapshot of a solution explorer window in a software development environment of various options that are available to the user. The project named is ArticleCitations. The solution explorer window has a search option at the top." class="center" src="images/c31f001.png"/>
+         <figcaption class="calibre37">
+          <p class="calibre13">
+           <span class="figurelabel">
+            <a class="calibre5" href="#R_c31-fig-0001" id="c31-fig-0001" role="doc-backlink">
+             <b class="calibre14">
+              FIGURE 31.1
+             </b>
+            </a>
+           </span>
+          </p>
+         </figcaption>
+        </figure>
+        <p class="calibre13" id="c31-para-0166">
+         This example uses C++23 features which are not yet enabled by default in Visual C++ 2022 at the time of this writing. To enable them, right-click the ArticleCitations project in the Solution Explorer window and click Properties. In the Properties window, select Configuration Properties ➪ General and set the C++ Language Standard option to “ISO C++23 Standard” or “Preview - Features From The Latest C++ Working Draft”, whichever is available in your version of Visual C++. The ISO C++23 Standard option is not currently there yet, but it will appear in a future update of Visual C++. While still in the Properties window, go to Configuration Properties ➪ C/C++ ➪ Command Line and add /utf-8 as Additional Options. This makes sure that characters such as the ö in Gödel are properly printed.
+        </p>
+        <p class="calibre13" id="c31-para-0167">
+         Make sure the configuration is set to Debug and not Release and then compile the whole program by selecting Build ➪ Build Solution. Then copy the
+         <code class="calibre21">
+          paper1.txt
+         </code>
+         and
+         <code class="calibre21">
+          paper2.txt
+         </code>
+         test files to your
+         <code class="calibre21">
+          ArticleCitations
+         </code>
+         project folder, which is the folder containing the
+         <code class="calibre21">
+          ArticleCitations.vcxproj
+         </code>
+         file.
+        </p>
+        <p class="calibre13" id="c31-para-0168">
+         Run the application with Debug ➪ Start Debugging and test the program by first specifying the
+         <code class="calibre21">
+          paper1.txt
+         </code>
+         file. It should properly read the file and output the result to the console. Then, test
+         <code class="calibre21">
+          paper2.txt
+         </code>
+         . The debugger breaks the execution with a message similar to
+         <a class="calibre5" href="#c31-fig-0002" id="R_c31-fig-0002">
+          Figure 31.2
+         </a>
+         .
+        </p>
+        <figure class="calibre36">
+         <img alt="A snapshot illustrates the code editor with C++ code from the ArticleCitations class. It copies article details, allocates an array for citations, and includes exception unhandled errors of various options that are available to the user." class="center" src="images/c31f002.png"/>
+         <figcaption class="calibre37">
+          <p class="calibre13">
+           <span class="figurelabel">
+            <a class="calibre5" href="#R_c31-fig-0002" id="c31-fig-0002" role="doc-backlink">
+             <b class="calibre14">
+              FIGURE 31.2
+             </b>
+            </a>
+           </span>
+          </p>
+         </figcaption>
+        </figure>
+        <p class="calibre13" id="c31-para-0169">
+         This shows that an
+         <code class="calibre21">
+          std::bad_array_new_length
+         </code>
+         exception is thrown. If the code you see is not code you have written, then you need to find the line in your code that caused the exception. To do
+         <span aria-label="1151" class="calibre20" epub:type="pagebreak" id="Page_1151" role="doc-pagebreak">
+         </span>
+         so, use the call stack window (Debug ➪ Windows ➪ Call Stack). In the call stack, you need to find the first line that contains code you wrote. This is shown in
+         <a class="calibre5" href="#c31-fig-0003" id="R_c31-fig-0003">
+          Figure 31.3
+         </a>
+         . You can double-click a line in the call stack window to jump to that line in the code.
+        </p>
+        <figure class="calibre36">
+         <img alt="A debugging tool snapshot depicts a call stack with user options. C++ functions, including operator new and copy, are present in ArticleCitations dot exe's call to the class's copy function." class="center" src="images/c31f003.png"/>
+         <figcaption class="calibre37">
+          <p class="calibre13">
+           <span class="figurelabel">
+            <a class="calibre5" href="#R_c31-fig-0003" id="c31-fig-0003" role="doc-backlink">
+             <b class="calibre14">
+              FIGURE 31.3
+             </b>
+            </a>
+           </span>
+          </p>
+         </figcaption>
+        </figure>
+        <p class="calibre13" id="c31-para-0170">
+         Just as with GDB, you see that the problem is in
+         <code class="calibre21">
+          ArticleCitations::copy()
+         </code>
+         .
+        </p>
+        <p class="calibre13" id="c31-para-0171">
+         You can now inspect variables by simply hovering your mouse over the name of a variable. If you hover over
+         <code class="calibre21">
+          src
+         </code>
+         , you'll notice that
+         <code class="calibre21">
+          m_numCitations
+         </code>
+         is
+         <code class="calibre21">
+          -1
+         </code>
+         . The reason and the fix are the same as in the GDB example.
+        </p>
+        <p class="calibre13" id="c31-para-0172">
+         Instead of hovering over variables to inspect their values, you can also use the Debug ➪ Windows ➪ Autos window, which shows a list of variables.
+         <a class="calibre5" href="#c31-fig-0004" id="R_c31-fig-0004">
+          Figure 31.4
+         </a>
+         shows this list with the
+         <code class="calibre21">
+          src
+         </code>
+         variable expanded to show its data members. From this window, you can also see that
+         <code class="calibre21">
+          m_numCitations
+         </code>
+         is
+         <code class="calibre21">
+          -1
+         </code>
+         .
+        </p>
+        <figure class="calibre36">
+         <img alt="A snapshot illustrates the debugger showing variables and their values in a programming environment. The debugger window is named Autos and it has a search bar at the top that has various options available to the user." class="center" src="images/c31f004.png"/>
+         <figcaption class="calibre37">
+          <p class="calibre13">
+           <span class="figurelabel">
+            <a class="calibre5" href="#R_c31-fig-0004" id="c31-fig-0004" role="doc-backlink">
+             <b class="calibre14">
+              FIGURE 31.4
+             </b>
+            </a>
+           </span>
+          </p>
+         </figcaption>
+        </figure>
+       </section>
+      </section>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c31-sec-0052">
+      </span>
+      <h3 class="calibre27" id="head-3-565">
+       Lessons from the ArticleCitations Example
+      </h3>
+      <p class="calibre13" id="c31-para-0173">
+       You might be inclined to disregard this example as too small to be representative of real debugging. Although the buggy code is not lengthy, many classes that you write will not be much bigger, even in large projects. Imagine if you had failed to test this example thoroughly before integrating it with
+       <span aria-label="1152" class="calibre20" epub:type="pagebreak" id="Page_1152" role="doc-pagebreak">
+       </span>
+       the rest of the project. If these bugs showed up later, you and other engineers would spend more time narrowing down the problem before you could debug it as shown here. Additionally, the techniques shown in this example apply to all debugging, whether on a large or small scale.
+      </p>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-315" class="calibre2">
+     <span class="calibre" id="c31-sec-0053">
+     </span>
+     <h2 class="calibre6" id="head-2-315">
+      SUMMARY
+     </h2>
+     <p class="calibre13" id="c31-para-0174">
+      The most important concept in this chapter is the fundamental law of debugging:
+      <i class="calibre18">
+       avoid bugs when you're coding, but plan for bugs in your code
+      </i>
+      . The reality of programming is that bugs will appear. If you've prepared your program properly, with error logging, debug traces, and assertions, then the actual debugging will be significantly easier.
+     </p>
+     <p class="calibre13" id="c31-para-0175">
+      This chapter also presented specific approaches for debugging bugs. The most important rule when debugging is to reproduce the problem. Then, you can use a symbolic debugger, or log-based debugging, to track down the root cause. Memory errors present particular difficulties and account for the majority of bugs in legacy C++ code. This chapter described various categories of memory bugs and their symptoms and showed examples of debugging errors in a program.
+     </p>
+     <p class="calibre13" id="c31-para-0176">
+      Debugging is a hard skill to learn. To take your C++ skills to a professional level, you will have to practice debugging a lot.
+     </p>
+    </section>
+    <section aria-labelledby="head-2-316" class="calibre2">
+     <span class="calibre" id="c31-sec-0054">
+     </span>
+     <h2 class="calibre6" id="head-2-316">
+      EXERCISES
+     </h2>
+     <p class="calibre13" id="c31-para-0177">
+      By solving the following exercises, you can practice the material discussed in this chapter. Solutions to all exercises are available with the code download on the book's website at
+      <code class="calibre21">
+       <a class="calibre5" href="http://www.wiley.com/go/proc++6e">
+        www.wiley.com/go/proc++6e
+       </a>
+      </code>
+      . However, if you are stuck on an exercise, first reread parts of this chapter to try to find an answer yourself before looking at the solution from the website.
+     </p>
+     <section class="calibre2">
+      <span class="calibre" id="c31-exsec-0001">
+      </span>
+      <ol class="none1">
+       <li class="calibre9" id="c31-ex-0001">
+        <b class="calibre14">
+         Exercise 31-1:
+        </b>
+        What is the fundamental law of debugging?
+       </li>
+       <li class="calibre9" id="c31-ex-0002">
+        <b class="calibre14">
+         Exercise 31-2:
+        </b>
+        Can you spot any problems with the following piece of code?
+        <pre class="calibre26" id="c31-code-0058"><code class="calibre21">import std;</code>
+<code class="calibre21">using namespace std;</code>
+<code class="calibre21"> </code>
+<code class="calibre21">int* getData(int value) { return new int { value * 2 }; }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">int main()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    int* data { getData(21) };</code>
+<code class="calibre21">    println("{}", *data);</code>
+<code class="calibre21"> </code>
+<code class="calibre21">    data = getData(42);</code>
+<code class="calibre21">    println("{}", *data);</code>
+<code class="calibre21">}</code></pre>
+       </li>
+       <li class="calibre9" id="c31-ex-0003">
+        <b class="calibre14">
+         Exercise 31-3:
+        </b>
+        Given the following code snippet:
+        <pre class="calibre26" id="c31-code-0059"><code class="calibre21">import std;</code>
+<code class="calibre21">using namespace std;</code>
+<code class="calibre21"> </code>
+<code class="calibre21"><span aria-label="1153" class="calibre20" epub:type="pagebreak" id="Page_1153" role="doc-pagebreak"></span>int sum(int* values, int count)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    int total { 0 };</code>
+<code class="calibre21">    for (int i { 0 }; i &lt;= count; ++i) { total += values[i]; }</code>
+<code class="calibre21">    return total;</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21">int main()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    int values[] { 1, 2, 3 };</code>
+<code class="calibre21">    int total { sum(values, sizeof(values)) };</code>
+<code class="calibre21">    println("{}", total);</code>
+<code class="calibre21">}</code></pre>
+        <p class="listpara" id="c31-para-0183">
+         It calculates the sum of a set of values. For the values 1, 2, and 3, you expect the sum to be 6; however, when running the code on my machine, the result is -2 for a debug build and some different random number each time I execute a release build, e.g., 920865056, -321371431, and so on. What's going on? Use a symbolic debugger and its step-by-step execution mode to pinpoint the root cause of the wrong result. Consult the documentation of your debugger to learn how to step through individual lines of your code.
+        </p>
+       </li>
+       <li class="calibre9" id="c31-ex-0005">
+        <b class="calibre14">
+         Exercise 31-4:
+        </b>
+        (
+        <i class="calibre18">
+         advanced
+        </i>
+        ) Modify the start-time debug mode example from earlier in this chapter to use
+        <code class="calibre21">
+         std::source:location
+        </code>
+        , discussed in
+        <a class="calibre5" href="c14.xhtml">
+         Chapter 14
+        </a>
+        , to get rid of the old-style
+        <code class="calibre21">
+         LOG()
+        </code>
+        macro. This is trickier than it sounds. The problem is that
+        <code class="calibre21">
+         Logger::log()
+        </code>
+        is a variadic function template, so you cannot just add a named
+        <code class="calibre21">
+         source:location
+        </code>
+        parameter after the variadic parameter pack. One trick is to use a helper class, for example
+        <code class="calibre21">
+         Log
+        </code>
+        . The constructor accepts a variadic parameter pack and a
+        <code class="calibre21">
+         source:location
+        </code>
+        and forwards the work to
+        <code class="calibre21">
+         Logger::log()
+        </code>
+        . The final part of the trick is the following deduction guide; see
+        <a class="calibre5" href="c12.xhtml">
+         Chapter 12
+        </a>
+        , “Writing Generic Code with Templates”:
+        <pre class="calibre26" id="c31-code-0060"><code class="calibre21">template &lt;typename… Ts&gt;</code>
+<code class="calibre21">Log(Ts&amp;&amp;…) -&gt; Log&lt;Ts…&gt;;</code></pre>
+       </li>
+      </ol>
+     </section>
     </section>
    </section>
   </div>

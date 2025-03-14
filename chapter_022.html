@@ -5,7 +5,7 @@
   <link href="style.css" rel="stylesheet" type="text/css"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <title>
-   CHAPTER 11: MODULES, HEADER FILES, AND MISCELLANEOUS TOPICS
+   MULTIPLE INHERITANCE
   </title>
  </head>
  <body>
@@ -21,177 +21,4843 @@
    </a>
   </div>
   <div class="chapter-content">
-   <section aria-labelledby="b01_1" class="calibre2" epub:type="appendix" role="doc-appendix">
-    <section aria-labelledby="head-2-10" class="calibre2">
-     <h2 class="calibre6" id="head-2-10">
-      CHAPTER 11: MODULES, HEADER FILES, AND MISCELLANEOUS TOPICS
-     </h2>
-     <p class="calibre13" id="bapp01-para-0057">
-      This chapter is mostly focused on modules, but it also discusses header files, linkage, feature test macros for core language features, the
-      <code class="calibre21">
-       static
-      </code>
-      keyword, C-style variable-length argument lists, and preprocessor macros.
-     </p>
-     <span aria-label="1252" class="calibre20" epub:type="pagebreak" id="Page_1252" role="doc-pagebreak">
-     </span>
+   <section aria-labelledby="c10_1" class="calibre2" epub:type="chapter" role="doc-chapter">
+    <section aria-labelledby="head-2-125" class="calibre2">
      <section class="calibre2">
-      <span class="calibre" id="bapp01-sec-0030">
-      </span>
-      <h3 class="calibre27" id="head-3-19">
-       Things to Remember
-      </h3>
-      <ul class="check" id="bapp01-list-0012">
-       <li class="calibre9" id="bapp01-li-0118">
-        The many uses of
+      <section class="calibre2">
+       <h4 class="calibre29" id="head-4-203">
+        StringSpreadsheetCell Implementation
+       </h4>
+       <p class="calibre13">
+        The
         <code class="calibre21">
-         static
+         set()
         </code>
-       </li>
-       <li class="calibre9" id="bapp01-li-0119">
-        What modules are and why their use is preferred over using header files
-       </li>
-       <li class="calibre9" id="bapp01-li-0120">
-        Header file syntax and
+        member function is straightforward because the internal representation is already a string. The
         <code class="calibre21">
-         #include
+         getString()
         </code>
-       </li>
-       <li class="calibre9" id="bapp01-li-0121">
-        The concept of preprocessor macros and their disadvantages
-       </li>
-       <li class="calibre9" id="bapp01-li-0122">
-        The use of
+        member function has to keep into account that
         <code class="calibre21">
-         #define
+         m_value
+        </code>
+        is of type
+        <code class="calibre21">
+         optional
+        </code>
+        and that it might not have a value. When
+        <code class="calibre21">
+         m_value
+        </code>
+        doesn't have a value,
+        <code class="calibre21">
+         getString()
+        </code>
+        should return a default string, the empty string for this example. This is made easy with the
+        <code class="calibre21">
+         value_or()
+        </code>
+        member function of
+        <code class="calibre21">
+         optional
+        </code>
+        . By using
+        <code class="calibre21">
+         m_value.value_or("")
+        </code>
+        , the real value is returned if
+        <code class="calibre21">
+         m_value
+        </code>
+        contains an actual value; otherwise, the empty string is returned.
+       </p>
+       <pre class="calibre26" id="c10-code-0064"><code class="calibre21">void set(std::string_view value) override { m_value = value; }</code>
+<code class="calibre21">std::string getString() const override { return m_value.value_or(""); }</code></pre>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c10-sec-0050">
+       </span>
+       <h4 class="calibre29" id="head-4-204">
+        DoubleSpreadsheetCell Class Definition and Implementation
+       </h4>
+       <p class="calibre13">
+        The
+        <code class="calibre21">
+         double
+        </code>
+        version follows a similar pattern, but with different logic. In addition to the
+        <code class="calibre21">
+         set()
+        </code>
+        member function from the base class that takes a
+        <code class="calibre21">
+         string_view
+        </code>
+        , it also provides a new
+        <code class="calibre21">
+         set()
+        </code>
+        member function that allows a client to set the value with a
+        <code class="calibre21">
+         double
+        </code>
+        argument. Additionally, it provides a new
+        <code class="calibre21">
+         getValue()
+        </code>
+        member function to retrieve the value as a
+        <code class="calibre21">
+         double
+        </code>
+        . Two new
+        <code class="calibre21">
+         private static
+        </code>
+        member functions are used to convert between a
+        <code class="calibre21">
+         string
+        </code>
+        and a
+        <code class="calibre21">
+         double
+        </code>
+        , and vice versa. As in
+        <code class="calibre21">
+         StringSpreadsheetCell
+        </code>
+        , it has a data member called
+        <code class="calibre21">
+         m_value
+        </code>
+        , this time of type
+        <code class="calibre21">
+         optional&lt;double&gt;
+        </code>
+        .
+       </p>
+       <pre class="calibre26" id="c10-code-0065"><code class="calibre21">export module double_spreadsheet_cell;</code>
+<code class="calibre21">export import spreadsheet_cell;</code>
+<code class="calibre21">import std;</code>
+<code class="calibre21"> </code>
+<code class="calibre21">export class DoubleSpreadsheetCell : public SpreadsheetCell</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual void set(double value);</code>
+<code class="calibre21">        virtual double getValue() const;</code>
+<code class="calibre21"> </code>
+<code class="calibre21">        void set(std::string_view value) override;</code>
+<code class="calibre21">        std::string getString() const override;</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        static std::string doubleToString(double value);</code>
+<code class="calibre21">        static double stringToDouble(std::string_view value);</code>
+<code class="calibre21">        std::optional&lt;double&gt; m_value;</code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13">
+        <span aria-label="385" class="calibre20" epub:type="pagebreak" id="Page_385" role="doc-pagebreak">
+        </span>
+        The
+        <code class="calibre21">
+         set()
+        </code>
+        member function that takes a
+        <code class="calibre21">
+         double
+        </code>
+        is straightforward, as is the implementation of
+        <code class="calibre21">
+         getValue()
+        </code>
+        . The
+        <code class="calibre21">
+         string_view
+        </code>
+        overload uses the
+        <code class="calibre21">
+         private static
+        </code>
+        member function
+        <code class="calibre21">
+         stringToDouble()
+        </code>
+        . The
+        <code class="calibre21">
+         getString()
+        </code>
+        member function returns the stored
+        <code class="calibre21">
+         double
+        </code>
+        value as a
+        <code class="calibre21">
+         string
+        </code>
+        , or returns an empty string if no value has been stored. It uses the
+        <code class="calibre21">
+         has_value()
+        </code>
+        member function of
+        <code class="calibre21">
+         std::optional
+        </code>
+        to query whether the
+        <code class="calibre21">
+         optional
+        </code>
+        has a value. If it has a value, the
+        <code class="calibre21">
+         value()
+        </code>
+        member function is used to retrieve it.
+       </p>
+       <pre class="calibre26" id="c10-code-0066"><code class="calibre21">virtual void set(double value) { m_value = value; }</code>
+<code class="calibre21">virtual double getValue() const { return m_value.value_or(0); }</code>
+<code class="calibre21"> </code>
+<code class="calibre21">void set(std::string_view value) override { m_value = stringToDouble(value); }</code>
+<code class="calibre21">std::string getString() const override</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    return (m_value.has_value() ? doubleToString(m_value.value()) : "");</code>
+<code class="calibre21">}</code></pre>
+       <p class="calibre13" id="c10-para-0170">
+        You may already see one major advantage of implementing spreadsheet cells in a hierarchy—the code is much simpler. Each class can be self-centered and deal only with its own functionality.
+       </p>
+       <p class="calibre13" id="c10-para-0171">
+        Note that the implementations of
+        <code class="calibre21">
+         doubleToString()
         </code>
         and
         <code class="calibre21">
-         #pragma once
+         stringToDouble()
         </code>
-       </li>
-       <li class="calibre9" id="bapp01-li-0123">
-        The different types of linkage: no linkage, external linkage, internal linkage, and module linkage
-       </li>
-       <li class="calibre9" id="bapp01-li-0124">
-        Why you shouldn't use C-style variable-length argument lists
-       </li>
-      </ul>
+        are omitted because they are the same as in
+        <a class="calibre5" href="c08.xhtml">
+         Chapter 8
+        </a>
+        .
+       </p>
+      </section>
      </section>
      <section class="calibre2">
-      <span class="calibre" id="bapp01-sec-0031">
+      <span class="calibre" id="c10-sec-0051">
       </span>
-      <h3 class="calibre27" id="head-3-20">
-       Types of Questions
+      <h3 class="calibre27" id="head-3-220">
+       Leveraging Polymorphism
       </h3>
-      <p class="calibre13" id="bapp01-para-0059">
-       Asking a candidate to define
+      <p class="calibre13" id="c10-para-0172">
+       Now that the
        <code class="calibre21">
-        static
+        SpreadsheetCell
        </code>
-       is a classic C++ interview question. Because the keyword has several uses, it can be used to assess the breadth of your knowledge. You should definitely talk about
-       <code class="calibre21">
-        static
-       </code>
-       member functions and
-       <code class="calibre21">
-        static
-       </code>
-       data members and give good examples of them. You'll get extra points if you also explain
-       <code class="calibre21">
-        static
-       </code>
-       linkage and
-       <code class="calibre21">
-        static
-       </code>
-       function-local variables.
+       hierarchy is polymorphic, client code can take advantage of the many benefits that polymorphism has to offer. The following test program explores many of these features.
       </p>
-      <p class="calibre13" id="bapp01-para-0060">
-       Modules are the perfect way to make code reusable and bolster clear separation of responsibilities. Be sure to know how to consume modules and how to author a basic module.
+      <p class="calibre13">
+       To demonstrate polymorphism, the test program declares a
+       <code class="calibre21">
+        vector
+       </code>
+       of three
+       <code class="calibre21">
+        SpreadsheetCell
+       </code>
+       pointers. Remember that because
+       <code class="calibre21">
+        SpreadsheetCell
+       </code>
+       is an abstract class, you can't create objects of that type. However, you can still have a pointer or reference to a
+       <code class="calibre21">
+        SpreadsheetCell
+       </code>
+       because it would actually be pointing to one of the derived classes. This
+       <code class="calibre21">
+        vector
+       </code>
+       , because it is a
+       <code class="calibre21">
+        vector
+       </code>
+       of the parent type
+       <code class="calibre21">
+        SpreadsheetCell
+       </code>
+       , allows you to store a heterogeneous mixture of the two derived classes. This means that elements of the
+       <code class="calibre21">
+        vector
+       </code>
+       could be either a
+       <code class="calibre21">
+        StringSpreadsheetCell
+       </code>
+       or a
+       <code class="calibre21">
+        DoubleSpreadsheetCell
+       </code>
+       .
       </p>
+      <pre class="calibre26" id="c10-code-0067"><code class="calibre21">vector&lt;unique_ptr&lt;SpreadsheetCell&gt;&gt; cellArray;</code></pre>
+      <p class="calibre13">
+       The first two elements of the
+       <code class="calibre21">
+        vector
+       </code>
+       are set to point to a new
+       <code class="calibre21">
+        StringSpreadsheetCell
+       </code>
+       , while the third is a new
+       <code class="calibre21">
+        DoubleSpreadsheetCell
+       </code>
+       .
+      </p>
+      <pre class="calibre26" id="c10-code-0068"><code class="calibre21">cellArray.push_back(make_unique&lt;StringSpreadsheetCell&gt;());</code>
+<code class="calibre21">cellArray.push_back(make_unique&lt;StringSpreadsheetCell&gt;());</code>
+<code class="calibre21">cellArray.push_back(make_unique&lt;DoubleSpreadsheetCell&gt;());</code></pre>
+      <p class="calibre13">
+       Now that the
+       <code class="calibre21">
+        vector
+       </code>
+       contains multityped data, any of the member functions declared by the base class can be applied to the objects in the
+       <code class="calibre21">
+        vector
+       </code>
+       . The code just uses
+       <code class="calibre21">
+        SpreadsheetCell
+       </code>
+       pointers—the compiler has no idea at compile time what types the objects actually are. However, because the objects are inheriting from
+       <code class="calibre21">
+        SpreadsheetCell
+       </code>
+       , they must support the member functions of
+       <code class="calibre21">
+        SpreadsheetCell
+       </code>
+       .
+      </p>
+      <pre class="calibre26" id="c10-code-0069"><code class="calibre21">cellArray[0]-&gt;set("hello");</code>
+<code class="calibre21">cellArray[1]-&gt;set("10");</code>
+<code class="calibre21">cellArray[2]-&gt;set("18");</code></pre>
+      <p class="calibre13">
+       <span aria-label="386" class="calibre20" epub:type="pagebreak" id="Page_386" role="doc-pagebreak">
+       </span>
+       When the
+       <code class="calibre21">
+        getString()
+       </code>
+       member function is called, each object properly returns a
+       <code class="calibre21">
+        string
+       </code>
+       representation of their value. The important, and somewhat amazing, thing to realize is that the different objects do this in different ways. A
+       <code class="calibre21">
+        StringSpreadsheetCell
+       </code>
+       returns its stored value, or an empty string. A
+       <code class="calibre21">
+        DoubleSpreadsheetCell
+       </code>
+       first performs a conversion if it contains a value; otherwise, it returns an empty string. As the programmer, you don't need to know how the object does it—you just need to know that because the object is a
+       <code class="calibre21">
+        SpreadsheetCell
+       </code>
+       , it
+       <i class="calibre18">
+        can
+       </i>
+       perform this behavior.
+      </p>
+      <pre class="calibre26" id="c10-code-0070"><code class="calibre21">println("Vector: [{},{},{}]", cellArray[0]-&gt;getString(),</code>
+<code class="calibre21">                              cellArray[1]-&gt;getString(),</code>
+<code class="calibre21">                              cellArray[2]-&gt;getString());</code></pre>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c10-sec-0052">
+      </span>
+      <h3 class="calibre27" id="head-3-221">
+       Future Considerations
+      </h3>
+      <p class="calibre13" id="c10-para-0177">
+       The new implementation of the
+       <code class="calibre21">
+        SpreadsheetCell
+       </code>
+       hierarchy is certainly an improvement from an object-oriented design point of view. Yet, it would probably not suffice as an actual class hierarchy for a real-world spreadsheet program for several reasons.
+      </p>
+      <p class="calibre13">
+       First, despite the improved design, one feature is still missing: the ability to convert from one cell type to another. By dividing them into two classes, the cell objects become more loosely integrated. To provide the ability to convert from a
+       <code class="calibre21">
+        DoubleSpreadsheetCell
+       </code>
+       to a
+       <code class="calibre21">
+        StringSpreadsheetCell
+       </code>
+       , you could add a
+       <i class="calibre18">
+        converting constructor
+       </i>
+       , also known as a
+       <i class="calibre18">
+        typed constructor
+       </i>
+       . It has a similar appearance as a copy constructor, but instead of a reference to an object of the same class, it takes a reference to an object of a sibling class. Note also that you now have to declare a default constructor, which can be explicitly defaulted, because the compiler stops generating one as soon as you declare any constructor yourself.
+      </p>
+      <pre class="calibre26" id="c10-code-0071"><code class="calibre21">export class StringSpreadsheetCell : public SpreadsheetCell</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        <b class="calibre14">StringSpreadsheetCell() = default;</b></code>
+<code class="calibre21">        <b class="calibre14">StringSpreadsheetCell(const DoubleSpreadsheetCell&amp; cell)</b></code>
+<code class="calibre21">            <b class="calibre14">: m_value { cell.getString() }</b></code>
+<code class="calibre21">        <b class="calibre14">{ }</b></code>
+<code class="calibre21">        <span class="color">// Remainder omitted for brevity.</span></code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13">
+       With a converting constructor, you can easily create a
+       <code class="calibre21">
+        StringSpreadsheetCell
+       </code>
+       given a
+       <code class="calibre21">
+        DoubleSpreadsheetCell
+       </code>
+       . Don't confuse this with casting pointers or references, however. Casting from one sibling pointer or reference to another does not work, unless you overload the cast operator as described in
+       <a class="calibre5" href="c15.xhtml">
+        Chapter 15
+       </a>
+       , “Overloading C++ Operators.”
+      </p>
+      <section class="calibre2">
+       <aside class="calibre23">
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+        <section class="feature">
+         <p class="calibre25" id="c10-para-0180">
+          <b class="calibre14">
+           WARNING
+          </b>
+          <i class="calibre18">
+           You can always cast up the hierarchy, and you can sometimes cast down the hierarchy. Casting across the hierarchy is possible by changing the behavior of the cast operator or by using
+          </i>
+          <code class="calibre21">
+           reinterpret_cast()
+          </code>
+          <i class="calibre18">
+           , neither of which is recommended.
+          </i>
+         </p>
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <p class="calibre13" id="c10-para-0181">
+       Second, the question of how to implement overloaded operators for cells is an interesting one, and there are several possible approaches.
+      </p>
+      <p class="calibre13" id="c10-para-0182">
+       <span aria-label="387" class="calibre20" epub:type="pagebreak" id="Page_387" role="doc-pagebreak">
+       </span>
+       One approach is to implement a version of each operator for every combination of cells. With only two derived classes, this is manageable. There would be an
+       <code class="calibre21">
+        operator+
+       </code>
+       function to add two
+       <code class="calibre21">
+        double
+       </code>
+       cells, to add two
+       <code class="calibre21">
+        string
+       </code>
+       cells, and to add a
+       <code class="calibre21">
+        double
+       </code>
+       cell to a
+       <code class="calibre21">
+        string
+       </code>
+       cell. For each combination, you decide what the result is. For example, the result of adding two
+       <code class="calibre21">
+        double
+       </code>
+       cells could be the result of mathematically adding both values together. The result of adding two
+       <code class="calibre21">
+        string
+       </code>
+       cells could be a
+       <code class="calibre21">
+        string
+       </code>
+       representing the concatenation of both
+       <code class="calibre21">
+        string
+       </code>
+       s, and so on.
+      </p>
+      <p class="calibre13" id="c10-para-0183">
+       Another approach is to decide on a common representation. The earlier implementation already standardizes on a
+       <code class="calibre21">
+        string
+       </code>
+       as a common representation of sorts. A single
+       <code class="calibre21">
+        operator+
+       </code>
+       could cover all the cases by taking advantage of this common representation.
+      </p>
+      <p class="calibre13">
+       Yet another approach is a hybrid one. One
+       <code class="calibre21">
+        operator+
+       </code>
+       can be provided that adds two
+       <code class="calibre21">
+        DoubleSpreadsheetCell
+       </code>
+       s resulting in a
+       <code class="calibre21">
+        DoubleSpreadsheetCell
+       </code>
+       . This operator can be implemented in the
+       <code class="calibre21">
+        double_spreadsheet_cell
+       </code>
+       module as follows:
+      </p>
+      <pre class="calibre26" id="c10-code-0072"><code class="calibre21">export DoubleSpreadsheetCell operator+(const DoubleSpreadsheetCell&amp; lhs,</code>
+<code class="calibre21">                                       const DoubleSpreadsheetCell&amp; rhs)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    DoubleSpreadsheetCell newCell;</code>
+<code class="calibre21">    newCell.set(lhs.getValue() + rhs.getValue());</code>
+<code class="calibre21">    return newCell;</code>
+<code class="calibre21">}</code></pre>
+      <p class="calibre13">
+       This operator can be tested as follows:
+      </p>
+      <pre class="calibre26" id="c10-code-0073"><code class="calibre21">DoubleSpreadsheetCell doubleCell;    doubleCell.set(8.4);</code>
+<code class="calibre21">DoubleSpreadsheetCell result { doubleCell + doubleCell }; </code>
+<code class="calibre21">println("{}", result.getString());  <span class="color">// Prints 16.800000</span></code></pre>
+      <p class="calibre13">
+       A second
+       <code class="calibre21">
+        operator+
+       </code>
+       can be provided for use when at least one of the two operands is a
+       <code class="calibre21">
+        StringSpreadsheetCell
+       </code>
+       . You could decide that the result of this operator should always be a
+       <code class="calibre21">
+        string
+       </code>
+       cell. Such an operator can be added to the
+       <code class="calibre21">
+        string_spreadsheet_cell
+       </code>
+       module and can be implemented as follows:
+      </p>
+      <pre class="calibre26" id="c10-code-0074"><code class="calibre21">export StringSpreadsheetCell operator+(const StringSpreadsheetCell&amp; lhs,</code>
+<code class="calibre21">                                       const StringSpreadsheetCell&amp; rhs)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    StringSpreadsheetCell newCell;</code>
+<code class="calibre21">    newCell.set(lhs.getString() + rhs.getString());</code>
+<code class="calibre21">    return newCell;</code>
+<code class="calibre21">}</code></pre>
+      <p class="calibre13">
+       As long as the compiler has a way to turn a particular cell into a
+       <code class="calibre21">
+        StringSpreadsheetCell
+       </code>
+       , the operator will work. Given the previous example of having a
+       <code class="calibre21">
+        StringSpreadsheetCell
+       </code>
+       constructor that takes a
+       <code class="calibre21">
+        DoubleSpreadsheetCell
+       </code>
+       as an argument, the compiler will automatically perform the conversion if it is the only way to get the
+       <code class="calibre21">
+        operator+
+       </code>
+       to work. That means the following code adding a
+       <code class="calibre21">
+        double
+       </code>
+       cell to a
+       <code class="calibre21">
+        string
+       </code>
+       cell works, even though there are only two
+       <code class="calibre21">
+        operator+
+       </code>
+       implementations provided: one adding two
+       <code class="calibre21">
+        double
+       </code>
+       cells and one adding two
+       <code class="calibre21">
+        string
+       </code>
+       cells.
+      </p>
+      <pre class="calibre26" id="c10-code-0075"><code class="calibre21">DoubleSpreadsheetCell doubleCell;    doubleCell.set(8.4);</code>
+<code class="calibre21">StringSpreadsheetCell stringCell;    stringCell.set("Hello ");</code>
+<code class="calibre21">StringSpreadsheetCell result { stringCell + doubleCell };</code>
+<code class="calibre21"><span class="color">println("{}", result.getString());  // Prints Hello 8.400000</span></code></pre>
+      <p class="calibre13" id="c10-para-0188">
+       <span aria-label="388" class="calibre20" epub:type="pagebreak" id="Page_388" role="doc-pagebreak">
+       </span>
+       If you are feeling a little unsure about polymorphism, start with the code for this example and try things out. It is a great starting point for experimental code that simply exercises various aspects of polymorphism.
+      </p>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c10-sec-0054">
+      </span>
+      <h3 class="calibre27" id="head-3-222">
+       Providing Implementations for Pure virtual Member Functions
+      </h3>
+      <p class="calibre13">
+       Technically, it is possible to provide an implementation for a pure
+       <code class="calibre21">
+        virtual
+       </code>
+       member function. This implementation cannot be in the class definition itself but must be provided outside. The class remains abstract though, and any derived classes are still required to provide an implementation of the pure
+       <code class="calibre21">
+        virtual
+       </code>
+       member function. Since the class remains abstract, no instances of it can be created. Still, its implementation of the pure
+       <code class="calibre21">
+        virtual
+       </code>
+       member function can be called, for example, from a derived class. The following code snippet demonstrates this:
+      </p>
+      <pre class="calibre26" id="c10-code-0076"><code class="calibre21">class Base</code>
+<code class="calibre21">{</code>
+<code class="calibre21">public:</code>
+<code class="calibre21">    virtual void doSomething() = 0; <span class="color">// Pure virtual member function.</span></code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21"><span class="color">// An out-of-class implementation of a pure virtual member function.</span></code>
+<code class="calibre21"><b class="calibre14">void Base::doSomething() { println("Base::doSomething()"); }</b></code>
+<code class="calibre21"> </code>
+<code class="calibre21">class Derived : public Base</code>
+<code class="calibre21">{</code>
+<code class="calibre21">public:</code>
+<code class="calibre21">    void doSomething() override</code>
+<code class="calibre21">    {</code>
+<code class="calibre21">        <span class="color">// Call pure virtual member function implementation from base class.</span></code>
+<code class="calibre21">        <b class="calibre14">Base::doSomething();</b></code>
+<code class="calibre21">        println("Derived::doSomething()");</code>
+<code class="calibre21">    }</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">int main()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    Derived derived;</code>
+<code class="calibre21">    Base&amp; base { derived };</code>
+<code class="calibre21">    base.doSomething();</code>
+<code class="calibre21">}</code></pre>
+      <p class="calibre13">
+       The output is as expected:
+      </p>
+      <pre class="calibre26" id="c10-code-0077"><code class="calibre21">Base::doSomething()</code>
+<code class="calibre21">Derived::doSomething()</code></pre>
      </section>
     </section>
-    <section aria-labelledby="head-2-11" class="calibre2">
-     <span class="calibre" id="bapp01-sec-0032">
+    <section aria-labelledby="head-2-126" class="calibre2">
+     <span class="calibre" id="c10-sec-0055">
      </span>
-     <h2 class="calibre6" id="head-2-11">
-      CHAPTERS 12 AND 26: WRITING GENERIC CODE WITH TEMPLATES, AND ADVANCED TEMPLATES
+     <h2 class="calibre6" id="head-2-126">
+      MULTIPLE INHERITANCE
      </h2>
-     <p class="calibre13" id="bapp01-para-0061">
-      As one of the most arcane parts of C++, templates are a good way for interviewers to separate the C++ novices from the pros. While most interviewers will forgive you for not remembering some of the advanced template syntax, you should go into an interview knowing the basics.
+     <p class="calibre13" id="c10-para-0191">
+      As you read in
+      <a class="calibre5" href="c05.xhtml">
+       Chapter 5
+      </a>
+      , multiple inheritance is often perceived as a complicated and unnecessary part of object-oriented programming. I'll leave the decision of whether it is useful up to you and your co-workers. This section explains the mechanics of multiple inheritance in C++.
      </p>
+     <span aria-label="389" class="calibre20" epub:type="pagebreak" id="Page_389" role="doc-pagebreak">
+     </span>
      <section class="calibre2">
-      <span class="calibre" id="bapp01-sec-0033">
+      <span class="calibre" id="c10-sec-0056">
       </span>
-      <h3 class="calibre27" id="head-3-21">
-       Things to Remember
+      <h3 class="calibre27" id="head-3-223">
+       Inheriting from Multiple Classes
       </h3>
-      <ul class="check" id="bapp01-list-0013">
-       <li class="calibre9" id="bapp01-li-0125">
-        How to use a class or function template
+      <p class="calibre13">
+       Defining a class to have multiple parent classes is simple from a syntactic point of view. All you need to do is list the base classes individually when declaring the class name.
+      </p>
+      <pre class="calibre26" id="c10-code-0078"><code class="calibre21">class Baz : public Foo, public Bar { <span class="color">/* Etc. */</span> };</code></pre>
+      <p class="calibre13">
+       By listing multiple parents, a
+       <code class="calibre21">
+        Baz
+       </code>
+       object has the following characteristics:
+      </p>
+      <ul class="check" id="c10-list-0006">
+       <li class="calibre9" id="c10-li-0022">
+        A
+        <code class="calibre21">
+         Baz
+        </code>
+        object supports the
+        <code class="calibre21">
+         public
+        </code>
+        member functions and contains the data members of both
+        <code class="calibre21">
+         Foo
+        </code>
+        and
+        <code class="calibre21">
+         Bar
+        </code>
+        .
        </li>
-       <li class="calibre9" id="bapp01-li-0126">
-        How to write a simple class or function template
+       <li class="calibre9" id="c10-li-0023">
+        The member functions of the
+        <code class="calibre21">
+         Baz
+        </code>
+        class have access to
+        <code class="calibre21">
+         protected
+        </code>
+        data and member functions in both
+        <code class="calibre21">
+         Foo
+        </code>
+        and
+        <code class="calibre21">
+         Bar
+        </code>
+        .
        </li>
-       <li class="calibre9" id="bapp01-li-0127">
-        The abbreviated function template syntax
+       <li class="calibre9" id="c10-li-0024">
+        A
+        <code class="calibre21">
+         Baz
+        </code>
+        object can be upcast to either a
+        <code class="calibre21">
+         Foo
+        </code>
+        or a
+        <code class="calibre21">
+         Bar
+        </code>
+        .
        </li>
-       <li class="calibre9" id="bapp01-li-0128">
-        Function template argument deduction
+       <li class="calibre9" id="c10-li-0025">
+        Creating a new
+        <code class="calibre21">
+         Baz
+        </code>
+        object automatically calls the
+        <code class="calibre21">
+         Foo
+        </code>
+        and
+        <code class="calibre21">
+         Bar
+        </code>
+        default constructors, in the order in which the classes are listed in the class definition.
        </li>
-       <li class="calibre9" id="bapp01-li-0129">
-        Class template argument deduction (CTAD)
+       <li class="calibre9" id="c10-li-0026">
+        Deleting a
+        <code class="calibre21">
+         Baz
+        </code>
+        object automatically calls the destructors for the
+        <code class="calibre21">
+         Foo
+        </code>
+        and
+        <code class="calibre21">
+         Bar
+        </code>
+        classes, in the reverse order that the classes are listed in the class definition.
        </li>
-       <li class="calibre9" id="bapp01-li-0130">
-        Alias templates and why
+      </ul>
+      <p class="calibre13">
+       The following example shows a class,
+       <code class="calibre21">
+        DogBird
+       </code>
+       , that has two parent classes—a
+       <code class="calibre21">
+        Dog
+       </code>
+       class and a
+       <code class="calibre21">
+        Bird
+       </code>
+       class, as shown in
+       <a class="calibre5" href="c10_split_001.xhtml#c10-fig-0009" id="R_c10-fig-0009">
+        Figure 10.9
+       </a>
+       . The fact that a dog-bird is a ridiculous example should not be viewed as a statement that multiple inheritance itself is ridiculous. Honestly, I leave that judgment up to you.
+      </p>
+      <figure class="calibre36">
+       <img alt="A set of three boards. It includes the following. A. Dog. B. Bird. C. DogBird." class="center" src="images/c10f009.png"/>
+       <figcaption class="calibre37">
+        <p class="calibre13">
+         <span class="figurelabel">
+          <a class="calibre5" href="c10_split_001.xhtml#R_c10-fig-0009" id="c10-fig-0009" role="doc-backlink">
+           <b class="calibre14">
+            FIGURE 10.9
+           </b>
+          </a>
+         </span>
+        </p>
+       </figcaption>
+      </figure>
+      <pre class="calibre26" id="c10-code-0079"><code class="calibre21">class Dog</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual void bark() { println("Woof!"); }</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class Bird</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual void chirp() { println("Chirp!"); }</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class DogBird : public Dog, public Bird</code>
+<code class="calibre21">{</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13">
+       Using objects of classes with multiple parents is no different from using objects without multiple parents. In fact, the client code doesn't even have to know that the class has two parents. All that really matters are the properties and behaviors supported by the class. In this case, a
+       <code class="calibre21">
+        DogBird
+       </code>
+       object supports all of the
+       <code class="calibre21">
+        public
+       </code>
+       member functions of
+       <code class="calibre21">
+        Dog
+       </code>
+       and
+       <code class="calibre21">
+        Bird
+       </code>
+       .
+      </p>
+      <pre class="calibre26" id="c10-code-0080"><code class="calibre21">DogBird myConfusedAnimal;</code>
+<code class="calibre21">myConfusedAnimal.bark();</code>
+<code class="calibre21">myConfusedAnimal.chirp();</code></pre>
+      <p class="calibre13">
+       <span aria-label="390" class="calibre20" epub:type="pagebreak" id="Page_390" role="doc-pagebreak">
+       </span>
+       The output of this program is as follows:
+      </p>
+      <pre class="calibre26" id="c10-code-0081"><code class="calibre21">Woof!</code>
+<code class="calibre21">Chirp!</code></pre>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c10-sec-0057">
+      </span>
+      <h3 class="calibre27" id="head-3-224">
+       Naming Collisions and Ambiguous Base Classes
+      </h3>
+      <p class="calibre13" id="c10-para-0197">
+       It's not difficult to construct a scenario where multiple inheritance would seem to break down. The following examples show some of the edge cases that must be considered.
+      </p>
+      <section class="calibre2">
+       <span class="calibre" id="c10-sec-0058">
+       </span>
+       <h4 class="calibre29" id="head-4-205">
+        Name Ambiguity
+       </h4>
+       <p class="calibre13" id="c10-para-0198">
+        What if the
+        <code class="calibre21">
+         Dog
+        </code>
+        class and the
+        <code class="calibre21">
+         Bird
+        </code>
+        class both had a member function called
+        <code class="calibre21">
+         eat()
+        </code>
+        ? Because
+        <code class="calibre21">
+         Dog
+        </code>
+        and
+        <code class="calibre21">
+         Bird
+        </code>
+        are not related in any way, one version of the member function does not override the other—they both continue to exist in the
+        <code class="calibre21">
+         DogBird
+        </code>
+        -derived class.
+       </p>
+       <p class="calibre13">
+        As long as client code never attempts to call the
+        <code class="calibre21">
+         eat()
+        </code>
+        member function, that is not a problem. The
+        <code class="calibre21">
+         DogBird
+        </code>
+        class compiles correctly despite having two versions of
+        <code class="calibre21">
+         eat()
+        </code>
+        . However, if client code attempts to call the
+        <code class="calibre21">
+         eat()
+        </code>
+        member function on a
+        <code class="calibre21">
+         DogBird
+        </code>
+        , the compiler gives an error indicating that the call to
+        <code class="calibre21">
+         eat()
+        </code>
+        is ambiguous. The compiler does not know which version to call. The following code provokes this ambiguity error:
+       </p>
+       <pre class="calibre26" id="c10-code-0082"><code class="calibre21">class Dog</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual void bark() { println("Woof!"); }</code>
+<code class="calibre21">        <b class="calibre14">virtual void eat() { println("The dog ate."); }</b></code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class Bird</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual void chirp() { println("Chirp!"); }</code>
+<code class="calibre21">        <b class="calibre14">virtual void eat() { println("The bird ate."); }</b></code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class DogBird : public Dog, public Bird</code>
+<code class="calibre21">{</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">int main()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    DogBird myConfusedAnimal;</code>
+<code class="calibre21">    <b class="calibre14">myConfusedAnimal.eat();</b>   <span class="color">// Error! Ambiguous call to member function eat()</span></code>
+<code class="calibre21">}</code></pre>
+       <p class="calibre13" id="c10-para-0200">
+        If you comment out the last line from
+        <code class="calibre21">
+         main()
+        </code>
+        calling
+        <code class="calibre21">
+         eat()
+        </code>
+        , the code compiles fine.
+       </p>
+       <p class="calibre13">
+        The solution to the ambiguity is either to explicitly upcast the object using a
+        <code class="calibre21">
+         dynamic_cast()
+        </code>
+        , essentially hiding the undesired version of the member function from the compiler, or to use a
+        <i class="calibre18">
+         disambiguation syntax
+        </i>
+        . For example, the following code shows two ways to invoke the
+        <code class="calibre21">
+         Dog
+        </code>
+        version of
+        <code class="calibre21">
+         eat()
+        </code>
+        :
+       </p>
+       <pre class="calibre26" id="c10-code-0083"><code class="calibre21">dynamic_cast&lt;Dog&amp;&gt;(myConfusedAnimal).eat(); <span class="color">// Calls Dog::eat()</span></code>
+<code class="calibre21">myConfusedAnimal.Dog::eat();                <span class="color">// Calls Dog::eat()</span></code></pre>
+       <p class="calibre13">
+        <span aria-label="391" class="calibre20" epub:type="pagebreak" id="Page_391" role="doc-pagebreak">
+        </span>
+        Member functions of the derived class itself can also explicitly disambiguate between different member functions of the same name by using the same syntax used to access parent member functions, that is, the
+        <code class="calibre21">
+         ::
+        </code>
+        scope resolution operator. For example, the
+        <code class="calibre21">
+         DogBird
+        </code>
+        class could prevent ambiguity errors in other code by defining its own
+        <code class="calibre21">
+         eat()
+        </code>
+        member function. Inside this member function, it would determine which parent version to call.
+       </p>
+       <pre class="calibre26" id="c10-code-0084"><code class="calibre21">class DogBird : public Dog, public Bird</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        void eat() override</code>
+<code class="calibre21">        {</code>
+<code class="calibre21">            Dog::eat();          <span class="color">// Explicitly call Dog's version of eat()</span></code>
+<code class="calibre21">        }</code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13">
+        Yet another way to prevent the ambiguity error is to use a
         <code class="calibre21">
          using
         </code>
-        is better than
+        declaration to explicitly state which version of
         <code class="calibre21">
-         typedef
+         eat()
         </code>
-       </li>
-       <li class="calibre9" id="bapp01-li-0131">
-        The ideas behind concepts, and their basic use
-       </li>
-       <li class="calibre9" id="bapp01-li-0132">
-        What variadic templates and fold-expressions are
-       </li>
-       <li class="calibre9" id="bapp01-li-0133">
-        The ideas behind template metaprogramming
-       </li>
-       <li class="calibre9" id="bapp01-li-0134">
-        Type traits and what they can be used for
-       </li>
-      </ul>
+        should be inherited in
+        <code class="calibre21">
+         DogBird
+        </code>
+        . Here's an example:
+       </p>
+       <pre class="calibre26" id="c10-code-0085"><code class="calibre21">class DogBird : public Dog, public Bird</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        using Dog::eat;  <span class="color">// Explicitly inherit Dog's version of eat()</span></code>
+<code class="calibre21">};</code></pre>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c10-sec-0059">
+       </span>
+       <h4 class="calibre29" id="head-4-206">
+        Ambiguous Base Classes
+       </h4>
+       <p class="calibre13" id="c10-para-0204">
+        Another way to provoke ambiguity is to inherit from the same class twice. This can happen if multiple parents themselves have a common parent. For example, perhaps both
+        <code class="calibre21">
+         Bird
+        </code>
+        and
+        <code class="calibre21">
+         Dog
+        </code>
+        are inheriting from an
+        <code class="calibre21">
+         Animal
+        </code>
+        class, as shown in
+        <a class="calibre5" href="c10_split_001.xhtml#c10-fig-0010" id="R_c10-fig-0010">
+         Figure 10.10
+        </a>
+        .
+       </p>
+       <figure class="calibre36">
+        <img alt="A set of four boards. It includes the following. A. Animal. B. Dog. C. Bird. D. DogBird." class="center" src="images/c10f010.png"/>
+        <figcaption class="calibre37">
+         <p class="calibre13">
+          <span class="figurelabel">
+           <a class="calibre5" href="c10_split_001.xhtml#R_c10-fig-0010" id="c10-fig-0010" role="doc-backlink">
+            <b class="calibre14">
+             FIGURE 10.10
+            </b>
+           </a>
+          </span>
+         </p>
+        </figcaption>
+       </figure>
+       <p class="calibre13" id="c10-para-0205">
+        This type of class hierarchy is permitted in C++, though name ambiguity can still occur. For example, if the
+        <code class="calibre21">
+         Animal
+        </code>
+        class has a
+        <code class="calibre21">
+         public
+        </code>
+        member function called
+        <code class="calibre21">
+         sleep()
+        </code>
+        , that member function cannot be called on a
+        <code class="calibre21">
+         DogBird
+        </code>
+        object because the compiler does not know whether to call the version inherited by
+        <code class="calibre21">
+         Dog
+        </code>
+        or by
+        <code class="calibre21">
+         Bird
+        </code>
+        .
+       </p>
+       <p class="calibre13" id="c10-para-0206">
+        The best way to use these “diamond-shaped” class hierarchies is to make the topmost class an abstract base class with all member functions declared as pure virtual. Because the class only declares member functions without providing definitions, there are no member functions in the base class to call, and thus there are no ambiguities at that level.
+       </p>
+       <p class="calibre13">
+        The following example implements a diamond-shaped class hierarchy in which the
+        <code class="calibre21">
+         Animal
+        </code>
+        abstract base class has a pure virtual
+        <code class="calibre21">
+         eat()
+        </code>
+        member function that must be defined by each derived class. The
+        <code class="calibre21">
+         DogBird
+        </code>
+        class still needs to be explicit about which parent's
+        <code class="calibre21">
+         eat()
+        </code>
+        member function it uses, but any ambiguity is caused by
+        <code class="calibre21">
+         Dog
+        </code>
+        and
+        <code class="calibre21">
+         Bird
+        </code>
+        having the same member function, not because they inherit from the same class.
+       </p>
+       <pre class="calibre26" id="c10-code-0086"><code class="calibre21">class Animal</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual void eat() = 0;</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<span aria-label="392" class="calibre20" epub:type="pagebreak" id="Page_392" role="doc-pagebreak"></span><code class="calibre21">class Dog : public Animal</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual void bark() { println("Woof!"); }</code>
+<code class="calibre21">        void eat() override { println("The dog ate."); }</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class Bird : public Animal</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual void chirp() { println("Chirp!"); }</code>
+<code class="calibre21">        void eat() override { println("The bird ate."); }</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class DogBird : public Dog, public Bird</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        using Dog::eat;</code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13" id="c10-para-0208">
+        A more refined mechanism for dealing with the top class in a diamond-shaped hierarchy, virtual base classes, is explained later in this chapter.
+       </p>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c10-sec-0060">
+       </span>
+       <h4 class="calibre29" id="head-4-207">
+        Uses for Multiple Inheritance
+       </h4>
+       <p class="calibre13" id="c10-para-0209">
+        At this point, you're probably wondering why programmers would want to tackle multiple inheritance in their code. The most straightforward use case for multiple inheritance is to define a class of objects that is-a something and also is-a something else. As was said in
+        <a class="calibre5" href="c05.xhtml">
+         Chapter 5
+        </a>
+        , any real-world objects you find that follow this pattern are unlikely to translate well into code.
+       </p>
+       <p class="calibre13" id="c10-para-0210">
+        One of the most compelling and simple uses of multiple inheritance is for the implementation of mixin classes. Mixin classes are introduced in
+        <a class="calibre5" href="c05.xhtml">
+         Chapter 5
+        </a>
+        and are discussed in more detail in
+        <a class="calibre5" href="c32.xhtml">
+         Chapter 32
+        </a>
+        , “Incorporating Design Techniques and Frameworks.”
+       </p>
+       <p class="calibre13" id="c10-para-0211">
+        Another reason that people sometimes use multiple inheritance is to model a component-based class.
+        <a class="calibre5" href="c05.xhtml">
+         Chapter 5
+        </a>
+        gives the example of an airplane simulator. The
+        <code class="calibre21">
+         Airplane
+        </code>
+        class has an engine, fuselage, controls, and other components. While the typical implementation of an
+        <code class="calibre21">
+         Airplane
+        </code>
+        class would make each of these components a separate data member, you could use multiple inheritance. The airplane class would inherit from engine, fuselage, and controls, in effect getting the behaviors and properties of all of its components. I recommend that you stay away from this type of code because it confuses a clear has-a relationship with inheritance, which should be used for is-a relationships. The recommended solution is to have an
+        <code class="calibre21">
+         Airplane
+        </code>
+        class that contains data members of type
+        <code class="calibre21">
+         Engine
+        </code>
+        ,
+        <code class="calibre21">
+         Fuselage
+        </code>
+        , and
+        <code class="calibre21">
+         Controls
+        </code>
+        .
+       </p>
+      </section>
      </section>
-     <span aria-label="1253" class="calibre20" epub:type="pagebreak" id="Page_1253" role="doc-pagebreak">
+    </section>
+    <section aria-labelledby="head-2-127" class="calibre2">
+     <span class="calibre" id="c10-sec-0061">
+     </span>
+     <h2 class="calibre6" id="head-2-127">
+      INTERESTING AND OBSCURE INHERITANCE ISSUES
+     </h2>
+     <p class="calibre13" id="c10-para-0212">
+      Extending a class opens up a variety of issues. What characteristics of the class can and cannot be changed? What is non-public inheritance? What are virtual base classes? These questions, and more, are answered in the following sections.
+     </p>
+     <span aria-label="393" class="calibre20" epub:type="pagebreak" id="Page_393" role="doc-pagebreak">
      </span>
      <section class="calibre2">
-      <span class="calibre" id="bapp01-sec-0034">
+      <span class="calibre" id="c10-sec-0062">
       </span>
-      <h3 class="calibre27" id="head-3-22">
-       Types of Questions
+      <h3 class="calibre27" id="head-3-225">
+       Changing the Overridden Member Function's Return Type
       </h3>
-      <p class="calibre13" id="bapp01-para-0063">
-       Many interview questions start out with a simple problem and gradually add complexity. Often, interviewers have an endless amount of complexity that they are prepared to add, and they simply want to see how far you get. For example, an interviewer might begin a problem by asking you to create a class that provides sequential access to a fixed number of
+      <p class="calibre13" id="c10-para-0213">
+       For the most part, the reason you override a member function is to change its implementation. Sometimes, however, you may want to change other characteristics of the member function, such as its return type.
+      </p>
+      <p class="calibre13" id="c10-para-0214">
+       A good rule of thumb is to override a member function with the exact member function declaration, or
+       <i class="calibre18">
+        member function prototype
+       </i>
+       , that the base class uses. The implementation can change, but the prototype stays the same.
+      </p>
+      <p class="calibre13" id="c10-para-0215">
+       That does not have to be the case, however. In C++, an overriding member function can change the return type as long as the return type of the member function in the base class is a pointer or reference to a class, and the return type in the derived class is a pointer or reference to a descendant, i.e., more specialized class. Such types are called
+       <i class="calibre18">
+        covariant return types
+       </i>
+       . This feature sometimes comes in handy when the base class and derived class work with objects in a
+       <i class="calibre18">
+        parallel hierarchy
+       </i>
+       —that is, another group of classes that is tangential, but related, to the first class hierarchy.
+      </p>
+      <p class="calibre13" id="c10-para-0216">
+       For example, consider a basic car simulator. You might have two hierarchies of classes that model different real-world objects but are obviously related. The first is the
+       <code class="calibre21">
+        Car
+       </code>
+       hierarchy. The base class,
+       <code class="calibre21">
+        Car
+       </code>
+       , has derived classes
+       <code class="calibre21">
+        GasolineCar
+       </code>
+       and
+       <code class="calibre21">
+        ElectricalCar
+       </code>
+       . Similarly, there is another hierarchy of classes with a base class called
+       <code class="calibre21">
+        PowerSource
+       </code>
+       and derived classes
+       <code class="calibre21">
+        GasolinePowerSource
+       </code>
+       and
+       <code class="calibre21">
+        ElectricalPowerSource
+       </code>
+       .
+       <a class="calibre5" href="c10_split_001.xhtml#c10-fig-0011" id="R_c10-fig-0011">
+        Figure 10.11
+       </a>
+       shows the two class hierarchies.
+      </p>
+      <figure class="calibre36">
+       <img alt="A set of two flowcharts. 1. It includes cars, gasoline cars, and electrical cars. 2. It involves a power source, gasoline power source, and electrical power source." class="center" src="images/c10f011.png"/>
+       <figcaption class="calibre37">
+        <p class="calibre13">
+         <span class="figurelabel">
+          <a class="calibre5" href="c10_split_001.xhtml#R_c10-fig-0011" id="c10-fig-0011" role="doc-backlink">
+           <b class="calibre14">
+            FIGURE 10.11
+           </b>
+          </a>
+         </span>
+        </p>
+       </figcaption>
+      </figure>
+      <p class="calibre13">
+       Let's assume a power source can print its own type and that a gasoline power source has a member function
+       <code class="calibre21">
+        fillTank()
+       </code>
+       , while an electrical power source has a member function
+       <code class="calibre21">
+        chargeBatteries()
+       </code>
+       :
+      </p>
+      <pre class="calibre26" id="c10-code-0087"><code class="calibre21">class PowerSource</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual void printType() = 0;</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class GasolinePowerSource : public PowerSource</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        void printType() override { println("GasolinePowerSource"); }</code>
+<code class="calibre21">        virtual void fillTank() { println("Gasoline tank filled up."); }</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class ElectricalPowerSource : public PowerSource</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<span aria-label="394" class="calibre20" epub:type="pagebreak" id="Page_394" role="doc-pagebreak"></span><code class="calibre21">        void printType() override { println("ElectricalPowerSource"); }</code>
+<code class="calibre21">        virtual void chargeBatteries() { println("Batteries charged."); }</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13">
+       Now assume that
+       <code class="calibre21">
+        Car
+       </code>
+       has a
+       <code class="calibre21">
+        virtual
+       </code>
+       member function called
+       <code class="calibre21">
+        getFilledUpPowerSource()
+       </code>
+       that returns a reference to the “filled-up” power source of a specific car:
+      </p>
+      <pre class="calibre26" id="c10-code-0088"><code class="calibre21">class Car</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual PowerSource&amp; getFilledUpPowerSource() = 0;</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13">
+       This is a pure
+       <code class="calibre21">
+        virtual
+       </code>
+       , abstract member function, as it only makes sense to provide an actual implementation in concrete derived classes. Since a
+       <code class="calibre21">
+        GasolinePowerSource
+       </code>
+       is a
+       <code class="calibre21">
+        PowerSource
+       </code>
+       , the
+       <code class="calibre21">
+        GasolineCar
+       </code>
+       class can implement this member function as follows:
+      </p>
+      <pre class="calibre26" id="c10-code-0089"><code class="calibre21">class GasolineCar : public Car</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        <b class="calibre14">PowerSource&amp;</b> getFilledUpPowerSource() override</code>
+<code class="calibre21">        {</code>
+<code class="calibre21">            <b class="calibre14">m_engine.fillTank();</b></code>
+<code class="calibre21">            return m_engine;</code>
+<code class="calibre21">        }</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        GasolinePowerSource m_engine;</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13">
+       <code class="calibre21">
+        ElectricalCar
+       </code>
+       can implement it as follows:
+      </p>
+      <pre class="calibre26" id="c10-code-0090"><code class="calibre21">class ElectricalCar : public Car</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        <b class="calibre14">PowerSource&amp;</b> getFilledUpPowerSource() override</code>
+<code class="calibre21">        {</code>
+<code class="calibre21">            <b class="calibre14">m_engine.chargeBatteries();</b></code>
+<code class="calibre21">            return m_engine;</code>
+<code class="calibre21">        }</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        ElectricalPowerSource m_engine;</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13">
+       These classes can be tested as follows:
+      </p>
+      <pre class="calibre26" id="c10-code-0091"><code class="calibre21">GasolineCar gc;</code>
+<code class="calibre21">gc.getFilledUpPowerSource().printType();</code>
+<code class="calibre21">println("");</code>
+<code class="calibre21">ElectricalCar ev;</code>
+<code class="calibre21">ev.getFilledUpPowerSource().printType();</code></pre>
+      <p class="calibre13">
+       The output is:
+      </p>
+      <pre class="calibre26" id="c10-code-0092"><code class="calibre21">Gasoline tank filled up.</code>
+<code class="calibre21">GasolinePowerSource</code>
+<code class="calibre21"> </code>
+<code class="calibre21">Batteries charged.</code>
+<code class="calibre21">ElectricalPowerSource</code></pre>
+      <p class="calibre13">
+       <span aria-label="395" class="calibre20" epub:type="pagebreak" id="Page_395" role="doc-pagebreak">
+       </span>
+       This implementation is fine. However, because you know that the
+       <code class="calibre21">
+        getFilledUpPowerSource()
+       </code>
+       member function for
+       <code class="calibre21">
+        GasolineCar
+       </code>
+       always returns a
+       <code class="calibre21">
+        GasolinePowerSource
+       </code>
+       , and for
+       <code class="calibre21">
+        ElectricalCar
+       </code>
+       always an
+       <code class="calibre21">
+        ElectricalPowerSource
+       </code>
+       , you can indicate this fact to potential users of these classes by changing the return type, as shown here:
+      </p>
+      <pre class="calibre26" id="c10-code-0093"><code class="calibre21">class GasolineCar : public Car</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        <b class="calibre14">GasolinePowerSource&amp;</b> getFilledUpPowerSource() override</code>
+<code class="calibre21">        { <span class="color">/* omitted for brevity */</span> }</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class ElectricalCar : public Car</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        <b class="calibre14">ElectricalPowerSource&amp;</b> getFilledUpPowerSource() override</code>
+<code class="calibre21">        { <span class="color">/* omitted for brevity */</span> }</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13" id="c10-para-0224">
+       A good way to figure out whether you can change the return type of an overridden member function is to consider whether existing code would still work; this is called the
+       <i class="calibre18">
+        Liskov substitution principle
+       </i>
+       (LSP). In the preceding example, changing the return type was fine because any code that assumed that the
+       <code class="calibre21">
+        getFilledUpPowerSource()
+       </code>
+       member function would always return a
+       <code class="calibre21">
+        PowerSource
+       </code>
+       would still compile and work correctly. Because an
+       <code class="calibre21">
+        ElectricalPowerSource
+       </code>
+       and a
+       <code class="calibre21">
+        GasolinePowerSource
+       </code>
+       are both
+       <code class="calibre21">
+        PowerSource
+       </code>
+       s, any member functions that were called on the result of
+       <code class="calibre21">
+        getFilledUpPowerSource()
+       </code>
+       returning a
+       <code class="calibre21">
+        PowerSource
+       </code>
+       could still be called on the result of
+       <code class="calibre21">
+        getFilledUpPowerSource()
+       </code>
+       returning an
+       <code class="calibre21">
+        ElectricalPowerSource
+       </code>
+       or a
+       <code class="calibre21">
+        GasolinePowerSource
+       </code>
+       .
+      </p>
+      <p class="calibre13">
+       You could not, for example, change the return type to something completely unrelated, such as
+       <code class="calibre21">
+        int&amp;
+       </code>
+       . The following code does not compile:
+      </p>
+      <pre class="calibre26" id="c10-code-0094"><code class="calibre21">class ElectricalCar : public Car</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        <b class="calibre14">int&amp;</b> getFilledUpPowerSource() override <span class="color">// Error!</span></code>
+<code class="calibre21">        { <span class="color">/* omitted for brevity */</span> }</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13">
+       This generates a compilation error, something like this:
+      </p>
+      <pre class="calibre26" id="c10-code-0095"><code class="calibre21">'ElectricalCar::getFilledUpPowerSource': overriding virtual function return type differs and is not covariant from 'Car::getFilledUpPowerSource'</code></pre>
+      <p class="calibre13" id="c10-para-0227">
+       This example is using references to
+       <code class="calibre21">
+        PowerSource
+       </code>
+       s and not smart pointers. Changing the return type does not work when using, for example,
+       <code class="calibre21">
+        shared_ptr
+       </code>
+       as return type. Suppose
+       <code class="calibre21">
+        Car::getFilledUpPowerSource()
+       </code>
+       returns a
+       <code class="calibre21">
+        shared_ptr&lt;PowerSource&gt;
+       </code>
+       . In that case, you cannot change the return type for
+       <code class="calibre21">
+        ElectricalCar::getFilledUpPowerSource()
+       </code>
+       to
+       <code class="calibre21">
+        shared_ptr&lt;ElectricalPowerSource&gt;
+       </code>
+       . The reason is that
+       <code class="calibre21">
+        shared_ptr
+       </code>
+       is a class template. Two instantiations of the
+       <code class="calibre21">
+        shared_ptr
+       </code>
+       class template are created,
+       <code class="calibre21">
+        shared_ptr&lt;PowerSource&gt;
+       </code>
+       and
+       <code class="calibre21">
+        shared_ptr&lt;ElectricalPowerSource&gt;
+       </code>
+       . Both these instantiations are completely different types and are in no way related to each other. You cannot change the return type of an overridden member function to return a completely different type.
+      </p>
+     </section>
+     <span aria-label="396" class="calibre20" epub:type="pagebreak" id="Page_396" role="doc-pagebreak">
+     </span>
+     <section class="calibre2">
+      <span class="calibre" id="c10-sec-0063">
+      </span>
+      <h3 class="calibre27" id="head-3-226">
+       Adding Overloads of virtual Base Class Member Functions to Derived Classes
+      </h3>
+      <p class="calibre13">
+       It is possible to add new overloads of
+       <code class="calibre21">
+        virtual
+       </code>
+       base class member functions to derived classes. That is, you can add an overload of a
+       <code class="calibre21">
+        virtual
+       </code>
+       member function in the derived class with a new prototype but continue to inherit the base class version. This technique uses a
+       <code class="calibre21">
+        using
+       </code>
+       declaration to explicitly include the base class definition of the member function within the derived class. Here is an example:
+      </p>
+      <pre class="calibre26" id="c10-code-0096"><code class="calibre21">class Base</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual void someFunction();</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class Derived : public Base</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        <b class="calibre14">using Base::someFunction;</b>         <span class="color">// Explicitly inherits the Base version.</span></code>
+<code class="calibre21">        <b class="calibre14">virtual void someFunction(int i);</b> <span class="color">// Adds a new overload of someFunction().</span></code>
+<code class="calibre21">        virtual void someOtherFunction();</code>
+<code class="calibre21">};</code></pre>
+      <section class="calibre2">
+       <aside class="calibre23">
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+        <section class="feature">
+         <p class="calibre25" id="c10-para-0230">
+          <b class="calibre14">
+           NOTE
+          </b>
+          <i class="calibre18">
+           It is rare to find a member function in a derived class with the same name as a member function in the base class but using a different parameter list
+          </i>
+          .
+         </p>
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+        </section>
+       </aside>
+      </section>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c10-sec-0065">
+      </span>
+      <h3 class="calibre27" id="head-3-227">
+       Inherited Constructors
+      </h3>
+      <p class="calibre13">
+       In the previous section, you saw the use of a
+       <code class="calibre21">
+        using
+       </code>
+       declaration to explicitly include the base class definition of a member function within a derived class. This works for normal class member functions, but also for constructors, allowing you to inherit constructors from base classes. Take a look at the following definitions for the
+       <code class="calibre21">
+        Base
+       </code>
+       and
+       <code class="calibre21">
+        Derived
+       </code>
+       classes:
+      </p>
+      <pre class="calibre26" id="c10-code-0097"><code class="calibre21">class Base</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual ˜Base() = default;</code>
+<code class="calibre21">        Base() = default;</code>
+<code class="calibre21">        explicit Base(int i) {}</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class Derived : public Base</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        explicit Derived(int i) : Base(i) {}</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13" id="c10-para-0232">
+       The only thing the
+       <code class="calibre21">
+        Derived
+       </code>
+       constructor is doing is passing its parameter to a
+       <code class="calibre21">
+        Base
+       </code>
+       constructor.
+      </p>
+      <p class="calibre13">
+       <span aria-label="397" class="calibre20" epub:type="pagebreak" id="Page_397" role="doc-pagebreak">
+       </span>
+       You can construct a
+       <code class="calibre21">
+        Base
+       </code>
+       object only with the provided
+       <code class="calibre21">
+        Base
+       </code>
+       constructors, either the default constructor or the constructor accepting an
        <code class="calibre21">
         int
        </code>
-       s. Next, the class will need to grow to accommodate an arbitrary number of elements. Then, it will need to work with arbitrary data types, which is where templates come in. From there, the interviewer could take the problem in a number of directions, asking you to use operator overloading to provide array-like syntax or continuing down the template path by asking you to provide a default type for the template type parameters or to put type constraints on them. However, most interviewers understand that the template syntax can be difficult and will forgive you for syntactical errors.
+       . On the other hand, constructing a
+       <code class="calibre21">
+        Derived
+       </code>
+       object can happen only with the provided
+       <code class="calibre21">
+        Derived
+       </code>
+       constructor, which requires a single integer as argument. You cannot construct
+       <code class="calibre21">
+        Derived
+       </code>
+       objects using the default constructor from the
+       <code class="calibre21">
+        Base
+       </code>
+       class. Here is an example:
       </p>
-      <p class="calibre13" id="bapp01-para-0064">
-       The interviewer might ask you high-level questions related to template metaprogramming to find out whether you have heard about it. While explaining, you could give a small example such as calculating the factorial of a number at compile time. Don't worry if the syntax is not entirely correct. As long as you explain what it is supposed to do, you should be fine.
+      <pre class="calibre26" id="c10-code-0098"><code class="calibre21">Base base { 1 };          <span class="color">// OK, calls integer Base ctor.</span></code>
+<code class="calibre21">Derived derived1 { 2 };   <span class="color">// OK, calls integer Derived ctor.</span></code>
+<code class="calibre21">Derived derived2;         <span class="color">// Error, Derived does not have a default ctor.</span></code></pre>
+      <p class="calibre13">
+       As the
+       <code class="calibre21">
+        Derived
+       </code>
+       constructor is just passing its parameter to a
+       <code class="calibre21">
+        Base
+       </code>
+       constructor and isn't doing anything else, you can simply inherit the
+       <code class="calibre21">
+        Base
+       </code>
+       constructors explicitly with a
+       <code class="calibre21">
+        using
+       </code>
+       declaration in the
+       <code class="calibre21">
+        Derived
+       </code>
+       class as follows:
       </p>
+      <pre class="calibre26" id="c10-code-0099"><code class="calibre21">class Derived : public Base</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        <b class="calibre14">using Base::Base;</b></code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13">
+       The
+       <code class="calibre21">
+        using
+       </code>
+       declaration inherits all constructors from
+       <code class="calibre21">
+        Base
+       </code>
+       , so now you can construct
+       <code class="calibre21">
+        Derived
+       </code>
+       objects in the following ways:
+      </p>
+      <pre class="calibre26" id="c10-code-0100"><code class="calibre21">Derived derived1 { 2 };   <span class="color">// OK, calls inherited integer Base ctor.</span></code>
+<code class="calibre21">Derived derived2;         <span class="color">// OK, calls inherited default Base ctor.</span></code></pre>
+      <p class="calibre13" id="c10-para-0236">
+       The inherited constructors in a derived class have the same access specifier (
+       <code class="calibre21">
+        public
+       </code>
+       ,
+       <code class="calibre21">
+        protected
+       </code>
+       , or
+       <code class="calibre21">
+        private
+       </code>
+       ) as the constructors in the base class. Inherited constructors that are explicitly deleted with
+       <code class="calibre21">
+        =delete
+       </code>
+       in the base class are deleted in the derived class as well.
+      </p>
+      <section class="calibre2">
+       <span class="calibre" id="c10-sec-0066">
+       </span>
+       <h4 class="calibre29" id="head-4-208">
+        Hiding of Inherited Constructors
+       </h4>
+       <p class="calibre13">
+        The
+        <code class="calibre21">
+         Derived
+        </code>
+        class can define a constructor with the same parameter list as one of the inherited constructors in the
+        <code class="calibre21">
+         Base
+        </code>
+        class. In this case, the constructor of the
+        <code class="calibre21">
+         Derived
+        </code>
+        class takes precedence over the inherited constructor. In the following example, the
+        <code class="calibre21">
+         Derived
+        </code>
+        class inherits all constructors, from the
+        <code class="calibre21">
+         Base
+        </code>
+        class with the
+        <code class="calibre21">
+         using
+        </code>
+        declaration. However, because the
+        <code class="calibre21">
+         Derived
+        </code>
+        class defines its own constructor with a single parameter of type
+        <code class="calibre21">
+         float
+        </code>
+        , the inherited constructor from the
+        <code class="calibre21">
+         Base
+        </code>
+        class with a single parameter of type
+        <code class="calibre21">
+         float
+        </code>
+        is hidden.
+       </p>
+       <pre class="calibre26" id="c10-code-0101"><code class="calibre21">class Base</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual ˜Base() = default;</code>
+<code class="calibre21">        Base() = default;</code>
+<code class="calibre21">        explicit Base(std::string_view str) {}</code>
+<code class="calibre21">        explicit Base(float f) {}</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class Derived : public Base</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        using Base::Base;</code>
+<code class="calibre21">        explicit Derived(float f) {}    <span class="color">// Hides inherited float Base ctor.</span></code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13">
+        <span aria-label="398" class="calibre20" epub:type="pagebreak" id="Page_398" role="doc-pagebreak">
+        </span>
+        With this definition, objects of
+        <code class="calibre21">
+         Derived
+        </code>
+        can be created as follows:
+       </p>
+       <pre class="calibre26" id="c10-code-0102"><code class="calibre21">Derived derived1 { "Hello" };   <span class="color">// OK, calls inherited string_view Base ctor.</span></code>
+<code class="calibre21">Derived derived2 { 1.23f };     <span class="color">// OK, calls float Derived ctor.</span></code>
+<code class="calibre21">Derived derived3;               <span class="color">// OK, calls inherited default Base ctor.</span></code></pre>
+       <p class="calibre13">
+        A few restrictions apply to inheriting constructors from a base class with a
+        <code class="calibre21">
+         using
+        </code>
+        declaration.
+       </p>
+       <ul class="check" id="c10-list-0007">
+        <li class="calibre9" id="c10-li-0027">
+         When you inherit a constructor from a base class, you inherit all of them. It is not possible to inherit only a subset of the constructors of a base class.
+        </li>
+        <li class="calibre9" id="c10-li-0028">
+         When you inherit constructors, they are inherited with the same access specification as they have in the base class, irrespective of which access specification the
+         <code class="calibre21">
+          using
+         </code>
+         declaration is under.
+        </li>
+       </ul>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c10-sec-0067">
+       </span>
+       <h4 class="calibre29" id="head-4-209">
+        Inherited Constructors and Multiple Inheritance
+       </h4>
+       <p class="calibre13">
+        Another restriction with inheriting constructors is related to multiple inheritance. It's not possible to inherit constructors from one of the base classes if another base class has a constructor with the same parameter list, because this leads to ambiguity. To resolve this, the
+        <code class="calibre21">
+         Derived
+        </code>
+        class needs to explicitly define the conflicting constructors. For example, the following
+        <code class="calibre21">
+         Derived
+        </code>
+        class tries to inherit all constructors from both
+        <code class="calibre21">
+         Base1
+        </code>
+        and
+        <code class="calibre21">
+         Base2
+        </code>
+        , which results in an ambiguity for the
+        <code class="calibre21">
+         float
+        </code>
+        -based constructors.
+       </p>
+       <pre class="calibre26" id="c10-code-0103"><code class="calibre21">class Base1</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual ˜Base1() = default;</code>
+<code class="calibre21">        Base1() = default;</code>
+<code class="calibre21">        explicit Base1(float f) {}</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class Base2</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual ˜Base2() = default;</code>
+<code class="calibre21">        Base2() = default;</code>
+<code class="calibre21">        explicit Base2(std::string_view str) {}</code>
+<code class="calibre21">        explicit Base2(float f) {}</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class Derived : public Base1, public Base2</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        using Base1::Base1;</code>
+<code class="calibre21">        using Base2::Base2;</code>
+<code class="calibre21">        explicit Derived(char c) {}</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">int main()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    Derived d { 1.2f };  <span class="color">// Error, ambiguity.</span></code>
+<code class="calibre21">}</code></pre>
+       <p class="calibre13">
+        <span aria-label="399" class="calibre20" epub:type="pagebreak" id="Page_399" role="doc-pagebreak">
+        </span>
+        The first
+        <code class="calibre21">
+         using
+        </code>
+        declaration in
+        <code class="calibre21">
+         Derived
+        </code>
+        inherits all constructors from
+        <code class="calibre21">
+         Base1
+        </code>
+        . This means that
+        <code class="calibre21">
+         Derived
+        </code>
+        gets the following constructor:
+       </p>
+       <pre class="calibre26" id="c10-code-0104"><code class="calibre21">Derived(float f);   <span class="color">// Inherited from Base1.</span></code></pre>
+       <p class="calibre13">
+        The second
+        <code class="calibre21">
+         using
+        </code>
+        declaration in
+        <code class="calibre21">
+         Derived
+        </code>
+        tries to inherit all constructors from
+        <code class="calibre21">
+         Base2
+        </code>
+        . However, this means that
+        <code class="calibre21">
+         Derived
+        </code>
+        gets a second
+        <code class="calibre21">
+         Derived(float)
+        </code>
+        constructor. The problem is solved by explicitly declaring conflicting constructors in the
+        <code class="calibre21">
+         Derived
+        </code>
+        class as follows:
+       </p>
+       <pre class="calibre26" id="c10-code-0105"><code class="calibre21">class Derived : public Base1, public Base2</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        using Base1::Base1;</code>
+<code class="calibre21">        using Base2::Base2;</code>
+<code class="calibre21">        explicit Derived(char c) {}</code>
+<code class="calibre21">        <b class="calibre14">explicit Derived(float f) {}</b></code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13">
+        The
+        <code class="calibre21">
+         Derived
+        </code>
+        class now explicitly declares a constructor with a single parameter of type
+        <code class="calibre21">
+         float
+        </code>
+        , solving the ambiguity. If you want, this explicitly declared constructor in the
+        <code class="calibre21">
+         Derived
+        </code>
+        class accepting a
+        <code class="calibre21">
+         float
+        </code>
+        argument can still forward the call to both the
+        <code class="calibre21">
+         Base1
+        </code>
+        and
+        <code class="calibre21">
+         Base2
+        </code>
+        constructors in its ctor-initializer as follows:
+       </p>
+       <pre class="calibre26" id="c10-code-0106"><code class="calibre21">Derived::Derived(float f) : Base1 { f }, Base2 { f } {}</code></pre>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c10-sec-0068">
+       </span>
+       <h4 class="calibre29" id="head-4-210">
+        Initialization of Data Members
+       </h4>
+       <p class="calibre13">
+        When using inherited constructors, make sure that all data members are properly initialized. For example, take the following new definitions for
+        <code class="calibre21">
+         Base
+        </code>
+        and
+        <code class="calibre21">
+         Derived
+        </code>
+        . These definitions do not properly initialize the
+        <code class="calibre21">
+         m_int
+        </code>
+        data member in all cases, and, as you know, uninitialized data members are not recommended.
+       </p>
+       <pre class="calibre26" id="c10-code-0107"><code class="calibre21">class Base</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual ˜Base() = default;</code>
+<code class="calibre21">        explicit Base(std::string_view str) : m_str { str } {}</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        std::string m_str;</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class Derived : public Base</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        using Base::Base;</code>
+<code class="calibre21">        explicit Derived(int i) : Base { "" }, m_int { i } {}</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        int m_int;</code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13">
+        You can create a
+        <code class="calibre21">
+         Derived
+        </code>
+        object as follows:
+       </p>
+       <pre class="calibre26" id="c10-code-0108"><code class="calibre21">Derived s1 { 2 };</code></pre>
+       <p class="calibre13" id="c10-para-0246">
+        <span aria-label="400" class="calibre20" epub:type="pagebreak" id="Page_400" role="doc-pagebreak">
+        </span>
+        This calls the
+        <code class="calibre21">
+         Derived(int)
+        </code>
+        constructor, which initializes the
+        <code class="calibre21">
+         m_int
+        </code>
+        data member of the
+        <code class="calibre21">
+         Derived
+        </code>
+        class and calls the
+        <code class="calibre21">
+         Base
+        </code>
+        constructor with an empty string to initialize the
+        <code class="calibre21">
+         m_str
+        </code>
+        data member.
+       </p>
+       <p class="calibre13">
+        Because the
+        <code class="calibre21">
+         Base
+        </code>
+        constructor is inherited in the
+        <code class="calibre21">
+         Derived
+        </code>
+        class, you can also construct a
+        <code class="calibre21">
+         Derived
+        </code>
+        object as follows:
+       </p>
+       <pre class="calibre26" id="c10-code-0109"><code class="calibre21">Derived s2 { "Hello World" };</code></pre>
+       <p class="calibre13" id="c10-para-0248">
+        This calls the inherited
+        <code class="calibre21">
+         Base
+        </code>
+        constructor in the
+        <code class="calibre21">
+         Derived
+        </code>
+        class. However, this inherited
+        <code class="calibre21">
+         Base
+        </code>
+        constructor only initializes
+        <code class="calibre21">
+         m_str
+        </code>
+        of the
+        <code class="calibre21">
+         Base
+        </code>
+        class and does not initialize
+        <code class="calibre21">
+         m_int
+        </code>
+        of the
+        <code class="calibre21">
+         Derived
+        </code>
+        class, leaving it in an uninitialized state. This is not recommended!
+       </p>
+       <p class="calibre13">
+        The solution in this case is to use in-class member initializers, which are discussed in
+        <a class="calibre5" href="c08.xhtml">
+         Chapter 8
+        </a>
+        . The following code uses an in-class member initializer to initialize
+        <code class="calibre21">
+         m_int
+        </code>
+        to 0. Of course, the
+        <code class="calibre21">
+         Derived(int)
+        </code>
+        constructor can still change this and initialize
+        <code class="calibre21">
+         m_int
+        </code>
+        to the constructor parameter
+        <code class="calibre21">
+         i
+        </code>
+        .
+       </p>
+       <pre class="calibre26" id="c10-code-0110"><code class="calibre21">class Derived : public Base</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        using Base::Base;</code>
+<code class="calibre21">        explicit Derived(int i) : Base { "" }, m_int { i } {}</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        <b class="calibre14">int m_int { 0 };</b></code>
+<code class="calibre21">};</code></pre>
+      </section>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c10-sec-0069">
+      </span>
+      <h3 class="calibre27" id="head-3-228">
+       Special Cases in Overriding Member Functions
+      </h3>
+      <p class="calibre13" id="c10-para-0250">
+       Several special cases require attention when overriding a member function. This section outlines the cases that you are likely to encounter.
+      </p>
+      <section class="calibre2">
+       <span class="calibre" id="c10-sec-0070">
+       </span>
+       <h4 class="calibre29" id="head-4-211">
+        The Base Class Member Function Is static
+       </h4>
+       <p class="calibre13" id="c10-para-0251">
+        In C++, you cannot override a
+        <code class="calibre21">
+         static
+        </code>
+        member function. For the most part, that's all you need to know. There are, however, a few corollaries that you need to understand.
+       </p>
+       <p class="calibre13" id="c10-para-0252">
+        First of all, a member function cannot be both
+        <code class="calibre21">
+         static
+        </code>
+        and
+        <code class="calibre21">
+         virtual
+        </code>
+        . This is the first clue that attempting to override a
+        <code class="calibre21">
+         static
+        </code>
+        member function will not do what you intend it to do. If you have a
+        <code class="calibre21">
+         static
+        </code>
+        member function in your derived class with the same name as a
+        <code class="calibre21">
+         static
+        </code>
+        member function in your base class, you actually have two separate member functions.
+       </p>
+       <p class="calibre13">
+        The following code shows two classes that both happen to have
+        <code class="calibre21">
+         static
+        </code>
+        member functions called
+        <code class="calibre21">
+         beStatic()
+        </code>
+        . These two member functions are in no way related.
+       </p>
+       <pre class="calibre26" id="c10-code-0111"><code class="calibre21">class BaseStatic</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        static void beStatic() { println("BaseStatic being static."); }</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class DerivedStatic : public BaseStatic</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        static void beStatic() { println("DerivedStatic keepin' it static."); }</code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13">
+        <span aria-label="401" class="calibre20" epub:type="pagebreak" id="Page_401" role="doc-pagebreak">
+        </span>
+        Because a
+        <code class="calibre21">
+         static
+        </code>
+        member function belongs to its class, calling the identically named member functions on the two different classes calls their respective member functions.
+       </p>
+       <pre class="calibre26" id="c10-code-0112"><code class="calibre21">BaseStatic::beStatic();</code>
+<code class="calibre21">DerivedStatic::beStatic();</code></pre>
+       <p class="calibre13">
+        This outputs the following:
+       </p>
+       <pre class="calibre26" id="c10-code-0113"><code class="calibre21">BaseStatic being static.</code>
+<code class="calibre21">DerivedStatic keepin' it static.</code></pre>
+       <p class="calibre13">
+        Everything makes perfect sense as long as the member functions are accessed by their class names. The behavior is less clear when objects are involved. In C++, you can call a
+        <code class="calibre21">
+         static
+        </code>
+        member function using an object, but because the member function is
+        <code class="calibre21">
+         static
+        </code>
+        , it has no
+        <code class="calibre21">
+         this
+        </code>
+        pointer and no access to the object itself, so it is equivalent to calling it by its class name. Referring to the previous example classes, you can write code as follows, but the results may be surprising.
+       </p>
+       <pre class="calibre26" id="c10-code-0114"><code class="calibre21">DerivedStatic myDerivedStatic;</code>
+<code class="calibre21">BaseStatic&amp; ref { myDerivedStatic };</code>
+<code class="calibre21">myDerivedStatic.beStatic();</code>
+<code class="calibre21">ref.beStatic();</code></pre>
+       <p class="calibre13" id="c10-para-0257">
+        The first call to
+        <code class="calibre21">
+         beStatic()
+        </code>
+        obviously calls the
+        <code class="calibre21">
+         DerivedStatic
+        </code>
+        version because it is explicitly called on an object declared as a
+        <code class="calibre21">
+         DerivedStatic
+        </code>
+        . The second call might not work as you expect. The object is a
+        <code class="calibre21">
+         BaseStatic
+        </code>
+        reference, but it refers to a
+        <code class="calibre21">
+         DerivedStatic
+        </code>
+        object. In this case,
+        <code class="calibre21">
+         BaseStatic
+        </code>
+        's version of
+        <code class="calibre21">
+         beStatic()
+        </code>
+        is called. The reason is that C++ doesn't care what the object actually is when calling a
+        <code class="calibre21">
+         static
+        </code>
+        member function. It only cares about the compile-time type. In this case, the type is a reference to a
+        <code class="calibre21">
+         BaseStatic
+        </code>
+        .
+       </p>
+       <p class="calibre13">
+        The output of the previous example is as follows:
+       </p>
+       <pre class="calibre26" id="c10-code-0115"><code class="calibre21">DerivedStatic keepin' it static.</code>
+<code class="calibre21">BaseStatic being static.</code></pre>
+       <section class="calibre2">
+        <aside class="calibre23">
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+         <section class="feature">
+          <p class="calibre25" id="c10-para-0260">
+           <b class="calibre14">
+            NOTE
+           </b>
+           <code class="calibre21">
+            static
+           </code>
+           <i class="calibre18">
+            member functions are scoped by the name of the class in which they are defined, but they are not member functions that apply to a specific object. When you call a
+           </i>
+           <code class="calibre21">
+            static
+           </code>
+           <i class="calibre18">
+            member function, the version determined by normal name resolution is called. When the member function is called syntactically by using an object, the object is not actually involved in the call, except to determine the type at compile time.
+           </i>
+          </p>
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+         </section>
+        </aside>
+       </section>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c10-sec-0072">
+       </span>
+       <h4 class="calibre29" id="head-4-212">
+        The Base Class Member Function Is Overloaded
+       </h4>
+       <p class="calibre13">
+        When you override a member function by specifying a name and a set of parameters, the compiler implicitly hides all other instances of the same name in the base class. The idea is that if you have overridden one member function with a given name, you might have intended to override all the member functions with that name, but simply forgot, and therefore this should be treated as an error. It makes sense if you think about it—why would you want to change some overloads of a member
+        <span aria-label="402" class="calibre20" epub:type="pagebreak" id="Page_402" role="doc-pagebreak">
+        </span>
+        function and not others? Consider the following
+        <code class="calibre21">
+         Derived
+        </code>
+        class, which overrides a member function without overriding its associated overloaded siblings:
+       </p>
+       <pre class="calibre26" id="c10-code-0116"><code class="calibre21">class Base</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual ˜Base() = default;</code>
+<code class="calibre21">        virtual void overload() { println("Base's overload()"); }</code>
+<code class="calibre21">        virtual void overload(int i) { println("Base's overload(int i)"); }</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class Derived : public Base</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        void overload() override { println("Derived's overload()"); }</code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13">
+        If you attempt to call the version of
+        <code class="calibre21">
+         overload()
+        </code>
+        that takes an
+        <code class="calibre21">
+         int
+        </code>
+        parameter on a
+        <code class="calibre21">
+         Derived
+        </code>
+        object, your code will not compile because it was not explicitly overridden.
+       </p>
+       <pre class="calibre26" id="c10-code-0117"><code class="calibre21">Derived myDerived;</code>
+<code class="calibre21">myDerived.overload(2); <span class="color">// Error! No matching member function for overload(int).</span></code></pre>
+       <p class="calibre13">
+        It is possible, however, to access this version of the member function from a
+        <code class="calibre21">
+         Derived
+        </code>
+        object. All you need is a pointer or a reference to a
+        <code class="calibre21">
+         Base
+        </code>
+        object.
+       </p>
+       <pre class="calibre26" id="c10-code-0118"><code class="calibre21">Derived myDerived;</code>
+<code class="calibre21">Base&amp; ref { myDerived };</code>
+<code class="calibre21">ref.overload(7);</code></pre>
+       <p class="calibre13" id="c10-para-0264">
+        The hiding of unimplemented overloaded member functions is only skin deep in C++. Objects that are explicitly declared as instances of the derived class do not make the member functions available, but a simple cast to the base class brings them right back.
+       </p>
+       <p class="calibre13">
+        A
+        <code class="calibre21">
+         using
+        </code>
+        declaration can be employed to save you the trouble of overriding all the overloads when you really only want to change one. In the following code, the
+        <code class="calibre21">
+         Derived
+        </code>
+        class definition uses one version of
+        <code class="calibre21">
+         overload()
+        </code>
+        from
+        <code class="calibre21">
+         Base
+        </code>
+        and explicitly overrides the other:
+       </p>
+       <pre class="calibre26" id="c10-code-0119"><code class="calibre21">class Derived : public Base</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        <b class="calibre14">using Base::overload;</b></code>
+<code class="calibre21">        void overload() override { println("Derived's overload()"); }</code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13">
+        The
+        <code class="calibre21">
+         using
+        </code>
+        declaration has certain risks. Suppose a third
+        <code class="calibre21">
+         overload()
+        </code>
+        member function is added to
+        <code class="calibre21">
+         Base
+        </code>
+        , which should have been overridden in
+        <code class="calibre21">
+         Derived
+        </code>
+        . This will now not be detected as an error, because with the
+        <code class="calibre21">
+         using
+        </code>
+        declaration, the designer of the
+        <code class="calibre21">
+         Derived
+        </code>
+        class has explicitly said, “I am willing to accept all other overloads of this member function from the parent class.”
+       </p>
+       <section class="calibre2">
+        <aside class="calibre23">
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+         <section class="feature">
+          <p class="calibre25" id="c10-para-0267">
+           <b class="calibre14">
+            WARNING
+           </b>
+           <i class="calibre18">
+            To avoid obscure bugs when overriding a member function from a base class, override all overloads of that member function as well
+           </i>
+           .
+          </p>
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+         </section>
+        </aside>
+       </section>
+      </section>
+      <span aria-label="403" class="calibre20" epub:type="pagebreak" id="Page_403" role="doc-pagebreak">
+      </span>
+      <section class="calibre2">
+       <span class="calibre" id="c10-sec-0074">
+       </span>
+       <h4 class="calibre29" id="head-4-213">
+        The Base Class Member Function Is private
+       </h4>
+       <p class="calibre13" id="c10-para-0268">
+        There's absolutely nothing wrong with overriding a
+        <code class="calibre21">
+         private
+        </code>
+        member function. Remember that the access specifier for a member function determines who is able to
+        <i class="calibre18">
+         call
+        </i>
+        the member function. Just because a derived class can't call its parent's
+        <code class="calibre21">
+         private
+        </code>
+        member functions doesn't mean it can't override them. In fact, the
+        <i class="calibre18">
+         template member function pattern
+        </i>
+        is a common pattern in C++ that is implemented by overriding
+        <code class="calibre21">
+         private
+        </code>
+        member functions. It allows derived classes to define their own “uniqueness” that is referenced in the base class. Note that, for example, Java and C# only allow overriding
+        <code class="calibre21">
+         public
+        </code>
+        and
+        <code class="calibre21">
+         protected
+        </code>
+        member functions, not
+        <code class="calibre21">
+         private
+        </code>
+        member functions.
+       </p>
+       <p class="calibre13">
+        For example, the following class is part of a car simulator that estimates the number of miles the car can travel based on its gas mileage and the amount of fuel left. The
+        <code class="calibre21">
+         getMilesLeft()
+        </code>
+        member function is the
+        <i class="calibre18">
+         template member function
+        </i>
+        . Usually, template member functions are not
+        <code class="calibre21">
+         virtual
+        </code>
+        . They typically define some algorithmic skeleton in a base class, calling
+        <code class="calibre21">
+         virtual
+        </code>
+        member functions to query for information. A derived class can then override these
+        <code class="calibre21">
+         virtual
+        </code>
+        member functions to change aspects of the algorithm without having to modify the algorithm in the base class itself.
+       </p>
+       <pre class="calibre26" id="c10-code-0120"><code class="calibre21">export class MilesEstimator</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual ˜MilesEstimator() = default;</code>
+<code class="calibre21">        <b class="calibre14">int getMilesLeft() const { return getMilesPerGallon() * getGallonsLeft(); }</b></code>
+<code class="calibre21">        virtual void setGallonsLeft(int gallons) { m_gallonsLeft = gallons; }</code>
+<code class="calibre21">        virtual int getGallonsLeft() const { return m_gallonsLeft; }</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        int m_gallonsLeft { 0 };</code>
+<code class="calibre21">        virtual int getMilesPerGallon() const { return 20; }</code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13">
+        The
+        <code class="calibre21">
+         getMilesLeft()
+        </code>
+        member function performs a calculation based on the results of two of its own member functions:
+        <code class="calibre21">
+         getGallonsLeft()
+        </code>
+        which is
+        <code class="calibre21">
+         public
+        </code>
+        , and
+        <code class="calibre21">
+         getMilesPerGallon()
+        </code>
+        which is
+        <code class="calibre21">
+         private
+        </code>
+        . The following code uses the
+        <code class="calibre21">
+         MilesEstimator
+        </code>
+        to calculate how many miles can be traveled with two gallons of gas:
+       </p>
+       <pre class="calibre26" id="c10-code-0121"><code class="calibre21">MilesEstimator myMilesEstimator;</code>
+<code class="calibre21">myMilesEstimator.setGallonsLeft(2);</code>
+<code class="calibre21">println("Normal estimator can go {} more miles.",</code>
+<code class="calibre21">    myMilesEstimator.getMilesLeft());</code></pre>
+       <p class="calibre13">
+        The output of this code is as follows:
+       </p>
+       <pre class="calibre26" id="c10-code-0122"><code class="calibre21">Normal estimator can go 40 more miles.</code></pre>
+       <p class="calibre13">
+        To make the simulator more interesting, you may want to introduce different types of vehicles, perhaps a more efficient car. The existing
+        <code class="calibre21">
+         MilesEstimator
+        </code>
+        assumes that all cars get 20 miles per gallon, but this value is returned from a separate member function specifically so that a derived class can override it. Such a derived class is shown here:
+       </p>
+       <pre class="calibre26" id="c10-code-0123"><code class="calibre21">export class EfficientCarMilesEstimator : public MilesEstimator</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        int getMilesPerGallon() const override { return 35; }</code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13">
+        <span aria-label="404" class="calibre20" epub:type="pagebreak" id="Page_404" role="doc-pagebreak">
+        </span>
+        By overriding this one
+        <code class="calibre21">
+         private
+        </code>
+        member function, the new class completely changes the behavior of existing, unmodified,
+        <code class="calibre21">
+         public
+        </code>
+        member functions in the base class. The
+        <code class="calibre21">
+         getMilesLeft()
+        </code>
+        member function in the base class automatically calls the overridden version of the
+        <code class="calibre21">
+         private getMilesPerGallon()
+        </code>
+        member function. An example using the new class is shown here:
+       </p>
+       <pre class="calibre26" id="c10-code-0124"><code class="calibre21">EfficientCarMilesEstimator myEstimator;</code>
+<code class="calibre21">myEstimator.setGallonsLeft(2);</code>
+<code class="calibre21">println("Efficient estimator can go {} more miles.",</code>
+<code class="calibre21">        myEstimator.getMilesLeft());</code></pre>
+       <p class="calibre13">
+        This time, the output reflects the overridden functionality:
+       </p>
+       <pre class="calibre26" id="c10-code-0125"><code class="calibre21">Efficient estimator can go 70 more miles.</code></pre>
+       <section class="calibre2">
+        <aside class="calibre23">
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+         <section class="feature">
+          <p class="calibre25" id="c10-para-0276">
+           <b class="calibre14">
+            NOTE
+           </b>
+           <i class="calibre18">
+            Overriding
+           </i>
+           <code class="calibre21">
+            private
+           </code>
+           <i class="calibre18">
+            and
+           </i>
+           <code class="calibre21">
+            protected
+           </code>
+           <i class="calibre18">
+            member functions is a good way to change certain features of a class without a major overhaul.
+           </i>
+          </p>
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+         </section>
+        </aside>
+       </section>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c10-sec-0076">
+       </span>
+       <h4 class="calibre29" id="head-4-214">
+        The Base Class Member Function Has Default Arguments
+       </h4>
+       <p class="calibre13">
+        An overridden member function in a derived class can have different default arguments than in the base class. The arguments that are used depend on the declared type of the variable, not the underlying object. The following is a simple example of a derived class that provides a different default argument in an overridden member function:
+       </p>
+       <pre class="calibre26" id="c10-code-0126"><code class="calibre21">class Base</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual ˜Base() = default;</code>
+<code class="calibre21">        virtual void go(int i = 2) { println("Base's go with i={}", i); }</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class Derived : public Base</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        void go(int i = 7) override { println("Derived's go with i={}", i); }</code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13">
+        If
+        <code class="calibre21">
+         go()
+        </code>
+        is called on a
+        <code class="calibre21">
+         Derived
+        </code>
+        object,
+        <code class="calibre21">
+         Derived
+        </code>
+        's version of
+        <code class="calibre21">
+         go()
+        </code>
+        is executed with the default argument of 7. If
+        <code class="calibre21">
+         go()
+        </code>
+        is called on a
+        <code class="calibre21">
+         Base
+        </code>
+        object,
+        <code class="calibre21">
+         Base
+        </code>
+        's version of
+        <code class="calibre21">
+         go()
+        </code>
+        is called with the default argument of 2. However (and this is the weird part), if
+        <code class="calibre21">
+         go()
+        </code>
+        is called on a
+        <code class="calibre21">
+         Base
+        </code>
+        pointer or
+        <code class="calibre21">
+         Base
+        </code>
+        reference that really points to a
+        <code class="calibre21">
+         Derived
+        </code>
+        object,
+        <code class="calibre21">
+         Derived
+        </code>
+        's version of
+        <code class="calibre21">
+         go()
+        </code>
+        is called but with
+        <code class="calibre21">
+         Base
+        </code>
+        's default argument of 2. This behavior is shown in the following example:
+       </p>
+       <pre class="calibre26" id="c10-code-0127"><code class="calibre21">Base myBase;</code>
+<code class="calibre21">Derived myDerived;</code>
+<code class="calibre21">Base&amp; myBaseReferenceToDerived { myDerived };</code>
+<code class="calibre21">myBase.go();</code>
+<code class="calibre21">myDerived.go();</code>
+<code class="calibre21">myBaseReferenceToDerived.go();</code></pre>
+       <p class="calibre13">
+        <span aria-label="405" class="calibre20" epub:type="pagebreak" id="Page_405" role="doc-pagebreak">
+        </span>
+        The output of this code is as follows:
+       </p>
+       <pre class="calibre26" id="c10-code-0128"><code class="calibre21">Base's go with i=2</code>
+<code class="calibre21">Derived's go with i=7</code>
+<code class="calibre21">Derived's go with i=2</code></pre>
+       <p class="calibre13">
+        The reason for this behavior is that C++ uses the compile-time type of the expression to bind default arguments, not the run-time type. Default arguments are not “inherited” in C++. If the
+        <code class="calibre21">
+         Derived
+        </code>
+        class in this example failed to provide a default argument for
+        <code class="calibre21">
+         go()
+        </code>
+        as its parent did, it would not be possible to call
+        <code class="calibre21">
+         go()
+        </code>
+        on a
+        <code class="calibre21">
+         Derived
+        </code>
+        object without passing an argument to it.
+       </p>
+       <section class="calibre2">
+        <aside class="calibre23">
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+         <section class="feature">
+          <p class="calibre25" id="c10-para-0281">
+           <b class="calibre14">
+            NOTE
+           </b>
+           <i class="calibre18">
+            When overriding a member function that has a default argument, you should provide a default argument as well, and it should probably be the same value. It is recommended to use a named constant for default values so that the same named constant can be used in derived classes
+           </i>
+           .
+          </p>
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+         </section>
+        </aside>
+       </section>
+      </section>
+      <section class="calibre2">
+       <span class="calibre" id="c10-sec-0078">
+       </span>
+       <h4 class="calibre29" id="head-4-215">
+        The Base Class Member Function Has a Different Access Specification
+       </h4>
+       <p class="calibre13" id="c10-para-0282">
+        There are two ways you may want to change the access specification of a member function: you could try to make it more restrictive or less restrictive. Neither case makes much sense in C++, but there are a few legitimate reasons for attempting to do so.
+       </p>
+       <p class="calibre13">
+        To enforce tighter restrictions on a member function (or on a data member for that matter), there are two approaches you can take. One way is to change the access specifier for the entire base class. This approach is described later in this chapter. The other approach is simply to redefine the access in the derived class, as illustrated in the
+        <code class="calibre21">
+         Shy
+        </code>
+        class that follows:
+       </p>
+       <pre class="calibre26" id="c10-code-0129"><code class="calibre21">class Gregarious</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual void talk() { println("Gregarious says hi!"); }</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class Shy : public Gregarious</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    protected:</code>
+<code class="calibre21">        void talk() override { println("Shy reluctantly says hello."); }</code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13">
+        The
+        <code class="calibre21">
+         protected
+        </code>
+        version of
+        <code class="calibre21">
+         talk()
+        </code>
+        in
+        <code class="calibre21">
+         Shy
+        </code>
+        properly overrides the
+        <code class="calibre21">
+         Gregarious::talk()
+        </code>
+        member function. Any client code that attempts to call
+        <code class="calibre21">
+         talk()
+        </code>
+        on a
+        <code class="calibre21">
+         Shy
+        </code>
+        object gets a compilation error:
+       </p>
+       <pre class="calibre26" id="c10-code-0130"><code class="calibre21">Shy myShy;</code>
+<code class="calibre21">myShy.talk();  <span class="color">// Error! Attempt to access protected member function.</span></code></pre>
+       <p class="calibre13">
+        However, the member function is not fully protected. One only has to obtain a
+        <code class="calibre21">
+         Gregarious
+        </code>
+        reference or pointer to access the member function that you thought was protected:
+       </p>
+       <pre class="calibre26" id="c10-code-0131"><code class="calibre21">Shy myShy;</code>
+<code class="calibre21">Gregarious&amp; ref { myShy };</code>
+<code class="calibre21">ref.talk();</code></pre>
+       <p class="calibre13">
+        <span aria-label="406" class="calibre20" epub:type="pagebreak" id="Page_406" role="doc-pagebreak">
+        </span>
+        The output of this code is as follows:
+       </p>
+       <pre class="calibre26" id="c10-code-0132"><code class="calibre21">Shy reluctantly says hello.</code></pre>
+       <p class="calibre13">
+        This proves that making the member function
+        <code class="calibre21">
+         protected
+        </code>
+        in the derived class did override the member function (because the derived class version is correctly called), but it also proves that the
+        <code class="calibre21">
+         protected
+        </code>
+        access can't be fully enforced if the base class makes it
+        <code class="calibre21">
+         public
+        </code>
+        .
+       </p>
+       <section class="calibre2">
+        <aside class="calibre23">
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+         <section class="feature">
+          <p class="calibre25" id="c10-para-0288">
+           <b class="calibre14">
+            NOTE
+           </b>
+           <i class="calibre18">
+            There is no reasonable way (or good reason) to restrict access to a
+           </i>
+           <code class="calibre21">
+            public
+           </code>
+           <i class="calibre18">
+            base class member function.
+           </i>
+          </p>
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+         </section>
+        </aside>
+       </section>
+       <section class="calibre2">
+        <aside class="calibre23">
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+         <section class="feature">
+          <p class="calibre25" id="c10-para-0289">
+           <b class="calibre14">
+            NOTE
+           </b>
+           <i class="calibre18">
+            The previous example redefined the member function in the derived class because it wants to display a different message. If you don't want to change the implementation but instead only want to change the access specification of a member function, the preferred way is to simply add a
+           </i>
+           <code class="calibre21">
+            using
+           </code>
+           <i class="calibre18">
+            declaration in the derived class definition with the desired access specification.
+           </i>
+          </p>
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+         </section>
+        </aside>
+       </section>
+       <p class="calibre13">
+        It is much easier (and makes more sense) to lessen access restrictions in derived classes. The simplest way is to provide a
+        <code class="calibre21">
+         public
+        </code>
+        member function in the derived class that calls a
+        <code class="calibre21">
+         protected
+        </code>
+        member function from the base class, as shown here:
+       </p>
+       <pre class="calibre26" id="c10-code-0133"><code class="calibre21">class Secret</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    protected:</code>
+<code class="calibre21">        virtual void dontTell() { println("I'll never tell."); }</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class Blabber : public Secret</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual void tell() { dontTell(); }</code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13" id="c10-para-0291">
+        A client calling the
+        <code class="calibre21">
+         public tell()
+        </code>
+        member function of a
+        <code class="calibre21">
+         Blabber
+        </code>
+        object effectively accesses the
+        <code class="calibre21">
+         protected
+        </code>
+        member function of the
+        <code class="calibre21">
+         Secret
+        </code>
+        class. Of course, this doesn't
+        <i class="calibre18">
+         really
+        </i>
+        change the access specification of
+        <code class="calibre21">
+         dontTell()
+        </code>
+        ; it just provides a
+        <code class="calibre21">
+         public
+        </code>
+        way of accessing it.
+       </p>
+       <p class="calibre13">
+        You can also override
+        <code class="calibre21">
+         dontTell()
+        </code>
+        explicitly in
+        <code class="calibre21">
+         Blabber
+        </code>
+        and give it new behavior with
+        <code class="calibre21">
+         public
+        </code>
+        access. This makes a lot more sense than reducing the access specification because it is entirely clear what happens with a reference or pointer to the base class. For example, suppose that
+        <code class="calibre21">
+         Blabber
+        </code>
+        actually makes the
+        <code class="calibre21">
+         dontTell()
+        </code>
+        member function
+        <code class="calibre21">
+         public
+        </code>
+        :
+       </p>
+       <pre class="calibre26" id="c10-code-0134"><code class="calibre21">class Blabber : public Secret</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        <b class="calibre14">void dontTell() override { println("I'll tell all!"); }</b></code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13">
+        <span aria-label="407" class="calibre20" epub:type="pagebreak" id="Page_407" role="doc-pagebreak">
+        </span>
+        Now you can call
+        <code class="calibre21">
+         dontTell()
+        </code>
+        on a
+        <code class="calibre21">
+         Blabber
+        </code>
+        object:
+       </p>
+       <pre class="calibre26" id="c10-code-0135"><code class="calibre21">myBlabber.dontTell(); <span class="color">// Outputs "I'll tell all!"</span></code></pre>
+       <p class="calibre13">
+        If you don't want to change the implementation of the overridden member function but only change the access specification, then you can use a
+        <code class="calibre21">
+         using
+        </code>
+        declaration. Here's an example:
+       </p>
+       <pre class="calibre26" id="c10-code-0136"><code class="calibre21">class Blabber : public Secret</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        <b class="calibre14">using Secret::dontTell;</b></code>
+<code class="calibre21">};</code></pre>
+       <p class="calibre13">
+        This also allows you to call
+        <code class="calibre21">
+         dontTell()
+        </code>
+        on a
+        <code class="calibre21">
+         Blabber
+        </code>
+        object, but this time the output will be “I'll never tell”:
+       </p>
+       <pre class="calibre26" id="c10-code-0137"><code class="calibre21">myBlabber.dontTell(); <span class="color">// Outputs "I'll never tell."</span></code></pre>
+       <p class="calibre13">
+        In both previous cases, however, the
+        <code class="calibre21">
+         protected
+        </code>
+        member function in the base class stays
+        <code class="calibre21">
+         protected
+        </code>
+        because any attempts to call
+        <code class="calibre21">
+         Secret
+        </code>
+        's
+        <code class="calibre21">
+         dontTell()
+        </code>
+        member function through a
+        <code class="calibre21">
+         Secret
+        </code>
+        pointer or reference will not compile:
+       </p>
+       <pre class="calibre26" id="c10-code-0138"><code class="calibre21">Blabber myBlabber;</code>
+<code class="calibre21">Secret&amp; ref { myBlabber };</code>
+<code class="calibre21">Secret* ptr { &amp;myBlabber };</code>
+<code class="calibre21">ref.dontTell();  <span class="color">// Error! Attempt to access protected member function.</span></code>
+<code class="calibre21">ptr-&gt;dontTell(); <span class="color">// Error! Attempt to access protected member function.</span></code></pre>
+       <section class="calibre2">
+        <aside class="calibre23">
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+         <section class="feature">
+          <p class="calibre25" id="c10-para-0298">
+           <b class="calibre14">
+            NOTE
+           </b>
+           <i class="calibre18">
+            The only useful way to change a member function's access specification is by providing a less restrictive accessor to a
+           </i>
+           <code class="calibre21">
+            protected
+           </code>
+           <i class="calibre18">
+            member function.
+           </i>
+          </p>
+          <div class="top">
+           <hr class="calibre24"/>
+          </div>
+         </section>
+        </aside>
+       </section>
+      </section>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c10-sec-0082">
+      </span>
+      <h3 class="calibre27" id="head-3-229">
+       Copy Constructors and Assignment Operators in Derived Classes
+      </h3>
+      <p class="calibre13" id="c10-para-0299">
+       <a class="calibre5" href="c09.xhtml">
+        Chapter 9
+       </a>
+       explains that providing a copy constructor and assignment operator is a must when you have dynamically allocated memory in a class. When defining a derived class, you need to be careful about copy constructors and
+       <code class="calibre21">
+        operator=
+       </code>
+       .
+      </p>
+      <p class="calibre13" id="c10-para-0300">
+       If your derived class does not have any special data (pointers, usually) that require a nondefault copy constructor or
+       <code class="calibre21">
+        operator=
+       </code>
+       , you don't need to have one, regardless of whether the base class has one. If your derived class omits the copy constructor or
+       <code class="calibre21">
+        operator=
+       </code>
+       , a default copy constructor or
+       <code class="calibre21">
+        operator=
+       </code>
+       will be provided for the data members specified in the derived class, and the base class copy constructor or
+       <code class="calibre21">
+        operator=
+       </code>
+       will be used for the data members specified in the base class.
+      </p>
+      <p class="calibre13">
+       On the other hand, if you
+       <i class="calibre18">
+        do
+       </i>
+       specify a copy constructor in the derived class, you need to explicitly call the parent copy constructor, as shown in the following code. If you do not do this, the default constructor (not the copy constructor!) will be used for the parent portion of the object.
+      </p>
+      <pre class="calibre26" id="c10-code-0139"><code class="calibre21">class Base</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<span aria-label="408" class="calibre20" epub:type="pagebreak" id="Page_408" role="doc-pagebreak"></span><code class="calibre21">        virtual ˜Base() = default;</code>
+<code class="calibre21">        Base() = default;</code>
+<code class="calibre21">        Base(const Base&amp; src) { }</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class Derived : public Base</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        Derived() = default;</code>
+<code class="calibre21">        Derived(const Derived&amp; src) <b class="calibre14">: Base { src }</b> { }</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13">
+       Similarly, if the derived class overrides
+       <code class="calibre21">
+        operator=
+       </code>
+       , it is almost always necessary to call the parent's version of
+       <code class="calibre21">
+        operator=
+       </code>
+       as well. The only case where you wouldn't do this would be if there was some bizarre reason why you only wanted part of the object assigned when an assignment took place. The following code shows how to call the parent's assignment operator from the derived class:
+      </p>
+      <pre class="calibre26" id="c10-code-0140"><code class="calibre21">Derived&amp; Derived::operator=(const Derived&amp; rhs)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    if (&amp;rhs == this) { return *this; }</code>
+<code class="calibre21">    Base::operator=(rhs); <span class="color">// Calls parent's operator=.</span></code>
+<code class="calibre21">    <span class="color">// Do necessary assignments for derived class.</span></code>
+<code class="calibre21">    return *this;</code>
+<code class="calibre21">}</code></pre>
+      <section class="calibre2">
+       <aside class="calibre23">
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+        <section class="feature">
+         <p class="calibre25" id="c10-para-0304">
+          <b class="calibre14">
+           WARNING
+          </b>
+          <i class="calibre18">
+           If your derived class does not specify its own copy constructor or
+          </i>
+          <code class="calibre21">
+           operator=
+          </code>
+          <i class="calibre18">
+           , the base class functionality continues to work. However, if the derived class does provide its own copy constructor or
+          </i>
+          <code class="calibre21">
+           operator=
+          </code>
+          <i class="calibre18">
+           , it needs to explicitly call the base class versions
+          </i>
+          .
+         </p>
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <section class="calibre2">
+       <aside class="calibre23">
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+        <section class="feature">
+         <p class="calibre25" id="c10-para-0305">
+          <b class="calibre14">
+           NOTE
+          </b>
+          <i class="calibre18">
+           When you need copy functionality in an inheritance hierarchy, a common idiom employed by professional C++ developers is to implement a polymorphic
+          </i>
+          <code class="calibre21">
+           clone()
+          </code>
+          <i class="calibre18">
+           member function, because relying on the standard copy constructor and copy assignment operators is not sufficient. The polymorphic
+          </i>
+          <code class="calibre21">
+           clone()
+          </code>
+          <i class="calibre18">
+           idiom is discussed in
+           <a class="calibre5" href="c12.xhtml">
+            Chapter 12
+           </a>
+           , “Writing Generic Code with Templates.”
+          </i>
+         </p>
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+        </section>
+       </aside>
+      </section>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c10-sec-0085">
+      </span>
+      <h3 class="calibre27" id="head-3-230">
+       Run-Time Type Facilities
+      </h3>
+      <p class="calibre13" id="c10-para-0306">
+       Relative to other object-oriented languages, C++ is very compile-time oriented. As you learned earlier, overriding member functions works because of a level of indirection between a member function and its implementation, not because the object has built-in knowledge of its own class.
+      </p>
+      <p class="calibre13" id="c10-para-0307">
+       There are, however, features in C++ that provide a run-time view of an object. These features are commonly grouped together under a feature set called
+       <i class="calibre18">
+        run-time type information
+       </i>
+       (RTTI). RTTI
+       <span aria-label="409" class="calibre20" epub:type="pagebreak" id="Page_409" role="doc-pagebreak">
+       </span>
+       provides a number of useful features for working with information about an object's class membership. One such feature is
+       <code class="calibre21">
+        dynamic_cast()
+       </code>
+       , which allows you to safely convert between types within an object-oriented hierarchy; this was discussed earlier in this chapter. Using
+       <code class="calibre21">
+        dynamic_cast()
+       </code>
+       on a class without a vtable, that is, without any
+       <code class="calibre21">
+        virtual
+       </code>
+       member functions, causes a compilation error.
+      </p>
+      <p class="calibre13">
+       A second RTTI feature is the
+       <code class="calibre21">
+        typeid
+       </code>
+       operator, which lets you query for types at run time. The result of applying the operator is a reference to an
+       <code class="calibre21">
+        std::type_info
+       </code>
+       object, defined in
+       <code class="calibre21">
+        &lt;typeinfo&gt;
+       </code>
+       . The
+       <code class="calibre21">
+        type_info
+       </code>
+       class has a member function called
+       <code class="calibre21">
+        name()
+       </code>
+       returning the compiler-dependent name of the type. The
+       <code class="calibre21">
+        typeid
+       </code>
+       operator behaves as follows:
+      </p>
+      <ul class="check" id="c10-list-0008">
+       <li class="calibre9" id="c10-li-0029">
+        <code class="calibre21">
+         typeid(type)
+        </code>
+        : Results in a reference to a
+        <code class="calibre21">
+         type_info
+        </code>
+        object representing the given type.
+       </li>
+       <li class="calibre9" id="c10-li-0030">
+        <code class="calibre21">
+         typeid(expression)
+        </code>
+        <ul class="check3" id="c10-list-0009">
+         <li class="calibre9" id="c10-li-0031">
+          If evaluating
+          <code class="calibre21">
+           expression
+          </code>
+          results in a polymorphic type, then
+          <code class="calibre21">
+           expression
+          </code>
+          is evaluated and the result of the
+          <code class="calibre21">
+           typeid
+          </code>
+          operator is a reference to a
+          <code class="calibre21">
+           type_info
+          </code>
+          object representing the dynamic type of the evaluated
+          <code class="calibre21">
+           expression
+          </code>
+          .
+         </li>
+         <li class="calibre9" id="c10-li-0032">
+          Otherwise,
+          <code class="calibre21">
+           expression
+          </code>
+          is not evaluated, and the result is a reference to a
+          <code class="calibre21">
+           type_info
+          </code>
+          object representing the static type.
+         </li>
+        </ul>
+       </li>
+      </ul>
+      <p class="calibre13" id="c10-para-0310">
+       For the most part, you shouldn't ever need to use
+       <code class="calibre21">
+        typeid
+       </code>
+       because any code that is conditionally executed based on the type of the object would be better handled with, for example,
+       <code class="calibre21">
+        virtual
+       </code>
+       member functions.
+      </p>
+      <p class="calibre13">
+       The following code uses
+       <code class="calibre21">
+        typeid
+       </code>
+       to print a message based on the type of the object:
+      </p>
+      <pre class="calibre26" id="c10-code-0141"><code class="calibre21">class Animal { public: virtual ˜Animal() = default; };</code>
+<code class="calibre21">class Dog : public Animal {};</code>
+<code class="calibre21">class Bird : public Animal {};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">void speak(const Animal&amp; animal)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    if (typeid(animal) == typeid(Dog)) {</code>
+<code class="calibre21">        println("Woof!");</code>
+<code class="calibre21">    } else if (typeid(animal) == typeid(Bird)) {</code>
+<code class="calibre21">        println("Chirp!");</code>
+<code class="calibre21">    }</code>
+<code class="calibre21">}</code></pre>
+      <p class="calibre13">
+       Whenever you see code like this, you should immediately consider reimplementing the functionality as a
+       <code class="calibre21">
+        virtual
+       </code>
+       member function. In this case, a better implementation would be to declare a
+       <code class="calibre21">
+        virtual
+       </code>
+       member function called
+       <code class="calibre21">
+        speak()
+       </code>
+       in the
+       <code class="calibre21">
+        Animal
+       </code>
+       base class.
+       <code class="calibre21">
+        Dog
+       </code>
+       would override the member function to print
+       <code class="calibre21">
+        "Woof!"
+       </code>
+       , and
+       <code class="calibre21">
+        Bird
+       </code>
+       would override it to print
+       <code class="calibre21">
+        "Chirp!"
+       </code>
+       . This approach better fits object-oriented programming, where functionality related to objects is given to those objects.
+      </p>
+      <section class="calibre2">
+       <aside class="calibre23">
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+        <section class="feature">
+         <p class="calibre25" id="c10-para-0313">
+          <b class="calibre14">
+           WARNING
+          </b>
+          <i class="calibre18">
+           The
+          </i>
+          <code class="calibre21">
+           typeid
+          </code>
+          <i class="calibre18">
+           operator works correctly only if the class has at least one
+          </i>
+          <code class="calibre21">
+           virtual
+          </code>
+          <i class="calibre18">
+           member function, that is, when the class has a vtable. Additionally, the
+          </i>
+          <code class="calibre21">
+           typeid
+          </code>
+          <i class="calibre18">
+           operator strips reference and
+          </i>
+          <code class="calibre21">
+           const
+          </code>
+          <i class="calibre18">
+           qualifiers from its argument.
+          </i>
+         </p>
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <p class="calibre13">
+       <span aria-label="410" class="calibre20" epub:type="pagebreak" id="Page_410" role="doc-pagebreak">
+       </span>
+       One possible use case of the
+       <code class="calibre21">
+        typeid
+       </code>
+       operator is for logging and debugging purposes. The following code makes use of
+       <code class="calibre21">
+        typeid
+       </code>
+       for logging. The
+       <code class="calibre21">
+        logObject()
+       </code>
+       function takes a “loggable” object as a parameter. The design is such that any object that can be logged inherits from the
+       <code class="calibre21">
+        Loggable
+       </code>
+       class and supports a member function called
+       <code class="calibre21">
+        getLogMessage()
+       </code>
+       .
+      </p>
+      <pre class="calibre26" id="c10-code-0142"><code class="calibre21">class Loggable</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual ˜Loggable() = default;</code>
+<code class="calibre21">        virtual string getLogMessage() const = 0;</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class Foo : public Loggable</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        string getLogMessage() const override { return "Hello logger."; }</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">void logObject(const Loggable&amp; loggableObject)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    print("{}: ", typeid(loggableObject).name());</code>
+<code class="calibre21">    println("{}", loggableObject.getLogMessage());</code>
+<code class="calibre21">}</code></pre>
+      <p class="calibre13">
+       <code class="calibre21">
+        logObject()
+       </code>
+       first prints the name of the object's class to the console, followed by its log message. This way, when you read the log later, you can see which object was responsible for every written line. Here is the output generated by Microsoft Visual C++ 2022 when
+       <code class="calibre21">
+        logObject()
+       </code>
+       is called with an instance of
+       <code class="calibre21">
+        Foo
+       </code>
+       :
+      </p>
+      <pre class="calibre26" id="c10-code-0143"><code class="calibre21">class Foo: Hello logger.</code></pre>
+      <p class="calibre13">
+       As you can see, the name returned by the
+       <code class="calibre21">
+        typeid
+       </code>
+       operator is “class Foo”. However, this name depends on your compiler. For example, if you compile and run the same code with GCC, the output is as follows:
+      </p>
+      <pre class="calibre26" id="c10-code-0144"><code class="calibre21">3Foo: Hello logger.</code></pre>
+      <section class="calibre2">
+       <aside class="calibre23">
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+        <section class="feature">
+         <p class="calibre25" id="c10-para-0318">
+          <b class="calibre14">
+           NOTE
+          </b>
+          <i class="calibre18">
+           If you are using
+           <code class="calibre21">
+            typeid
+           </code>
+           for purposes other than logging and debugging, consider changing your design, for example, by using
+          </i>
+          <code class="calibre21">
+           virtual
+          </code>
+          <i class="calibre18">
+           member functions.
+          </i>
+         </p>
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+        </section>
+       </aside>
+      </section>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c10-sec-0088">
+      </span>
+      <h3 class="calibre27" id="head-3-231">
+       Non-public Inheritance
+      </h3>
+      <p class="calibre13" id="c10-para-0319">
+       In all previous examples, parent classes were always listed using the
+       <code class="calibre21">
+        public
+       </code>
+       keyword. You may be wondering if a parent can be
+       <code class="calibre21">
+        private
+       </code>
+       or
+       <code class="calibre21">
+        protected
+       </code>
+       . In fact, it can, though neither is as common as
+       <code class="calibre21">
+        public
+       </code>
+       . If you don't specify any access specifier for the parent, then it is
+       <code class="calibre21">
+        private
+       </code>
+       inheritance for a
+       <code class="calibre21">
+        class
+       </code>
+       , and
+       <code class="calibre21">
+        public
+       </code>
+       inheritance for a
+       <code class="calibre21">
+        struct
+       </code>
+       .
+      </p>
+      <p class="calibre13" id="c10-para-0320">
+       Declaring the relationship with the parent to be
+       <code class="calibre21">
+        protected
+       </code>
+       means that all
+       <code class="calibre21">
+        public
+       </code>
+       member functions and data members from the base class become
+       <code class="calibre21">
+        protected
+       </code>
+       in the context of the derived class. Similarly, specifying
+       <code class="calibre21">
+        private
+       </code>
+       inheritance means that all
+       <code class="calibre21">
+        public
+       </code>
+       and
+       <code class="calibre21">
+        protected
+       </code>
+       member functions and data members of the base class become
+       <code class="calibre21">
+        private
+       </code>
+       in the derived class.
+      </p>
+      <p class="calibre13">
+       <span aria-label="411" class="calibre20" epub:type="pagebreak" id="Page_411" role="doc-pagebreak">
+       </span>
+       There are a handful of reasons why you might want to uniformly degrade the access level of the parent in this way, but most reasons imply flaws in the design of the hierarchy. Some programmers abuse this language feature, often in combination with multiple inheritance, to implement “components” of a class. Instead of making an
+       <code class="calibre21">
+        Airplane
+       </code>
+       class that contains an engine data member and a fuselage data member, they make an
+       <code class="calibre21">
+        Airplane
+       </code>
+       class that is a
+       <code class="calibre21">
+        protected
+       </code>
+       engine and a
+       <code class="calibre21">
+        protected
+       </code>
+       fuselage. In this way, the
+       <code class="calibre21">
+        Airplane
+       </code>
+       doesn't look like an engine or a fuselage to client code (because everything is
+       <code class="calibre21">
+        protected
+       </code>
+       ), but it is able to use all of that functionality internally.
+      </p>
+      <section class="calibre2">
+       <aside class="calibre23">
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+        <section class="feature">
+         <p class="calibre25" id="c10-para-0322">
+          <b class="calibre14">
+           NOTE
+          </b>
+          <i class="calibre18">
+           Non-
+           <code class="calibre21">
+            public
+           </code>
+           inheritance is rare, and I recommend using it cautiously, if for no other reason than that most programmers are not familiar with it
+          </i>
+          .
+         </p>
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+        </section>
+       </aside>
+      </section>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c10-sec-0090">
+      </span>
+      <h3 class="calibre27" id="head-3-232">
+       Virtual Base Classes
+      </h3>
+      <p class="calibre13" id="c10-para-0323">
+       Earlier in this chapter, you learned about ambiguous base classes, a situation that arises when multiple parents each have a parent in common, as shown again in
+       <a class="calibre5" href="c10_split_001.xhtml#c10-fig-0012" id="R_c10-fig-0012">
+        Figure 10.12
+       </a>
+       . The solution recommended earlier was to make sure that the shared parent doesn't have any functionality of its own. That way, its member functions can never be called, and there is no ambiguity problem.
+      </p>
+      <figure class="calibre36">
+       <img alt="A set of four boards. It includes the following. A. Animal. B. Dog. C. Bird. D. DogBird." class="center" src="images/c10f012.png"/>
+       <figcaption class="calibre37">
+        <p class="calibre13">
+         <span class="figurelabel">
+          <a class="calibre5" href="c10_split_001.xhtml#R_c10-fig-0012" id="c10-fig-0012" role="doc-backlink">
+           <b class="calibre14">
+            FIGURE 10.12
+           </b>
+          </a>
+         </span>
+        </p>
+       </figcaption>
+      </figure>
+      <p class="calibre13">
+       C++ has another mechanism, called
+       <i class="calibre18">
+        virtual base classes
+       </i>
+       , for addressing this problem if you do want the shared parent to have its own functionality. If the shared parent is marked as a virtual base class, there will not be any ambiguity. The following code adds a
+       <code class="calibre21">
+        sleep()
+       </code>
+       member function, including an implementation, to the
+       <code class="calibre21">
+        Animal
+       </code>
+       base class, and modifies the
+       <code class="calibre21">
+        Dog
+       </code>
+       and
+       <code class="calibre21">
+        Bird
+       </code>
+       classes to inherit from
+       <code class="calibre21">
+        Animal
+       </code>
+       as a virtual base class. Without using a virtual base class, a call to
+       <code class="calibre21">
+        sleep()
+       </code>
+       on a
+       <code class="calibre21">
+        DogBird
+       </code>
+       object would be ambiguous and would generate a compiler error because
+       <code class="calibre21">
+        DogBird
+       </code>
+       would have two subobjects of class
+       <code class="calibre21">
+        Animal
+       </code>
+       , one coming from
+       <code class="calibre21">
+        Dog
+       </code>
+       and one coming from
+       <code class="calibre21">
+        Bird
+       </code>
+       . However, when
+       <code class="calibre21">
+        Animal
+       </code>
+       is inherited virtually,
+       <code class="calibre21">
+        DogBird
+       </code>
+       has only one subobject of class
+       <code class="calibre21">
+        Animal
+       </code>
+       , so there will be no ambiguity with calling
+       <code class="calibre21">
+        sleep()
+       </code>
+       .
+      </p>
+      <pre class="calibre26" id="c10-code-0145"><code class="calibre21">class Animal</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual void eat() = 0;</code>
+<code class="calibre21">        <b class="calibre14">virtual void sleep() { println("zzzzz…."); }</b></code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21"><b class="calibre14">class Dog : public virtual Animal</b></code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual void bark() { println("Woof!"); }</code>
+<code class="calibre21">        void eat() override { println("The dog ate."); }</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21"><b class="calibre14">class Bird : public virtual Animal</b></code>
+<code class="calibre21">{</code>
+<span aria-label="412" class="calibre20" epub:type="pagebreak" id="Page_412" role="doc-pagebreak"></span><code class="calibre21">    public:</code>
+<code class="calibre21">        virtual void chirp() { println("Chirp!"); }</code>
+<code class="calibre21">        void eat() override { println("The bird ate."); }</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class DogBird : public Dog, public Bird</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        void eat() override { Dog::eat(); }</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">int main()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    DogBird myConfusedAnimal;</code>
+<code class="calibre21">    myConfusedAnimal.sleep();  <span class="color">// Not ambiguous because of virtual base class.</span></code>
+<code class="calibre21">}</code></pre>
+      <p class="calibre13">
+       Be careful with constructors in such class hierarchies. For example, the following code adds some data members to the different classes, adds constructors to initialize those data members, and, for reasons explained after the code snippet, adds a
+       <code class="calibre21">
+        protected
+       </code>
+       default constructor to
+       <code class="calibre21">
+        Animal
+       </code>
+       .
+      </p>
+      <pre class="calibre26" id="c10-code-0146"><code class="calibre21">class Animal</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        explicit Animal(double weight) : m_weight { weight } {}</code>
+<code class="calibre21">        virtual double getWeight() const { return m_weight; }</code>
+<code class="calibre21">    protected:</code>
+<code class="calibre21">        Animal() = default;</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        double m_weight { 0.0 };</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class Dog : public virtual Animal</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        explicit Dog(double weight, string name)</code>
+<code class="calibre21">            : Animal { weight }, m_name { move(name) } {}</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        string m_name;</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class Bird : public virtual Animal</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        explicit Bird(double weight, bool canFly)</code>
+<code class="calibre21">            : Animal { weight }, m_canFly { canFly } {}</code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        bool m_canFly { false };</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class DogBird : public Dog, public Bird</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        explicit DogBird(double weight, string name, bool canFly)</code>
+<code class="calibre21">            : Dog { weight, move(name) }, Bird { weight, canFly } {}</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> <span aria-label="413" class="calibre20" epub:type="pagebreak" id="Page_413" role="doc-pagebreak"></span></code>
+<code class="calibre21">int main()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    DogBird dogBird { 22.33, "Bella", true };</code>
+<code class="calibre21">    println("Weight: {}", dogBird.getWeight());</code>
+<code class="calibre21">}</code></pre>
+      <p class="calibre13">
+       When you run this code, the output is unexpected:
+      </p>
+      <pre class="calibre26" id="c10-code-0147"><code class="calibre21">Weight: 0</code></pre>
+      <p class="calibre13">
+       It seems that the given weight of 22.33 when constructing the
+       <code class="calibre21">
+        DogBird
+       </code>
+       in
+       <code class="calibre21">
+        main()
+       </code>
+       is lost. Why? This code is using a virtual
+       <code class="calibre21">
+        Animal
+       </code>
+       base class; hence, a
+       <code class="calibre21">
+        DogBird
+       </code>
+       instance has only one
+       <code class="calibre21">
+        Animal
+       </code>
+       subobject. The
+       <code class="calibre21">
+        DogBird
+       </code>
+       constructor calls the constructors of both
+       <code class="calibre21">
+        Dog
+       </code>
+       and
+       <code class="calibre21">
+        Bird
+       </code>
+       , which both forward to their
+       <code class="calibre21">
+        Animal
+       </code>
+       base class constructor. This would mean that
+       <code class="calibre21">
+        Animal
+       </code>
+       is constructed twice. This is not allowed. In such cases, the compiler disables the call to the
+       <code class="calibre21">
+        Animal
+       </code>
+       constructor in the
+       <code class="calibre21">
+        Dog
+       </code>
+       and
+       <code class="calibre21">
+        Bird
+       </code>
+       constructors when it's being called from a derived class's constructor and, instead, calls a default constructor of the
+       <code class="calibre21">
+        Animal
+       </code>
+       base class, thus the need for the
+       <code class="calibre21">
+        protected
+       </code>
+       default constructor in
+       <code class="calibre21">
+        Animal
+       </code>
+       . All this means that the most derived class itself is responsible for calling a constructor of the shared base class. A correct implementation is as follows:
+      </p>
+      <pre class="calibre26" id="c10-code-0148"><code class="calibre21">class Animal { <span class="color">/* Same as before. */</span> };</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class Dog : public virtual Animal</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        explicit Dog(double weight, string name)</code>
+<code class="calibre21">            : Animal { weight }, m_name { move(name) } {}</code>
+<code class="calibre21">    <b class="calibre14">protected:</b></code>
+<code class="calibre21">        <b class="calibre14">explicit Dog(string name) : m_name { move(name) } {}</b></code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        string m_name;</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class Bird : public virtual Animal</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        explicit Bird(double weight, bool canFly)</code>
+<code class="calibre21">            : Animal { weight }, m_canFly { canFly } {}</code>
+<code class="calibre21">    <b class="calibre14">protected:</b></code>
+<code class="calibre21">        <b class="calibre14">explicit Bird(bool canFly) : m_canFly { canFly } {}</b></code>
+<code class="calibre21">    private:</code>
+<code class="calibre21">        bool m_canFly { false };</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class DogBird : public Dog, public Bird</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        explicit DogBird(double weight, string name, bool canFly)</code>
+<code class="calibre21">            <b class="calibre14">: Animal { weight }, Dog { move(name) }, Bird { canFly } {}</b></code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13" id="c10-para-0328">
+       In this implementation,
+       <code class="calibre21">
+        protected
+       </code>
+       single-argument constructors are added to
+       <code class="calibre21">
+        Dog
+       </code>
+       and
+       <code class="calibre21">
+        Bird
+       </code>
+       . They are
+       <code class="calibre21">
+        protected
+       </code>
+       as they should be used only by derived classes. Client code is allowed to construct
+       <code class="calibre21">
+        Dog
+       </code>
+       s and
+       <code class="calibre21">
+        Bird
+       </code>
+       s only using the two-argument constructors.
+      </p>
+      <p class="calibre13">
+       <span aria-label="414" class="calibre20" epub:type="pagebreak" id="Page_414" role="doc-pagebreak">
+       </span>
+       After these changes, the output is correct:
+      </p>
+      <pre class="calibre26" id="c10-code-0149"><code class="calibre21">Weight: 22.33</code></pre>
+      <section class="calibre2">
+       <aside class="calibre23">
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+        <section class="feature">
+         <p class="calibre25" id="c10-para-0331">
+          <b class="calibre14">
+           NOTE
+          </b>
+          <i class="calibre18">
+           Virtual base classes are a great way to avoid ambiguity in class hierarchies. The only drawback is that many C++ programmers are unfamiliar with the concept
+          </i>
+          .
+         </p>
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+        </section>
+       </aside>
+      </section>
      </section>
     </section>
-    <section aria-labelledby="head-2-12" class="calibre2">
-     <span class="calibre" id="bapp01-sec-0035">
+    <section aria-labelledby="head-2-128" class="calibre2">
+     <span class="calibre" id="c10-sec-0092">
      </span>
-     <div class="calibre19" id="calibre_pb_8">
-     </div>
+     <h2 class="calibre6" id="head-2-128">
+      CASTS
+     </h2>
+     <p class="calibre13" id="c10-para-0332">
+      The basic types in C++ are reviewed in
+      <a class="calibre5" href="c01_split_000.xhtml">
+       Chapter 1
+      </a>
+      , while
+      <a class="calibre5" href="c08.xhtml">
+       Chapters 8
+      </a>
+      through
+      <a class="calibre5" href="c10_split_000.xhtml">
+       10
+      </a>
+      show how to write your own types with classes. This section explores some of the trickier aspects of casting one type to another type.
+     </p>
+     <p class="calibre13" id="c10-para-0333">
+      C++ provides five specific casts:
+      <code class="calibre21">
+       const_cast()
+      </code>
+      ,
+      <code class="calibre21">
+       static_cast()
+      </code>
+      ,
+      <code class="calibre21">
+       reinterpret_cast()
+      </code>
+      ,
+      <code class="calibre21">
+       dynamic_cast()
+      </code>
+      , and
+      <code class="calibre21">
+       std::bit_cast()
+      </code>
+      . The first one is discussed in
+      <a class="calibre5" href="c01_split_000.xhtml">
+       Chapter 1
+      </a>
+      .
+      <a class="calibre5" href="c01_split_000.xhtml">
+       Chapter 1
+      </a>
+      also introduces
+      <code class="calibre21">
+       static_cast()
+      </code>
+      for casting between certain primitive types, but there is more to say about it in the context of inheritance. Now that you are fluent in writing your own classes and understand class inheritance, it's time to take a closer look at these casts.
+     </p>
+     <p class="calibre13" id="c10-para-0334">
+      Note that the old C-style casts such as
+      <code class="calibre21">
+       (int)myFloat
+      </code>
+      still work in C++ and are still used extensively in existing code bases. C-style casts cover all C++ casts except
+      <code class="calibre21">
+       bit_cast()
+      </code>
+      and thus are more error-prone because it's not always obvious what you are trying to achieve, and you might end up with unexpected results. I strongly recommend you only use the C++ style casts in new code because they are safer and stand out better syntactically and visually in your code.
+     </p>
+     <section class="calibre2">
+      <span class="calibre" id="c10-sec-0093">
+      </span>
+      <h3 class="calibre27" id="head-3-233">
+       static_cast()
+      </h3>
+      <p class="calibre13">
+       You can use
+       <code class="calibre21">
+        static_cast()
+       </code>
+       to perform explicit conversions that are supported directly by the language. For example, if you write an arithmetic expression in which you need to convert an
+       <code class="calibre21">
+        int
+       </code>
+       to a
+       <code class="calibre21">
+        double
+       </code>
+       to avoid integer division, use a
+       <code class="calibre21">
+        static_cast()
+       </code>
+       . In this example, it's enough to only use
+       <code class="calibre21">
+        static_cast()
+       </code>
+       with
+       <code class="calibre21">
+        i
+       </code>
+       , because that makes one of the two operands a
+       <code class="calibre21">
+        double
+       </code>
+       , making sure C++ performs floating-point division.
+      </p>
+      <pre class="calibre26" id="c10-code-0150"><code class="calibre21">int i { 3 };</code>
+<code class="calibre21">int j { 4 };</code>
+<code class="calibre21">double result { static_cast&lt;double&gt;(i) / j };</code></pre>
+      <p class="calibre13" id="c10-para-0336">
+       You can also use
+       <code class="calibre21">
+        static_cast()
+       </code>
+       to perform explicit conversions that are allowed because of user-defined constructors or conversion routines. For example, if class
+       <code class="calibre21">
+        A
+       </code>
+       has a constructor that takes an object of class
+       <code class="calibre21">
+        B
+       </code>
+       , you can convert a
+       <code class="calibre21">
+        B
+       </code>
+       object to an
+       <code class="calibre21">
+        A
+       </code>
+       object using a
+       <code class="calibre21">
+        static_cast()
+       </code>
+       . In most situations where you want this behavior, however, the compiler performs the conversion automatically.
+      </p>
+      <p class="calibre13">
+       Another use for
+       <code class="calibre21">
+        static_cast()
+       </code>
+       is to perform downcasts in an inheritance hierarchy, as in this example:
+      </p>
+      <pre class="calibre26" id="c10-code-0151"><code class="calibre21">class Base</code>
+<code class="calibre21">{</code>
+<span aria-label="415" class="calibre20" epub:type="pagebreak" id="Page_415" role="doc-pagebreak"></span><code class="calibre21">    public:</code>
+<code class="calibre21">        virtual ˜Base() = default;</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class Derived : public Base</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual ˜Derived() = default;</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">int main()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    Base* b { nullptr };</code>
+<code class="calibre21">    Derived* d { new Derived {} };</code>
+<code class="calibre21">    b = d; <span class="color">// Don't need a cast to go up the inheritance hierarchy.</span></code>
+<code class="calibre21">    d = static_cast&lt;Derived*&gt;(b); <span class="color">// Need a cast to go down the hierarchy.</span></code>
+<code class="calibre21"> </code>
+<code class="calibre21">    Base base;</code>
+<code class="calibre21">    Derived derived;</code>
+<code class="calibre21">    Base&amp; br { derived };</code>
+<code class="calibre21">    Derived&amp; dr { static_cast&lt;Derived&amp;&gt;(br) };</code>
+<code class="calibre21">}</code></pre>
+      <p class="calibre13" id="c10-para-0338">
+       These casts work with both pointers and references. They do not work with objects themselves.
+      </p>
+      <p class="calibre13">
+       Note that casts using
+       <code class="calibre21">
+        static_cast()
+       </code>
+       do not perform run-time type checking. They allow you to convert any
+       <code class="calibre21">
+        Base
+       </code>
+       pointer to a
+       <code class="calibre21">
+        Derived
+       </code>
+       pointer, or
+       <code class="calibre21">
+        Base
+       </code>
+       reference to a
+       <code class="calibre21">
+        Derived
+       </code>
+       reference, even if the
+       <code class="calibre21">
+        Base
+       </code>
+       really isn't a
+       <code class="calibre21">
+        Derived
+       </code>
+       at run time. For example, the following code compiles and executes, but using the pointer
+       <code class="calibre21">
+        d
+       </code>
+       can result in potentially catastrophic failure, including memory overwrites outside the bounds of the object.
+      </p>
+      <pre class="calibre26" id="c10-code-0152"><code class="calibre21">Base* b { new Base {} };</code>
+<code class="calibre21">Derived* d { static_cast&lt;Derived*&gt;(b) };</code></pre>
+      <p class="calibre13" id="c10-para-0340">
+       To perform such casts safely with run-time type checking, use
+       <code class="calibre21">
+        dynamic_cast()
+       </code>
+       , which is explained a bit later in this chapter.
+      </p>
+      <p class="calibre13" id="c10-para-0341">
+       <code class="calibre21">
+        static_cast()
+       </code>
+       is not all-powerful. You can't
+       <code class="calibre21">
+        static_cast()
+       </code>
+       pointers of one type to pointers of another unrelated type. You can't directly
+       <code class="calibre21">
+        static_cast()
+       </code>
+       objects of one type to objects of another type if there is no converting constructor available. You can't
+       <code class="calibre21">
+        static_cast()
+       </code>
+       a
+       <code class="calibre21">
+        const
+       </code>
+       type to a non-
+       <code class="calibre21">
+        const
+       </code>
+       type. You can't
+       <code class="calibre21">
+        static_cast()
+       </code>
+       pointers to
+       <code class="calibre21">
+        int
+       </code>
+       s. Basically, you can only do things that make sense according to the type rules of C++.
+      </p>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c10-sec-0094">
+      </span>
+      <h3 class="calibre27" id="head-3-234">
+       reinterpret_cast()
+      </h3>
+      <p class="calibre13">
+       <code class="calibre21">
+        reinterpret_cast()
+       </code>
+       is a bit more powerful, and concomitantly less safe, than
+       <code class="calibre21">
+        static_cast()
+       </code>
+       . You can use it to perform some casts that are not technically allowed by the C++ type rules but that might make sense to the programmer in some circumstances. For example, you can use
+       <code class="calibre21">
+        reinterpret_cast()
+       </code>
+       to cast a reference to one type to a reference to another type, even if the types are unrelated. Similarly, you can use it to cast a pointer type to any other pointer type, even if they are unrelated by an inheritance hierarchy. However, casting a pointer to a
+       <code class="calibre21">
+        void*
+       </code>
+       can be done implicitly, without an explicit cast. To cast a
+       <code class="calibre21">
+        void*
+       </code>
+       back to a correctly typed pointer, a
+       <code class="calibre21">
+        static_cast()
+       </code>
+       is enough. A
+       <code class="calibre21">
+        void*
+       </code>
+       <span aria-label="416" class="calibre20" epub:type="pagebreak" id="Page_416" role="doc-pagebreak">
+       </span>
+       pointer is just a pointer to some location in memory. No type information is associated with a
+       <code class="calibre21">
+        void*
+       </code>
+       pointer. Here are some examples:
+      </p>
+      <pre class="calibre26" id="c10-code-0153"><code class="calibre21">class X {};</code>
+<code class="calibre21">class Y {};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">int main()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    X x;</code>
+<code class="calibre21">    Y y;</code>
+<code class="calibre21">    X* xp { &amp;x };</code>
+<code class="calibre21">    Y* yp { &amp;y };</code>
+<code class="calibre21">    <span class="color">// Need reinterpret_cast for pointer conversion from unrelated classes</span></code>
+<code class="calibre21">    <span class="color">// static_cast doesn't work.</span></code>
+<code class="calibre21">    xp = reinterpret_cast&lt;X*&gt;(yp);</code>
+<code class="calibre21">    <span class="color">// No cast required for conversion from pointer to void*</span></code>
+<code class="calibre21">    void* p { xp };</code>
+<code class="calibre21">    <span class="color">// static_cast is enough for pointer conversion from void*</span></code>
+<code class="calibre21">    xp = static_cast&lt;X*&gt;(p);</code>
+<code class="calibre21">    <span class="color">// Need reinterpret_cast for reference conversion from unrelated classes</span></code>
+<code class="calibre21">    <span class="color">// static_cast doesn't work.</span></code>
+<code class="calibre21">    X&amp; xr { x };</code>
+<code class="calibre21">    Y&amp; yr { reinterpret_cast&lt;Y&amp;&gt;(x) };</code>
+<code class="calibre21">}</code></pre>
+      <p class="calibre13" id="c10-para-0343">
+       <code class="calibre21">
+        reinterpret_cast()
+       </code>
+       is not all-powerful; it comes with quite a few restrictions on what can be cast to what. These restrictions are not further discussed in this text, as I recommend that you use these kinds of casts judiciously.
+      </p>
+      <p class="calibre13">
+       In general, you should be careful with
+       <code class="calibre21">
+        reinterpret_cast()
+       </code>
+       because it allows you to do conversions without performing any type checking.
+      </p>
+      <section class="calibre2">
+       <aside class="calibre23">
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+        <section class="feature">
+         <p class="calibre25" id="c10-para-0345">
+          <b class="calibre14">
+           WARNING
+          </b>
+          <i class="calibre18">
+           You can also use
+          </i>
+          <code class="calibre21">
+           reinterpret_cast()
+          </code>
+          <i class="calibre18">
+           to cast pointers to integral types and back. However, you can only cast a pointer to an integral type that is large enough to hold it. For example, trying to use
+          </i>
+          <code class="calibre21">
+           reinterpret_cast()
+          </code>
+          <i class="calibre18">
+           to cast a 64-bit pointer to a 32-bit integer results in a compilation error.
+          </i>
+         </p>
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+        </section>
+       </aside>
+      </section>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c10-sec-0096">
+      </span>
+      <h3 class="calibre27" id="head-3-235">
+       dynamic_cast()
+      </h3>
+      <p class="calibre13" id="c10-para-0346">
+       <code class="calibre21">
+        dynamic_cast()
+       </code>
+       provides a run-time check on casts within an inheritance hierarchy. You can use it to cast pointers or references.
+       <code class="calibre21">
+        dynamic_cast()
+       </code>
+       checks the run-time type information of the underlying object at run time. If the cast doesn't make sense,
+       <code class="calibre21">
+        dynamic_cast()
+       </code>
+       returns a null pointer (for the pointer version) or throws an
+       <code class="calibre21">
+        std::bad_cast
+       </code>
+       exception (for the reference version).
+      </p>
+      <p class="calibre13">
+       For example, suppose you have the following class hierarchy:
+      </p>
+      <pre class="calibre26" id="c10-code-0154"><code class="calibre21">class Base</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual ˜Base() = default;</code>
+<span aria-label="417" class="calibre20" epub:type="pagebreak" id="Page_417" role="doc-pagebreak"></span><code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">class Derived : public Base</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public:</code>
+<code class="calibre21">        virtual ˜Derived() = default;</code>
+<code class="calibre21">};</code></pre>
+      <p class="calibre13">
+       The following example shows a correct use of
+       <code class="calibre21">
+        dynamic_cast()
+       </code>
+       :
+      </p>
+      <pre class="calibre26" id="c10-code-0155"><code class="calibre21">Base* b;</code>
+<code class="calibre21">Derived* d { new Derived {} };</code>
+<code class="calibre21">b = d;</code>
+<code class="calibre21">d = dynamic_cast&lt;Derived*&gt;(b);</code></pre>
+      <p class="calibre13">
+       The following
+       <code class="calibre21">
+        dynamic_cast()
+       </code>
+       on a reference will cause an exception to be thrown:
+      </p>
+      <pre class="calibre26" id="c10-code-0156"><code class="calibre21">Base base;</code>
+<code class="calibre21">Derived derived;</code>
+<code class="calibre21">Base&amp; br { base };</code>
+<code class="calibre21">try {</code>
+<code class="calibre21">    Derived&amp; dr { dynamic_cast&lt;Derived&amp;&gt;(br) };</code>
+<code class="calibre21">} catch (const bad_cast&amp;) {</code>
+<code class="calibre21">    println("Bad cast!");</code>
+<code class="calibre21">}</code></pre>
+      <p class="calibre13" id="c10-para-0350">
+       Note that you can perform the same casts down the inheritance hierarchy with a
+       <code class="calibre21">
+        static_cast()
+       </code>
+       or
+       <code class="calibre21">
+        reinterpret_cast()
+       </code>
+       . The difference with
+       <code class="calibre21">
+        dynamic_cast()
+       </code>
+       is that it performs run-time (dynamic) type checking, while
+       <code class="calibre21">
+        static_cast()
+       </code>
+       and
+       <code class="calibre21">
+        reinterpret_cast()
+       </code>
+       perform the cast even if they are erroneous.
+      </p>
+      <p class="calibre13">
+       Remember, the run-time type information is stored in the vtable of an object. Therefore, to use
+       <code class="calibre21">
+        dynamic_cast()
+       </code>
+       , your classes must have at least one
+       <code class="calibre21">
+        virtual
+       </code>
+       member function. If your classes don't have a vtable, trying to use
+       <code class="calibre21">
+        dynamic_cast()
+       </code>
+       will result in a compilation error. Microsoft Visual C++, for example, gives the following error:
+      </p>
+      <pre class="calibre26" id="c10-code-0157"><code class="calibre21">error C2683: 'dynamic_cast' : 'Base' is not a polymorphic type.</code></pre>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c10-sec-0097">
+      </span>
+      <h3 class="calibre27" id="head-3-236">
+       std::bit_cast()
+      </h3>
+      <p class="calibre13">
+       <code class="calibre21">
+        std::bit_cast()
+       </code>
+       is defined in
+       <code class="calibre21">
+        &lt;bit&gt;
+       </code>
+       . It's the only cast that's part of the Standard Library; the other casts are part of the C++ language itself.
+       <code class="calibre21">
+        bit_cast()
+       </code>
+       resembles
+       <code class="calibre21">
+        reinterpret_cast()
+       </code>
+       , but it creates a new object of a given target type and copies the bits from a source object to this new object. It effectively interprets the bits of the source object as if they are the bits of the target object.
+       <code class="calibre21">
+        bit_cast()
+       </code>
+       requires that the size of the source and target objects are the same and that both are
+       <i class="calibre18">
+        trivially copyable
+       </i>
+       .
+      </p>
+      <section class="calibre2">
+       <aside class="calibre23">
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+        <section class="feature">
+         <p class="calibre25" id="c10-para-0353">
+          <b class="calibre14">
+           NOTE
+          </b>
+          <i class="calibre18">
+           A trivially copyable type is a type of which the underlying bytes making up the object can be copied into an array of, for example
+          </i>
+          ,
+          <code class="calibre21">
+           char
+          </code>
+          <i class="calibre18">
+           . If the data of that array is then copied back into the object, the object keeps its original value.
+          </i>
+         </p>
+         <div class="top">
+          <hr class="calibre24"/>
+         </div>
+        </section>
+       </aside>
+      </section>
+      <p class="calibre13">
+       <span aria-label="418" class="calibre20" epub:type="pagebreak" id="Page_418" role="doc-pagebreak">
+       </span>
+       Here is an example:
+      </p>
+      <pre class="calibre26" id="c10-code-0158"><code class="calibre21">float asFloat { 1.23f };</code>
+<code class="calibre21">auto asUint { bit_cast&lt;unsigned int&gt;(asFloat) };</code>
+<code class="calibre21">if (bit_cast&lt;float&gt;(asUint) == asFloat) { println("Roundtrip success."); }</code></pre>
+      <p class="calibre13" id="c10-para-0355">
+       A use case for
+       <code class="calibre21">
+        bit_cast()
+       </code>
+       is with binary I/O of trivially copyable types. For example, you can write the individual bytes of such types to a file. When you read the file back into memory, you can use
+       <code class="calibre21">
+        bit_cast()
+       </code>
+       to correctly interpret the bytes read from the file.
+      </p>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="c10-sec-0099">
+      </span>
+      <h3 class="calibre27" id="head-3-237">
+       Summary of Casts
+      </h3>
+      <p class="calibre13" id="c10-para-0356">
+       The following table summarizes the casts you should use for different situations.
+      </p>
+      <table border="1" class="calibre31">
+       <thead class="calibre32">
+        <tr class="calibre33">
+         <th class="left" scope="col">
+          SITUATION
+         </th>
+         <th class="left" scope="col">
+          CAST
+         </th>
+        </tr>
+       </thead>
+       <tbody class="calibre34">
+        <tr class="calibre33">
+         <td class="left1">
+          Remove
+          <code class="calibre21">
+           const-
+          </code>
+          ness
+         </td>
+         <td class="left1">
+          <code class="calibre21">
+           const_cast()
+          </code>
+         </td>
+        </tr>
+        <tr class="calibre33">
+         <td class="left1">
+          Explicit cast supported by the language (for example,
+          <code class="calibre21">
+           int
+          </code>
+          to
+          <code class="calibre21">
+           double
+          </code>
+          ,
+          <code class="calibre21">
+           int
+          </code>
+          to
+          <code class="calibre21">
+           bool
+          </code>
+          )
+         </td>
+         <td class="left1">
+          <code class="calibre21">
+           static_cast()
+          </code>
+         </td>
+        </tr>
+        <tr class="calibre33">
+         <td class="left1">
+          Explicit cast supported by user-defined constructors or conversions
+         </td>
+         <td class="left1">
+          <code class="calibre21">
+           static_cast()
+          </code>
+         </td>
+        </tr>
+        <tr class="calibre33">
+         <td class="left1">
+          Object of one class to object of another (unrelated) class
+         </td>
+         <td class="left1">
+          <code class="calibre21">
+           bit_cast()
+          </code>
+         </td>
+        </tr>
+        <tr class="calibre33">
+         <td class="left1">
+          Pointer-to-object of one class to pointer-to-object of another class in the same inheritance hierarchy
+         </td>
+         <td class="left1">
+          <code class="calibre21">
+           dynamic_cast()
+          </code>
+          recommended, or
+          <code class="calibre21">
+           static_cast()
+          </code>
+         </td>
+        </tr>
+        <tr class="calibre33">
+         <td class="left1">
+          Reference-to-object of one class to reference-to-object of another class in the same inheritance hierarchy
+         </td>
+         <td class="left1">
+          <code class="calibre21">
+           dynamic_cast()
+          </code>
+          recommended, or
+          <code class="calibre21">
+           static_cast()
+          </code>
+         </td>
+        </tr>
+        <tr class="calibre33">
+         <td class="left1">
+          Pointer-to-type to unrelated pointer-to-type
+         </td>
+         <td class="left1">
+          <code class="calibre21">
+           reinterpret_cast()
+          </code>
+         </td>
+        </tr>
+        <tr class="calibre33">
+         <td class="left1">
+          Reference-to-type to unrelated reference-to-type
+         </td>
+         <td class="left1">
+          <code class="calibre21">
+           reinterpret_cast()
+          </code>
+         </td>
+        </tr>
+        <tr class="calibre33">
+         <td class="left1">
+          Pointer-to-function to pointer-to-function
+         </td>
+         <td class="left1">
+          <code class="calibre21">
+           reinterpret_cast()
+          </code>
+         </td>
+        </tr>
+       </tbody>
+      </table>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-129" class="calibre2">
+     <span class="calibre" id="c10-sec-0100">
+     </span>
+     <h2 class="calibre6" id="head-2-129">
+      SUMMARY
+     </h2>
+     <p class="calibre13" id="c10-para-0358">
+      This chapter covered numerous details about inheritance. You learned about its many applications, including code reuse and polymorphism. You also learned about its many abuses, including poorly designed multiple-inheritance schemes. Along the way, you uncovered some cases that require special attention.
+     </p>
+     <p class="calibre13" id="c10-para-0359">
+      Inheritance is a powerful language feature that takes some time to get used to. After you have worked with the examples in this chapter and experimented on your own, I hope that inheritance will become your tool of choice for object-oriented design.
+     </p>
+    </section>
+    <span aria-label="419" class="calibre20" epub:type="pagebreak" id="Page_419" role="doc-pagebreak">
+    </span>
+    <section aria-labelledby="head-2-130" class="calibre2">
+     <span class="calibre" id="c10-sec-0101">
+     </span>
+     <h2 class="calibre6" id="head-2-130">
+      EXERCISES
+     </h2>
+     <p class="calibre13" id="c10-para-0360">
+      By solving the following exercises, you can practice the material discussed in this chapter. Solutions to all exercises are available with the code download on the book's website at
+      <code class="calibre21">
+       <a class="calibre5" href="http://www.wiley.com/go/proc++6e">
+        www.wiley.com/go/proc++6e
+       </a>
+      </code>
+      . However, if you are stuck on an exercise, first reread parts of this chapter to try to find an answer yourself before looking at the solution from the website.
+     </p>
+     <section class="calibre2">
+      <span class="calibre" id="c10-exsec-0001">
+      </span>
+      <ol class="none1">
+       <li class="calibre9" id="c10-ex-0001">
+        <b class="calibre14">
+         Exercise 10-1:
+        </b>
+        Take the
+        <code class="calibre21">
+         Person
+        </code>
+        class from Exercise 9-2 and add a derived class called
+        <code class="calibre21">
+         Employee
+        </code>
+        . You can omit the overload of
+        <code class="calibre21">
+         operator&lt;=&gt;
+        </code>
+        from Exercise 9-2. The
+        <code class="calibre21">
+         Employee
+        </code>
+        class adds one data member, an employee ID. Provide an appropriate constructor. From
+        <code class="calibre21">
+         Employee
+        </code>
+        , derive two more classes called
+        <code class="calibre21">
+         Manager
+        </code>
+        and
+        <code class="calibre21">
+         Director
+        </code>
+        .
+        <p class="listpara">
+         Put all your classes, including the
+         <code class="calibre21">
+          Person
+         </code>
+         class, in a namespace called
+         <code class="calibre21">
+          HR
+         </code>
+         . Note that you can export everything in a namespace from a module as follows:
+        </p>
+        <pre class="calibre26" id="c10-code-0159"><code class="calibre21">export namespace HR { <span class="color">/* … */</span> }</code></pre>
+       </li>
+       <li class="calibre9" id="c10-ex-0002">
+        <b class="calibre14">
+         Exercise 10-2:
+        </b>
+        Continuing with your solution from Exercise 10-1, add a
+        <code class="calibre21">
+         toString()
+        </code>
+        member function to the
+        <code class="calibre21">
+         Person
+        </code>
+        class returning a string representation of a person. Override this member function in the
+        <code class="calibre21">
+         Employee
+        </code>
+        ,
+        <code class="calibre21">
+         Manager
+        </code>
+        , and
+        <code class="calibre21">
+         Director
+        </code>
+        classes to build up a complete string representation by delegating part of their work to parent classes.
+       </li>
+       <li class="calibre9" id="c10-ex-0003">
+        <b class="calibre14">
+         Exercise 10-3:
+        </b>
+        Practice polymorphic behavior of the classes in your
+        <code class="calibre21">
+         Person
+        </code>
+        hierarchy from Exercise 10-2. Define a
+        <code class="calibre21">
+         vector
+        </code>
+        to store a mix of persons, employees, managers, and directors, and fill it with some test data. Finally, use a single range-based
+        <code class="calibre21">
+         for
+        </code>
+        loop to call
+        <code class="calibre21">
+         toString()
+        </code>
+        on all of the elements in the
+        <code class="calibre21">
+         vector
+        </code>
+        .
+       </li>
+       <li class="calibre9" id="c10-ex-0004">
+        <b class="calibre14">
+         Exercise 10-4:
+        </b>
+        In real companies, employees can get promoted to manager or director positions, and managers can get promoted to director. Do you see a way you can add support for this to your class hierarchy of Exercise 10-3?
+       </li>
+      </ol>
+     </section>
     </section>
    </section>
   </div>

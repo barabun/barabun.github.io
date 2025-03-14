@@ -5,7 +5,7 @@
   <link href="style.css" rel="stylesheet" type="text/css"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <title>
-   CHAPTER 34: DEVELOPING CROSS-PLATFORM AND CROSS-LANGUAGE APPLICATIONS
+   23Random Number Facilities
   </title>
  </head>
  <body>
@@ -21,44 +21,1254 @@
    </a>
   </div>
   <div class="chapter-content">
-   <section aria-labelledby="b01_1" class="calibre2" epub:type="appendix" role="doc-appendix">
-    <section aria-labelledby="head-2-26" class="calibre2">
-     <h2 class="calibre6" id="head-2-26">
-      CHAPTER 34: DEVELOPING CROSS-PLATFORM AND CROSS-LANGUAGE APPLICATIONS
-     </h2>
-     <p class="calibre13" id="bapp01-para-0124">
-      Few programmers submit résumés that list only a single language or technology, and few large applications rely on only a single language or technology. Even if you're only interviewing for a C++ position, the interviewer may still ask questions about other languages, especially as they relate to C++.
-     </p>
-     <section class="calibre2">
-      <span class="calibre" id="bapp01-sec-0076">
+   <section aria-labelledby="c23_1" class="calibre2" epub:type="chapter" role="doc-chapter">
+    <header class="calibre10">
+     <h1 class="calibre16" id="c23_1">
+      <span aria-label="879" class="calibre17" epub:type="pagebreak" id="Page_879" role="doc-pagebreak">
       </span>
-      <h3 class="calibre27" id="head-3-49">
-       Things to Remember
-      </h3>
-      <ul class="check" id="bapp01-list-0027">
-       <li class="calibre9" id="bapp01-li-0216">
-        The ways in which platforms can differ (architecture, integer sizes, and so on)
-       </li>
-       <li class="calibre9" id="bapp01-li-0217">
-        The fact that you should try to find a cross-platform library to accomplish a certain task, instead of starting to implement the functionality yourself for different kinds of platforms
-       </li>
-       <li class="calibre9" id="bapp01-li-0218">
-        The fact that C++ can interoperate with other languages, such as C#, Java, scripting languages, and so on
-       </li>
-      </ul>
+      <span class="calibre" id="c23">
+      </span>
+      <span class="calibre">
+       23
+      </span>
+      <br class="calibre12"/>
+      <span class="calibre">
+       Random Number Facilities
+      </span>
+     </h1>
+    </header>
+    <section aria-label="chapter opening" class="calibre2">
+     <span class="calibre" id="c23-sec-0001">
+     </span>
+     <section class="calibre2">
+      <aside class="calibre23">
+       <div class="top">
+        <hr class="calibre24"/>
+       </div>
+       <section class="feature1">
+        <h3 class="calibre30">
+         WHAT'S IN THIS CHAPTER?
+        </h3>
+        <ul class="check2" id="c23-list-0001">
+         <li class="calibre9" id="c23-li-0001">
+          The concepts of random number engines and engine adapters
+         </li>
+         <li class="calibre9" id="c23-li-0002">
+          How to generate random numbers
+         </li>
+         <li class="calibre9" id="c23-li-0003">
+          How to change the distribution of random numbers
+         </li>
+        </ul>
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+       </section>
+      </aside>
      </section>
      <section class="calibre2">
-      <span class="calibre" id="bapp01-sec-0077">
+      <aside class="calibre23">
+       <div class="top">
+        <hr class="calibre24"/>
+       </div>
+       <section class="feature1">
+        <span class="calibre" id="c23-fea-0001">
+        </span>
+        <h3 class="calibre30" id="head-2-235">
+         WILEY.COM DOWNLOADS FOR THIS CHAPTER
+        </h3>
+        <span class="calibre" id="c23-sec-0003">
+        </span>
+        <p class="calibre25" id="c23-para-0004">
+         Please note that all the code examples for this chapter are available as part of this chapter's code download on the book's website at
+         <code class="calibre21">
+          <a class="calibre5" href="http://www.wiley.com/go/proc++6e">
+           www.wiley.com/go/proc++6e
+          </a>
+         </code>
+         on the Download Code tab.
+        </p>
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <p class="calibre13" id="c23-para-0005">
+      This chapter discusses how to generate random numbers in C++. Generating good random numbers in software is a complex topic. This chapter does not discuss the complex mathematical formulas involved in generating the actual random numbers; however, it does explain how to generate random numbers using the functionality provided by the Standard Library.
+     </p>
+     <p class="calibre13" id="c23-para-0006">
+      The C++ random number generation library can generate random numbers by using different algorithms and distributions. The library is defined by
+      <code class="calibre21">
+       &lt;random&gt;
+      </code>
+      in the
+      <code class="calibre21">
+       std
+      </code>
+      namespace. It has three big components:
+      <i class="calibre18">
+       engines
+      </i>
+      ,
+      <i class="calibre18">
+       engine adapters
+      </i>
+      , and
+      <i class="calibre18">
+       distributions
+      </i>
+      . A random number
+      <i class="calibre18">
+       engine
+      </i>
+      is responsible for generating the actual random numbers and storing the state for generating subsequent random numbers. The
+      <i class="calibre18">
+       distribution
+      </i>
+      determines the range of the generated random numbers and how they are mathematically distributed within that range. A random number
+      <i class="calibre18">
+       engine adapter
+      </i>
+      modifies the results of a random number engine you associate it with.
+     </p>
+     <p class="calibre13" id="c23-para-0007">
+      Before delving into this C++ random number generation library, the old C-style mechanism of generating random numbers and its problems are briefly explained.
+     </p>
+    </section>
+    <span aria-label="880" class="calibre20" epub:type="pagebreak" id="Page_880" role="doc-pagebreak">
+    </span>
+    <section aria-labelledby="head-2-236" class="calibre2">
+     <span class="calibre" id="c23-sec-0004">
+     </span>
+     <h2 class="calibre6" id="head-2-236">
+      C-STYLE RANDOM NUMBER GENERATION
+     </h2>
+     <p class="calibre13">
+      Before C++11, you could generate random numbers using the C-style
+      <code class="calibre21">
+       srand
+      </code>
+      (
+      <code class="calibre21">
+       )
+      </code>
+      and
+      <code class="calibre21">
+       rand()
+      </code>
+      functions. The
+      <code class="calibre21">
+       srand()
+      </code>
+      function had to be called once in your application and was used to initialize the random number generator, also called
+      <i class="calibre18">
+       seeding
+      </i>
+      . Usually, the current system time would be used as a seed.
+     </p>
+     <section class="calibre2">
+      <aside class="calibre23">
+       <div class="top">
+        <hr class="calibre24"/>
+       </div>
+       <section class="feature">
+        <p class="calibre25" id="c23-para-0009">
+         <b class="calibre14">
+          WARNING
+         </b>
+         <i class="calibre18">
+          You need to make sure that you use a good-quality seed for your software-based random number generator. If you initialize the random number generator with the same seed every time, you will create the same sequence of random numbers every time. This is why the seed is usually the current system time
+         </i>
+         .
+        </p>
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <p class="calibre13">
+      Once the generator is initialized, random numbers could be generated with
+      <code class="calibre21">
+       rand()
+      </code>
+      . The following example shows how to use
+      <code class="calibre21">
+       srand()
+      </code>
+      and
+      <code class="calibre21">
+       rand()
+      </code>
+      . The
+      <code class="calibre21">
+       time()
+      </code>
+      function, defined in
+      <code class="calibre21">
+       &lt;ctime&gt;
+      </code>
+      , returns the system time, usually encoded as the number of seconds since the system's epoch. The epoch represents the beginning of time.
+     </p>
+     <pre class="calibre26" id="c23-code-0001"><code class="calibre21">srand(static_cast&lt;unsigned int&gt;(time(nullptr)));</code>
+<code class="calibre21">println("{}", rand());</code></pre>
+     <p class="calibre13">
+      A random number within a certain range could be generated with the following function:
+     </p>
+     <pre class="calibre26" id="c23-code-0002"><code class="calibre21">int getRandom(int min, int max)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    return static_cast&lt;int&gt;(rand() % (max + 1UL - min)) + min;</code>
+<code class="calibre21">}</code></pre>
+     <p class="calibre13" id="c23-para-0012">
+      The old C-style
+      <code class="calibre21">
+       rand()
+      </code>
+      function generates random numbers in the range 0 to
+      <code class="calibre21">
+       RAND_MAX
+      </code>
+      , which is defined by the standard to be at least 32,767. You cannot generate random numbers larger than
+      <code class="calibre21">
+       RAND_MAX
+      </code>
+      . On some systems, for example GCC,
+      <code class="calibre21">
+       RAND_MAX
+      </code>
+      is 2,147,483,647, which equals the maximum value of a signed integer. To prevent arithmetic overflow on such systems, the formula in
+      <code class="calibre21">
+       getRandom()
+      </code>
+      uses
+      <code class="calibre21">
+       unsigned long
+      </code>
+      calculations, due to the use of
+      <code class="calibre21">
+       1UL
+      </code>
+      instead of just
+      <code class="calibre21">
+       1
+      </code>
+      .
+     </p>
+     <p class="calibre13">
+      Additionally, the low-order bits of
+      <code class="calibre21">
+       rand()
+      </code>
+      are often not very random, which means that using the previous
+      <code class="calibre21">
+       getRandom()
+      </code>
+      function to generate a random number in a small range, such as 1 to 6, will not result in good randomness.
+     </p>
+     <section class="calibre2">
+      <aside class="calibre23">
+       <div class="top">
+        <hr class="calibre24"/>
+       </div>
+       <section class="feature">
+        <p class="calibre25" id="c23-para-0014">
+         <b class="calibre14">
+          NOTE
+         </b>
+         <i class="calibre18">
+          Software-based random number generators can never generate truly random numbers. They are therefore called pseudorandom number generators (PRNGs) because they rely on mathematical formulas to give the impression of randomness
+         </i>
+         .
+        </p>
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <p class="calibre13" id="c23-para-0015">
+      Besides generating bad-quality random numbers, the old
+      <code class="calibre21">
+       srand()
+      </code>
+      and
+      <code class="calibre21">
+       rand()
+      </code>
+      functions don't offer much in terms of flexibility either. You cannot, for example, change the distribution of the generated random numbers. In conclusion, it's highly recommended to stop using
+      <code class="calibre21">
+       srand()
+      </code>
+      and
+      <code class="calibre21">
+       rand()
+      </code>
+      and start using the classes from
+      <code class="calibre21">
+       &lt;random&gt;
+      </code>
+      explained in the upcoming sections.
+     </p>
+    </section>
+    <span aria-label="881" class="calibre20" epub:type="pagebreak" id="Page_881" role="doc-pagebreak">
+    </span>
+    <section aria-labelledby="head-2-237" class="calibre2">
+     <span class="calibre" id="c23-sec-0007">
+     </span>
+     <h2 class="calibre6" id="head-2-237">
+      RANDOM NUMBER ENGINES
+     </h2>
+     <p class="calibre13" id="c23-para-0016">
+      The first component of the modern C++ random number generation library is a
+      <i class="calibre18">
+       random number engine
+      </i>
+      , responsible for generating the actual random numbers. As mentioned, everything is defined in
+      <code class="calibre21">
+       &lt;random&gt;
+      </code>
+      .
+     </p>
+     <p class="calibre13">
+      The following random number engines are available:
+     </p>
+     <ul class="check" id="c23-list-0002">
+      <li class="calibre9" id="c23-li-0004">
+       <code class="calibre21">
+        random_device
+       </code>
+      </li>
+      <li class="calibre9" id="c23-li-0005">
+       <code class="calibre21">
+        linear_congruential_engine
+       </code>
+      </li>
+      <li class="calibre9" id="c23-li-0006">
+       <code class="calibre21">
+        mersenne_twister_engine
+       </code>
+      </li>
+      <li class="calibre9" id="c23-li-0007">
+       <code class="calibre21">
+        subtract_with_carry_engine
+       </code>
+      </li>
+     </ul>
+     <p class="calibre13" id="c23-para-0018">
+      The
+      <code class="calibre21">
+       random_device
+      </code>
+      engine is not a software-based generator; it is a special engine that requires a piece of hardware attached to your computer that generates truly non-deterministic random numbers, for example, by using the laws of physics. A classic mechanism measures the decay of a radioactive isotope by counting alpha-particles-per-time-interval, but there are many other kinds of physics-based random-number generators, including measuring the “noise” of reverse-biased diodes (thus eliminating the concerns about radioactive sources in your computer). The details of these mechanisms fall outside the scope of this book. If no such device is attached to the computer,
+      <code class="calibre21">
+       random_device
+      </code>
+      is free to use one of the software algorithms. The choice of algorithm is up to the library designer. Luckily, most modern computers have proper support for a true
+      <code class="calibre21">
+       random_device
+      </code>
+      .
+     </p>
+     <p class="calibre13" id="c23-para-0019">
+      The quality of a random number generator is measured by its
+      <i class="calibre18">
+       entropy
+      </i>
+      . The
+      <code class="calibre21">
+       entropy()
+      </code>
+      member function of the
+      <code class="calibre21">
+       random_device
+      </code>
+      engine returns 0.0 if it is using a software-based pseudorandom number generator and returns a non-zero value if it is using a hardware device. The non-zero value is an estimate of the entropy of the hardware device.
+     </p>
+     <p class="calibre13">
+      Using a
+      <code class="calibre21">
+       random_device
+      </code>
+      engine is straightforward:
+     </p>
+     <pre class="calibre26" id="c23-code-0003"><code class="calibre21">random_device rnd;</code>
+<code class="calibre21">println("Entropy: {}", rnd.entropy());</code>
+<code class="calibre21">println("Min value: {}, Max value: {}", rnd.min(), rnd.max());</code>
+<code class="calibre21">println("Random number: {}", rnd());</code></pre>
+     <p class="calibre13">
+      A possible output of this program could be as follows:
+     </p>
+     <pre class="calibre26" id="c23-code-0004"><code class="calibre21">Entropy: 32</code>
+<code class="calibre21">Min value: 0, Max value: 4294967295</code>
+<code class="calibre21">Random number: 3590924439</code></pre>
+     <p class="calibre13" id="c23-para-0022">
+      A
+      <code class="calibre21">
+       random_device
+      </code>
+      is much slower than a pseudorandom number engine. Therefore, if you need to generate a lot of random numbers, use a pseudorandom number engine and generate a seed for it with a
+      <code class="calibre21">
+       random_device
+      </code>
+      . This is demonstrated in the section “
+      <a class="calibre5" href="#c23-sec-0010">
+       Generating Random Numbers
+      </a>
+      ” later in this chapter.
+     </p>
+     <p class="calibre13">
+      Next to the
+      <code class="calibre21">
+       random_device
+      </code>
+      engine, there are three pseudorandom number engines:
+     </p>
+     <ul class="check" id="c23-list-0003">
+      <li class="calibre9" id="c23-li-0008">
+       <b class="calibre14">
+        Linear congruential engine:
+       </b>
+       Requires a minimal amount of memory to store its state. The state is a single integer containing the last generated random number or the initial seed if no random number has been generated yet. The period of this engine depends on an algorithmic
+       <span aria-label="882" class="calibre20" epub:type="pagebreak" id="Page_882" role="doc-pagebreak">
+       </span>
+       parameter and can be up to 2
+       <sup class="calibre22">
+        64
+       </sup>
+       but is usually less. For this reason, the linear congruential engine should not be used when you need high-quality random numbers.
+      </li>
+      <li class="calibre9" id="c23-li-0009">
+       <b class="calibre14">
+        Mersenne twister:
+       </b>
+       Of the three pseudorandom number engines, this one generates the highest quality of random numbers. The period of a Mersenne twister is a Mersenne prime, which is a prime number one less than a power of two. This period is much bigger than the period of a linear congruential engine. The memory required to store the state of a Mersenne twister also depends on its parameters but is much larger than the single integer state of the linear congruential engine. For example, the predefined Mersenne twister
+       <code class="calibre21">
+        mt19937
+       </code>
+       has a period of 2
+       <sup class="calibre22">
+        19937
+       </sup>
+       −1, while the state contains 625 integers or 2.5 kilobytes. It is also one of the fastest engines.
+      </li>
+      <li class="calibre9" id="c23-li-0010">
+       <b class="calibre14">
+        Subtract with carry engine:
+       </b>
+       Requires a state of around 100 bytes; however, the quality of the generated random numbers is less than that of the numbers generated by the Mersenne twister, and it is also slower than the Mersenne twister.
+      </li>
+     </ul>
+     <p class="calibre13" id="c23-para-0024">
+      The mathematical details of the engines and of the quality of random numbers fall outside the scope of this book. If you want to know more about these topics, you can consult a reference from the “Random Numbers” section in
+      <a class="calibre5" href="b02.xhtml">
+       Appendix B
+      </a>
+      , “Annotated Bibliography.”
+     </p>
+     <p class="calibre13">
+      The
+      <code class="calibre21">
+       random_device
+      </code>
+      engine is easy to use and doesn't require any parameters. However, creating an instance of one of the three pseudorandom number generators requires you to specify a number of mathematical parameters, which can be daunting. The selection of parameters greatly influences the quality of the generated random numbers. For example, the definition of the
+      <code class="calibre21">
+       mersenne_twister_engine
+      </code>
+      class template looks like this:
+     </p>
+     <pre class="calibre26" id="c23-code-0005"><code class="calibre21">template&lt;class UIntType, size_t w, size_t n, size_t m, size_t r,</code>
+<code class="calibre21">         UIntType a, size_t u, UIntType d, size_t s,</code>
+<code class="calibre21">         UIntType b, size_t t, UIntType c, size_t l, UIntType f&gt;</code>
+<code class="calibre21">    class mersenne_twister_engine {…}</code></pre>
+     <p class="calibre13">
+      It requires 14 parameters. The
+      <code class="calibre21">
+       linear_congruential_engine
+      </code>
+      and
+      <code class="calibre21">
+       subtract_with_carry_engine
+      </code>
+      class templates also require a number of such mathematical parameters. For this reason, the standard defines a couple of predefined engines. One example is the
+      <code class="calibre21">
+       mt19937
+      </code>
+      Mersenne twister, which is defined as follows:
+     </p>
+     <pre class="calibre26" id="c23-code-0006"><code class="calibre21">using <b class="calibre14">mt19937</b> = mersenne_twister_engine&lt;uint_fast32_t, 32, 624, 397, 31,</code>
+<code class="calibre21">    0x9908b0df, 11, 0xffffffff, 7, 0x9d2c5680, 15, 0xefc60000, 18,</code>
+<code class="calibre21">    1812433253&gt;;</code></pre>
+     <p class="calibre13" id="c23-para-0027">
+      These parameters are all magic, unless you understand the details of the Mersenne twister algorithm. In general, you do not want to modify any of these parameters unless you are an expert in the mathematics of pseudorandom number generators. Instead, I recommend using the predefined type aliases such as
+      <code class="calibre21">
+       mt19937
+      </code>
+      . A complete list of predefined engines is given in a later section.
+     </p>
+    </section>
+    <section aria-labelledby="head-2-238" class="calibre2">
+     <span class="calibre" id="c23-sec-0008">
+     </span>
+     <h2 class="calibre6" id="head-2-238">
+      RANDOM NUMBER ENGINE ADAPTERS
+     </h2>
+     <p class="calibre13">
+      A random number engine adapter modifies the result of a random number engine you associate it with, which is called the
+      <i class="calibre18">
+       base engine
+      </i>
+      . This is an example of the
+      <i class="calibre18">
+       adapter pattern
+      </i>
+      (see
+      <a class="calibre5" href="c33.xhtml">
+       Chapter 33
+      </a>
+      , “Applying design patterns”). The following three adapter templates are defined:
+     </p>
+     <pre class="calibre26" id="c23-code-0007"><code class="calibre21">template&lt;class Engine, size_t p, size_t r&gt; class <b class="calibre14">discard_block_engine</b> {…}</code>
+<span aria-label="883" class="calibre20" epub:type="pagebreak" id="Page_883" role="doc-pagebreak"></span><code class="calibre21">template&lt;class Engine, size_t w, class UIntT&gt; class <b class="calibre14">independent_bits_engine</b> {…}</code>
+<code class="calibre21">template&lt;class Engine, size_t k&gt; class <b class="calibre14">shuffle_order_engine</b> {…}</code></pre>
+     <p class="calibre13" id="c23-para-0029">
+      The
+      <code class="calibre21">
+       discard_block_engine
+      </code>
+      adapter generates random numbers by discarding some of the values generated by its base engine. It requires three parameters: the engine to adapt, the block size
+      <i class="calibre18">
+       p
+      </i>
+      , and the used block size
+      <i class="calibre18">
+       r
+      </i>
+      . The base engine is used to generate
+      <i class="calibre18">
+       p
+      </i>
+      random numbers. The adapter then discards
+      <i class="calibre18">
+       p
+      </i>
+      -
+      <i class="calibre18">
+       r
+      </i>
+      of those numbers and returns the remaining
+      <i class="calibre18">
+       r
+      </i>
+      numbers.
+     </p>
+     <p class="calibre13" id="c23-para-0030">
+      The
+      <code class="calibre21">
+       independent_bits_engine
+      </code>
+      adapter generates random numbers with a given number of bits
+      <i class="calibre18">
+       w
+      </i>
+      by combining several random numbers generated by the base engine.
+     </p>
+     <p class="calibre13" id="c23-para-0031">
+      The
+      <code class="calibre21">
+       shuffle_order_engine
+      </code>
+      adapter generates the same random numbers that are generated by the base engine but delivers them in a different order. The template parameter
+      <code class="calibre21">
+       k
+      </code>
+      is the size of an internal table used by the adapter. A random number is randomly selected from this table upon request, and then replaced with a new random number generated by the base engine.
+     </p>
+     <p class="calibre13" id="c23-para-0032">
+      Just as with random number engines, a number of predefined engine adapters are available. The next section gives an overview of the predefined engines and engine adapters.
+     </p>
+    </section>
+    <section aria-labelledby="head-2-239" class="calibre2">
+     <span class="calibre" id="c23-sec-0009">
+     </span>
+     <h2 class="calibre6" id="head-2-239">
+      PREDEFINED ENGINES AND ENGINE ADAPTERS
+     </h2>
+     <p class="calibre13">
+      As mentioned earlier, it is not recommended to specify your own parameters for pseudorandom number engines and engine adapters, but instead to use one of the standard ones. The C++ Standard Library defines the following predefined generators, all in
+      <code class="calibre21">
+       &lt;random&gt;
+      </code>
+      . They all have complicated template arguments, but it is not necessary to understand those arguments to be able to use them.
+     </p>
+     <table border="1" class="calibre31">
+      <thead class="calibre32">
+       <tr class="calibre33">
+        <th class="left" scope="col">
+         PREDEFINED GENERATOR
+        </th>
+        <th class="left" scope="col">
+         CLASS TEMPLATE
+        </th>
+       </tr>
+      </thead>
+      <tbody class="calibre34">
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          minstd_rand0
+         </span>
+        </td>
+        <td class="bgcolor">
+         <span class="calibre21">
+          linear_congruential_engine
+         </span>
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          minstd_rand
+         </span>
+        </td>
+        <td class="bgcolor">
+         <span class="calibre21">
+          linear_congruential_engine
+         </span>
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          mt19937
+         </span>
+        </td>
+        <td class="bgcolor">
+         <span class="calibre21">
+          mersenne_twister_engine
+         </span>
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          mt19937_64
+         </span>
+        </td>
+        <td class="bgcolor">
+         <span class="calibre21">
+          mersenne_twister_engine
+         </span>
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          ranlux24_base
+         </span>
+        </td>
+        <td class="bgcolor">
+         <span class="calibre21">
+          subtract_with_carry_engine
+         </span>
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          ranlux48_base
+         </span>
+        </td>
+        <td class="bgcolor">
+         <span class="calibre21">
+          subtract_with_carry_engine
+         </span>
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          ranlux24
+         </span>
+        </td>
+        <td class="bgcolor">
+         <span class="calibre21">
+          discard_block_engine
+         </span>
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          ranlux48
+         </span>
+        </td>
+        <td class="bgcolor">
+         <span class="calibre21">
+          discard_block_engine
+         </span>
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          knuth_b
+         </span>
+        </td>
+        <td class="bgcolor">
+         <span class="calibre21">
+          shuffle_order_engine
+         </span>
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          default_random_engine
+         </span>
+        </td>
+        <td class="bgcolor">
+         <i class="calibre18">
+          Implementation-defined
+         </i>
+        </td>
+       </tr>
+      </tbody>
+     </table>
+     <p class="calibre13" id="c23-para-0034">
+      The
+      <code class="calibre21">
+       default_random_engine
+      </code>
+      is compiler dependent.
+     </p>
+     <p class="calibre13" id="c23-para-0035">
+      The following section gives an example of how to use these predefined engines.
+     </p>
+    </section>
+    <span aria-label="884" class="calibre20" epub:type="pagebreak" id="Page_884" role="doc-pagebreak">
+    </span>
+    <section aria-labelledby="head-2-240" class="calibre2">
+     <span class="calibre" id="c23-sec-0010">
+     </span>
+     <h2 class="calibre6" id="head-2-240">
+      GENERATING RANDOM NUMBERS
+     </h2>
+     <p class="calibre13" id="c23-para-0036">
+      Before you can generate any random number, you first need to create an instance of an engine. If you use a software-based engine, you also need to define a distribution. A distribution is a mathematical formula describing how numbers are distributed within a certain range. The recommended way to create an engine is to use one of the predefined engines discussed in the previous section.
+     </p>
+     <p class="calibre13">
+      The following example uses the predefined engine called
+      <code class="calibre21">
+       mt19937
+      </code>
+      , using a Mersenne twister engine. This is a software-based generator. Just as with the old
+      <code class="calibre21">
+       rand()
+      </code>
+      generator, a software-based engine must be initialized with a seed. The seed used with
+      <code class="calibre21">
+       srand()
+      </code>
+      was often the current time. In modern C++, it's recommended to use a
+      <code class="calibre21">
+       random_device
+      </code>
+      to generate a seed. Here is an example:
+     </p>
+     <pre class="calibre26" id="c23-code-0008"><code class="calibre21">random_device seeder;</code>
+<code class="calibre21">mt19937 engine { seeder() };</code></pre>
+     <p class="calibre13">
+      As mentioned earlier, most modern systems have a
+      <code class="calibre21">
+       random_device
+      </code>
+      implementation with proper entropy. If you are not sure that the
+      <code class="calibre21">
+       random_device
+      </code>
+      implementation on the system your code will be running on has proper entropy, then you can use a time-based seed as a fallback:
+     </p>
+     <pre class="calibre26" id="c23-code-0009"><code class="calibre21">random_device seeder;</code>
+<code class="calibre21">const auto seed { seeder.entropy() ? seeder() : time(nullptr) };</code>
+<code class="calibre21">mt19937 engine { static_cast&lt;mt19937::result_type&gt;(seed) };</code></pre>
+     <p class="calibre13">
+      Next, a distribution is defined. This example uses a uniform integer distribution, for the range 1 to 99. Distributions are explained in detail in the next section, but this uniform distribution is easy enough to use for this example:
+     </p>
+     <pre class="calibre26" id="c23-code-0010"><code class="calibre21">uniform_int_distribution&lt;int&gt; distribution { 1, 99 };</code></pre>
+     <p class="calibre13">
+      Once the engine and distribution are defined, random numbers can be generated by calling the function call operator of the distribution and passing the engine as an argument. For this example, this is written as
+      <code class="calibre21">
+       distribution(engine)
+      </code>
+      :
+     </p>
+     <pre class="calibre26" id="c23-code-0011"><code class="calibre21">println("{}", distribution(engine));</code></pre>
+     <p class="calibre13">
+      As you can see, to generate a random number using a software-based engine, you always need to specify the engine and distribution. The
+      <code class="calibre21">
+       std::bind()
+      </code>
+      utility, introduced in
+      <a class="calibre5" href="c19.xhtml">
+       Chapter 19
+      </a>
+      , “Function Pointers, Function Objects, and Lambda Expressions,” can be used to remove the need to specify both the distribution and the engine when generating a random number. The following example uses the same
+      <code class="calibre21">
+       mt19937
+      </code>
+      engine and uniform distribution as the previous example, but it defines
+      <code class="calibre21">
+       generator
+      </code>
+      by using
+      <code class="calibre21">
+       std::bind()
+      </code>
+      to bind
+      <code class="calibre21">
+       engine
+      </code>
+      as the first argument to
+      <code class="calibre21">
+       distribution()
+      </code>
+      . This way, you can call
+      <code class="calibre21">
+       generator()
+      </code>
+      without any arguments to generate a random number. The example then demonstrates the use of
+      <code class="calibre21">
+       generator()
+      </code>
+      in combination with the constrained
+      <code class="calibre21">
+       ranges::generate()
+      </code>
+      algorithm to fill a
+      <code class="calibre21">
+       vector
+      </code>
+      of ten elements with random numbers. The
+      <code class="calibre21">
+       generate()
+      </code>
+      algorithm is discussed in
+      <a class="calibre5" href="c20.xhtml">
+       Chapter 20
+      </a>
+      , “Mastering Standard Library Algorithms.”
+     </p>
+     <pre class="calibre26" id="c23-code-0012"><code class="calibre21">auto generator { bind(distribution, engine) };</code>
+<code class="calibre21"> </code>
+<code class="calibre21">vector&lt;int&gt; values(10);</code>
+<code class="calibre21">ranges::generate(values, generator);</code>
+<code class="calibre21"> </code>
+<code class="calibre21">println("{:n}", values);</code></pre>
+     <p class="calibre13">
+      <span aria-label="885" class="calibre20" epub:type="pagebreak" id="Page_885" role="doc-pagebreak">
       </span>
-      <h3 class="calibre27" id="head-3-50">
-       Types of Questions
-      </h3>
-      <p class="calibre13" id="bapp01-para-0126">
-       The most popular cross-language question is to compare and contrast two different languages. You should avoid saying only positive or negative things about a particular language, even if you really love or hate that language. The interviewer wants to know that you are able to see trade-offs and make decisions based on them.
-      </p>
-      <p class="calibre13" id="bapp01-para-0127">
-       Cross-platform questions are more likely to be asked while discussing previous work. If your résumé indicates that you once wrote C++ applications that ran on a custom hardware platform, you should be prepared to talk about the compiler you used and the challenges of that platform.
-      </p>
+     </p>
+     <section class="calibre2">
+      <aside class="calibre23">
+       <div class="top">
+        <hr class="calibre24"/>
+       </div>
+       <section class="feature">
+        <p class="calibre25" id="c23-para-0043">
+         <b class="calibre14">
+          NOTE
+         </b>
+         <i class="calibre18">
+          Remember that the
+         </i>
+         <code class="calibre21">
+          generate()
+         </code>
+         <i class="calibre18">
+          algorithm overwrites existing elements and does not insert new elements. This means you first need to size the
+         </i>
+         <code class="calibre21">
+          vector
+         </code>
+         <i class="calibre18">
+          to hold the number of elements you need and then call the
+         </i>
+         <code class="calibre21">
+          generate()
+         </code>
+         <i class="calibre18">
+          algorithm. The previous example sizes the
+         </i>
+         <code class="calibre21">
+          vector
+         </code>
+         <i class="calibre18">
+          by specifying the size as argument to the constructor.
+         </i>
+        </p>
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <p class="calibre13">
+      Even though you don't know the exact type of
+      <code class="calibre21">
+       generator
+      </code>
+      , it's still possible to pass
+      <code class="calibre21">
+       generator
+      </code>
+      to another function that wants to use that generator. You have several options: use a parameter of type
+      <code class="calibre21">
+       std::function&lt;int()&gt;
+      </code>
+      or use a function template. The previous example can be adapted to generate random numbers in a function called
+      <code class="calibre21">
+       fillVector()
+      </code>
+      . Here is an implementation using
+      <code class="calibre21">
+       std::function
+      </code>
+      :
+     </p>
+     <pre class="calibre26" id="c23-code-0013"><code class="calibre21">void fillVector(vector&lt;int&gt;&amp; values, const function&lt;int()&gt;&amp; generator)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    ranges::generate(values, generator);</code>
+<code class="calibre21">}</code></pre>
+     <p class="calibre13">
+      Here is a constrained function template variant:
+     </p>
+     <pre class="calibre26" id="c23-code-0014"><code class="calibre21">template &lt;invocable T&gt;</code>
+<code class="calibre21">void fillVector(vector&lt;int&gt;&amp; values, const T&amp; generator)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    ranges::generate(values, generator);</code>
+<code class="calibre21">}</code></pre>
+     <p class="calibre13">
+      This can be simplified using the abbreviated function template syntax:
+     </p>
+     <pre class="calibre26" id="c23-code-0015"><code class="calibre21">void fillVector(vector&lt;int&gt;&amp; values, const auto&amp; generator)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    ranges::generate(values, generator);</code>
+<code class="calibre21">}</code></pre>
+     <p class="calibre13">
+      Finally, this function can be used as follows:
+     </p>
+     <pre class="calibre26" id="c23-code-0016"><code class="calibre21">vector&lt;int&gt; values(10);</code>
+<code class="calibre21"><b class="calibre14">fillVector(values, generator);</b></code></pre>
+     <section class="calibre2">
+      <aside class="calibre23">
+       <div class="top">
+        <hr class="calibre24"/>
+       </div>
+       <section class="feature">
+        <p class="calibre25" id="c23-para-0049">
+         <b class="calibre14">
+          WARNING
+         </b>
+         <i class="calibre18">
+          The random number generators are not thread safe. If you need to generate random numbers in multiple threads, you should create a generator in each thread and not share one generator among multiple threads
+         </i>
+         .
+         <a class="calibre5" href="c27.xhtml">
+          <i class="calibre18">
+           Chapter
+          </i>
+          27
+         </a>
+         <i class="calibre18">
+          , “Multithreaded Programming with C++,” introduces multithreading
+         </i>
+         .
+        </p>
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+       </section>
+      </aside>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-241" class="calibre2">
+     <span class="calibre" id="c23-sec-0013">
+     </span>
+     <h2 class="calibre6" id="head-2-241">
+      RANDOM NUMBER DISTRIBUTIONS
+     </h2>
+     <p class="calibre13" id="c23-para-0050">
+      A distribution is a mathematical formula describing how numbers are distributed within a certain range. The random number generator library comes with the following distributions that can be used
+      <span aria-label="886" class="calibre20" epub:type="pagebreak" id="Page_886" role="doc-pagebreak">
+      </span>
+      with pseudorandom number engines to define the distribution of the generated random numbers. It's a compacted representation. The first line of each distribution is the name and class template parameters, if any. The next lines are a constructor for the distribution. Only one constructor for each distribution is shown to give you an idea of the class. Consult a Standard Library Reference (see
+      <a class="calibre5" href="b02.xhtml">
+       Appendix B
+      </a>
+      ) for a detailed list of all constructors and member functions of each distribution.
+     </p>
+     <p class="calibre13">
+      These are the available uniform distributions:
+     </p>
+     <pre class="calibre26" id="c23-code-0017"><code class="calibre21">template&lt;class IntType = int&gt; class uniform_int_distribution</code>
+<code class="calibre21">    <b class="calibre14">uniform_int_distribution</b>(IntType a = 0,</code>
+<code class="calibre21">                             IntType b = numeric_limits&lt;IntType&gt;::max());</code>
+<code class="calibre21">template&lt;class RealType = double&gt; class uniform_real_distribution</code>
+<code class="calibre21">    <b class="calibre14">uniform_real_distribution</b>(RealType a = 0.0, RealType b = 1.0);</code></pre>
+     <p class="calibre13">
+      These are the available Bernoulli distributions (the first one generates random Boolean values, while the last three generate random non-negative integer values, all of them according to the discrete probability distribution):
+     </p>
+     <pre class="calibre26" id="c23-code-0018"><code class="calibre21">class bernoulli_distribution</code>
+<code class="calibre21">    <b class="calibre14">bernoulli_distribution</b>(double p = 0.5);</code>
+<code class="calibre21">template&lt;class IntType = int&gt; class binomial_distribution</code>
+<code class="calibre21">    <b class="calibre14">binomial_distribution</b>(IntType t = 1, double p = 0.5);</code>
+<code class="calibre21">template&lt;class IntType = int&gt; class geometric_distribution</code>
+<code class="calibre21">    <b class="calibre14">geometric_distribution</b>(double p = 0.5);</code>
+<code class="calibre21">template&lt;class IntType = int&gt; class negative_binomial_distribution</code>
+<code class="calibre21">    <b class="calibre14">negative_binomial_distribution</b>(IntType k = 1, double p = 0.5);</code></pre>
+     <p class="calibre13">
+      These are the available Poisson distributions (generate random non-negative integer values according to the discrete probability distribution):
+     </p>
+     <pre class="calibre26" id="c23-code-0019"><code class="calibre21">template&lt;class IntType = int&gt; class poisson_distribution</code>
+<code class="calibre21">    <b class="calibre14">poisson_distribution</b>(double mean = 1.0);</code>
+<code class="calibre21">template&lt;class RealType = double&gt; class exponential_distribution</code>
+<code class="calibre21">    <b class="calibre14">exponential_distribution</b>(RealType lambda = 1.0);</code>
+<code class="calibre21">template&lt;class RealType = double&gt; class gamma_distribution</code>
+<code class="calibre21">    <b class="calibre14">gamma_distribution</b>(RealType alpha = 1.0, RealType beta = 1.0);</code>
+<code class="calibre21">template&lt;class RealType = double&gt; class weibull_distribution</code>
+<code class="calibre21">    <b class="calibre14">weibull_distribution</b>(RealType a = 1.0, RealType b = 1.0);</code>
+<code class="calibre21">template&lt;class RealType = double&gt; class extreme_value_distribution</code>
+<code class="calibre21">    <b class="calibre14">extreme_value_distribution</b>(RealType a = 0.0, RealType b = 1.0);</code></pre>
+     <p class="calibre13">
+      These are the available normal distributions:
+     </p>
+     <pre class="calibre26" id="c23-code-0020"><code class="calibre21">template&lt;class RealType = double&gt; class normal_distribution</code>
+<code class="calibre21">    <b class="calibre14">normal_distribution</b>(RealType mean = 0.0, RealType stddev = 1.0);</code>
+<code class="calibre21">template&lt;class RealType = double&gt; class lognormal_distribution</code>
+<code class="calibre21">    <b class="calibre14">lognormal_distribution</b>(RealType m = 0.0, RealType s = 1.0);</code>
+<code class="calibre21">template&lt;class RealType = double&gt; class chi_squared_distribution</code>
+<code class="calibre21">    <b class="calibre14">chi_squared_distribution</b>(RealType n = 1);</code>
+<code class="calibre21">template&lt;class RealType = double&gt; class cauchy_distribution</code>
+<code class="calibre21">    <b class="calibre14">cauchy_distribution</b>(RealType a = 0.0, RealType b = 1.0);</code>
+<code class="calibre21">template&lt;class RealType = double&gt; class fisher_f_distribution</code>
+<code class="calibre21">    <b class="calibre14">fisher_f_distribution</b>(RealType m = 1, RealType n = 1);</code>
+<code class="calibre21">template&lt;class RealType = double&gt; class student_t_distribution</code>
+<code class="calibre21">    <b class="calibre14">student_t_distribution</b>(RealType n = 1);</code></pre>
+     <p class="calibre13">
+      <span aria-label="887" class="calibre20" epub:type="pagebreak" id="Page_887" role="doc-pagebreak">
+      </span>
+      These are the available sampling distributions:
+     </p>
+     <pre class="calibre26" id="c23-code-0021"><code class="calibre21">template&lt;class IntType = int&gt; class discrete_distribution</code>
+<code class="calibre21">    <b class="calibre14">discrete_distribution</b>(initializer_list&lt;double&gt; wl);</code>
+<code class="calibre21">template&lt;class RealType = double&gt; class piecewise_constant_distribution</code>
+<code class="calibre21">    template&lt;class UnaryOperation&gt;</code>
+<code class="calibre21">        <b class="calibre14">piecewise_constant_distribution</b>(initializer_list&lt;RealType&gt; bl,</code>
+<code class="calibre21">            UnaryOperation fw);</code>
+<code class="calibre21">template&lt;class RealType = double&gt; class piecewise_linear_distribution</code>
+<code class="calibre21">    template&lt;class UnaryOperation&gt;</code>
+<code class="calibre21">        <b class="calibre14">piecewise_linear_distribution</b>(initializer_list&lt;RealType&gt; bl,</code>
+<code class="calibre21">            UnaryOperation fw);</code></pre>
+     <p class="calibre13" id="c23-para-0056">
+      Each distribution requires a set of parameters. As before, explaining all these mathematical parameters is outside the scope of this book. The rest of this section includes a couple of examples to explain the impact of a distribution on the generated random numbers.
+     </p>
+     <p class="calibre13">
+      Distributions are easiest to understand when you look at a graphical representation of them. The following code generates one million random numbers between 1 and 99 and keeps track of how many times a certain number is randomly generated in a histogram. The counters are stored in a
+      <code class="calibre21">
+       map
+      </code>
+      where the key is a number between 1 and 99, and the value associated with a key is the number of times that that key has been selected randomly. After the loop, the results are written to a semicolon-separated values file (CSV), which can be opened in a spreadsheet application.
+     </p>
+     <pre class="calibre26" id="c23-code-0022"><code class="calibre21">const unsigned int Start { 1 };</code>
+<code class="calibre21">const unsigned int End { 99 };</code>
+<code class="calibre21">const unsigned int Iterations { 1'000'000 };</code>
+<code class="calibre21"> </code>
+<code class="calibre21"><span class="color">// Uniform distributed Mersenne Twister.</span></code>
+<code class="calibre21">random_device seeder;</code>
+<code class="calibre21">mt19937 engine { seeder() };</code>
+<code class="calibre21">uniform_int_distribution&lt;int&gt; distribution { Start, End };</code>
+<code class="calibre21">auto generator { bind(distribution, engine) };</code>
+<code class="calibre21">map&lt;int, int&gt; histogram;</code>
+<code class="calibre21">for (unsigned int i { 0 }; i &lt; Iterations; ++i) {</code>
+<code class="calibre21">    int randomNumber { generator() };</code>
+<code class="calibre21">    <span class="color">// Search map for a key=randomNumber. If found, add 1 to the value associated</span></code>
+<code class="calibre21">    <span class="color">// with that key. If not found, add the key to the map with value 1.</span></code>
+<code class="calibre21">    ++(histogram[randomNumber]);</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21"><span class="color">// Write to a CSV file.</span></code>
+<code class="calibre21">ofstream of { "res.csv" };</code>
+<code class="calibre21">for (unsigned int i { Start }; i &lt;= End; ++i) {</code>
+<code class="calibre21">    of &lt;&lt; i &lt;&lt; ";" &lt;&lt; histogram[i] &lt;&lt; endl;</code>
+<code class="calibre21">}</code></pre>
+     <p class="calibre13" id="c23-para-0058">
+      The resulting data can then be used to generate a graphical representation.
+      <a class="calibre5" href="#c23-fig-0001" id="R_c23-fig-0001">
+       Figure 23.1
+      </a>
+      shows a graph of the generated histogram.
+     </p>
+     <p class="calibre13" id="c23-para-0059">
+      The horizontal axis represents the range in which random numbers are generated. The graph clearly shows that all numbers in the range 1 to 99 are randomly chosen around 10,000 times and that the distribution of the generated random numbers is uniform across the entire range.
+     </p>
+     <figure class="calibre36">
+      <img alt="A line graph with a wavy line. The Y-axis ranges from 0 to 12,000 in increments of 2,000, and the X-axis varies from 1 to over 91 in increments of approximately 10 units. The signal appears to fluctuate around the 10,000 mark on the Y-axis throughout the entire range of the X-axis." class="center" src="images/c23f001.png"/>
+      <figcaption class="calibre37">
+       <p class="calibre13">
+        <span class="figurelabel">
+         <a class="calibre5" href="#R_c23-fig-0001" id="c23-fig-0001" role="doc-backlink">
+          <b class="calibre14">
+           FIGURE 23.1
+          </b>
+         </a>
+        </span>
+       </p>
+      </figcaption>
+     </figure>
+     <p class="calibre13">
+      <span aria-label="888" class="calibre20" epub:type="pagebreak" id="Page_888" role="doc-pagebreak">
+      </span>
+      The example can be modified to generate random numbers according to a normal distribution instead of a uniform distribution. Only two small changes are required. First, you need to modify the creation of the distribution as follows:
+     </p>
+     <pre class="calibre26" id="c23-code-0023"><code class="calibre21">normal_distribution&lt;double&gt; distribution { 50, 10 };</code></pre>
+     <p class="calibre13">
+      Because normal distributions use
+      <code class="calibre21">
+       double
+      </code>
+      s instead of integers, you also need to modify the call to
+      <code class="calibre21">
+       generator()
+      </code>
+      :
+     </p>
+     <pre class="calibre26" id="c23-code-0024"><code class="calibre21">int randomNumber { static_cast&lt;int&gt;(generator()) };</code></pre>
+     <p class="calibre13" id="c23-para-0062">
+      <a class="calibre5" href="#c23-fig-0002" id="R_c23-fig-0002">
+       Figure 23.2
+      </a>
+      shows a graphical representation of the random numbers generated according to this normal distribution.
+     </p>
+     <span aria-label="889" class="calibre20" epub:type="pagebreak" id="Page_889" role="doc-pagebreak">
+     </span>
+     <figure class="calibre36">
+      <img alt="A graph of random numbers is generated according to normal distribution. The X-axis is marked at intervals of 10 from 1 to 91, and the Y-axis is marked at intervals of 5000 from 0 to 45000. The signal starts at 0, increases to a peak at around the 51 mark, and then decreases back towards 0." class="center" src="images/c23f002.png"/>
+      <figcaption class="calibre37">
+       <p class="calibre13">
+        <span class="figurelabel">
+         <a class="calibre5" href="#R_c23-fig-0002" id="c23-fig-0002" role="doc-backlink">
+          <b class="calibre14">
+           FIGURE 23.2
+          </b>
+         </a>
+        </span>
+       </p>
+      </figcaption>
+     </figure>
+     <p class="calibre13" id="c23-para-0063">
+      The graph clearly shows that most of the generated random numbers are around the center of the range. In this example, the value 50 is randomly chosen around 40,000 times, while values like 20 and 80 are chosen only around 500 times.
+     </p>
+    </section>
+    <section aria-labelledby="head-2-242" class="calibre2">
+     <span class="calibre" id="c23-sec-0014">
+     </span>
+     <h2 class="calibre6" id="head-2-242">
+      SUMMARY
+     </h2>
+     <p class="calibre13" id="c23-para-0064">
+      In this chapter, you learned how to use the C++ random number generation library provided by the Standard Library to generate good-quality random numbers. You also saw how you can change the distribution of the generated numbers over a given range.
+     </p>
+     <p class="calibre13" id="c23-para-0065">
+      The next chapter is the last chapter of
+      <a class="calibre5" href="p03.xhtml">
+       Part 3
+      </a>
+      of the book and introduces a number of additional vocabulary types that you will use often in your day-to-day coding.
+     </p>
+    </section>
+    <section aria-labelledby="head-2-243" class="calibre2">
+     <span class="calibre" id="c23-sec-0015">
+     </span>
+     <h2 class="calibre6" id="head-2-243">
+      EXERCISES
+     </h2>
+     <p class="calibre13" id="c23-para-0066">
+      By solving the following exercises, you can practice the material discussed in this chapter. Solutions to all exercises are available with the code download on the book's website at
+      <code class="calibre21">
+       <a class="calibre5" href="http://www.wiley.com/go/proc++6e">
+        www.wiley.com/go/proc++6e
+       </a>
+      </code>
+      . However, if you are stuck on an exercise, first reread parts of this chapter to try to find an answer yourself before looking at the solution from the website.
+     </p>
+     <section class="calibre2">
+      <span class="calibre" id="c23-exsec-0001">
+      </span>
+      <ol class="none1">
+       <li class="calibre9" id="c23-ex-0001">
+        <b class="calibre14">
+         Exercise 23-1:
+        </b>
+        Write a loop asking the user if dice should be thrown or not. If yes, throw a die twice using a uniform distribution and print the two numbers on the screen. If no, stop the program. Use the standard
+        <code class="calibre21">
+         mt19937
+        </code>
+        Mersenne twister engine. Do not create your random number generator directly in the function where you need it. Instead, write a function
+        <code class="calibre21">
+         createDiceValueGenerator()
+        </code>
+        that creates the correct random number generator object and returns it.
+       </li>
+       <li class="calibre9" id="c23-ex-0002">
+        <b class="calibre14">
+         Exercise 23-2:
+        </b>
+        Modify your solution to Exercise 23-1 to use a
+        <code class="calibre21">
+         ranlux48
+        </code>
+        engine instead of the Mersenne twister.
+       </li>
+       <li class="calibre9" id="c23-ex-0003">
+        <b class="calibre14">
+         Exercise 23-3:
+        </b>
+        Modify your solution to Exercise 23-1. Instead of directly using the
+        <code class="calibre21">
+         mt19937
+        </code>
+        Mersenne twister engine, adapt the engine with a
+        <code class="calibre21">
+         shuffle_order_engine
+        </code>
+        adapter.
+       </li>
+       <li class="calibre9" id="c23-ex-0004">
+        <b class="calibre14">
+         Exercise 23-4:
+        </b>
+        Take the source code from earlier in this chapter used to generate histograms to make graphs of a distribution and experiment a bit with different distributions. Try to plot the graphs in a spreadsheet application to see the effects of a distribution. The code can be found in the downloadable source code archive in the folder
+        <code class="calibre21">
+         Ch23\01_Random
+        </code>
+        . You can take either the
+        <code class="calibre21">
+         07_uniform_int_distribution.cpp
+        </code>
+        or the
+        <code class="calibre21">
+         08_normal_distribution.cpp
+        </code>
+        file depending on whether your distribution uses integers or doubles.
+        <p class="listpara" id="c23-para-0071">
+         <b class="calibre14">
+          Bonus:
+         </b>
+         Besides exporting the data to a CSV file, draw the histogram on the standard output console using characters.
+        </p>
+       </li>
+      </ol>
      </section>
     </section>
    </section>

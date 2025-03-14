@@ -1,0 +1,173 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html>
+<html epub:prefix="z3998: http://www.daisy.org/z3998/2012/vocab/structure/#" lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+ <head>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   CHAPTER 10: DISCOVERING INHERITANCE TECHNIQUES
+  </title>
+ </head>
+ <body>
+  <div class="navigation">
+   <a class="nav-button" href="chapter_057.html">
+    ← Previous
+   </a>
+   <a class="nav-button" href="index.html">
+    Table of Contents
+   </a>
+   <a class="nav-button" href="chapter_059.html">
+    Next →
+   </a>
+  </div>
+  <div class="chapter-content">
+   <section aria-labelledby="b01_1" class="calibre2" epub:type="appendix" role="doc-appendix">
+    <section aria-labelledby="head-2-9" class="calibre2">
+     <h2 class="calibre6" id="head-2-9">
+      CHAPTER 10: DISCOVERING INHERITANCE TECHNIQUES
+     </h2>
+     <p class="calibre13" id="bapp01-para-0053">
+      Questions about inheritance usually come in the same forms as questions about classes. The interviewer might also ask you to implement a class hierarchy to show that you have worked with C++ enough to write derived classes without looking it up in a book.
+     </p>
+     <span aria-label="1251" class="calibre20" epub:type="pagebreak" id="Page_1251" role="doc-pagebreak">
+     </span>
+     <section class="calibre2">
+      <span class="calibre" id="bapp01-sec-0027">
+      </span>
+      <h3 class="calibre27" id="head-3-17">
+       Things to Remember
+      </h3>
+      <ul class="check" id="bapp01-list-0011">
+       <li class="calibre9" id="bapp01-li-0103">
+        The syntax for inheritance
+       </li>
+       <li class="calibre9" id="bapp01-li-0104">
+        The difference between
+        <code class="calibre21">
+         private
+        </code>
+        and
+        <code class="calibre21">
+         protected
+        </code>
+        from the derived class's point of view
+       </li>
+       <li class="calibre9" id="bapp01-li-0105">
+        Member function overriding and
+        <code class="calibre21">
+         virtual
+        </code>
+       </li>
+       <li class="calibre9" id="bapp01-li-0106">
+        The difference between overloading, overriding, and hiding
+       </li>
+       <li class="calibre9" id="bapp01-li-0107">
+        The reason why base-class destructors should be
+        <code class="calibre21">
+         virtual
+        </code>
+       </li>
+       <li class="calibre9" id="bapp01-li-0108">
+        Chained constructors
+       </li>
+       <li class="calibre9" id="bapp01-li-0109">
+        The ins and outs of upcasting and downcasting
+       </li>
+       <li class="calibre9" id="bapp01-li-0110">
+        The different types of casts in C++
+       </li>
+       <li class="calibre9" id="bapp01-li-0111">
+        The principle of polymorphism
+       </li>
+       <li class="calibre9" id="bapp01-li-0112">
+        Pure
+        <code class="calibre21">
+         virtual
+        </code>
+        member functions and abstract base classes
+       </li>
+       <li class="calibre9" id="bapp01-li-0113">
+        Multiple inheritance
+       </li>
+       <li class="calibre9" id="bapp01-li-0114">
+        Run-time type information (RTTI)
+       </li>
+       <li class="calibre9" id="bapp01-li-0115">
+        Inherited constructors
+       </li>
+       <li class="calibre9" id="bapp01-li-0116">
+        The
+        <code class="calibre21">
+         final
+        </code>
+        keyword on classes
+       </li>
+       <li class="calibre9" id="bapp01-li-0117">
+        The
+        <code class="calibre21">
+         override
+        </code>
+        and
+        <code class="calibre21">
+         final
+        </code>
+        keywords on member functions
+       </li>
+      </ul>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="bapp01-sec-0028">
+      </span>
+      <h3 class="calibre27" id="head-3-18">
+       Types of Questions
+      </h3>
+      <p class="calibre13" id="bapp01-para-0055">
+       Many of the pitfalls in inheritance questions are related to getting the details right. When you are writing a base class, don't forget to make the member functions
+       <code class="calibre21">
+        virtual
+       </code>
+       . If you mark all member functions
+       <code class="calibre21">
+        virtual
+       </code>
+       , be prepared to justify that decision. You should be able to explain what
+       <code class="calibre21">
+        virtual
+       </code>
+       means and how it works. Also, don't forget the
+       <code class="calibre21">
+        public
+       </code>
+       keyword before the name of the parent class in the derived class definition (for example,
+       <code class="calibre21">
+        class Derived : public Base
+       </code>
+       ). It's unlikely that you'll be asked to perform nonpublic inheritance during an interview.
+      </p>
+      <p class="calibre13" id="bapp01-para-0056">
+       More challenging inheritance questions have to do with the relationship between a base class and a derived class. Be sure you know how the different access levels work, especially the difference between
+       <code class="calibre21">
+        private
+       </code>
+       and
+       <code class="calibre21">
+        protected
+       </code>
+       . Remind yourself of the phenomenon known as
+       <i class="calibre18">
+        slicing
+       </i>
+       , when certain types of casts cause a class to lose its derived class information.
+      </p>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-10" class="calibre2">
+     <span class="calibre" id="bapp01-sec-0029">
+     </span>
+     <div class="calibre19" id="calibre_pb_7">
+     </div>
+    </section>
+   </section>
+  </div>
+ </body>
+</html>

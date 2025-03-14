@@ -1,0 +1,478 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html>
+<html epub:prefix="z3998: http://www.daisy.org/z3998/2012/vocab/structure/#" lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+ <head>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   CHAPTER 7: MEMORY MANAGEMENT
+  </title>
+ </head>
+ <body>
+  <div class="navigation">
+   <a class="nav-button" href="chapter_056.html">
+    ← Previous
+   </a>
+   <a class="nav-button" href="index.html">
+    Table of Contents
+   </a>
+   <a class="nav-button" href="chapter_058.html">
+    Next →
+   </a>
+  </div>
+  <div class="chapter-content">
+   <section aria-labelledby="b01_1" class="calibre2" epub:type="appendix" role="doc-appendix">
+    <section aria-labelledby="head-2-7" class="calibre2">
+     <h2 class="calibre6" id="head-2-7">
+      CHAPTER 7: MEMORY MANAGEMENT
+     </h2>
+     <p class="calibre13" id="bapp01-para-0041">
+      You can be sure that an interviewer will ask you some questions related to memory management, including your knowledge of smart pointers. Besides smart pointers, you will also get more low-level questions. The goal is to determine whether the object-oriented aspects of C++ have distanced you too much from the underlying implementation details. Memory management questions will give you a chance to prove that you know what's really going on.
+     </p>
+     <span aria-label="1247" class="calibre20" epub:type="pagebreak" id="Page_1247" role="doc-pagebreak">
+     </span>
+     <section class="calibre2">
+      <span class="calibre" id="bapp01-sec-0021">
+      </span>
+      <h3 class="calibre27" id="head-3-13">
+       Things to Remember
+      </h3>
+      <ul class="check" id="bapp01-list-0008">
+       <li class="calibre9" id="bapp01-li-0062">
+        Know how to draw the stack and the free store; this can help you understand what's going on.
+       </li>
+       <li class="calibre9" id="bapp01-li-0063">
+        Avoid using low-level memory allocation and deallocation functions. In modern C++, there should be no calls to
+        <code class="calibre21">
+         new
+        </code>
+        ,
+        <code class="calibre21">
+         delete
+        </code>
+        ,
+        <code class="calibre21">
+         new[]
+        </code>
+        ,
+        <code class="calibre21">
+         delete[]
+        </code>
+        ,
+        <code class="calibre21">
+         malloc()
+        </code>
+        ,
+        <code class="calibre21">
+         free()
+        </code>
+        , and so on. Instead, use smart pointers.
+       </li>
+       <li class="calibre9" id="bapp01-li-0064">
+        Understand smart pointers; use
+        <code class="calibre21">
+         std::unique_ptr
+        </code>
+        by default,
+        <code class="calibre21">
+         shared_ptr
+        </code>
+        for shared ownership.
+       </li>
+       <li class="calibre9" id="bapp01-li-0065">
+        Use
+        <code class="calibre21">
+         std::make_unique()
+        </code>
+        to create a
+        <code class="calibre21">
+         unique_ptr
+        </code>
+        .
+       </li>
+       <li class="calibre9" id="bapp01-li-0066">
+        Use
+        <code class="calibre21">
+         std::make_shared()
+        </code>
+        to create a
+        <code class="calibre21">
+         shared_ptr
+        </code>
+        .
+       </li>
+       <li class="calibre9" id="bapp01-li-0067">
+        Never use
+        <code class="calibre21">
+         auto_ptr
+        </code>
+        ; it has been removed since C++17.
+       </li>
+       <li class="calibre9" id="bapp01-li-0068">
+        If you do need to use low-level memory allocation functions, use
+        <code class="calibre21">
+         new
+        </code>
+        ,
+        <code class="calibre21">
+         delete
+        </code>
+        ,
+        <code class="calibre21">
+         new[]
+        </code>
+        , and
+        <code class="calibre21">
+         delete[]
+        </code>
+        , never
+        <code class="calibre21">
+         malloc()
+        </code>
+        and
+        <code class="calibre21">
+         free()
+        </code>
+        .
+       </li>
+       <li class="calibre9" id="bapp01-li-0069">
+        If you have an array of pointers to objects, you still need to allocate memory for each individual pointer and delete the memory—the array allocation syntax doesn't take care of pointers.
+       </li>
+       <li class="calibre9" id="bapp01-li-0070">
+        Be aware of the existence of memory allocation problem detectors, such as Valgrind, to expose memory problems.
+       </li>
+      </ul>
+     </section>
+     <section class="calibre2">
+      <span class="calibre" id="bapp01-sec-0022">
+      </span>
+      <h3 class="calibre27" id="head-3-14">
+       Types of Questions
+      </h3>
+      <p class="calibre13" id="bapp01-para-0043">
+       Find-the-bug questions often contain memory issues, such as double deletion,
+       <code class="calibre21">
+        new
+       </code>
+       /
+       <code class="calibre21">
+        delete
+       </code>
+       /
+       <code class="calibre21">
+        new[]
+       </code>
+       /
+       <code class="calibre21">
+        delete[]
+       </code>
+       mix-up, and memory leaks. When you are tracing through code that makes heavy use of pointers and arrays, you should draw and update the state of the memory as you process each line of code.
+      </p>
+      <p class="calibre13" id="bapp01-para-0044">
+       Another good way to find out if a candidate understands memory is to ask how pointers and arrays differ. At this point, the question might catch you off guard for a moment. If that's the case, skim
+       <a class="calibre5" href="c07.xhtml">
+        Chapter 7
+       </a>
+       again for the discussion on pointers and arrays.
+      </p>
+      <p class="calibre13" id="bapp01-para-0045">
+       When answering questions about memory allocation, it's always a good idea to mention the concept of smart pointers and their benefits for automatically cleaning up memory and other resources. You should also mention that it's much better to use Standard Library containers, such as
+       <code class="calibre21">
+        std::vector
+       </code>
+       , instead of C-style arrays, because the Standard Library containers handle memory management for you automatically.
+      </p>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-8" class="calibre2">
+     <span class="calibre" id="bapp01-sec-0023">
+     </span>
+     <h2 class="calibre6" id="head-2-8">
+      CHAPTERS 8 AND 9: GAINING PROFICIENCY WITH CLASSES AND OBJECTS, AND MASTERING CLASSES AND OBJECTS
+     </h2>
+     <p class="calibre13" id="bapp01-para-0046">
+      There is no limit to the types of questions you can be asked about classes and objects. Some interviewers are syntax-fixated and might throw some complicated code at you. Others are less concerned with the implementation and more interested in your design skills.
+     </p>
+     <span aria-label="1248" class="calibre20" epub:type="pagebreak" id="Page_1248" role="doc-pagebreak">
+     </span>
+     <section class="calibre2">
+      <span class="calibre" id="bapp01-sec-0024">
+      </span>
+      <h3 class="calibre27" id="head-3-15">
+       Things to Remember
+      </h3>
+      <ul class="check" id="bapp01-list-0009">
+       <li class="calibre9" id="bapp01-li-0071">
+        Basic class definition syntax.
+       </li>
+       <li class="calibre9" id="bapp01-li-0072">
+        Access specifiers for member functions and data members.
+       </li>
+       <li class="calibre9" id="bapp01-li-0073">
+        The use of the
+        <code class="calibre21">
+         this
+        </code>
+        pointer.
+       </li>
+       <li class="calibre9" id="bapp01-li-0074">
+        How name resolution works.
+       </li>
+       <li class="calibre9" id="bapp01-li-0075">
+        Object creation and destruction, both on the stack and the free store.
+       </li>
+       <li class="calibre9" id="bapp01-li-0076">
+        Cases when the compiler generates a constructor for you.
+       </li>
+       <li class="calibre9" id="bapp01-li-0077">
+        Constructor initializers.
+       </li>
+       <li class="calibre9" id="bapp01-li-0078">
+        Copy constructors and assignment operators.
+       </li>
+       <li class="calibre9" id="bapp01-li-0079">
+        Delegating constructors.
+       </li>
+       <li class="calibre9" id="bapp01-li-0080">
+        The
+        <code class="calibre21">
+         mutable
+        </code>
+        keyword.
+       </li>
+       <li class="calibre9" id="bapp01-li-0081">
+        Member function overloading and default arguments.
+       </li>
+       <li class="calibre9" id="bapp01-li-0082">
+        <code class="calibre21">
+         const
+        </code>
+        members.
+       </li>
+       <li class="calibre9" id="bapp01-li-0083">
+        Friend classes and member functions.
+       </li>
+       <li class="calibre9" id="bapp01-li-0084">
+        Managing dynamically allocated memory in classes.
+       </li>
+       <li class="calibre9" id="bapp01-li-0085">
+        <code class="calibre21">
+         static
+        </code>
+        member functions and data members.
+       </li>
+       <li class="calibre9" id="bapp01-li-0086">
+        Inline member functions and the fact that the
+        <code class="calibre21">
+         inline
+        </code>
+        keyword is just a hint for the compiler, which can ignore the hint.
+       </li>
+       <li class="calibre9" id="bapp01-li-0087">
+        The key idea of separating interface and implementation classes, which says that interfaces should only contain
+        <code class="calibre21">
+         public
+        </code>
+        member functions, should be as stable as possible, and should not contain any data members or
+        <code class="calibre21">
+         private
+        </code>
+        /
+        <code class="calibre21">
+         protected
+        </code>
+        member functions. Thus, interfaces can remain stable while implementations are free to change under them.
+       </li>
+       <li class="calibre9" id="bapp01-li-0088">
+        In-class member initializers.
+       </li>
+       <li class="calibre9" id="bapp01-li-0089">
+        Explicitly defaulted and deleted special member functions.
+       </li>
+       <li class="calibre9" id="bapp01-li-0090">
+        The difference between rvalues and lvalues.
+       </li>
+       <li class="calibre9" id="bapp01-li-0091">
+        Rvalue references.
+       </li>
+       <li class="calibre9" id="bapp01-li-0092">
+        Move semantics with move constructors and move assignment operators.
+       </li>
+       <li class="calibre9" id="bapp01-li-0093">
+        The copy-and-swap idiom and what it is used for.
+       </li>
+       <li class="calibre9" id="bapp01-li-0094">
+        The rule of zero versus the rule of five.
+       </li>
+       <li class="calibre9" id="bapp01-li-0095">
+        Basic operator overloading syntax.
+       </li>
+       <li class="calibre9" id="bapp01-li-0096">
+        The three-way comparison operator for classes.
+       </li>
+       <li class="calibre9" id="bapp01-li-0097">
+        What explicit object parameters are (C++23).
+       </li>
+       <li class="calibre9" id="bapp01-li-0098">
+        What
+        <code class="calibre21">
+         constexpr
+        </code>
+        and
+        <code class="calibre21">
+         consteval
+        </code>
+        functions and classes are.
+       </li>
+      </ul>
+     </section>
+     <span aria-label="1249" class="calibre20" epub:type="pagebreak" id="Page_1249" role="doc-pagebreak">
+     </span>
+     <section class="calibre2">
+      <span class="calibre" id="bapp01-sec-0025">
+      </span>
+      <h3 class="calibre27" id="head-3-16">
+       Types of Questions
+      </h3>
+      <p class="calibre13" id="bapp01-para-0048">
+       Questions such as “What does the keyword
+       <code class="calibre21">
+        mutable
+       </code>
+       mean?” are great for phone screening. A recruiter may have a list of C++ terms and will move candidates to the next stage of the process based on the number of terms that they get right. You might not know all of the terms thrown at you, but keep in mind that other candidates are facing the same questions, and it's one of the few metrics available to a recruiter.
+      </p>
+      <p class="calibre13">
+       The find-the-bug style of questions is popular among interviewers and course instructors alike. You will be presented with some nonsense code and asked to point out its flaws. Interviewers struggle to find quantitative ways to analyze candidates, and this is one of the few ways to do it. In general, your approach should be to read each line of code and voice your concerns, brainstorming aloud. The types of bugs can fall into several categories:
+      </p>
+      <ul class="check" id="bapp01-list-0010">
+       <li class="calibre9" id="bapp01-li-0099">
+        <b class="calibre14">
+         Syntax errors:
+        </b>
+        These are rare; interviewers know you can find compile-time bugs with a compiler.
+       </li>
+       <li class="calibre9" id="bapp01-li-0100">
+        <b class="calibre14">
+         Memory problems:
+        </b>
+        These include problems such as leaks and double deletion.
+       </li>
+       <li class="calibre9" id="bapp01-li-0101">
+        <b class="calibre14">
+         “You wouldn't do that” problems:
+        </b>
+        This category includes things that are technically correct but are not recommended. For example, you wouldn't use C-style character arrays; you would use
+        <code class="calibre21">
+         std::string
+        </code>
+        instead.
+       </li>
+       <li class="calibre9" id="bapp01-li-0102">
+        <b class="calibre14">
+         Style errors:
+        </b>
+        Even if the interviewer doesn't count it as a bug, point out poor comments or variable names.
+       </li>
+      </ul>
+      <p class="calibre13">
+       Here's a find-the-bug problem that demonstrates each of these areas:
+      </p>
+      <pre class="calibre26" id="bapp01-code-0003"><code class="calibre21">class Buggy</code>
+<code class="calibre21">{</code>
+<code class="calibre21">        Buggy(int param);</code>
+<code class="calibre21">        ˜Buggy();</code>
+<code class="calibre21">        void turtle(int i = 7, int j);</code>
+<code class="calibre21">    protected:</code>
+<code class="calibre21">        double fjord(double val);</code>
+<code class="calibre21">        int fjord(double val);</code>
+<code class="calibre21">        int param;</code>
+<code class="calibre21">        double* m_graphicDimension;</code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">Buggy::Buggy(int param)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    param = param;</code>
+<code class="calibre21">    m_graphicDimension = new double;</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21">Buggy::˜Buggy()</code>
+<code class="calibre21">{</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21">double Buggy::fjord(double val)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    return val * param;</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<span aria-label="1250" class="calibre20" epub:type="pagebreak" id="Page_1250" role="doc-pagebreak"></span><code class="calibre21">int Buggy::fjord(double val)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    return (int)fjord(val);</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21">void Buggy::turtle(int i, int j)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    cout &lt;&lt; "i is " &lt;&lt; i &lt;&lt; ", j is " &lt;&lt; j &lt;&lt; endl;</code>
+<code class="calibre21">}</code></pre>
+      <p class="calibre13">
+       Take a careful look at the code, and then consult the following improved version:
+      </p>
+      <pre class="calibre26" id="bapp01-code-0004"><code class="calibre21">import std; <span class="color">// Import the Standard Library functionality.</span></code>
+<code class="calibre21"> </code>
+<code class="calibre21">class Buggy final <span class="color">// Mark as final, or provide a virtual destructor.</span></code>
+<code class="calibre21">{</code>
+<code class="calibre21">    public: <span class="color">// These should most likely be public.</span></code>
+<code class="calibre21">        explicit Buggy(int param);  <span class="color">// Constructor should be explicit.</span></code>
+<code class="calibre21"> </code>
+<code class="calibre21">        <span class="color">// Destructor not necessary as there's nothing to clean up.</span></code>
+<code class="calibre21"> </code>
+<code class="calibre21">        void turtle(int i, int j); <span class="color">// Only last parameters can have defaults.</span></code>
+<code class="calibre21">    private: <span class="color">// Use private by default.</span></code>
+<code class="calibre21">        <span class="color">// int version won't compile. Overloaded member functions</span></code>
+<code class="calibre21">        <span class="color">// cannot differ only in return type.</span></code>
+<code class="calibre21">        double fjord(double val);</code>
+<code class="calibre21">        int m_param; <span class="color">// Data member naming.</span></code>
+<code class="calibre21">        double m_graphicDimension; <span class="color">// Use value semantics!</span></code>
+<code class="calibre21">};</code>
+<code class="calibre21"> </code>
+<code class="calibre21">Buggy::Buggy(int param)</code>
+<code class="calibre21">    : m_param{ param } <span class="color">// Prefer using constructor initializer.</span></code>
+<code class="calibre21">{</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21">void Buggy::turtle(int i, int j)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    <span class="color">// Namespaces + use std::println().</span></code>
+<code class="calibre21">    std::println("i is {}, j is {}", i, j);</code>
+<code class="calibre21">}</code>
+<code class="calibre21"> </code>
+<code class="calibre21">double Buggy::fjord(double val)</code>
+<code class="calibre21">{</code>
+<code class="calibre21">    return val * m_param; <span class="color">// Changed data member name.</span></code>
+<code class="calibre21">}</code></pre>
+      <p class="calibre13" id="bapp01-para-0052">
+       You should explain why you changed
+       <code class="calibre21">
+        m_graphicDimension
+       </code>
+       from a
+       <code class="calibre21">
+        double*
+       </code>
+       pointer to a
+       <code class="calibre21">
+        double
+       </code>
+       value. If you do need to use pointers, you should explain why you should never use raw pointers that represent ownership but smart pointers instead.
+      </p>
+     </section>
+    </section>
+    <section aria-labelledby="head-2-9" class="calibre2">
+     <span class="calibre" id="bapp01-sec-0026">
+     </span>
+     <div class="calibre19" id="calibre_pb_6">
+     </div>
+    </section>
+   </section>
+  </div>
+ </body>
+</html>

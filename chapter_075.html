@@ -1,0 +1,2901 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html>
+<html epub:prefix="z3998: http://www.daisy.org/z3998/2012/vocab/structure/#" lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+ <head>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   CStandard Library Header Files
+  </title>
+ </head>
+ <body>
+  <div class="navigation">
+   <a class="nav-button" href="chapter_074.html">
+    ← Previous
+   </a>
+   <a class="nav-button" href="index.html">
+    Table of Contents
+   </a>
+   <a class="nav-button" href="chapter_076.html">
+    Next →
+   </a>
+  </div>
+  <div class="chapter-content">
+   <section aria-labelledby="b03_1" class="calibre2" epub:type="appendix" role="doc-appendix">
+    <header class="calibre10">
+     <h1 class="calibre16" id="b03_1">
+      <span aria-label="1277" class="calibre17" epub:type="pagebreak" id="Page_1277" role="doc-pagebreak">
+      </span>
+      <span class="calibre" id="bm3">
+      </span>
+      <span class="calibre">
+       C
+      </span>
+      <br class="calibre12"/>
+      <span class="calibre">
+       Standard Library Header Files
+      </span>
+     </h1>
+    </header>
+    <section aria-label="chapter opening" class="calibre2">
+     <span class="calibre" id="bapp03-sec-0001">
+     </span>
+     <p class="calibre13">
+      The interface to the C++23 Standard Library consists of 107 header files, 21 of which present the C Standard Library. Starting with C++23, you simply import the named module
+      <code class="calibre21">
+       std
+      </code>
+      to get access to the entire Standard Library, as has been done in all examples throughout this book. There is no longer a need to explicitly import or include individual header files, except for certain non-importable header files, such as
+      <code class="calibre21">
+       &lt;cassert&gt;
+      </code>
+      . However, if your compiler does not yet support the C++23
+      <code class="calibre21">
+       std
+      </code>
+      named module, then you need to import or include the appropriate header files. In that case, it's often difficult to remember which header files you need to include in your source code, so this appendix provides a brief description of the most useful functionality of each header, organized into eight categories:
+     </p>
+     <ul class="check" id="bapp03-list-0001">
+      <li class="calibre9" id="bapp03-li-0001">
+       The C Standard Library
+      </li>
+      <li class="calibre9" id="bapp03-li-0002">
+       Containers
+      </li>
+      <li class="calibre9" id="bapp03-li-0003">
+       Algorithms, iterators, ranges, and allocators
+      </li>
+      <li class="calibre9" id="bapp03-li-0004">
+       General utilities
+      </li>
+      <li class="calibre9" id="bapp03-li-0005">
+       Mathematical utilities
+      </li>
+      <li class="calibre9" id="bapp03-li-0006">
+       Exceptions
+      </li>
+      <li class="calibre9" id="bapp03-li-0007">
+       I/O streams
+      </li>
+      <li class="calibre9" id="bapp03-li-0008">
+       Threading support library
+      </li>
+     </ul>
+    </section>
+    <section aria-labelledby="head-2-41" class="calibre2">
+     <span class="calibre" id="bapp03-sec-0002">
+     </span>
+     <h2 class="calibre6" id="head-2-41">
+      THE C STANDARD LIBRARY
+     </h2>
+     <p class="calibre13">
+      The C++ Standard Library includes almost the entire C Standard Library. The header files are generally the same, except for these two points:
+     </p>
+     <ul class="check" id="bapp03-list-0002">
+      <li class="calibre9" id="bapp03-li-0009">
+       The header names are
+       <code class="calibre21">
+        &lt;c
+        <i class="calibre18">
+         name
+        </i>
+        &gt;
+       </code>
+       instead of
+       <code class="calibre21">
+        &lt;
+        <i class="calibre18">
+         name
+        </i>
+        .h&gt;
+       </code>
+       .
+      </li>
+      <li class="calibre9" id="bapp03-li-0010">
+       All the names declared in the
+       <code class="calibre21">
+        &lt;c
+        <i class="calibre18">
+         name
+        </i>
+        &gt;
+       </code>
+       header files are in the
+       <code class="calibre21">
+        std
+       </code>
+       namespace.
+      </li>
+     </ul>
+     <p class="calibre13">
+      <span aria-label="1278" class="calibre20" epub:type="pagebreak" id="Page_1278" role="doc-pagebreak">
+      </span>
+     </p>
+     <section class="calibre2">
+      <aside class="calibre23">
+       <div class="top">
+        <hr class="calibre24"/>
+       </div>
+       <section class="feature">
+        <p class="calibre25" id="bapp03-para-0006">
+         <b class="calibre14">
+          NOTE
+         </b>
+         <i class="calibre18">
+          You can still include
+         </i>
+         <code class="calibre21">
+          <i class="calibre18">
+           &lt;name
+          </i>
+          .h
+          <i class="calibre18">
+           &gt;
+          </i>
+         </code>
+         <i class="calibre18">
+          if you want, but that puts the names into the global namespace instead of the
+         </i>
+         <code class="calibre21">
+          std
+         </code>
+         <i class="calibre18">
+          namespace. Additionally, up until C++23, the use of
+         </i>
+         <code class="calibre21">
+          &lt;name.h&gt;
+         </code>
+         <i class="calibre18">
+          C Standard Library headers was deprecated. Starting with C++23, their use is no longer deprecated, but discouraged.
+         </i>
+        </p>
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <section class="calibre2">
+      <aside class="calibre23">
+       <div class="top">
+        <hr class="calibre24"/>
+       </div>
+       <section class="feature">
+        <p class="calibre25" id="bapp03-para-0007">
+         <b class="calibre14">
+          NOTE
+         </b>
+         <i class="calibre18">
+          The C Standard Library headers are not guaranteed to be importable using an
+         </i>
+         <code class="calibre21">
+          import
+         </code>
+         <i class="calibre18">
+          statement. Hence, use
+         </i>
+         <code class="calibre21">
+          #include &lt;c
+          <i class="calibre18">
+           name
+          </i>
+          &gt;
+         </code>
+         <i class="calibre18">
+          instead of
+         </i>
+         <code class="calibre21">
+          import &lt;c
+          <i class="calibre18">
+           name
+          </i>
+          &gt;;
+         </code>
+         <i class="calibre18">
+          . Of course, using
+         </i>
+         <code class="calibre21">
+          import std;
+         </code>
+         <i class="calibre18">
+          also makes everything from the C Standard Library available in the
+         </i>
+         <code class="calibre21">
+          std
+         </code>
+         <i class="calibre18">
+          namespace, except for macros such as
+         </i>
+         <code class="calibre21">
+          assert
+         </code>
+         <i class="calibre18">
+          (
+         </i>
+         <code class="calibre21">
+          )
+         </code>
+         <i class="calibre18">
+          from
+         </i>
+         <code class="calibre21">
+          &lt;cassert&gt;
+         </code>
+         <i class="calibre18">
+          .
+         </i>
+        </p>
+        <div class="top">
+         <hr class="calibre24"/>
+        </div>
+       </section>
+      </aside>
+     </section>
+     <p class="calibre13" id="bapp03-para-0008">
+      The following table lists all C Standard Library headers and provides a summary of their most useful functionality. Note that it's recommended to avoid using C functionality, and instead use equivalent C++ features whenever possible:
+     </p>
+     <table border="1" class="calibre31">
+      <thead class="calibre32">
+       <tr class="calibre33">
+        <th class="left" scope="col">
+         HEADER
+        </th>
+        <th class="left" scope="col">
+         CONTENTS
+        </th>
+       </tr>
+      </thead>
+      <tbody class="calibre34">
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          &lt;cassert&gt;
+         </span>
+        </td>
+        <td class="bgcolor">
+         <span class="calibre21">
+          assert
+         </span>
+         (
+         <code class="calibre21">
+          )
+         </code>
+         macro.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          &lt;cctype&gt;
+         </span>
+        </td>
+        <td class="bgcolor">
+         Character predicates and manipulation functions, such as
+         <span class="calibre21">
+          isspace()
+         </span>
+         and
+         <code class="calibre21">
+          tolower()
+         </code>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          &lt;cerrno&gt;
+         </span>
+        </td>
+        <td class="bgcolor">
+         Defines
+         <span class="calibre21">
+          errno
+         </span>
+         expression, a macro to get the last error number for certain C functions.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          &lt;cfenv&gt;
+         </span>
+        </td>
+        <td class="bgcolor">
+         Supports the floating-point environment, such as floating-point exceptions, rounding, and so on.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          &lt;cfloat&gt;
+         </span>
+        </td>
+        <td class="bgcolor">
+         C-style defines related to floating-point arithmetic, such as
+         <span class="calibre21">
+          FLT_MAX
+         </span>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          &lt;cinttypes&gt;
+         </span>
+        </td>
+        <td class="bgcolor">
+         Defines a number of macros to use with the
+         <span class="calibre21">
+          printf()
+         </span>
+         ,
+         <code class="calibre21">
+          scanf()
+         </code>
+         , and similar functions. This header also includes a few functions to work with
+         <code class="calibre21">
+          intmax_t
+         </code>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          &lt;climits&gt;
+         </span>
+        </td>
+        <td class="bgcolor">
+         C-style limit defines, such as
+         <span class="calibre21">
+          INT_MAX
+         </span>
+         . It is recommended to use the C++ equivalents from
+         <code class="calibre21">
+          &lt;limits&gt;
+         </code>
+         instead.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          &lt;clocale&gt;
+         </span>
+        </td>
+        <td class="bgcolor">
+         A few localization macros and functions like
+         <span class="calibre21">
+          LC_ALL
+         </span>
+         and
+         <code class="calibre21">
+          setlocale()
+         </code>
+         . See also the C++ equivalents in
+         <code class="calibre21">
+          &lt;locale&gt;
+         </code>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          &lt;cmath&gt;
+         </span>
+        </td>
+        <td class="bgcolor">
+         Math utilities, including trigonometric functions
+         <span class="calibre21">
+          sqrt()
+         </span>
+         ,
+         <code class="calibre21">
+          fabs()
+         </code>
+         , and others.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          &lt;csetjmp&gt;
+         </span>
+        </td>
+        <td class="bgcolor">
+         <span class="calibre21">
+          setjmp()
+         </span>
+         and
+         <code class="calibre21">
+          longjmp()
+         </code>
+         . Never use these in C++!
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          &lt;csignal&gt;
+         </span>
+        </td>
+        <td class="bgcolor">
+         <span class="calibre21">
+          signal()
+         </span>
+         and
+         <code class="calibre21">
+          raise()
+         </code>
+         . Avoid these in C++.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          &lt;cstdarg&gt;
+         </span>
+        </td>
+        <td class="bgcolor">
+         Macros and types for processing variable-length argument lists.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          &lt;cstddef&gt;
+         </span>
+        </td>
+        <td class="bgcolor">
+         Important constants such as
+         <span class="calibre21">
+          NULL
+         </span>
+         , and important types such as
+         <code class="calibre21">
+          size_t
+         </code>
+         and
+         <code class="calibre21">
+          byte
+         </code>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          &lt;cstdint&gt;
+         </span>
+        </td>
+        <td class="bgcolor">
+         Defines a number of standard integer types such as
+         <span class="calibre21">
+          int8_t
+         </span>
+         ,
+         <code class="calibre21">
+          int64_t
+         </code>
+         and so on. It also includes macros specifying minimum and maximum values of those types.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          &lt;cstdio&gt;
+         </span>
+        </td>
+        <td class="bgcolor">
+         File operations, including
+         <span class="calibre21">
+          fopen()
+         </span>
+         and
+         <code class="calibre21">
+          fclose()
+         </code>
+         . Formatted I/O:
+         <code class="calibre21">
+          printf()
+         </code>
+         ,
+         <code class="calibre21">
+          scanf()
+         </code>
+         , and family. Character I/O:
+         <code class="calibre21">
+          getc()
+         </code>
+         ,
+         <code class="calibre21">
+          putc()
+         </code>
+         , and family. File positioning:
+         <code class="calibre21">
+          fseek()
+         </code>
+         and
+         <code class="calibre21">
+          ftell()
+         </code>
+         . It is recommended to use C++ streams instead. (See the section “
+         <a class="calibre5" href="#bapp03-sec-0010">
+          I/O Streams
+         </a>
+         ,” later in this appendix.)
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          &lt;cstdlib&gt;
+         </span>
+        </td>
+        <td class="bgcolor">
+         Random numbers with
+         <span class="calibre21">
+          rand()
+         </span>
+         and
+         <code class="calibre21">
+          srand()
+         </code>
+         (deprecated since C++14; use the C++
+         <code class="calibre21">
+          &lt;random&gt;
+         </code>
+         functionality instead). This header includes the
+         <code class="calibre21">
+          abort()
+         </code>
+         and
+         <code class="calibre21">
+          exit()
+         </code>
+         functions, which you should avoid; C-style memory allocation functions
+         <code class="calibre21">
+          calloc()
+         </code>
+         ,
+         <code class="calibre21">
+          malloc()
+         </code>
+         ,
+         <code class="calibre21">
+          realloc()
+         </code>
+         , and
+         <code class="calibre21">
+          free()
+         </code>
+         ; C-style searching and sorting with
+         <code class="calibre21">
+          qsort()
+         </code>
+         and
+         <code class="calibre21">
+          bsearch()
+         </code>
+         ; string to number conversions:
+         <code class="calibre21">
+          atof()
+         </code>
+         ,
+         <code class="calibre21">
+          atoi()
+         </code>
+         ; and a set of functions related to multibyte/wide string manipulation.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          &lt;cstring&gt;
+         </span>
+        </td>
+        <td class="bgcolor">
+         Low-level memory management functions, including
+         <span class="calibre21">
+          memcpy()
+         </span>
+         and
+         <code class="calibre21">
+          memset()
+         </code>
+         . This header includes C-style string functions, such as
+         <code class="calibre21">
+          strcpy()
+         </code>
+         and
+         <code class="calibre21">
+          strcmp()
+         </code>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          &lt;ctime&gt;
+         </span>
+        </td>
+        <td class="bgcolor">
+         Time-related functions, including
+         <span class="calibre21">
+          time()
+         </span>
+         and
+         <code class="calibre21">
+          localtime()
+         </code>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          &lt;cuchar&gt;
+         </span>
+        </td>
+        <td class="bgcolor">
+         Defines a number of Unicode-related macros, and functions like
+         <span class="calibre21">
+          mbrtoc16()
+         </span>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          &lt;cwchar&gt;
+         </span>
+        </td>
+        <td class="bgcolor">
+         Versions of string, memory, and I/O functions for wide characters.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          &lt;cwctype&gt;
+         </span>
+        </td>
+        <td class="bgcolor">
+         Versions of functions in
+         <span class="calibre21">
+          &lt;cctype&gt;
+         </span>
+         for wide characters:
+         <code class="calibre21">
+          iswspace()
+         </code>
+         ,
+         <code class="calibre21">
+          towlower()
+         </code>
+         , and so on.
+         <span aria-label="1279" class="calibre20" epub:type="pagebreak" id="Page_1279" role="doc-pagebreak">
+         </span>
+        </td>
+       </tr>
+      </tbody>
+     </table>
+     <p class="calibre13" id="bapp03-para-0011">
+      The following C Standard Library headers have been removed since C++20:
+     </p>
+     <table border="1" class="calibre31">
+      <thead class="calibre32">
+       <tr class="calibre33">
+        <th class="left" scope="col">
+         HEADER
+        </th>
+        <th class="left" scope="col">
+         CONTENTS
+        </th>
+       </tr>
+      </thead>
+      <tbody class="calibre34">
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          &lt;ccomplex&gt;
+         </span>
+        </td>
+        <td class="bgcolor">
+         Only included
+         <span class="calibre21">
+          &lt;complex&gt;
+         </span>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          &lt;ciso646&gt;
+         </span>
+        </td>
+        <td class="bgcolor">
+         In C, the
+         <span class="calibre21">
+          &lt;iso646.h&gt;
+         </span>
+         file defines macros
+         <code class="calibre21">
+          and
+         </code>
+         ,
+         <code class="calibre21">
+          or
+         </code>
+         , and so on. In C++, those are keywords, so this header was empty.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          &lt;cstdalign&gt;
+         </span>
+        </td>
+        <td class="bgcolor">
+         Alignment-related macro
+         <span class="calibre21">
+          __alignas_is_defined
+         </span>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          &lt;cstdbool&gt;
+         </span>
+        </td>
+        <td class="bgcolor">
+         Boolean type-related macro
+         <span class="calibre21">
+          __bool_true_false_are_defined
+         </span>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="bgcolor">
+         <span class="calibre21">
+          &lt;ctgmath&gt;
+         </span>
+        </td>
+        <td class="bgcolor">
+         Only included
+         <span class="calibre21">
+          &lt;complex&gt;
+         </span>
+         and
+         <code class="calibre21">
+          &lt;cmath&gt;
+         </code>
+         .
+        </td>
+       </tr>
+      </tbody>
+     </table>
+    </section>
+    <span aria-label="1280" class="calibre20" epub:type="pagebreak" id="Page_1280" role="doc-pagebreak">
+    </span>
+    <section aria-labelledby="head-2-42" class="calibre2">
+     <span class="calibre" id="bapp03-sec-0005">
+     </span>
+     <h2 class="calibre6" id="head-2-42">
+      CONTAINERS
+     </h2>
+     <p class="calibre13" id="bapp03-para-0014">
+      The definitions for the Standard Library containers can be found in 16 header files:
+     </p>
+     <table border="1" class="calibre31">
+      <thead class="calibre32">
+       <tr class="calibre33">
+        <th class="left" scope="col">
+         HEADER
+        </th>
+        <th class="left" scope="col">
+         CONTENTS
+        </th>
+       </tr>
+      </thead>
+      <tbody class="calibre34">
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;array&gt;
+         </span>
+        </td>
+        <td class="left1">
+         The
+         <span class="calibre21">
+          array
+         </span>
+         class template
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;bitset&gt;
+         </span>
+        </td>
+        <td class="left1">
+         The
+         <span class="calibre21">
+          bitset
+         </span>
+         class template
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;deque&gt;
+         </span>
+        </td>
+        <td class="left1">
+         The
+         <span class="calibre21">
+          deque
+         </span>
+         class template
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <img alt="C++23" class="bor" src="images/icon1.png"/>
+         <span class="calibre21">
+          &lt;flat_map&gt;
+         </span>
+        </td>
+        <td class="left1">
+         The
+         <code class="calibre21">
+          flat_map
+         </code>
+         and
+         <code class="calibre21">
+          flat_multimap
+         </code>
+         class templates
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <img alt="C++23" class="bor" src="images/icon1.png"/>
+         <span class="calibre21">
+          &lt;flat_set&gt;
+         </span>
+        </td>
+        <td class="left1">
+         The
+         <code class="calibre21">
+          flat_set
+         </code>
+         and
+         <code class="calibre21">
+          flat_multiset
+         </code>
+         class templates
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;forward_list&gt;
+         </span>
+        </td>
+        <td class="left1">
+         The
+         <span class="calibre21">
+          forward_list
+         </span>
+         class template
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;list&gt;
+         </span>
+        </td>
+        <td class="left1">
+         The
+         <span class="calibre21">
+          list
+         </span>
+         class template
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;map&gt;
+         </span>
+        </td>
+        <td class="left1">
+         The
+         <span class="calibre21">
+          map
+         </span>
+         and
+         <code class="calibre21">
+          multimap
+         </code>
+         class templates
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <img alt="C++23" class="bor" src="images/icon1.png"/>
+         <span class="calibre21">
+          &lt;mdspan&gt;
+         </span>
+        </td>
+        <td class="left1">
+         The
+         <code class="calibre21">
+          mdspan
+         </code>
+         class template (technically not a container, but a multidimensional view over a contiguous sequence of elements stored somewhere else)
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;queue&gt;
+         </span>
+        </td>
+        <td class="left1">
+         The
+         <span class="calibre21">
+          queue
+         </span>
+         and
+         <code class="calibre21">
+          priority_queue
+         </code>
+         class templates
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;set&gt;
+         </span>
+        </td>
+        <td class="left1">
+         The
+         <span class="calibre21">
+          set
+         </span>
+         and
+         <code class="calibre21">
+          multiset
+         </code>
+         class templates
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;span&gt;
+         </span>
+        </td>
+        <td class="left1">
+         The
+         <span class="calibre21">
+          span
+         </span>
+         class template (technically not a container, but a view over a contiguous sequence of elements stored somewhere else)
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;stack&gt;
+         </span>
+        </td>
+        <td class="left1">
+         The
+         <span class="calibre21">
+          stack
+         </span>
+         class template
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;unordered_map&gt;
+         </span>
+        </td>
+        <td class="left1">
+         The
+         <span class="calibre21">
+          unordered_map
+         </span>
+         and
+         <code class="calibre21">
+          unordered_multimap
+         </code>
+         class templates
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;unordered_set&gt;
+         </span>
+        </td>
+        <td class="left1">
+         The
+         <span class="calibre21">
+          unordered_set
+         </span>
+         and
+         <code class="calibre21">
+          unordered_multiset
+         </code>
+         class templates
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;vector&gt;
+         </span>
+        </td>
+        <td class="left1">
+         The
+         <span class="calibre21">
+          vector
+         </span>
+         class template and the
+         <code class="calibre21">
+          vector&lt;bool&gt;
+         </code>
+         specialization
+        </td>
+       </tr>
+      </tbody>
+     </table>
+     <p class="calibre13" id="bapp03-para-0022">
+      Each of these header files contains all the definitions you need to use the specified container, including their iterators.
+      <a class="calibre5" href="c18_split_000.xhtml">
+       Chapter 18
+      </a>
+      , “Standard Library Containers,” describes these containers in detail.
+     </p>
+    </section>
+    <section aria-labelledby="head-2-43" class="calibre2">
+     <span class="calibre" id="bapp03-sec-0006">
+     </span>
+     <h2 class="calibre6" id="head-2-43">
+      ALGORITHMS, ITERATORS, RANGES, AND ALLOCATORS
+     </h2>
+     <p class="calibre13" id="bapp03-para-0023">
+      The following header files define the available Standard Library algorithms, iterators, and allocators, and the ranges library:
+     </p>
+     <table border="1" class="calibre31">
+      <thead class="calibre32">
+       <tr class="calibre33">
+        <th class="left" scope="col">
+         HEADER
+        </th>
+        <th class="left" scope="col">
+         CONTENTS
+        </th>
+       </tr>
+      </thead>
+      <tbody class="calibre34">
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;algorithm&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Prototypes for most of the algorithms in the Standard Library, and
+         <span class="calibre21">
+          min()
+         </span>
+         ,
+         <code class="calibre21">
+          max()
+         </code>
+         ,
+         <code class="calibre21">
+          minmax()
+         </code>
+         , and
+         <code class="calibre21">
+          clamp()
+         </code>
+         . See
+         <a class="calibre5" href="c20.xhtml">
+          Chapter 20
+         </a>
+         , “Mastering Standard Library Algorithms.”
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;bit&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          endian
+         </span>
+         class enumeration, see
+         <a class="calibre5" href="c34.xhtml">
+          Chapter 34
+         </a>
+         , “Developing Cross-Platform and Cross-Language Applications,” and provides function prototypes to perform low-level operations on bit sequences, such as
+         <code class="calibre21">
+          bit_ceil()
+         </code>
+         ,
+         <code class="calibre21">
+          rotl()
+         </code>
+         ,
+         <code class="calibre21">
+          countl_zero()
+         </code>
+         , and more, see
+         <a class="calibre5" href="c16.xhtml">
+          Chapter 16
+         </a>
+         , “Overview of the C++ Standard Library.”
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;execution&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the execution policy types for use with the Standard Library algorithms. See
+         <a class="calibre5" href="c20.xhtml">
+          Chapter 20
+         </a>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;functional&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the built-in function objects, negators, binders, and adaptors. See
+         <a class="calibre5" href="c19.xhtml">
+          Chapter 19
+         </a>
+         , “Function Pointers, Function Objects, and Lambda Expressions.”
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;iterator&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Definitions of
+         <span class="calibre21">
+          iterator_traits
+         </span>
+         , iterator tags,
+         <code class="calibre21">
+          iterator
+         </code>
+         ,
+         <code class="calibre21">
+          reverse_iterator
+         </code>
+         , insert iterators (such as
+         <code class="calibre21">
+          back_insert_iterator
+         </code>
+         ), and stream iterators. See
+         <a class="calibre5" href="c17.xhtml">
+          Chapter 17
+         </a>
+         , “Understanding Iterators and the Ranges Library.”
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;memory&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the default allocator and function prototypes for dealing with uninitialized memory inside containers. Also provides
+         <span class="calibre21">
+          unique_ptr
+         </span>
+         ,
+         <code class="calibre21">
+          shared_ptr
+         </code>
+         ,
+         <code class="calibre21">
+          weak_ptr
+         </code>
+         ,
+         <code class="calibre21">
+          make_unique()
+         </code>
+         , and
+         <code class="calibre21">
+          make_shared(
+         </code>
+         ), introduced in
+         <a class="calibre5" href="c07.xhtml">
+          Chapter 7
+         </a>
+         , “Memory Management.”
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;memory_resource&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines polymorphic allocators and memory resources. See
+         <a class="calibre5" href="c25.xhtml">
+          Chapter 25
+         </a>
+         , “Customizing and Extending the Standard Library.”
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;numeric&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Prototypes for some numerical algorithms:
+         <span class="calibre21">
+          accumulate()
+         </span>
+         ,
+         <code class="calibre21">
+          inner_product()
+         </code>
+         ,
+         <code class="calibre21">
+          partial_sum()
+         </code>
+         ,
+         <code class="calibre21">
+          adjacent_difference()
+         </code>
+         ,
+         <code class="calibre21">
+          gcd()
+         </code>
+         ,
+         <code class="calibre21">
+          lcm()
+         </code>
+         , and a few others. See
+         <a class="calibre5" href="c20.xhtml">
+          Chapter 20
+         </a>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;ranges&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Provides all functionality for the Ranges library. See
+         <a class="calibre5" href="c17.xhtml">
+          Chapter 17
+         </a>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;scoped_allocator&gt;
+         </span>
+        </td>
+        <td class="left1">
+         An allocator that can be used with nested containers such as a
+         <span class="calibre21">
+          vector
+         </span>
+         of
+         <code class="calibre21">
+          strings
+         </code>
+         , or a
+         <code class="calibre21">
+          vector
+         </code>
+         of
+         <code class="calibre21">
+          maps
+         </code>
+         .
+         <span aria-label="1281" class="calibre20" epub:type="pagebreak" id="Page_1281" role="doc-pagebreak">
+         </span>
+        </td>
+       </tr>
+      </tbody>
+     </table>
+    </section>
+    <section aria-labelledby="head-2-44" class="calibre2">
+     <span class="calibre" id="bapp03-sec-0007">
+     </span>
+     <h2 class="calibre6" id="head-2-44">
+      GENERAL UTILITIES
+     </h2>
+     <p class="calibre13" id="bapp03-para-0025">
+      The Standard Library contains some general-purpose utilities in several different header files:
+     </p>
+     <table border="1" class="calibre31">
+      <thead class="calibre32">
+       <tr class="calibre33">
+        <th class="left" scope="col">
+         HEADER
+        </th>
+        <th class="left" scope="col">
+         CONTENTS
+        </th>
+       </tr>
+      </thead>
+      <tbody class="calibre34">
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;any&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          any
+         </span>
+         class. See
+         <a class="calibre5" href="c24.xhtml">
+          Chapter 24
+         </a>
+         , “Additional Vocabulary Types.”
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;charconv&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          chars_format
+         </span>
+         enumeration, the
+         <code class="calibre21">
+          from_chars()
+         </code>
+         and
+         <code class="calibre21">
+          to_chars()
+         </code>
+         functions, and related
+         <code class="calibre21">
+          struct
+         </code>
+         s. See
+         <a class="calibre5" href="c02.xhtml">
+          Chapter 2
+         </a>
+         , “Working with Strings and String Views.”
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;chrono&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the chrono library. See
+         <a class="calibre5" href="c22.xhtml">
+          Chapter 22
+         </a>
+         , “Date and Time Utilities.”
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;codecvt&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Provides code conversion facets for various character encodings. This header is deprecated since C++17.
+         <span aria-label="1282" class="calibre20" epub:type="pagebreak" id="Page_1282" role="doc-pagebreak">
+         </span>
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;compare&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Provides classes and functions to support three-way comparisons. See
+         <a class="calibre5" href="c01_split_000.xhtml">
+          Chapters 1
+         </a>
+         , “A Crash Course in C++ and the Standard Library,” and
+         <a class="calibre5" href="c09.xhtml">
+          9
+         </a>
+         , “Mastering Classes and Objects.”
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;concepts&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Provides standard concepts such as
+         <span class="calibre21">
+          same_as
+         </span>
+         ,
+         <code class="calibre21">
+          convertible_to
+         </code>
+         ,
+         <code class="calibre21">
+          integral
+         </code>
+         ,
+         <code class="calibre21">
+          movable
+         </code>
+         , and more. See
+         <a class="calibre5" href="c12.xhtml">
+          Chapter 12
+         </a>
+         , “Writing Generic Code with Templates.”
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <img alt="C++23" class="bor" src="images/icon1.png"/>
+         <span class="calibre21">
+          &lt;expected&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <code class="calibre21">
+          expected
+         </code>
+         and
+         <code class="calibre21">
+          unexpected
+         </code>
+         class templates, the
+         <code class="calibre21">
+          bad_expected_access
+         </code>
+         exception, and the
+         <code class="calibre21">
+          unexpect_t
+         </code>
+         and
+         <code class="calibre21">
+          unexpect
+         </code>
+         tags. See
+         <a class="calibre5" href="c24.xhtml">
+          Chapter 24
+         </a>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;filesystem&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines all available classes and functions to work with the filesystem. See
+         <a class="calibre5" href="c13.xhtml">
+          Chapter 13
+         </a>
+         , “Demystifying C++ I/O.”
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;format&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Provides all functionality for the format library, such as
+         <span class="calibre21">
+          format()
+         </span>
+         ,
+         <code class="calibre21">
+          format_to()
+         </code>
+         , and so on. See
+         <a class="calibre5" href="c02.xhtml">
+          Chapter 2
+         </a>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;initializer_list&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          initializer_list
+         </span>
+         class template. See
+         <a class="calibre5" href="c01_split_000.xhtml">
+          Chapter 1
+         </a>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;limits&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          numeric_limits
+         </span>
+         class template, and specializations for most built-in types. See
+         <a class="calibre5" href="c01_split_000.xhtml">
+          Chapter 1
+         </a>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;locale&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          locale
+         </span>
+         class, the
+         <code class="calibre21">
+          use_facet()
+         </code>
+         and
+         <code class="calibre21">
+          has_facet()
+         </code>
+         function templates, and the various facet families. See
+         <a class="calibre5" href="c21.xhtml">
+          Chapter 21
+         </a>
+         , “String Localization and Regular Expressions.”
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;new&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          bad_alloc
+         </span>
+         exception and
+         <code class="calibre21">
+          set_new_handler()
+         </code>
+         function. This header also defines the prototypes for all six forms of
+         <code class="calibre21">
+          operator new
+         </code>
+         and
+         <code class="calibre21">
+          operator delete
+         </code>
+         . See
+         <a class="calibre5" href="c15.xhtml">
+          Chapter 15
+         </a>
+         , “Overloading C++ Operators.”
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;optional&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          optional
+         </span>
+         class template. See
+         <a class="calibre5" href="c01_split_000.xhtml">
+          Chapter 1
+         </a>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <img alt="C++23" class="bor" src="images/icon1.png"/>
+         <span class="calibre21">
+          &lt;print&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <code class="calibre21">
+          print()
+         </code>
+         ,
+         <code class="calibre21">
+          println()
+         </code>
+         ,
+         <code class="calibre21">
+          vprint_unicode()
+         </code>
+         , and
+         <code class="calibre21">
+          vprint_nonunicode()
+         </code>
+         functions. See
+         <a class="calibre5" href="c01_split_000.xhtml">
+          Chapters 1
+         </a>
+         and
+         <a class="calibre5" href="c02.xhtml">
+          2
+         </a>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;random&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the random number generation library. See
+         <a class="calibre5" href="c23.xhtml">
+          Chapter 23
+         </a>
+         , “Random Number Facilities.”
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;ratio&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the ratio library to work with compile-time rational numbers. See
+         <a class="calibre5" href="c22.xhtml">
+          Chapter 22
+         </a>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;regex&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the regular expressions library. See
+         <a class="calibre5" href="c21.xhtml">
+          Chapter 21
+         </a>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;source:location&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Provides the
+         <span class="calibre21">
+          source:location
+         </span>
+         class. See
+         <a class="calibre5" href="c14.xhtml">
+          Chapter 14
+         </a>
+         , “Handling Errors.”
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <img alt="C++23" class="bor" src="images/icon1.png"/>
+         <span class="calibre21">
+          &lt;stacktrace&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Provides the
+         <code class="calibre21">
+          stacktrace
+         </code>
+         class. See
+         <a class="calibre5" href="c14.xhtml">
+          Chapter 14
+         </a>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;string&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          basic_string
+         </span>
+         class template and the type aliases
+         <code class="calibre21">
+          string
+         </code>
+         and
+         <code class="calibre21">
+          wstring
+         </code>
+         . See
+         <a class="calibre5" href="c02.xhtml">
+          Chapter 2
+         </a>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;string_view&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          basic_string_view
+         </span>
+         class template and the type aliases
+         <code class="calibre21">
+          string_view
+         </code>
+         and
+         <code class="calibre21">
+          wstring_view
+         </code>
+         . See
+         <a class="calibre5" href="c02.xhtml">
+          Chapter 2
+         </a>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;system_error&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines error categories and error codes.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;tuple&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          tuple
+         </span>
+         class template as a generalization of the
+         <code class="calibre21">
+          pair
+         </code>
+         class template. See
+         <a class="calibre5" href="c24.xhtml">
+          Chapter 24
+         </a>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;type_traits&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines type traits for use with template metaprogramming. See
+         <a class="calibre5" href="c26.xhtml">
+          Chapter 26
+         </a>
+         , “Advanced Templates.”
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;typeindex&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines a simple wrapper for
+         <span class="calibre21">
+          type_info
+         </span>
+         , which can be used as an index type in associative containers.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;typeinfo&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          bad_cast
+         </span>
+         and
+         <code class="calibre21">
+          bad_typeid
+         </code>
+         exceptions. Defines the
+         <code class="calibre21">
+          type_info
+         </code>
+         class, objects of which are returned by the
+         <code class="calibre21">
+          typeid
+         </code>
+         operator. See
+         <a class="calibre5" href="c10_split_000.xhtml">
+          Chapter 10
+         </a>
+         , “Discovering Inheritance Techniques,” for details on
+         <code class="calibre21">
+          typeid
+         </code>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;utility&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          pair
+         </span>
+         class template and
+         <code class="calibre21">
+          make_pair()
+         </code>
+         (see
+         <a class="calibre5" href="c01_split_000.xhtml">
+          Chapter 1
+         </a>
+         ). This header also defines utility functions such as
+         <code class="calibre21">
+          swap()
+         </code>
+         ,
+         <code class="calibre21">
+          exchange()
+         </code>
+         ,
+         <code class="calibre21">
+          move()
+         </code>
+         ,
+         <code class="calibre21">
+          as_const()
+         </code>
+         , and more.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;variant&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          variant
+         </span>
+         class template. See
+         <a class="calibre5" href="c24.xhtml">
+          Chapter 24
+         </a>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;version&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Provides implementation-dependent information about the C++ Standard Library that you are using, and exposes all Standard Library feature-test macros. See
+         <a class="calibre5" href="c16.xhtml">
+          Chapter 16
+         </a>
+         .
+         <span aria-label="1283" class="calibre20" epub:type="pagebreak" id="Page_1283" role="doc-pagebreak">
+         </span>
+        </td>
+       </tr>
+      </tbody>
+     </table>
+    </section>
+    <section aria-labelledby="head-2-45" class="calibre2">
+     <span class="calibre" id="bapp03-sec-0008">
+     </span>
+     <h2 class="calibre6" id="head-2-45">
+      MATHEMATICAL UTILITIES
+     </h2>
+     <p class="calibre13" id="bapp03-para-0033">
+      C++ provides some facilities for numeric processing. These capabilities are not described in detail in this book; for details, consult one of the Standard Library references listed in
+      <a class="calibre5" href="b02.xhtml">
+       Appendix B
+      </a>
+      , “Annotated Bibliography”:
+     </p>
+     <table border="1" class="calibre31">
+      <thead class="calibre32">
+       <tr class="calibre33">
+        <th class="left" scope="col">
+         HEADER
+        </th>
+        <th class="left" scope="col">
+         CONTENTS
+        </th>
+       </tr>
+      </thead>
+      <tbody class="calibre34">
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;complex&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          complex
+         </span>
+         class template for working with complex numbers.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;numbers&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Provides several mathematical constants, such as
+         <span class="calibre21">
+          pi
+         </span>
+         ,
+         <code class="calibre21">
+          phi
+         </code>
+         ,
+         <code class="calibre21">
+          log2e
+         </code>
+         , and more.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <img alt="C++23" class="bor" src="images/icon1.png"/>
+         <span class="calibre21">
+          &lt;stdfloat&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Provides the
+         <code class="calibre21">
+          float16_t
+         </code>
+         ,
+         <code class="calibre21">
+          float32_t
+         </code>
+         ,
+         <code class="calibre21">
+          float64_t
+         </code>
+         ,
+         <code class="calibre21">
+          float128_t
+         </code>
+         , and
+         <code class="calibre21">
+          bfloat16_t
+         </code>
+         fixed-width floating-point types. See
+         <a class="calibre5" href="c01_split_000.xhtml">
+          Chapter 1
+         </a>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;valarray&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines
+         <span class="calibre21">
+          valarray
+         </span>
+         and related classes and class templates for working with mathematical vectors and matrices.
+         <span aria-label="1284" class="calibre20" epub:type="pagebreak" id="Page_1284" role="doc-pagebreak">
+         </span>
+        </td>
+       </tr>
+      </tbody>
+     </table>
+    </section>
+    <section aria-labelledby="head-2-46" class="calibre2">
+     <span class="calibre" id="bapp03-sec-0009">
+     </span>
+     <h2 class="calibre6" id="head-2-46">
+      EXCEPTIONS
+     </h2>
+     <p class="calibre13" id="bapp03-para-0037">
+      Exceptions are covered in
+      <a class="calibre5" href="c14.xhtml">
+       Chapter 14
+      </a>
+      . Two header files provide most of the requisite definitions, but some exceptions for specific domains are defined in the header file for that domain:
+     </p>
+     <table border="1" class="calibre31">
+      <thead class="calibre32">
+       <tr class="calibre33">
+        <th class="left" scope="col">
+         HEADER
+        </th>
+        <th class="left" scope="col">
+         CONTENTS
+        </th>
+       </tr>
+      </thead>
+      <tbody class="calibre34">
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;exception&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          exception
+         </span>
+         and
+         <code class="calibre21">
+          bad_exception
+         </code>
+         classes, and the
+         <code class="calibre21">
+          set_terminate()
+         </code>
+         and
+         <code class="calibre21">
+          uncaught_exceptions()
+         </code>
+         functions.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;stdexcept&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Non-domain-specific exceptions not defined in
+         <span class="calibre21">
+          &lt;exception&gt;
+         </span>
+         .
+        </td>
+       </tr>
+      </tbody>
+     </table>
+    </section>
+    <section aria-labelledby="head-2-47" class="calibre2">
+     <span class="calibre" id="bapp03-sec-0010">
+     </span>
+     <h2 class="calibre6" id="head-2-47">
+      I/O STREAMS
+     </h2>
+     <p class="calibre13" id="bapp03-para-0039">
+      The following table lists all the header files related to I/O streams in C++. However, normally your applications only need to include
+      <code class="calibre21">
+       &lt;fstream&gt;
+      </code>
+      ,
+      <code class="calibre21">
+       &lt;iomanip&gt;
+      </code>
+      ,
+      <code class="calibre21">
+       &lt;iostream&gt;
+      </code>
+      ,
+      <code class="calibre21">
+       &lt;istream&gt;
+      </code>
+      ,
+      <code class="calibre21">
+       &lt;ostream&gt;
+      </code>
+      , and
+      <code class="calibre21">
+       &lt;sstream&gt;
+      </code>
+      . Consult
+      <a class="calibre5" href="c13.xhtml">
+       Chapter 13
+      </a>
+      for details:
+     </p>
+     <table border="1" class="calibre31">
+      <thead class="calibre32">
+       <tr class="calibre33">
+        <th class="left" scope="col">
+         HEADER
+        </th>
+        <th class="left" scope="col">
+         CONTENTS
+        </th>
+       </tr>
+      </thead>
+      <tbody class="calibre34">
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;fstream&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          basic_filebuf
+         </span>
+         ,
+         <code class="calibre21">
+          basic_ifstream
+         </code>
+         ,
+         <code class="calibre21">
+          basic_ofstream
+         </code>
+         , and
+         <code class="calibre21">
+          basic_fstream
+         </code>
+         classes. This header declares the
+         <code class="calibre21">
+          filebuf
+         </code>
+         ,
+         <code class="calibre21">
+          wfilebuf
+         </code>
+         ,
+         <code class="calibre21">
+          ifstream
+         </code>
+         ,
+         <code class="calibre21">
+          wifstream
+         </code>
+         ,
+         <code class="calibre21">
+          ofstream
+         </code>
+         ,
+         <code class="calibre21">
+          wofstream
+         </code>
+         ,
+         <code class="calibre21">
+          fstream
+         </code>
+         , and
+         <code class="calibre21">
+          wfstream
+         </code>
+         type aliases.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;iomanip&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Declares the I/O manipulators not declared elsewhere (mostly in
+         <span class="calibre21">
+          &lt;ios&gt;
+         </span>
+         ).
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;ios&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          ios_base
+         </span>
+         and
+         <code class="calibre21">
+          basic_ios
+         </code>
+         classes. This header declares most of the stream manipulators. You rarely have to include this header directly.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;iosfwd&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Forward declarations of the templates and type aliases found in the other I/O stream header files. You rarely need to include this header directly.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;iostream&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Declares
+         <span class="calibre21">
+          cin
+         </span>
+         ,
+         <code class="calibre21">
+          cout
+         </code>
+         ,
+         <code class="calibre21">
+          cerr
+         </code>
+         ,
+         <code class="calibre21">
+          clog
+         </code>
+         , and the wide-character counterparts. Includes
+         <code class="calibre21">
+          &lt;istream&gt;
+         </code>
+         ,
+         <code class="calibre21">
+          &lt;ostream&gt;
+         </code>
+         ,
+         <code class="calibre21">
+          &lt;streambuf&gt;
+         </code>
+         , and
+         <code class="calibre21">
+          &lt;ios&gt;
+         </code>
+         . Note that it's not just a combination of
+         <code class="calibre21">
+          &lt;istream&gt;
+         </code>
+         and
+         <code class="calibre21">
+          &lt;ostream&gt;
+         </code>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;istream&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          basic_istream
+         </span>
+         and
+         <code class="calibre21">
+          basic_iostream
+         </code>
+         classes. This header declares the
+         <code class="calibre21">
+          istream
+         </code>
+         ,
+         <code class="calibre21">
+          wistream
+         </code>
+         ,
+         <code class="calibre21">
+          iostream
+         </code>
+         , and
+         <code class="calibre21">
+          wiostream
+         </code>
+         type aliases.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;ostream&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          basic_ostream
+         </span>
+         class. This header declares the
+         <code class="calibre21">
+          ostream
+         </code>
+         and
+         <code class="calibre21">
+          wostream
+         </code>
+         type aliases.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <img alt="C++23" class="bor" src="images/icon1.png"/>
+         <span class="calibre21">
+          &lt;spanstream&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <code class="calibre21">
+          basic_spanbuf
+         </code>
+         ,
+         <code class="calibre21">
+          basic_ispanstream
+         </code>
+         ,
+         <code class="calibre21">
+          basic_ospanstream
+         </code>
+         , and
+         <code class="calibre21">
+          basic_spanstream
+         </code>
+         classes. This header declares the
+         <code class="calibre21">
+          spanbuf
+         </code>
+         ,
+         <code class="calibre21">
+          wspanbuf
+         </code>
+         ,
+         <code class="calibre21">
+          ispanstream
+         </code>
+         ,
+         <code class="calibre21">
+          wispanstream
+         </code>
+         ,
+         <code class="calibre21">
+          ospanstream
+         </code>
+         ,
+         <code class="calibre21">
+          wospanstream
+         </code>
+         ,
+         <code class="calibre21">
+          spanstream
+         </code>
+         , and
+         <code class="calibre21">
+          wspanstream
+         </code>
+         type aliases.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;sstream&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          basic_stringbuf
+         </span>
+         ,
+         <code class="calibre21">
+          basic_istringstream
+         </code>
+         ,
+         <code class="calibre21">
+          basic_ostringstream
+         </code>
+         , and
+         <code class="calibre21">
+          basic_stringstream
+         </code>
+         classes. This header declares the
+         <code class="calibre21">
+          stringbuf
+         </code>
+         ,
+         <code class="calibre21">
+          wstringbuf
+         </code>
+         ,
+         <code class="calibre21">
+          istringstream
+         </code>
+         ,
+         <code class="calibre21">
+          wistringstream
+         </code>
+         ,
+         <code class="calibre21">
+          ostringstream
+         </code>
+         ,
+         <code class="calibre21">
+          wostringstream
+         </code>
+         ,
+         <code class="calibre21">
+          stringstream
+         </code>
+         , and
+         <code class="calibre21">
+          wstringstream
+         </code>
+         type aliases.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;streambuf&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          basic_streambuf
+         </span>
+         class. This header declares the type aliases
+         <code class="calibre21">
+          streambuf
+         </code>
+         and
+         <code class="calibre21">
+          wstreambuf
+         </code>
+         . You rarely have to include this header directly.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;strstream&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Deprecated.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;syncstream&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines all classes related to synchronized output streams, such as
+         <span class="calibre21">
+          osyncstream
+         </span>
+         and
+         <code class="calibre21">
+          wosyncstream
+         </code>
+         . See
+         <a class="calibre5" href="c27.xhtml">
+          Chapter 27
+         </a>
+         , “Multithreaded Programming with C++.”
+         <span aria-label="1285" class="calibre20" epub:type="pagebreak" id="Page_1285" role="doc-pagebreak">
+         </span>
+        </td>
+       </tr>
+      </tbody>
+     </table>
+    </section>
+    <section aria-labelledby="head-2-48" class="calibre2">
+     <span class="calibre" id="bapp03-sec-0011">
+     </span>
+     <h2 class="calibre6" id="head-2-48">
+      THREADING SUPPORT LIBRARY
+     </h2>
+     <p class="calibre13" id="bapp03-para-0043">
+      C++ includes a threading support library, which allows you to write platform-independent multithreaded applications. See
+      <a class="calibre5" href="c27.xhtml">
+       Chapter 27
+      </a>
+      for details. The threading support library consists of the following header files:
+     </p>
+     <table border="1" class="calibre31">
+      <thead class="calibre32">
+       <tr class="calibre33">
+        <th class="left" scope="col">
+         HEADER
+        </th>
+        <th class="left" scope="col">
+         CONTENTS
+        </th>
+       </tr>
+      </thead>
+      <tbody class="calibre34">
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;atomic&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the atomic types,
+         <span class="calibre21">
+          atomic&lt;T&gt;
+         </span>
+         , and atomic operations.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;barrier&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          barrier
+         </span>
+         class.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;condition_variable&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          condition_variable
+         </span>
+         and
+         <code class="calibre21">
+          condition_variable_any
+         </code>
+         classes.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;coroutine&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines all functionality for writing coroutines.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;future&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines
+         <span class="calibre21">
+          future
+         </span>
+         ,
+         <code class="calibre21">
+          promise
+         </code>
+         ,
+         <code class="calibre21">
+          packaged_task
+         </code>
+         , and
+         <code class="calibre21">
+          async()
+         </code>
+         .
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <img alt="C++23" class="bor" src="images/icon1.png"/>
+         <span class="calibre21">
+          &lt;generator&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <code class="calibre21">
+          generator
+         </code>
+         awaitable class.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;latch&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          latch
+         </span>
+         class.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;mutex&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines
+         <span class="calibre21">
+          call_once()
+         </span>
+         and the different non-shared mutex and lock classes.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;semaphore&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          counting_semaphore
+         </span>
+         and
+         <code class="calibre21">
+          binary_semaphore
+         </code>
+         classes.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;shared_mutex&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          shared_mutex
+         </span>
+         ,
+         <code class="calibre21">
+          shared_timed_mutex
+         </code>
+         , and
+         <code class="calibre21">
+          shared_lock
+         </code>
+         classes.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;stop_token&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          stop_token
+         </span>
+         ,
+         <code class="calibre21">
+          stop_source
+         </code>
+         , and
+         <code class="calibre21">
+          stop_callback
+         </code>
+         classes.
+        </td>
+       </tr>
+       <tr class="calibre33">
+        <td class="left1">
+         <span class="calibre21">
+          &lt;thread&gt;
+         </span>
+        </td>
+        <td class="left1">
+         Defines the
+         <span class="calibre21">
+          thread
+         </span>
+         and
+         <code class="calibre21">
+          jthread
+         </code>
+         classes, and functions
+         <code class="calibre21">
+          yield()
+         </code>
+         ,
+         <code class="calibre21">
+          get_id()
+         </code>
+         ,
+         <code class="calibre21">
+          sleep_for()
+         </code>
+         , and
+         <code class="calibre21">
+          sleep_until()
+         </code>
+         .
+         <span aria-label="1286" class="calibre20" epub:type="pagebreak" id="Page_1286" role="doc-pagebreak">
+         </span>
+        </td>
+       </tr>
+      </tbody>
+     </table>
+    </section>
+   </section>
+  </div>
+ </body>
+</html>
