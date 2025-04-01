@@ -1,0 +1,1529 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html>
+<html epub:prefix="z3998: http://www.daisy.org/z3998/2012/vocab/structure/#" lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+ <head>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   10
+  </title>
+ </head>
+ <body>
+  <div class="navigation">
+   <a class="nav-button" href="chapter_017.html">
+    ← Previous
+   </a>
+   <a class="nav-button" href="index.html">
+    Table of Contents
+   </a>
+   <a class="nav-button" href="chapter_019.html">
+    Next →
+   </a>
+  </div>
+  <div class="chapter-content">
+   <div class="calibre2" id="_idContainer168">
+    <h1 class="chapter-number" id="_idParaDest-207">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor207">
+     </a>
+     10
+    </h1>
+    <h1 class="calibre5" id="_idParaDest-208">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor208">
+     </a>
+     JSON Parsing Made Easy
+    </h1>
+    <p class="calibre3">
+     JSON is the file
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker671">
+     </a>
+     extension of a data format called
+     <strong class="bold">
+      JavaScript Object Notation
+     </strong>
+     , which is used to store and transport information in a structured format. The
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker672">
+     </a>
+     JSON format is used extensively for the web. Most modern web
+     <strong class="bold">
+      Application Programming Interfaces
+     </strong>
+     (
+     <strong class="bold">
+      APIs
+     </strong>
+     ) use JSON format to transfer data to their
+     <span>
+      web clients.
+     </span>
+    </p>
+    <p class="calibre3">
+     This chapter will cover the
+     <span>
+      following recipes:
+     </span>
+    </p>
+    <ul class="calibre15">
+     <li class="calibre14">
+      JSON format in
+      <span>
+       a nutshell
+      </span>
+     </li>
+     <li class="calibre14">
+      Processing JSON data from a
+      <span>
+       text file
+      </span>
+     </li>
+     <li class="calibre14">
+      Writing JSON data to a
+      <span>
+       text file
+      </span>
+     </li>
+     <li class="calibre14">
+      Using Google’s
+      <span>
+       Geocoding API
+      </span>
+     </li>
+    </ul>
+    <h1 class="calibre5" id="_idParaDest-209">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor209">
+     </a>
+     Technical requirements
+    </h1>
+    <p class="calibre3">
+     The technical requirements for this chapter include Qt 6.6.1 MinGW 64-bit and Qt Creator 12.0.2. All the code used in this chapter can be downloaded from the following GitHub
+     <span>
+      repository:
+     </span>
+     <a class="pcalibre pcalibre1 calibre6" href="https://github.com/PacktPublishing/QT6-C-GUI-Programming-Cookbook---Third-Edition-/tree/main/Chapter10">
+      <span>
+       https://github.com/PacktPublishing/QT6-C-GUI-Programming-Cookbook---Third-Edition-/tree/main/Chapter10
+      </span>
+     </a>
+     <span>
+      .
+     </span>
+    </p>
+    <h1 class="calibre5" id="_idParaDest-210">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor210">
+     </a>
+     JSON format in a nutshell
+    </h1>
+    <p class="calibre3">
+     JSON is a
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker673">
+     </a>
+     human-readable text format commonly used for data transmission in web
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker674">
+     </a>
+     applications, especially
+     <strong class="bold">
+      JavaScript
+     </strong>
+     applications. However, it is also used for many other purposes, hence it is independent of JavaScript and can be used for any programming language or platform, despite
+     <span>
+      its name.
+     </span>
+    </p>
+    <p class="calibre3">
+     In this example, we will learn about JSON format and how to verify whether your JSON data is in a valid format
+     <span>
+      or not.
+     </span>
+    </p>
+    <h2 class="calibre7" id="_idParaDest-211">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor211">
+     </a>
+     How to do it…
+    </h2>
+    <p class="calibre3">
+     Let’s get
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker675">
+     </a>
+     started and learn how to write your own JSON data and verify
+     <span>
+      its format:
+     </span>
+    </p>
+    <ol class="calibre13">
+     <li class="calibre14">
+      Open up your web browser and go to the
+      <strong class="bold">
+       JSONLint Online Validator and Formatter
+      </strong>
+      website
+      <span>
+       at
+      </span>
+      <a class="pcalibre pcalibre1 calibre6" href="https://jsonlint.com">
+       <span>
+        https://jsonlint.com
+       </span>
+      </a>
+      <span>
+       .
+      </span>
+     </li>
+     <li class="calibre14">
+      Write the following JSON data in the text editor on
+      <span>
+       the website:
+      </span>
+      <pre class="source-code">
+{
+    "members": [
+        {
+            "name": "John",
+            "age": 29,
+            "gender": "male"
+        },
+        {
+            "name": "Alice",
+            "age": 24,
+            "gender": "female"
+        },
+        {
+            "name": "",
+            "age": 26,
+            "gender": "male"
+        }
+    ]
+}</pre>
+     </li>
+     <li class="calibre14">
+      After that, press the
+      <strong class="bold">
+       Validate JSON
+      </strong>
+      button. You should get the
+      <span>
+       following result:
+      </span>
+      <pre class="source-code">
+JSON is valid!</pre>
+     </li>
+     <li class="calibre14">
+      Now, try to
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker676">
+      </a>
+      remove the double quote symbols from the
+      <span>
+       <strong class="source-inline1">
+        members
+       </strong>
+      </span>
+      <span>
+       variable:
+      </span>
+      <pre class="source-code">
+{
+    <strong class="bold1">members</strong>: [
+        {
+            "name": "John",
+            "age": 29,
+            "gender": "male"
+        },</pre>
+     </li>
+     <li class="calibre14">
+      Press the
+      <strong class="bold">
+       Validate JSON
+      </strong>
+      button again and you should get an error
+      <span>
+       like this:
+      </span>
+      <pre class="source-code">
+Invalid JSON!
+Error: Parse error on line 1:
+{    members: [        {
+-----^
+Expecting 'STRING', '}', got 'undefined'</pre>
+     </li>
+     <li class="calibre14">
+      Now, revert to the valid JSON format by adding the double quote symbols back to the
+      <strong class="source-inline1">
+       members
+      </strong>
+      variable. Then, press the
+      <strong class="bold">
+       Compress
+      </strong>
+      button. You should get the following result, which has no empty space and
+      <span>
+       next lines:
+      </span>
+      <pre class="source-code">
+{"members":[{"name":"John","age":29,"gender":"male"},
+{"name":"Alice","age":24,"gender":"female"},
+{"name":"","age":26,"gender":"male"}]}</pre>
+     </li>
+     <li class="calibre14">
+      You can now press the
+      <strong class="bold">
+       Prettify
+      </strong>
+      button to revert it to the
+      <span>
+       previous structure.
+      </span>
+     </li>
+    </ol>
+    <h2 class="calibre7" id="_idParaDest-212">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor212">
+     </a>
+     How it works…
+    </h2>
+    <p class="calibre3">
+     The curly braces,
+     <strong class="source-inline">
+      {
+     </strong>
+     and
+     <strong class="source-inline">
+      }
+     </strong>
+     , contain
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker677">
+     </a>
+     a set of data as an object. An
+     <strong class="bold">
+      object
+     </strong>
+     is an individual data structure
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker678">
+     </a>
+     that contains its own properties or variables
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker679">
+     </a>
+     in the form of
+     <strong class="bold">
+      key-value pairs
+     </strong>
+     . Keys are unique strings that act as human-readable variable names, and values are represented by either a string, integer, floating-point number, Boolean, or even an entire object or array. JSON supports recursive objects, which is very handy for many different
+     <span>
+      use cases.
+     </span>
+    </p>
+    <p class="calibre3">
+     The square
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker680">
+     </a>
+     brackets,
+     <strong class="source-inline">
+      [
+     </strong>
+     and
+     <strong class="source-inline">
+      ]
+     </strong>
+     , indicate that the data is contained in an array. An
+     <strong class="bold">
+      array
+     </strong>
+     simply stores a list of values of the same type, which can be manipulated, sorted, or removed from the array by iterating over its content using a standard iterator pattern in any programming language you use for
+     <span>
+      your project.
+     </span>
+    </p>
+    <p class="calibre3">
+     In the previous example, we first created a nameless object as the main object of the data. You must create either a main object or a main array as a starting point. Then, we added an array called
+     <strong class="source-inline">
+      members
+     </strong>
+     , which contains individual objects with variables such as
+     <strong class="source-inline">
+      name
+     </strong>
+     ,
+     <strong class="source-inline">
+      age
+     </strong>
+     , and
+     <strong class="source-inline">
+      gender
+     </strong>
+     . Do note that if you add double quotes (
+     <strong class="source-inline">
+      "
+     </strong>
+     ) around an integer or floating-point number, the variable will be treated as a string instead of
+     <span>
+      a number.
+     </span>
+    </p>
+    <p class="calibre3">
+     The previous example demonstrated the simplest form of JSON data that can be sent through the network and processed by any modern
+     <span>
+      programming language.
+     </span>
+    </p>
+    <h1 class="calibre5" id="_idParaDest-213">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor213">
+     </a>
+     Processing JSON data from a text file
+    </h1>
+    <p class="calibre3">
+     In this
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker681">
+     </a>
+     recipe, we will learn how to process JSON
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker682">
+     </a>
+     data taken from a text file and extract it using the
+     <span>
+      stream reader.
+     </span>
+    </p>
+    <h2 class="calibre7" id="_idParaDest-214">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor214">
+     </a>
+     How to do it…
+    </h2>
+    <p class="calibre3">
+     Let’s create a simple program that reads and processes XML files by following
+     <span>
+      these steps:
+     </span>
+    </p>
+    <ol class="calibre13">
+     <li class="calibre14">
+      Create a new
+      <strong class="bold">
+       Qt Widgets Application
+      </strong>
+      project at your
+      <span>
+       desired location.
+      </span>
+     </li>
+     <li class="calibre14">
+      Open any
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker683">
+      </a>
+      text editor and create a JSON
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker684">
+      </a>
+      file that looks like the following, then save it
+      <span>
+       as
+      </span>
+      <span>
+       <strong class="source-inline1">
+        scene.json
+       </strong>
+      </span>
+      <span>
+       :
+      </span>
+      <pre class="source-code">
+[
+    {
+        "name": "Library",
+        "tag": "building",
+        "position": [120.0, 0.0, 50.68],
+        "rotation": [0.0, 0.0, 0.0],
+        "scale": [1.0, 1.0, 1.0]
+    }
+]</pre>
+     </li>
+     <li class="calibre14">
+      Continue to write the JSON code by adding more objects after the
+      <strong class="source-inline1">
+       Library
+      </strong>
+      object, as shown in the
+      <span>
+       following code:
+      </span>
+      <pre class="source-code">
+{
+    "name": "Town Hall",
+    "tag": "building",
+    "position": [80.2, 0.0, 20.5],
+    "rotation": [0.0, 0.0, 0.0],
+    "scale": [1.0, 1.0, 1.0]
+},
+{
+    "name": "Tree",
+    "tag": "prop",
+    "position": [10.46, -0.2, 80.2],
+    "rotation": [0.0, 0.0, 0.0],
+    "scale": [1.0, 1.0, 1.0]
+}</pre>
+     </li>
+     <li class="calibre14">
+      Go
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker685">
+      </a>
+      back to Qt Creator and open
+      <strong class="source-inline1">
+       mainwindow.h
+      </strong>
+      . Add the following headers at the top
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker686">
+      </a>
+      of the script, right after
+      <strong class="source-inline1">
+       #
+      </strong>
+      <span>
+       <strong class="source-inline1">
+        include &lt;QMainWindow&gt;
+       </strong>
+      </span>
+      <span>
+       :
+      </span>
+      <pre class="source-code">
+#include &lt;QJsonDocument&gt;
+#include &lt;QJsonArray&gt;
+#include &lt;QJsonObject&gt;
+#include &lt;QDebug&gt;
+#include &lt;QFile&gt;
+#include &lt;QFileDialog&gt;</pre>
+     </li>
+     <li class="calibre14">
+      Open
+      <strong class="source-inline1">
+       mainwindow.ui
+      </strong>
+      and drag a push button from the widget box on the left side to the UI editor. Change the object name of the button to
+      <strong class="source-inline1">
+       loadJsonButton
+      </strong>
+      and its display text to
+      <span>
+       <strong class="source-inline1">
+        Load JSON
+       </strong>
+      </span>
+      <span>
+       :
+      </span>
+     </li>
+    </ol>
+    <div class="calibre2">
+     <div class="img---figure" id="_idContainer160">
+      <img alt="Figure 10.1 – Adding the Load JSON push button" class="calibre4" src="image/B20976_10_001.jpg"/>
+     </div>
+    </div>
+    <p class="img---caption" lang="en-US" xml:lang="en-US">
+     Figure 10.1 – Adding the Load JSON push button
+    </p>
+    <ol class="calibre13">
+     <li class="calibre14" value="6">
+      Right-click on the button and select
+      <strong class="bold">
+       Go to slot…
+      </strong>
+      . A window will pop up with a list of signals available
+      <span>
+       for selection.
+      </span>
+     </li>
+     <li class="calibre14">
+      Choose
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker687">
+      </a>
+      the default
+      <strong class="source-inline1">
+       clicked()
+      </strong>
+      option
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker688">
+      </a>
+      and press the
+      <strong class="bold">
+       OK
+      </strong>
+      button. Qt will now insert a slot function in your header and source files
+      <span>
+       called
+      </span>
+      <span>
+       <strong class="source-inline1">
+        on_loadJsonButton_clicked()
+       </strong>
+      </span>
+      <span>
+       .
+      </span>
+     </li>
+     <li class="calibre14">
+      Add the following code to the
+      <span>
+       <strong class="source-inline1">
+        on_loadJsonButton_clicked()
+       </strong>
+      </span>
+      <span>
+       function:
+      </span>
+      <pre class="source-code">
+void MainWindow::on_loadJsonButton_clicked()
+{
+    QString filename = QFileDialog::getOpenFileName(this, "Open JSON", ".", "JSON files (*.json)");
+    QFile file(filename);
+    if (!file.open(QFile::ReadOnly | QFile::Text))
+        qDebug() &lt;&lt; "Error loading JSON file.";
+    QByteArray data = file.readAll();
+    file.close();
+    QJsonDocument json = QJsonDocument::fromJson(data);</pre>
+     </li>
+     <li class="calibre14">
+      We continue to write the code. The following code loops through the JSON file and prints out each attribute’s name
+      <span>
+       and value:
+      </span>
+      <pre class="source-code">
+if (json.isArray())
+{
+    QJsonArray array = json.array();
+    if (array.size() &gt; 0)
+    {
+        for (int i = 0; i &lt; array.size(); ++i)
+        {
+            qDebug() &lt;&lt; "[Object]=================================";
+            QJsonObject object = json[i].toObject();
+            QStringList keys = object.keys();
+            for (int j = 0; j &lt; keys.size(); ++j)
+            {
+                qDebug() &lt;&lt; keys.at(j) &lt;&lt; object.value(keys.at(j));
+            }
+            qDebug() &lt;&lt; "=========================================";
+        }
+    }
+}</pre>
+     </li>
+     <li class="calibre14">
+      Build
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker689">
+      </a>
+      and run the project and you will see
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker690">
+      </a>
+      a window pop up that looks like the one you made in
+      <span>
+       <em class="italic">
+        step 5
+       </em>
+      </span>
+      <span>
+       :
+      </span>
+     </li>
+    </ol>
+    <div class="calibre2">
+     <div class="img---figure" id="_idContainer161">
+      <img alt="Figure 10.2 – Building and launching the program" class="calibre4" src="image/B20976_10_002.jpg"/>
+     </div>
+    </div>
+    <p class="img---caption" lang="en-US" xml:lang="en-US">
+     Figure 10.2 – Building and launching the program
+    </p>
+    <ol class="calibre13">
+     <li class="calibre14" value="11">
+      Click on the
+      <strong class="bold">
+       Load JSON
+      </strong>
+      button and you should see the
+      <em class="italic">
+       file selector
+      </em>
+      window pop up on the screen. Select the JSON file you created in
+      <em class="italic">
+       step 2
+      </em>
+      and press the
+      <strong class="bold">
+       Select
+      </strong>
+      button. You
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker691">
+      </a>
+      should see the following
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker692">
+      </a>
+      debug text appear in the
+      <em class="italic">
+       Application Output
+      </em>
+      window in Qt Creator, which indicates that the program has successfully loaded the data from the JSON file you
+      <span>
+       just selected:
+      </span>
+     </li>
+    </ol>
+    <div class="calibre2">
+     <div class="img---figure" id="_idContainer162">
+      <img alt="Figure 10.3 – The results printed in the Application Output window" class="calibre4" src="image/B20976_10_003.jpg"/>
+     </div>
+    </div>
+    <p class="img---caption" lang="en-US" xml:lang="en-US">
+     Figure 10.3 – The results printed in the Application Output window
+    </p>
+    <h2 class="calibre7" id="_idParaDest-215">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor215">
+     </a>
+     How it works…
+    </h2>
+    <p class="calibre3">
+     In this example, we’re trying to extract and process data from a JSON file using the
+     <strong class="source-inline">
+      QJsonDocument
+     </strong>
+     class. Imagine you’re making a computer game and you’re using JSON files to
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker693">
+     </a>
+     store the attributes of all the objects in your game scene. In this case, the JSON format plays an important role in storing the data in a structured way, which allows for
+     <span>
+      easy extraction.
+     </span>
+    </p>
+    <p class="calibre3">
+     We need to add the header of the class related to JSON to our source file, which, in this case, is the
+     <strong class="source-inline">
+      QJsonDocument
+     </strong>
+     class. The
+     <strong class="source-inline">
+      QJsonDocument
+     </strong>
+     class is built into Qt’s core library, so there is no need to include any additional modules with it, which also means that it’s the recommended class to use to process JSON data in Qt. Once we click on the
+     <strong class="bold">
+      Load JSON
+     </strong>
+     button, the
+     <strong class="source-inline">
+      on_loadJsonButton_clicked()
+     </strong>
+     slot will be called; this is where we write the code to process the
+     <span>
+      JSON data.
+     </span>
+    </p>
+    <p class="calibre3">
+     We use a file dialog to select the JSON file we want to process. Then, we send the selected file’s filename, together with its path, to the
+     <strong class="source-inline">
+      QFile
+     </strong>
+     class to open and read the text data of the JSON file. After that, the file’s data is sent to the
+     <strong class="source-inline">
+      QJsonDocument
+     </strong>
+     class
+     <span>
+      for processing.
+     </span>
+    </p>
+    <p class="calibre3">
+     We first
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker694">
+     </a>
+     check whether the main JSON structure
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker695">
+     </a>
+     is an array. If it is an array, we then check whether the array has any data in it. After that, use a
+     <strong class="source-inline">
+      for
+     </strong>
+     loop to read through the entire array and extract the individual objects stored in
+     <span>
+      the array.
+     </span>
+    </p>
+    <p class="calibre3">
+     Then, we extract the key-pair data from the objects and print out both the key
+     <span>
+      and value.
+     </span>
+    </p>
+    <h2 class="calibre7" id="_idParaDest-216">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor216">
+     </a>
+     There’s more…
+    </h2>
+    <p class="calibre3">
+     Besides the web applications, many commercial game engines and interactive applications use the JSON format to store information for in-game scenes, meshes, and other forms of assets used in their products. This is because the JSON format provides many benefits over other file formats, such as compact file size, high flexibility and extendibility, easy file recovery, and a relational tree structure that allows it to be used for highly efficient and performance-critical applications, such as search engines, intelligent data mining servers, and
+     <span>
+      scientific simulations.
+     </span>
+    </p>
+    <p class="callout-heading">
+     Note
+    </p>
+    <p class="callout">
+     To learn
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker696">
+     </a>
+     more about the XML format,
+     <span>
+      visit
+     </span>
+     <a class="pcalibre pcalibre1 calibre6" href="https://www.w3schools.com/js/js_json_intro.asp">
+      <span>
+       https://www.w3schools.com/js/js_json_intro.asp
+      </span>
+     </a>
+     <span>
+      .
+     </span>
+    </p>
+    <h1 class="calibre5" id="_idParaDest-217">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor217">
+     </a>
+     Writing JSON data to a text file
+    </h1>
+    <p class="calibre3">
+     Since we
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker697">
+     </a>
+     have learned how to process data obtained
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker698">
+     </a>
+     from a JSON file in the previous recipe, we will move on to learning how to save data to a JSON file. We will continue with the previous example and add
+     <span>
+      to it.
+     </span>
+    </p>
+    <h2 class="calibre7" id="_idParaDest-218">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor218">
+     </a>
+     How to do it…
+    </h2>
+    <p class="calibre3">
+     We will learn how to save data in a JSON file through the
+     <span>
+      following steps:
+     </span>
+    </p>
+    <ol class="calibre13">
+     <li class="calibre14">
+      Add another button to
+      <strong class="source-inline1">
+       mainwindow.ui
+      </strong>
+      , then set its object name as
+      <strong class="source-inline1">
+       saveJsonButton
+      </strong>
+      and its label as
+      <span>
+       <strong class="source-inline1">
+        Save JSON
+       </strong>
+      </span>
+      <span>
+       :
+      </span>
+     </li>
+    </ol>
+    <div class="calibre2">
+     <div class="img---figure" id="_idContainer163">
+      <img alt="Figure 10.4 – Adding the Save JSON button" class="calibre4" src="image/B20976_10_004.jpg"/>
+     </div>
+    </div>
+    <p class="img---caption" lang="en-US" xml:lang="en-US">
+     Figure 10.4 – Adding the Save JSON button
+    </p>
+    <ol class="calibre13">
+     <li class="calibre14" value="2">
+      Right-click
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker699">
+      </a>
+      on the button and select
+      <strong class="bold">
+       Go to slot…
+      </strong>
+      . A window
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker700">
+      </a>
+      will pop up with a list of signals available for selection. Select the
+      <strong class="source-inline1">
+       clicked()
+      </strong>
+      option and click
+      <strong class="bold">
+       OK
+      </strong>
+      . A signal function called
+      <strong class="source-inline1">
+       on_saveJsonButton_clicked()
+      </strong>
+      will now be automatically added to both your
+      <strong class="source-inline1">
+       mainwindow.h
+      </strong>
+      and
+      <strong class="source-inline1">
+       mainwindow.cpp
+      </strong>
+      files
+      <span>
+       by Qt:
+      </span>
+     </li>
+    </ol>
+    <div class="calibre2">
+     <div class="img---figure" id="_idContainer164">
+      <img alt="Figure 10.5 – Selecting the clicked() signal and pressing OK" class="calibre4" src="image/B20976_10_005.jpg"/>
+     </div>
+    </div>
+    <p class="img---caption" lang="en-US" xml:lang="en-US">
+     Figure 10.5 – Selecting the clicked() signal and pressing OK
+    </p>
+    <ol class="calibre13">
+     <li class="calibre14" value="3">
+      Add the following code to the
+      <span>
+       <strong class="source-inline1">
+        on_saveJsonButton_clicked()
+       </strong>
+      </span>
+      <span>
+       function:
+      </span>
+      <pre class="source-code">
+QQString filename = QFileDialog::getSaveFileName(this, "Save JSON", ".", "JSON files (*.json)");
+QFile file(filename);
+if (!file.open(QFile::WriteOnly | QFile::Text))
+    qDebug() &lt;&lt; "Error saving JSON file.";
+QJsonDocument json;
+QJsonArray array;</pre>
+     </li>
+     <li class="calibre14">
+      Let’s
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker701">
+      </a>
+      also write the first
+      <span>
+       <strong class="source-inline1">
+        contact
+       </strong>
+      </span>
+      <span>
+       element:
+      </span>
+      <pre class="source-code">
+QJsonObject contact1;
+contact1["category"] = "Friend";
+contact1["name"] = "John Doe";
+contact1["age"] = 32;
+contact1["address"] = "114B, 2nd Floor, Sterling Apartment, Morrison Town";
+contact1["phone"] = "0221743566";
+array.append(contact1);</pre>
+     </li>
+     <li class="calibre14">
+      Write
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker702">
+      </a>
+      the second
+      <strong class="source-inline1">
+       contact
+      </strong>
+      element
+      <span>
+       as follows:
+      </span>
+      <pre class="source-code">
+QJsonObject contact2;
+contact2["category"] = "Family";
+contact2["name"] = "Jane Smith";
+contact2["age"] = 24;
+contact2["address"] = "13, Ave Park, Alexandria";
+contact2["phone"] = "0025728396";
+array.append(contact2);</pre>
+     </li>
+     <li class="calibre14">
+      Finally, save the data into the
+      <span>
+       text file:
+      </span>
+      <pre class="source-code">
+json.setArray(array);
+    file.write(json.toJson());
+    file.close();
+}</pre>
+     </li>
+     <li class="calibre14">
+      Build and
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker703">
+      </a>
+      run the program and you should see an
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker704">
+      </a>
+      additional button on the
+      <span>
+       program UI:
+      </span>
+     </li>
+    </ol>
+    <div class="calibre2">
+     <div class="img---figure" id="_idContainer165">
+      <img alt="Figure 10.6 – Your application should now look like this" class="calibre4" src="image/B20976_10_006.jpg"/>
+     </div>
+    </div>
+    <p class="img---caption" lang="en-US" xml:lang="en-US">
+     Figure 10.6 – Your application should now look like this
+    </p>
+    <ol class="calibre13">
+     <li class="calibre14" value="8">
+      Click on the
+      <strong class="bold">
+       Save JSON
+      </strong>
+      button and a save file dialog will appear on the screen. Type the filename you require and click the
+      <span>
+       <strong class="bold">
+        Save
+       </strong>
+      </span>
+      <span>
+       button.
+      </span>
+     </li>
+     <li class="calibre14">
+      Open up the JSON file you just saved with any text editor. The first part of the file should look
+      <span>
+       like this:
+      </span>
+      <pre class="source-code">
+[
+    {
+        "address": "114B, 2nd Floor, Sterling Apartment, Morrison Town",
+        "age": 32,
+        "category": "Friend",
+        "name": "John Doe",
+        "phone": "0221743566"
+    },
+    {
+        "address": "13, Ave Park, Alexandria",
+        "age": 24,
+        "category": "Family",
+        "name": "Jane Smith",
+        "phone": "0025728396"
+    }
+]</pre>
+     </li>
+    </ol>
+    <h2 class="calibre7" id="_idParaDest-219">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor219">
+     </a>
+     How it works…
+    </h2>
+    <p class="calibre3">
+     The saving
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker705">
+     </a>
+     process is similar to loading a JSON file in the
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker706">
+     </a>
+     previous example. The only difference is instead of using the
+     <strong class="source-inline">
+      QJsonDocument::fromJson()
+     </strong>
+     function, we switched to using the
+     <strong class="source-inline">
+      QJsonDocument::toJson()
+     </strong>
+     function. We still used the file dialog and the
+     <strong class="source-inline">
+      QFile
+     </strong>
+     class to save the XML file. This time, we had to change the open mode from
+     <strong class="source-inline">
+      QFile::ReadOnly
+     </strong>
+     to
+     <strong class="source-inline">
+      QFile::WriteOnly
+     </strong>
+     before passing the byte array data to the
+     <span>
+      <strong class="source-inline">
+       QFile
+      </strong>
+     </span>
+     <span>
+      class.
+     </span>
+    </p>
+    <p class="calibre3">
+     Next, we started writing the JSON file by creating
+     <strong class="source-inline">
+      QJsonDocument
+     </strong>
+     and
+     <strong class="source-inline">
+      QJsonArray
+     </strong>
+     variables followed by creating a
+     <strong class="source-inline">
+      QJsonObject
+     </strong>
+     object for each contact. Then, we filled in the information for each contact and appended it to the
+     <span>
+      <strong class="source-inline">
+       QJsonArray
+      </strong>
+     </span>
+     <span>
+      array.
+     </span>
+    </p>
+    <p class="calibre3">
+     Finally, we used
+     <strong class="source-inline">
+      QJsonDocument::setArray()
+     </strong>
+     to apply the
+     <strong class="source-inline">
+      QJsonArray
+     </strong>
+     array we created previously as the main array of the JSON data before passing it to the
+     <strong class="source-inline">
+      QFile
+     </strong>
+     class as a byte array data using the
+     <span>
+      <strong class="source-inline">
+       QJsonDocument::toJson()
+      </strong>
+     </span>
+     <span>
+      function.
+     </span>
+    </p>
+    <h1 class="calibre5" id="_idParaDest-220">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor220">
+     </a>
+     Using Google’s Geocoding API
+    </h1>
+    <p class="calibre3">
+     In this
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker707">
+     </a>
+     example, we will learn how to obtain the full address of a specific location by using Google’s
+     <span>
+      Geocoding API.
+     </span>
+    </p>
+    <h2 class="calibre7" id="_idParaDest-221">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor221">
+     </a>
+     How to do it…
+    </h2>
+    <p class="calibre3">
+     Let’s create a program that utilizes the Geocoding API by following
+     <span>
+      these steps:
+     </span>
+    </p>
+    <ol class="calibre13">
+     <li class="calibre14">
+      Create a new
+      <strong class="bold">
+       Qt Widgets
+      </strong>
+      <span>
+       <strong class="bold">
+        Application
+       </strong>
+      </span>
+      <span>
+       project.
+      </span>
+     </li>
+     <li class="calibre14">
+      Open
+      <strong class="source-inline1">
+       mainwindow.ui
+      </strong>
+      and add a couple of text labels, input fields, and a button to make your UI look similar
+      <span>
+       to this:
+      </span>
+     </li>
+    </ol>
+    <div class="calibre2">
+     <div class="img---figure" id="_idContainer166">
+      <img alt="Figure 10.7 – Setting up your UI" class="calibre4" src="image/B20976_10_007.jpg"/>
+     </div>
+    </div>
+    <p class="img---caption" lang="en-US" xml:lang="en-US">
+     Figure 10.7 – Setting up your UI
+    </p>
+    <ol class="calibre13">
+     <li class="calibre14" value="3">
+      Open your project (
+      <strong class="source-inline1">
+       .pro
+      </strong>
+      ) file and add the network module to your project. You can do that by simply adding the word
+      <strong class="source-inline1">
+       network
+      </strong>
+      after
+      <strong class="source-inline1">
+       core
+      </strong>
+      and
+      <strong class="source-inline1">
+       gui
+      </strong>
+      , as shown in the
+      <span>
+       following code:
+      </span>
+      <pre class="source-code">
+QT += core gui <strong class="bold1">network</strong></pre>
+     </li>
+     <li class="calibre14">
+      Open
+      <strong class="source-inline1">
+       mainwindow.h
+      </strong>
+      and add the following headers to the
+      <span>
+       source code:
+      </span>
+      <pre class="source-code">
+#include &lt;QMainWindow&gt;
+#include &lt;QDebug&gt;
+#include &lt;QtNetwork/QNetworkAccessManager&gt;
+#include &lt;QtNetwork/QNetworkReply&gt;
+#include &lt;QJsonDocument&gt;
+#include &lt;QJsonArray&gt;
+#include &lt;QJsonObject&gt;</pre>
+     </li>
+     <li class="calibre14">
+      Declare a slot function manually and call
+      <span>
+       it
+      </span>
+      <span>
+       <strong class="source-inline1">
+        getAddressFinished()
+       </strong>
+      </span>
+      <span>
+       :
+      </span>
+      <pre class="source-code">
+private slots:
+void getAddressFinished(QNetworkReply* reply);</pre>
+     </li>
+     <li class="calibre14">
+      Declare a
+      <strong class="source-inline1">
+       private
+      </strong>
+      variable
+      <span>
+       called
+      </span>
+      <span>
+       <strong class="source-inline1">
+        addressRequest
+       </strong>
+      </span>
+      <span>
+       :
+      </span>
+      <pre class="source-code">
+private:
+QNetworkAccessManager* addressRequest;</pre>
+     </li>
+     <li class="calibre14">
+      Open
+      <strong class="source-inline1">
+       mainwindow.ui
+      </strong>
+      again, right-click on the
+      <strong class="bold">
+       Get Address
+      </strong>
+      button, and select
+      <strong class="bold">
+       Go to slot…
+      </strong>
+      . Then, choose the
+      <strong class="source-inline1">
+       clicked()
+      </strong>
+      option and press
+      <strong class="bold">
+       OK
+      </strong>
+      . A slot function
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker708">
+      </a>
+      will now be added to both the
+      <strong class="source-inline1">
+       mainwindow.h
+      </strong>
+      and
+      <strong class="source-inline1">
+       mainwindow.cpp
+      </strong>
+      <span>
+       source files.
+      </span>
+     </li>
+     <li class="calibre14">
+      Open
+      <strong class="source-inline1">
+       mainwindow.cpp
+      </strong>
+      and add the following code to the
+      <span>
+       class constructor:
+      </span>
+      <pre class="source-code">
+MainWindow::MainWindow(QWidget *parent) :
+QMainWindow(parent),
+ui(new Ui::MainWindow) {
+ui-&gt;setupUi(this);
+<strong class="bold1">addressRequest = new QNetworkAccessManager();</strong>
+<strong class="bold1">connect(addressRequest, &amp;QNetworkAccessManager::finished, this, &amp;MainWindow::getAddressFinished);</strong>
+}</pre>
+     </li>
+     <li class="calibre14">
+      Add the following code to the
+      <strong class="source-inline1">
+       getAddressFinished()
+      </strong>
+      slot function we just
+      <span>
+       declared manually:
+      </span>
+      <pre class="source-code">
+void MainWindow::getAddressFinished(QNetworkReply* reply) {
+QByteArray bytes = reply-&gt;readAll();
+//qDebug() &lt;&lt; QString::fromUtf8(bytes.data(), bytes.size());
+QJsonDocument json = QJsonDocument::fromJson(bytes);</pre>
+     </li>
+     <li class="calibre14">
+      Continue to get the first set of results from the JSON array to obtain the
+      <span>
+       formatted address:
+      </span>
+      <pre class="source-code">
+QJsonObject object = json.object();
+QJsonArray results = object["results"].toArray();
+QJsonObject first = results.at(0).toObject();
+QString address = first["formatted_address"].toString();
+qDebug() &lt;&lt; "Address:" &lt;&lt; address;
+}</pre>
+     </li>
+     <li class="calibre14">
+      Add the
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker709">
+      </a>
+      following code to the
+      <strong class="source-inline1">
+       clicked()
+      </strong>
+      slot function created
+      <span>
+       by Qt:
+      </span>
+      <pre class="source-code">
+void MainWindow::on_getAddressButton_clicked() {
+QString latitude = ui-&gt;latitude-&gt;text();
+QString longitude = ui-&gt;longitude-&gt;text();
+QNetworkRequest request;
+request.setUrl(QUrl("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + latitude + "," + longitude + "&amp;key=YOUR_KEY"));
+addressRequest-&gt;get(request);
+}</pre>
+     </li>
+     <li class="calibre14">
+      Build and run the program and you should be able to obtain the address by inserting the
+      <strong class="bold">
+       Longitude
+      </strong>
+      and
+      <strong class="bold">
+       Latitude
+      </strong>
+      values and clicking the
+      <strong class="bold">
+       Get
+      </strong>
+      <span>
+       <strong class="bold">
+        Address
+       </strong>
+      </span>
+      <span>
+       button:
+      </span>
+     </li>
+    </ol>
+    <div class="calibre2">
+     <div class="img---figure" id="_idContainer167">
+      <img alt="Figure 10.8 – Inserting the coordinates and pressing the Get Address button" class="calibre4" src="image/B20976_10_008.jpg"/>
+     </div>
+    </div>
+    <p class="img---caption" lang="en-US" xml:lang="en-US">
+     Figure 10.8 – Inserting the coordinates and pressing the Get Address button
+    </p>
+    <ol class="calibre13">
+     <li class="calibre14" value="13">
+      Let’s try with a longitude of
+      <strong class="source-inline1">
+       -73.9780838
+      </strong>
+      and a latitude of
+      <strong class="source-inline1">
+       40.6712957
+      </strong>
+      . Click the
+      <strong class="bold">
+       Get Address
+      </strong>
+      button and you will see the following result in the application
+      <span>
+       output window:
+      </span>
+      <pre class="source-code">
+Address: "185 7th Ave, Brooklyn, NY 11215, USA"</pre>
+     </li>
+    </ol>
+    <h2 class="calibre7" id="_idParaDest-222">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor222">
+     </a>
+     How it works…
+    </h2>
+    <p class="calibre3">
+     I won’t be able to tell you exactly how Google obtains the address from its backend system but I can teach you how to request data from Google by using
+     <strong class="source-inline">
+      QNetworkRequest
+     </strong>
+     . All you need to do is to set the URL of the network request to the URL I used in the previous source code and append both the latitude and longitude information to
+     <span>
+      the URL.
+     </span>
+    </p>
+    <p class="calibre3">
+     After that, all we
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker710">
+     </a>
+     can do is wait for the response from the Google API server. We need to specify JSON as the desired format when sending the request to Google; otherwise, it may return the results in JSON format. This can be done by adding the
+     <strong class="source-inline">
+      json
+     </strong>
+     keyword within the network request URL, as
+     <span>
+      highlighted here:
+     </span>
+    </p>
+    <pre class="console">
+request.setUrl(QUrl("https://maps.googleapis.com/maps/api/geocode/xml?keylatlng=" + latitude + "," + longitude + "&amp;key=YOUR_CODE"));</pre>
+    <p class="calibre3">
+     When the program receives the response from Google, the
+     <strong class="source-inline">
+      getAddressFinished()
+     </strong>
+     slot function will be called and we will be able to obtain the data sent by Google
+     <span>
+      through
+     </span>
+     <span>
+      <strong class="source-inline">
+       QNetworkReply
+      </strong>
+     </span>
+     <span>
+      .
+     </span>
+    </p>
+    <p class="calibre3">
+     Google usually replies with a long text in JSON format, which contains a ton of data we don’t need. All we need is the text stored in the
+     <strong class="source-inline">
+      formatted_address
+     </strong>
+     element in the JSON data. Since there is more than one element by the name of
+     <strong class="source-inline">
+      formatted_address
+     </strong>
+     , we just need to find the first one and ignore the rest. You can also do the
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker711">
+     </a>
+     reverse by providing an address to Google and obtaining the location’s coordinates from its
+     <span>
+      network response.
+     </span>
+    </p>
+    <h2 class="calibre7" id="_idParaDest-223">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor223">
+     </a>
+     There’s more…
+    </h2>
+    <p class="calibre3">
+     Google’s
+     <strong class="bold">
+      Geocoding API
+     </strong>
+     is part
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker712">
+     </a>
+     of the
+     <strong class="bold">
+      Google Maps APIs
+     </strong>
+     web services, which provide geographical data for your map applications. Besides the Geocoding
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker713">
+     </a>
+     API, you can
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker714">
+     </a>
+     also use their
+     <strong class="bold">
+      Location API
+     </strong>
+     ,
+     <strong class="bold">
+      Geolocation API
+     </strong>
+     , and
+     <strong class="bold">
+      Time Zone API
+     </strong>
+     to
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker715">
+     </a>
+     achieve your
+     <span>
+      desired results.
+     </span>
+    </p>
+    <p class="callout-heading">
+     Note
+    </p>
+    <p class="callout">
+     For more
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker716">
+     </a>
+     information regarding the Google Maps APIs web services,
+     <span>
+      visit
+     </span>
+     <a class="pcalibre pcalibre1 calibre6" href="https://developers.google.com/maps/web-services">
+      <span>
+       https://developers.google.com/maps/web-services
+      </span>
+     </a>
+     <span>
+      .
+     </span>
+    </p>
+   </div>
+  </div>
+ </body>
+</html>

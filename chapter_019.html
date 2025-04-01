@@ -1,0 +1,2089 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html>
+<html epub:prefix="z3998: http://www.daisy.org/z3998/2012/vocab/structure/#" lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+ <head>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   11
+  </title>
+ </head>
+ <body>
+  <div class="navigation">
+   <a class="nav-button" href="chapter_018.html">
+    ← Previous
+   </a>
+   <a class="nav-button" href="index.html">
+    Table of Contents
+   </a>
+   <a class="nav-button" href="chapter_020.html">
+    Next →
+   </a>
+  </div>
+  <div class="chapter-content">
+   <div class="calibre2" id="_idContainer184">
+    <h1 class="chapter-number" id="_idParaDest-224">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor224">
+     </a>
+     11
+    </h1>
+    <h1 class="calibre5" id="_idParaDest-225">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor225">
+     </a>
+     Conversion Library
+    </h1>
+    <p class="calibre3">
+     Data kept within our computer environment is encoded in a variety of ways. Sometimes, it can be used directly for a certain purpose; other times, it needs to be converted into another format in order to fit the context of the task. The process of converting data from one format into another also varies depending on the source format as well as the
+     <span>
+      target format.
+     </span>
+    </p>
+    <p class="calibre3">
+     Sometimes, the process can be very complex, especially when dealing with data that is feature-rich and sensitive, such as image or video conversion. Even a small error during the conversion process may render a
+     <span>
+      file unusable.
+     </span>
+    </p>
+    <p class="calibre3">
+     This chapter will cover the
+     <span>
+      following recipes:
+     </span>
+    </p>
+    <ul class="calibre15">
+     <li class="calibre14">
+      <span>
+       Converting data
+      </span>
+     </li>
+     <li class="calibre14">
+      <span>
+       Converting images
+      </span>
+     </li>
+     <li class="calibre14">
+      <span>
+       Converting videos
+      </span>
+     </li>
+     <li class="calibre14">
+      <span>
+       Converting currency
+      </span>
+     </li>
+    </ul>
+    <h1 class="calibre5" id="_idParaDest-226">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor226">
+     </a>
+     Technical requirements
+    </h1>
+    <p class="calibre3">
+     The technical requirements for this chapter include Qt 6.6.1 MinGW-64-bit and Qt Creator 12.0.2. All the code used in this chapter can be downloaded from the following GitHub
+     <span>
+      repository:
+     </span>
+     <a class="pcalibre pcalibre1 calibre6" href="https://github.com/PacktPublishing/QT6-C-GUI-Programming-Cookbook---Third-Edition-/tree/main/Chapter11">
+      <span>
+       https://github.com/PacktPublishing/QT6-C-GUI-Programming-Cookbook---Third-Edition-/tree/main/Chapter11
+      </span>
+     </a>
+     <span>
+      .
+     </span>
+    </p>
+    <h1 class="calibre5" id="_idParaDest-227">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor227">
+     </a>
+     Converting data
+    </h1>
+    <p class="calibre3">
+     Qt provides a set of classes
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker717">
+     </a>
+     and functions for easily converting between different types of data. This makes Qt more than just a GUI library; it is a complete platform for software development. The
+     <strong class="source-inline">
+      QVariant
+     </strong>
+     class, which we will use in the following example, makes Qt even more flexible and powerful compared to the similar conversion functionalities provided by the C++
+     <span>
+      standard library.
+     </span>
+    </p>
+    <h2 class="calibre7" id="_idParaDest-228">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor228">
+     </a>
+     How to do it…
+    </h2>
+    <p class="calibre3">
+     Let’s learn how to convert various data types in Qt by following
+     <span>
+      these steps:
+     </span>
+    </p>
+    <ol class="calibre13">
+     <li class="calibre14">
+      Open
+      <strong class="bold">
+       Qt Creator
+      </strong>
+      and create a new
+      <strong class="bold">
+       Qt Console Application
+      </strong>
+      project by going to
+      <strong class="bold">
+       File
+      </strong>
+      |
+      <span>
+       <strong class="bold">
+        New Project…
+       </strong>
+      </span>
+      <span>
+       :
+      </span>
+     </li>
+    </ol>
+    <div class="calibre2">
+     <div class="img---figure" id="_idContainer169">
+      <img alt="Figure 11.1 – Create a Qt Console Application project" class="calibre4" src="image/B20976_11_001.jpg"/>
+     </div>
+    </div>
+    <p class="img---caption" lang="en-US" xml:lang="en-US">
+     Figure 11.1 – Create a Qt Console Application project
+    </p>
+    <ol class="calibre13">
+     <li class="calibre14" value="2">
+      Open
+      <strong class="source-inline1">
+       main.cpp
+      </strong>
+      and add the
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker718">
+      </a>
+      following headers
+      <span>
+       to it:
+      </span>
+      <pre class="source-code">
+#include &lt;QCoreApplication&gt;
+<strong class="bold1">#include &lt;QDebug&gt;</strong>
+<strong class="bold1">#include &lt;QtMath&gt;</strong>
+<strong class="bold1">#include &lt;QDateTime&gt;</strong>
+<strong class="bold1">#include &lt;QTextCodec&gt;</strong>
+<strong class="bold1">#include &lt;iostream&gt;</strong></pre>
+     </li>
+     <li class="calibre14">
+      In the
+      <strong class="source-inline1">
+       main()
+      </strong>
+      function, add the following code to convert a string into
+      <span>
+       a number:
+      </span>
+      <pre class="source-code">
+    int numberA = 2;
+    QString numberB = "5";
+    qDebug() &lt;&lt; "1) " &lt;&lt; "2 + 5 =" &lt;&lt; numberA + numberB.toInt();</pre>
+     </li>
+     <li class="calibre14">
+      Convert the number back
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker719">
+      </a>
+      into
+      <span>
+       a string:
+      </span>
+      <pre class="source-code">
+    float numberC = 10.25;
+    float numberD = 2;
+    QString result = QString::number(numberC * numberD);
+    qDebug() &lt;&lt; "2) " &lt;&lt; "10.25 * 2 =" &lt;&lt; result;</pre>
+     </li>
+     <li class="calibre14">
+      Let’s see how to round down a value
+      <span>
+       using
+      </span>
+      <span>
+       <strong class="source-inline1">
+        qFloor()
+       </strong>
+      </span>
+      <span>
+       :
+      </span>
+      <pre class="source-code">
+    float numberE = 10.3;
+    float numberF = qFloor(numberE);
+    qDebug() &lt;&lt; "3) " &lt;&lt; "Floor of 10.3 is" &lt;&lt; numberF;</pre>
+     </li>
+     <li class="calibre14">
+      Using
+      <strong class="source-inline1">
+       qCeil()
+      </strong>
+      , we are able to round down a number to the smallest integral value not smaller than its
+      <span>
+       initial value:
+      </span>
+      <pre class="source-code">
+    float numberG = 10.3;
+    float numberH = qCeil(numberG);
+    qDebug() &lt;&lt; "4) " &lt;&lt; "Ceil of 10.3 is" &lt;&lt; numberH;</pre>
+     </li>
+     <li class="calibre14">
+      Create a date-time variable by converting it from a piece of date-time data written in the
+      <span>
+       string format:
+      </span>
+      <pre class="source-code">
+    QString dateTimeAString = "2016-05-04 12:24:00";
+    QDateTime dateTimeA = QDateTime::fromString(dateTimeAString, "yyyy-MM-dd hh:mm:ss");
+    qDebug() &lt;&lt; "5) " &lt;&lt; dateTimeA;</pre>
+     </li>
+     <li class="calibre14">
+      Convert the date-time
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker720">
+      </a>
+      variable back into a string with our
+      <span>
+       custom format:
+      </span>
+      <pre class="source-code">
+    QDateTime dateTimeB = QDateTime::currentDateTime();
+    QString dateTimeBString = dateTimeB.toString("dd/MM/yy hh:mm");
+    qDebug() &lt;&lt; "6) " &lt;&lt; dateTimeBString;</pre>
+     </li>
+     <li class="calibre14">
+      Call the
+      <strong class="source-inline1">
+       QString::toUpper()
+      </strong>
+      function to convert a string variable into all
+      <span>
+       capital letters:
+      </span>
+      <pre class="source-code">
+    QString hello1 = "hello world!";
+    qDebug() &lt;&lt; "7) " &lt;&lt; hello1.toUpper();</pre>
+     </li>
+     <li class="calibre14">
+      Calling
+      <strong class="source-inline1">
+       QString::toLower()
+      </strong>
+      will convert the string completely
+      <span>
+       into lowercase:
+      </span>
+      <pre class="source-code">
+    QString hello2 = "HELLO WORLD!";
+    qDebug() &lt;&lt; "8) " &lt;&lt; hello2.toLower();</pre>
+     </li>
+     <li class="calibre14">
+      The
+      <strong class="source-inline1">
+       QVariant
+      </strong>
+      class provided by Qt is a very powerful data type that can be easily converted to other types without any effort from
+      <span>
+       the programmer:
+      </span>
+      <pre class="source-code">
+    QVariant aNumber = QVariant(3.14159);
+    double aResult = 12.5 * aNumber.toDouble();
+    qDebug() &lt;&lt; "9) 12.5 * 3.14159 =" &lt;&lt; aResult;</pre>
+     </li>
+     <li class="calibre14">
+      This demonstrates how a single
+      <strong class="source-inline1">
+       QVariant
+      </strong>
+      variable can be simultaneously converted to multiple data types without any effort from
+      <span>
+       the programmer:
+      </span>
+      <pre class="source-code">
+    qDebug() &lt;&lt; "10) ";
+    QVariant myData = QVariant(10);
+    qDebug() &lt;&lt; myData;
+    myData = myData.toFloat() / 2.135;
+    qDebug() &lt;&lt; myData;
+    myData = true;
+    qDebug() &lt;&lt; myData;
+    myData = QDateTime::currentDateTime();
+    qDebug() &lt;&lt; myData;
+    myData = "Good bye!";
+    qDebug() &lt;&lt; myData;</pre>
+     </li>
+     <li class="calibre14">
+      The full source code
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker721">
+      </a>
+      in
+      <strong class="source-inline1">
+       main.cpp
+      </strong>
+      will now look
+      <span>
+       like this:
+      </span>
+      <pre class="source-code">
+#include &lt;QCoreApplication&gt;
+#include &lt;QDebug&gt;
+#include &lt;QtMath&gt;
+#include &lt;QDateTime&gt;
+#include &lt;QStringConverter&gt;
+#include &lt;iostream&gt;
+int main(int argc, char *argv[]) {
+    QCoreApplication a(argc, argv);</pre>
+     </li>
+     <li class="calibre14">
+      After that, let’s add code to convert a string into a number, and
+      <span>
+       vice versa:
+      </span>
+      <pre class="source-code">
+// String to number
+    int numberA = 2;
+    QString numberB = "5";
+    qDebug() &lt;&lt; "1) " &lt;&lt; "2 + 5 =" &lt;&lt; numberA +
+numberB.toInt();
+// Number to string
+    float numberC = 10.25;
+    float numberD = 2;
+    QString result = QString::number(numberC * numberD);
+    qDebug() &lt;&lt; "2) " &lt;&lt; "10.25 * 2 =" &lt;&lt; result;</pre>
+     </li>
+     <li class="calibre14">
+      Write the code to convert
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker722">
+      </a>
+      floating-point numbers to their nearest succeeding or preceding integer
+      <span>
+       number, respectively:
+      </span>
+      <pre class="source-code">
+// Floor
+    float numberE = 10.3;
+    float numberF = qFloor(numberE);
+    qDebug() &lt;&lt; "3) " &lt;&lt; "Floor of 10.3 is" &lt;&lt; numberF;
+// Ceil
+    float numberG = 10.3;
+    float numberH = qCeil(numberG);
+    qDebug() &lt;&lt; "4) " &lt;&lt; "Ceil of 10.3 is" &lt;&lt; numberH;</pre>
+     </li>
+     <li class="calibre14">
+      Convert a string into the date-time format, and
+      <span>
+       vice versa:
+      </span>
+      <pre class="source-code">
+// Date time from string
+    QString dateTimeAString = "2016-05-04 12:24:00";
+    QDateTime dateTimeA = QDateTime::fromString(dateTimeAString, "yyyy-MM-dd hh:mm:ss");
+    qDebug() &lt;&lt; "5) " &lt;&lt; dateTimeA;
+// Date time to string
+    QDateTime dateTimeB = QDateTime::currentDateTime();
+    QString dateTimeBString = dateTimeB.toString("dd/MM/yy hh:mm");
+    qDebug() &lt;&lt; "6) " &lt;&lt; dateTimeBString;</pre>
+     </li>
+     <li class="calibre14">
+      Continue to add code to convert strings into uppercase or
+      <span>
+       lowercase characters:
+      </span>
+      <pre class="source-code">
+// String to all uppercase
+    QString hello1 = "hello world!";
+    qDebug() &lt;&lt; "7) " &lt;&lt; hello1.toUpper();
+// String to all lowercase
+    QString hello2 = "HELLO WORLD!";
+    qDebug() &lt;&lt; "8) " &lt;&lt; hello2.toLower();</pre>
+     </li>
+     <li class="calibre14">
+      Convert the
+      <strong class="source-inline1">
+       QVariant
+      </strong>
+      data
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker723">
+      </a>
+      type into
+      <span>
+       other types:
+      </span>
+      <pre class="source-code">
+// QVariant to double
+    QVariant aNumber = QVariant(3.14159);
+    double aResult = 12.5 * aNumber.toDouble();
+    qDebug() &lt;&lt; "9) 12.5 * 3.14159 =" &lt;&lt; aResult;
+// QVariant different types
+    qDebug() &lt;&lt; "10) ";
+    QVariant myData = QVariant(10);
+    qDebug() &lt;&lt; myData;
+    myData = myData.toFloat() / 2.135;
+    qDebug() &lt;&lt; myData;
+    myData = true;
+    qDebug() &lt;&lt; myData;</pre>
+     </li>
+     <li class="calibre14">
+      Convert the
+      <strong class="source-inline1">
+       QVariant
+      </strong>
+      data type into
+      <strong class="source-inline1">
+       QDateTime
+      </strong>
+      <span>
+       and
+      </span>
+      <span>
+       <strong class="source-inline1">
+        QString
+       </strong>
+      </span>
+      <span>
+       :
+      </span>
+      <pre class="source-code">
+    myData = QDateTime::currentDateTime();
+    qDebug() &lt;&lt; myData;
+    myData = "Good bye!";
+    qDebug() &lt;&lt; myData;
+    return a.exec();
+}</pre>
+     </li>
+     <li class="calibre14">
+      Compile and run the project, and
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker724">
+      </a>
+      you should see something
+      <span>
+       like this:
+      </span>
+     </li>
+    </ol>
+    <div class="calibre2">
+     <div class="img---figure" id="_idContainer170">
+      <img alt="Figure 11.2 – Printing the conversion results on the application output window" class="calibre4" src="image/B20976_11_002.jpg"/>
+     </div>
+    </div>
+    <p class="img---caption" lang="en-US" xml:lang="en-US">
+     Figure 11.2 – Printing the conversion results on the application output window
+    </p>
+    <h2 class="calibre7" id="_idParaDest-229">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor229">
+     </a>
+     How it works…
+    </h2>
+    <p class="calibre3">
+     All the data types provided by Qt, such as
+     <strong class="source-inline">
+      QString
+     </strong>
+     ,
+     <strong class="source-inline">
+      QDateTime
+     </strong>
+     , and
+     <strong class="source-inline">
+      QVariant
+     </strong>
+     , contain functions that make conversion to other types easy and straightforward. Qt also provides its own object conversion function,
+     <strong class="source-inline">
+      qobject_cast()
+     </strong>
+     , which doesn’t rely on the standard library. It is also more compatible with Qt and works well to convert between Qt’s widget types and
+     <span>
+      data types.
+     </span>
+    </p>
+    <p class="calibre3">
+     Qt also provides you with the
+     <strong class="source-inline">
+      QtMath
+     </strong>
+     class, which helps you to manipulate number variables, such as rounding up a floating-point number or converting an angle from degrees to radians.
+     <strong class="source-inline">
+      QVariant
+     </strong>
+     is a special class that can be used to store data of all kinds of types, such as
+     <strong class="source-inline">
+      int
+     </strong>
+     ,
+     <strong class="source-inline">
+      float
+     </strong>
+     ,
+     <strong class="source-inline">
+      char
+     </strong>
+     , and
+     <strong class="source-inline">
+      string
+     </strong>
+     . It can automatically determine the data type by examining the value stored in the variable. You can also easily convert the data into any of the types supported by the
+     <strong class="source-inline">
+      QVariant
+     </strong>
+     class by just calling a single function, such as
+     <strong class="source-inline">
+      toFloat()
+     </strong>
+     ,
+     <strong class="source-inline">
+      toInt()
+     </strong>
+     ,
+     <strong class="source-inline">
+      toBool()
+     </strong>
+     ,
+     <strong class="source-inline">
+      toChar()
+     </strong>
+     ,
+     <span>
+      or
+     </span>
+     <span>
+      <strong class="source-inline">
+       toString()
+      </strong>
+     </span>
+     <span>
+      .
+     </span>
+    </p>
+    <h2 class="calibre7" id="_idParaDest-230">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor230">
+     </a>
+     There’s more…
+    </h2>
+    <p class="calibre3">
+     Be aware that each of these
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker725">
+     </a>
+     conversions takes computing power. Even though modern computers are extremely fast at handling these operations, you should be careful not to overdo it with a large quantity at once. If you’re converting a large set of variables for complex calculations, it might slow down your computer significantly, so try to convert variables only
+     <span>
+      when necessary.
+     </span>
+    </p>
+    <h1 class="calibre5" id="_idParaDest-231">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor231">
+     </a>
+     Converting images
+    </h1>
+    <p class="calibre3">
+     In this section, we will learn how to build a
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker726">
+     </a>
+     simple image converter that converts an image from one format into another. Qt supports reading and writing different types of image formats, and this support comes in the form of external DLL files due to
+     <span>
+      licensing issues.
+     </span>
+    </p>
+    <p class="calibre3">
+     However, you don’t have to worry about that because as long as you include those DLL files in your project, it will work seamlessly across different formats. There are certain formats that only support reading and not writing, and some that
+     <span>
+      support both.
+     </span>
+    </p>
+    <p class="callout-heading">
+     Note
+    </p>
+    <p class="callout">
+     You can check out the full details about converting images
+     <span>
+      at
+     </span>
+     <a class="pcalibre pcalibre1 calibre6" href="http://doc.qt.io/qt-6/qtimageformats-index.html">
+      <span>
+       http://doc.qt.io/qt-6/qtimageformats-index.html
+      </span>
+     </a>
+     <span>
+      .
+     </span>
+    </p>
+    <h2 class="calibre7" id="_idParaDest-232">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor232">
+     </a>
+     How to do it…
+    </h2>
+    <p class="calibre3">
+     Qt’s built-in image libraries make image conversion
+     <span>
+      really simple:
+     </span>
+    </p>
+    <ol class="calibre13">
+     <li class="calibre14">
+      Open Qt Creator and create a new
+      <strong class="bold">
+       Qt Widgets
+      </strong>
+      <span>
+       <strong class="bold">
+        Application
+       </strong>
+      </span>
+      <span>
+       project.
+      </span>
+     </li>
+     <li class="calibre14">
+      Open
+      <strong class="source-inline1">
+       mainwindow.ui
+      </strong>
+      and add a line edit and push button to the canvas to select image files, a combo box to select the desired file format, and another push button to start the
+      <span>
+       conversion process:
+      </span>
+     </li>
+    </ol>
+    <div class="calibre2">
+     <div class="img---figure" id="_idContainer171">
+      <img alt="Figure 11.3 – Lay out the UI as shown here" class="calibre4" src="image/B20976_11_003.jpg"/>
+     </div>
+    </div>
+    <p class="img---caption" lang="en-US" xml:lang="en-US">
+     Figure 11.3 – Lay out the UI as shown here
+    </p>
+    <ol class="calibre13">
+     <li class="calibre14" value="3">
+      Double-click the combobox, and a window will then appear where you can edit the box. We will add three
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker727">
+      </a>
+      items to the combobox list by clicking the
+      <strong class="bold">
+       +
+      </strong>
+      button three times and renaming the items
+      <strong class="source-inline1">
+       PNG
+      </strong>
+      ,
+      <strong class="source-inline1">
+       JPEG
+      </strong>
+      ,
+      <span>
+       and
+      </span>
+      <span>
+       <strong class="source-inline1">
+        BMP
+       </strong>
+      </span>
+      <span>
+       :
+      </span>
+     </li>
+    </ol>
+    <div class="calibre2">
+     <div class="img---figure" id="_idContainer172">
+      <img alt="Figure 11.4 – Adding three options to the combobox" class="calibre4" src="image/B20976_11_004.jpg"/>
+     </div>
+    </div>
+    <p class="img---caption" lang="en-US" xml:lang="en-US">
+     Figure 11.4 – Adding three options to the combobox
+    </p>
+    <ol class="calibre13">
+     <li class="calibre14" value="4">
+      Right-click on one of the push buttons, select
+      <strong class="bold">
+       Go to slot…
+      </strong>
+      , and then click the
+      <strong class="bold">
+       OK
+      </strong>
+      button. A slot function will be automatically added to your source files. Repeat this step for the other push button
+      <span>
+       as well:
+      </span>
+     </li>
+    </ol>
+    <div class="calibre2">
+     <div class="img---figure" id="_idContainer173">
+      <img alt="Figure 11.5 – Select the clicked() signal and press OK" class="calibre4" src="image/B20976_11_005.jpg"/>
+     </div>
+    </div>
+    <p class="img---caption" lang="en-US" xml:lang="en-US">
+     Figure 11.5 – Select the clicked() signal and press OK
+    </p>
+    <ol class="calibre13">
+     <li class="calibre14" value="5">
+      Let’s move over to the source
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker728">
+      </a>
+      code. Open
+      <strong class="source-inline1">
+       mainwindow.h
+      </strong>
+      and add the
+      <span>
+       following header:
+      </span>
+      <pre class="source-code">
+#include &lt;QMainWindow&gt;
+<strong class="bold1">#include &lt;QFileDialog&gt;</strong>
+<strong class="bold1">#include &lt;QMessageBox&gt;</strong>
+<strong class="bold1">#include &lt;QDebug&gt;</strong></pre>
+     </li>
+     <li class="calibre14">
+      Open
+      <strong class="source-inline1">
+       mainwindow.cpp
+      </strong>
+      and define what will happen when the
+      <strong class="bold">
+       Browse
+      </strong>
+      button is clicked, which in this case is opening the file dialog to select an
+      <span>
+       image file:
+      </span>
+      <pre class="source-code">
+void MainWindow::on_browseButton_clicked() {
+    QString fileName = QFileDialog::getOpenFileName(this, "Open Image", "", "Image Files (*.png *.jpg *.bmp)");
+    ui-&gt;filePath-&gt;setText(fileName);
+}</pre>
+     </li>
+     <li class="calibre14">
+      Define what will happen when the
+      <strong class="bold">
+       Convert
+      </strong>
+      button
+      <span>
+       is clicked:
+      </span>
+      <pre class="source-code">
+void MainWindow::on_convertButton_clicked() {
+    QString fileName = ui-&gt;filePath-&gt;text();
+    if (fileName != "") {
+        QFileInfo fileInfo = QFileInfo(fileName);
+        QString newFileName = fileInfo.path() + "/" + fileInfo.completeBaseName();
+        QImage image = QImage(ui-&gt;filePath-&gt;text());
+        if (!image.isNull()) {</pre>
+     </li>
+     <li class="calibre14">
+      Check which format
+      <span>
+       is
+      </span>
+      <span>
+       <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker729">
+       </a>
+      </span>
+      <span>
+       used:
+      </span>
+      <pre class="source-code">
+// 0 = PNG, 1 = JPG, 2 = BMP
+            int format = ui-&gt;fileFormat-&gt;currentIndex();
+            if (format == 0) {
+                newFileName += ".png";
+            }
+            else if (format == 1) {
+                newFileName += ".jpg";
+            }
+            else if (format == 2) {
+                newFileName += ".bmp";
+            }</pre>
+     </li>
+     <li class="calibre14">
+      Check whether the image has
+      <span>
+       been converted:
+      </span>
+      <pre class="source-code">
+            qDebug() &lt;&lt; newFileName &lt;&lt; format;
+            if (image.save(newFileName, 0, -1)) {
+                QMessageBox::information(this, "Success", "Image successfully converted.");
+            }
+            else {
+                QMessageBox::warning(this, "Failed", "Failed to convert image.");
+            }
+        }</pre>
+     </li>
+     <li class="calibre14">
+      Display the
+      <span>
+       message
+      </span>
+      <span>
+       <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker730">
+       </a>
+      </span>
+      <span>
+       boxes:
+      </span>
+      <pre class="source-code">
+        else {
+            QMessageBox::warning(this, "Failed", "Failed to open image file.");
+            }
+        }
+    else {
+        QMessageBox::warning(this, "Failed", "No file is selected.");
+    }
+}</pre>
+     </li>
+     <li class="calibre14">
+      Build and run the program now, and we should get a pretty simple image converter that looks
+      <span>
+       like this:
+      </span>
+     </li>
+    </ol>
+    <div class="calibre2">
+     <div class="img---figure" id="_idContainer174">
+      <img alt="Figure 11.6 – Browse an image, select a format, and press the Convert button" class="calibre4" src="image/B20976_11_006.jpg"/>
+     </div>
+    </div>
+    <p class="img---caption" lang="en-US" xml:lang="en-US">
+     Figure 11.6 – Browse an image, select a format, and press the Convert button
+    </p>
+    <h2 class="calibre7" id="_idParaDest-233">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor233">
+     </a>
+     How it works…
+    </h2>
+    <p class="calibre3">
+     The previous example uses the native
+     <strong class="source-inline">
+      QImage
+     </strong>
+     class from Qt, which contains functions that can access pixel data and manipulate it. It is also used to load an image file and extract its data through different decompression methods, depending on the format of
+     <span>
+      the image.
+     </span>
+    </p>
+    <p class="calibre3">
+     Once the data is extracted, you
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker731">
+     </a>
+     can do anything you want with it, such as display the image on screen, manipulate its color information, resize the image, or compress it with another format and save it as
+     <span>
+      a file.
+     </span>
+    </p>
+    <p class="calibre3">
+     We used
+     <strong class="source-inline">
+      QFileInfo
+     </strong>
+     to separate the filename from the extension so that we could amend the extension name with the new format selected by the user from the combobox. This way, we can save the newly converted image in the same folder as the original image and automatically give it the same filename as well, except in a
+     <span>
+      different format.
+     </span>
+    </p>
+    <p class="calibre3">
+     As long as you’re trying to convert the image to a format supported by Qt, you just need to call
+     <strong class="source-inline">
+      QImage::save()
+     </strong>
+     . Internally, Qt will figure out the rest for you and output the image to the chosen format. In the
+     <strong class="source-inline">
+      QImage::save()
+     </strong>
+     function, there is a parameter that sets the image quality and another that sets the format. In this example, we just set both as the default values, which saves the image at the highest quality and lets Qt figure out the format by checking the extension stated in the
+     <span>
+      output filename.
+     </span>
+    </p>
+    <h2 class="calibre7" id="_idParaDest-234">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor234">
+     </a>
+     There’s more…
+    </h2>
+    <p class="calibre3">
+     You can also convert an image into a PDF using the
+     <strong class="source-inline">
+      QPdfWriter
+     </strong>
+     class provided by Qt. Essentially, you paint the selected image to the layout of a newly created PDF document and set its
+     <span>
+      resolution accordingly.
+     </span>
+    </p>
+    <p class="callout-heading">
+     Note
+    </p>
+    <p class="callout">
+     For more information
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker732">
+     </a>
+     about the
+     <strong class="source-inline1">
+      QPdfWriter
+     </strong>
+     class,
+     <span>
+      visit
+     </span>
+     <a class="pcalibre pcalibre1 calibre6" href="http://doc.qt.io/qt-6/qpdfwriter.html">
+      <span>
+       http://doc.qt.io/qt-6/qpdfwriter.html
+      </span>
+     </a>
+     <span>
+      .
+     </span>
+    </p>
+    <h1 class="calibre5" id="_idParaDest-235">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor235">
+     </a>
+     Converting videos
+    </h1>
+    <p class="calibre3">
+     In this recipe, we will create a simple video
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker733">
+     </a>
+     converter using Qt and
+     <strong class="bold">
+      FFmpeg
+     </strong>
+     , a leading multimedia framework that is free and open source. Although Qt supports playing video files through its widget, it does not currently support video conversion. Fear not! You can still achieve the same goal by making your program cooperate with another standalone program, through the
+     <strong class="source-inline">
+      QProcess
+     </strong>
+     class provided
+     <span>
+      by Qt.
+     </span>
+    </p>
+    <h2 class="calibre7" id="_idParaDest-236">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor236">
+     </a>
+     How to do it…
+    </h2>
+    <p class="calibre3">
+     Let’s make a simple video converter
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker734">
+     </a>
+     with the
+     <span>
+      following steps:
+     </span>
+    </p>
+    <ol class="calibre13">
+     <li class="calibre14">
+      Download
+      <strong class="source-inline1">
+       FFmpeg
+      </strong>
+      (a static package) from
+      <a class="pcalibre pcalibre1 calibre6" href="http://ffmpeg.zeranoe.com/builds">
+       http://ffmpeg.zeranoe.com/builds
+      </a>
+      and extract the contents to your preferred location – for
+      <span>
+       example,
+      </span>
+      <span>
+       <strong class="source-inline1">
+        C:/FFmpeg/
+       </strong>
+      </span>
+      <span>
+       .
+      </span>
+     </li>
+     <li class="calibre14">
+      Open Qt Creator and create a new
+      <strong class="bold">
+       Qt Widgets Application
+      </strong>
+      project by going to
+      <strong class="bold">
+       File
+      </strong>
+      |
+      <span>
+       <strong class="bold">
+        New Project...
+       </strong>
+      </span>
+      <span>
+       .
+      </span>
+     </li>
+     <li class="calibre14">
+      Open
+      <strong class="source-inline1">
+       mainwindow.ui
+      </strong>
+      – we’re going to work on the program’s user interface. Its UI is very similar to the previous example, except that we add an extra text-edit widget to the canvas, just under
+      <span>
+       the combobox:
+      </span>
+     </li>
+    </ol>
+    <div class="calibre2">
+     <div class="img---figure" id="_idContainer175">
+      <img alt="Figure 11.7 – Design your video converter’s UI like this" class="calibre4" src="image/B20976_11_007.jpg"/>
+     </div>
+    </div>
+    <p class="img---caption" lang="en-US" xml:lang="en-US">
+     Figure 11.7 – Design your video converter’s UI like this
+    </p>
+    <ol class="calibre13">
+     <li class="calibre14" value="4">
+      Double-click the combobox, and then a window will appear to edit the box. We will add three items to the combobox list by clicking the
+      <strong class="bold">
+       +
+      </strong>
+      button three times, and then rename the items
+      <strong class="source-inline1">
+       AVI
+      </strong>
+      ,
+      <strong class="source-inline1">
+       MP4
+      </strong>
+      ,
+      <span>
+       and
+      </span>
+      <span>
+       <strong class="source-inline1">
+        MOV
+       </strong>
+      </span>
+      <span>
+       :
+      </span>
+     </li>
+    </ol>
+    <div class="calibre2">
+     <div class="img---figure" id="_idContainer176">
+      <img alt="Figure 11.8 – Adding three video formats to the combobox" class="calibre4" src="image/B20976_11_008.jpg"/>
+     </div>
+    </div>
+    <p class="img---caption" lang="en-US" xml:lang="en-US">
+     Figure 11.8 – Adding three video formats to the combobox
+    </p>
+    <ol class="calibre13">
+     <li class="calibre14" value="5">
+      Right-click on one of the
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker735">
+      </a>
+      push buttons, select
+      <strong class="bold">
+       Go to slot…
+      </strong>
+      , and then click the
+      <strong class="bold">
+       OK
+      </strong>
+      button. A slot function will then be automatically added to your source files. Repeat this step for the other push button
+      <span>
+       as well.
+      </span>
+     </li>
+     <li class="calibre14">
+      Open
+      <strong class="source-inline1">
+       mainwindow.h
+      </strong>
+      and add the following headers to
+      <span>
+       the top:
+      </span>
+      <pre class="source-code">
+#include &lt;QMainWindow&gt;
+<strong class="bold1">#include &lt;QFileDialog&gt;</strong>
+<strong class="bold1">#include &lt;QProcess&gt;</strong>
+<strong class="bold1">#include &lt;QMessageBox&gt;</strong>
+<strong class="bold1">#include &lt;QScrollBar&gt;</strong>
+<strong class="bold1">#include &lt;QDebug&gt;</strong></pre>
+     </li>
+     <li class="calibre14">
+      Add the following pointers under the
+      <span>
+       <strong class="source-inline1">
+        public
+       </strong>
+      </span>
+      <span>
+       keyword:
+      </span>
+      <pre class="source-code">
+public:
+    explicit MainWindow(QWidget *parent = 0);
+    ~MainWindow();
+<strong class="bold1">QProcess* process;</strong>
+<strong class="bold1">QString outputText;</strong>
+<strong class="bold1">QString fileName;</strong>
+<strong class="bold1">QString outputFileName;</strong></pre>
+     </li>
+     <li class="calibre14">
+      Add three extra slot functions under the two functions that Qt created for us previously in the
+      <em class="italic">
+       Converting
+      </em>
+      <span>
+       <em class="italic">
+        images
+       </em>
+      </span>
+      <span>
+       recipe:
+      </span>
+      <pre class="source-code">
+private slots:
+    void on_browseButton_clicked();
+    void on_convertButton_clicked();
+    void processStarted();
+    void readyReadStandardOutput();
+    void processFinished();</pre>
+     </li>
+     <li class="calibre14">
+      Open
+      <strong class="source-inline1">
+       mainwindow.cpp
+      </strong>
+      and
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker736">
+      </a>
+      add the following code to the
+      <span>
+       class constructor:
+      </span>
+      <pre class="source-code">
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent), ui(new Ui::MainWindow) {
+    ui-&gt;setupUi(this);
+    <strong class="bold1">process = new QProcess(this);</strong>
+    <strong class="bold1">connect(process, QProcess::started, this,</strong>
+<strong class="bold1">MainWindow::processStarted);</strong>
+    <strong class="bold1">connect(process, QProcess::readyReadStandardOutput, this,</strong>
+<strong class="bold1">MainWindow::readyReadStandardOutput);</strong>
+    <strong class="bold1">connect(process, QProcess::finished, this,</strong>
+<strong class="bold1">MainWindow::processFinished);</strong>
+}</pre>
+     </li>
+     <li class="calibre14">
+      Define what will happen when the
+      <strong class="bold">
+       Browse
+      </strong>
+      button is clicked, which in this case is opening up the file dialog to allow us to choose the
+      <span>
+       video file:
+      </span>
+      <pre class="source-code">
+void MainWindow::on_browseButton_clicked() {
+    QString fileName = QFileDialog::getOpenFileName(this, "Open Video", "", "Video Files (*.avi *.mp4 *.mov)");
+    ui-&gt;filePath-&gt;setText(fileName);
+}</pre>
+     </li>
+     <li class="calibre14">
+      Define what will happen if the
+      <strong class="bold">
+       Convert
+      </strong>
+      button is clicked. Here, we pass the filenames and
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker737">
+      </a>
+      arguments to
+      <strong class="source-inline1">
+       FFmpeg
+      </strong>
+      , which will then handle the conversion
+      <span>
+       process externally:
+      </span>
+      <pre class="source-code">
+void MainWindow::on_convertButton_clicked() {
+    QString ffmpeg = "C:/FFmpeg/bin/ffmpeg";
+    QStringList arguments;
+    fileName = ui-&gt;filePath-&gt;text();
+    if (fileName != "") {
+        QFileInfo fileInfo = QFileInfo(fileName);
+        outputFileName = fileInfo.path() + "/" +
+fileInfo.completeBaseName();</pre>
+     </li>
+     <li class="calibre14">
+      Check for the file’s format – specifically, whether it’s
+      <strong class="source-inline1">
+       .avi
+      </strong>
+      ,
+      <strong class="source-inline1">
+       .mp4
+      </strong>
+      ,
+      <span>
+       or
+      </span>
+      <span>
+       <strong class="source-inline1">
+        .mov
+       </strong>
+      </span>
+      <span>
+       :
+      </span>
+      <pre class="source-code">
+        if (QFile::exists(fileName)) {
+            int format = ui-&gt;fileFormat-&gt;currentIndex();
+            if (format == 0) {
+                outputFileName += ".avi"; // AVI
+            }
+            else if (format == 1) {
+                outputFileName += ".mp4"; // MP4
+            }
+            else if (format == 2) {
+                outputFileName += ".mov"; // MOV
+            }</pre>
+     </li>
+     <li class="calibre14">
+      Start the conversion using the
+      <span>
+       following code:
+      </span>
+      <pre class="source-code">
+            qDebug() &lt;&lt; outputFileName &lt;&lt; format;
+            arguments &lt;&lt; "-i" &lt;&lt; fileName &lt;&lt; outputFileName;
+            qDebug() &lt;&lt; arguments;
+            process-&gt;setProcessChannelMode(QProcess::MergedChannels);
+            process-&gt;start(ffmpeg, arguments);
+        }</pre>
+     </li>
+     <li class="calibre14">
+      Display the
+      <span>
+       message
+      </span>
+      <span>
+       <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker738">
+       </a>
+      </span>
+      <span>
+       boxes:
+      </span>
+      <pre class="source-code">
+        else {
+            QMessageBox::warning(this, "Failed", "Failed to open video file.");
+        }
+    }
+    else {
+        QMessageBox::warning(this, "Failed", "No file is selected.");
+    }
+}</pre>
+     </li>
+     <li class="calibre14">
+      Tell the program what to do when the conversion process
+      <span>
+       has started:
+      </span>
+      <pre class="source-code">
+void MainWindow::processStarted() {
+    qDebug() &lt;&lt; "Process started.";
+    ui-&gt;browseButton-&gt;setEnabled(false);
+    ui-&gt;fileFormat-&gt;setEditable(false);
+    ui-&gt;convertButton-&gt;setEnabled(false);
+}</pre>
+     </li>
+     <li class="calibre14">
+      Write the slot function that gets called during the conversion process whenever
+      <strong class="source-inline1">
+       FFmpeg
+      </strong>
+      returns an output
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker739">
+      </a>
+      to
+      <span>
+       the program:
+      </span>
+      <pre class="source-code">
+void MainWindow::readyReadStandardOutput() {
+    outputText += process-&gt;readAllStandardOutput();
+    ui-&gt;outputDisplay-&gt;setText(outputText);
+    ui-&gt;outputDisplay-&gt;verticalScrollBar()-&gt;setSliderPosition(ui-&gt;outputDisplay-&gt;verticalScrollBar()-&gt;maximum());
+}</pre>
+     </li>
+     <li class="calibre14">
+      Define the slot function that gets called when the entire conversion process has
+      <span>
+       been completed:
+      </span>
+      <pre class="source-code">
+void MainWindow::processFinished() {
+    qDebug() &lt;&lt; "Process finished.";
+    if (QFile::exists(outputFileName)) {
+        QMessageBox::information(this, "Success", "Video successfully converted.");
+    }
+    else {
+        QMessageBox::information(this, "Failed", "Failed to convert video.");
+    }
+    ui-&gt;browseButton-&gt;setEnabled(true);
+    ui-&gt;fileFormat-&gt;setEditable(true);
+    ui-&gt;convertButton-&gt;setEnabled(true);
+}</pre>
+     </li>
+     <li class="calibre14">
+      Build and run the project, and
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker740">
+      </a>
+      you should get a simple, yet workable,
+      <span>
+       video converter:
+      </span>
+     </li>
+    </ol>
+    <div class="calibre2">
+     <div class="img---figure" id="_idContainer177">
+      <img alt="Figure 11.9 – Your own video converter powered by FFmpeg and Qt" class="calibre4" src="image/B20976_11_009.jpg"/>
+     </div>
+    </div>
+    <p class="img---caption" lang="en-US" xml:lang="en-US">
+     Figure 11.9 – Your own video converter powered by FFmpeg and Qt
+    </p>
+    <h2 class="calibre7" id="_idParaDest-237">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor237">
+     </a>
+     How it works…
+    </h2>
+    <p class="calibre3">
+     The
+     <strong class="source-inline">
+      QProcess
+     </strong>
+     class provided by Qt is used to start external programs and communicate with them. In this case, we started
+     <strong class="source-inline">
+      ffmpeg.exe
+     </strong>
+     , located in
+     <strong class="source-inline">
+      C:/FFmpeg/bin/
+     </strong>
+     , as a process and started communicating with it. We also sent it a set of arguments to tell it what to do when it started. The arguments we used in this example are relatively basic – we only told
+     <strong class="source-inline">
+      FFmpeg
+     </strong>
+     the path to the source image and the
+     <span>
+      output filename.
+     </span>
+    </p>
+    <p class="callout-heading">
+     Note
+    </p>
+    <p class="callout">
+     For more information regarding the argument settings available in
+     <strong class="source-inline1">
+      FFmpeg
+     </strong>
+     , check
+     <span>
+      out
+     </span>
+     <a class="pcalibre pcalibre1 calibre6" href="http://www.ffmpeg.org/ffmpeg.html">
+      <span>
+       www.ffmpeg.org/ffmpeg.html
+      </span>
+     </a>
+     <span>
+      .
+     </span>
+    </p>
+    <p class="calibre3">
+     <strong class="source-inline">
+      FFmpeg
+     </strong>
+     does more than just convert video files. You can also use it to convert audio files
+     <span>
+      and images.
+     </span>
+    </p>
+    <p class="callout-heading">
+     Note
+    </p>
+    <p class="callout">
+     For more information regarding all the formats supported by
+     <strong class="source-inline1">
+      FFmpeg
+     </strong>
+     , check
+     <span>
+      out
+     </span>
+     <a class="pcalibre pcalibre1 calibre6" href="https://www.ffmpeg.org/general.html#File-Formats">
+      <span>
+       https://www.ffmpeg.org/general.html#File-Formats
+      </span>
+     </a>
+     <span>
+      .
+     </span>
+    </p>
+    <p class="calibre3">
+     Other than that, you can also play a
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker741">
+     </a>
+     video or audio file by running
+     <strong class="source-inline">
+      ffplay.exe
+     </strong>
+     , located in
+     <strong class="source-inline">
+      C:/FFmpeg/bin
+     </strong>
+     , or print out the information of the video or audio file in a human-readable fashion by
+     <span>
+      running
+     </span>
+     <span>
+      <strong class="source-inline">
+       ffprobe.exe
+      </strong>
+     </span>
+     <span>
+      .
+     </span>
+    </p>
+    <p class="callout-heading">
+     Note
+    </p>
+    <p class="callout">
+     Check out
+     <strong class="source-inline1">
+      FFmpeg's
+     </strong>
+     full documentation
+     <span>
+      at
+     </span>
+     <a class="pcalibre pcalibre1 calibre6" href="https://www.ffmpeg.org/about.html">
+      <span>
+       https://www.ffmpeg.org/about.html
+      </span>
+     </a>
+     <span>
+      .
+     </span>
+    </p>
+    <h2 class="calibre7" id="_idParaDest-238">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor238">
+     </a>
+     There’s more…
+    </h2>
+    <p class="calibre3">
+     There are lots of things you can do using this method. You’re not limited to what Qt provides, and you can break out of such limitations by carefully selecting a third-party program that provides what you need. One such example is making your own antivirus GUI by utilizing the
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker742">
+     </a>
+     command-line-only antivirus scanners available on the market, such as
+     <strong class="bold">
+      Avira ScanCL
+     </strong>
+     ,
+     <strong class="bold">
+      Panda Antivirus Command Line Scanner
+     </strong>
+     ,
+     <strong class="bold">
+      SAV32CLI
+     </strong>
+     , and
+     <strong class="bold">
+      ClamAV
+     </strong>
+     . You can
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker743">
+     </a>
+     build your
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker744">
+     </a>
+     own GUI using Qt
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker745">
+     </a>
+     and essentially send commands to the antivirus process to tell it what
+     <span>
+      to do.
+     </span>
+    </p>
+    <h1 class="calibre5" id="_idParaDest-239">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor239">
+     </a>
+     Converting currency
+    </h1>
+    <p class="calibre3">
+     In this example, we will learn how to
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker746">
+     </a>
+     create a simple currency converter using Qt, with the
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker747">
+     </a>
+     help of an external service provider
+     <span>
+      called
+     </span>
+     <span>
+      <strong class="bold">
+       Fixer.io
+      </strong>
+     </span>
+     <span>
+      .
+     </span>
+    </p>
+    <h2 class="calibre7" id="_idParaDest-240">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor240">
+     </a>
+     How to do it…
+    </h2>
+    <p class="calibre3">
+     Make yourself a currency converter by following these
+     <span>
+      simple steps:
+     </span>
+    </p>
+    <ol class="calibre13">
+     <li class="calibre14">
+      Open Qt Creator and create a new
+      <strong class="bold">
+       Qt Widgets Application
+      </strong>
+      project from
+      <strong class="bold">
+       File
+      </strong>
+      |
+      <span>
+       <strong class="bold">
+        New Project...
+       </strong>
+      </span>
+      <span>
+       .
+      </span>
+     </li>
+     <li class="calibre14">
+      Open the project file (
+      <strong class="source-inline1">
+       .pro
+      </strong>
+      ) and add the network module to
+      <span>
+       our project:
+      </span>
+      <pre class="source-code">
+QT += core gui <strong class="bold1">network</strong></pre>
+     </li>
+     <li class="calibre14">
+      Open
+      <strong class="source-inline1">
+       mainwindow.ui
+      </strong>
+      and remove the menu bar, toolbar, and status bar from
+      <span>
+       the UI.
+      </span>
+     </li>
+     <li class="calibre14">
+      Add three horizontal layouts, a horizontal line, and a push button to the canvas. Left-click on the canvas, and continue by clicking the
+      <strong class="bold">
+       Lay Out Vertically
+      </strong>
+      button on top of the canvas. Change the label of the push button to
+      <strong class="source-inline1">
+       Convert
+      </strong>
+      . The UI should look something
+      <span>
+       like this:
+      </span>
+     </li>
+    </ol>
+    <div class="calibre2">
+     <div class="img---figure" id="_idContainer178">
+      <img alt="Figure 11.10 – Place three vertical layouts above the Convert button" class="calibre4" src="image/B20976_11_010.jpg"/>
+     </div>
+    </div>
+    <p class="img---caption" lang="en-US" xml:lang="en-US">
+     Figure 11.10 – Place three vertical layouts above the Convert button
+    </p>
+    <ol class="calibre13">
+     <li class="calibre14" value="5">
+      Add two labels to the top layout, and set the text of the left one to
+      <strong class="source-inline1">
+       From:
+      </strong>
+      , followed by the right one to
+      <strong class="source-inline1">
+       To:
+      </strong>
+      . Add two
+      <strong class="bold">
+       Line Edit
+      </strong>
+      widgets to the second layout, and set both their default values
+      <span>
+       to
+      </span>
+      <span>
+       <strong class="source-inline1">
+        1
+       </strong>
+      </span>
+      <span>
+       :
+      </span>
+     </li>
+    </ol>
+    <div class="calibre2">
+     <div class="img---figure" id="_idContainer179">
+      <img alt="Figure 11.11 – Add labels and Line Edit widgets to the layouts" class="calibre4" src="image/B20976_11_011.jpg"/>
+     </div>
+    </div>
+    <p class="img---caption" lang="en-US" xml:lang="en-US">
+     Figure 11.11 – Add labels and Line Edit widgets to the layouts
+    </p>
+    <ol class="calibre13">
+     <li class="calibre14" value="6">
+      Select the line edit on the right
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker748">
+      </a>
+      and enable the
+      <strong class="bold">
+       readOnly
+      </strong>
+      checkbox located in the
+      <span>
+       <strong class="bold">
+        Property
+       </strong>
+      </span>
+      <span>
+       pane:
+      </span>
+     </li>
+    </ol>
+    <div class="calibre2">
+     <div class="img---figure" id="_idContainer180">
+      <img alt="Figure 11.12 – Enable the readOnly property for the second line edit" class="calibre4" src="image/B20976_11_012.jpg"/>
+     </div>
+    </div>
+    <p class="img---caption" lang="en-US" xml:lang="en-US">
+     Figure 11.12 – Enable the readOnly property for the second line edit
+    </p>
+    <ol class="calibre13">
+     <li class="calibre14" value="7">
+      Set the cursor property to
+      <strong class="bold">
+       Forbidden
+      </strong>
+      so that users know it’s not editable when hovering the mouse over
+      <span>
+       the widget:
+      </span>
+     </li>
+    </ol>
+    <div class="calibre2">
+     <div class="img---figure" id="_idContainer181">
+      <img alt="Figure 11.13 – Display the Forbidden cursor to let users know it’s disabled" class="calibre4" src="image/B20976_11_013.jpg"/>
+     </div>
+    </div>
+    <p class="img---caption" lang="en-US" xml:lang="en-US">
+     Figure 11.13 – Display the Forbidden cursor to let users know it’s disabled
+    </p>
+    <ol class="calibre13">
+     <li class="calibre14" value="8">
+      Add two comboboxes to the third layout located at the bottom. We will leave them empty
+      <span>
+       for now:
+      </span>
+     </li>
+    </ol>
+    <div class="calibre2">
+     <div class="img---figure" id="_idContainer182">
+      <img alt="Figure 11.14 – Add two comboboxes to the final layout" class="calibre4" src="image/B20976_11_014.jpg"/>
+     </div>
+    </div>
+    <p class="img---caption" lang="en-US" xml:lang="en-US">
+     Figure 11.14 – Add two comboboxes to the final layout
+    </p>
+    <ol class="calibre13">
+     <li class="calibre14" value="9">
+      Right-click on the
+      <strong class="bold">
+       Convert
+      </strong>
+      button
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker749">
+      </a>
+      and select
+      <strong class="bold">
+       Go to slot…
+      </strong>
+      . A window will pop up, asking you to select an appropriate signal. Let’s keep the default
+      <strong class="source-inline1">
+       clicked()
+      </strong>
+      signal as the selection and click
+      <strong class="bold">
+       OK
+      </strong>
+      . Qt Creator will automatically add a slot function to both
+      <strong class="source-inline1">
+       mainwindow.h
+      </strong>
+      <span>
+       and
+      </span>
+      <span>
+       <strong class="source-inline1">
+        mainwindow.cpp
+       </strong>
+      </span>
+      <span>
+       .
+      </span>
+     </li>
+     <li class="calibre14">
+      Open
+      <strong class="source-inline1">
+       mainwindow.h
+      </strong>
+      and make sure the following headers are added to the top of the
+      <span>
+       source file:
+      </span>
+      <pre class="source-code">
+#include &lt;QMainWindow&gt;
+<strong class="bold1">#include &lt;QDoubleValidator&gt;</strong>
+<strong class="bold1">#include &lt;QNetworkAccessManager&gt;</strong>
+<strong class="bold1">#include &lt;QNetworkRequest&gt;</strong>
+<strong class="bold1">#include &lt;QNetworkReply&gt;</strong>
+<strong class="bold1">#include &lt;QJsonDocument&gt;</strong>
+<strong class="bold1">#include &lt;QJsonObject&gt;</strong>
+<strong class="bold1">#include &lt;QDebug&gt;</strong>
+<strong class="bold1">#include &lt;QMessageBox&gt;</strong></pre>
+     </li>
+     <li class="calibre14">
+      Add another slot function,
+      <span>
+       called
+      </span>
+      <span>
+       <strong class="source-inline1">
+        finished()
+       </strong>
+      </span>
+      <span>
+       :
+      </span>
+      <pre class="source-code">
+private slots:
+    void on_convertButton_clicked();
+    void finished(QNetworkReply* reply);</pre>
+     </li>
+     <li class="calibre14">
+      Add two variables under the
+      <span>
+       <strong class="source-inline1">
+        private
+       </strong>
+      </span>
+      <span>
+       label:
+      </span>
+      <pre class="source-code">
+private:
+    Ui::MainWindow *ui;
+    QNetworkAccessManager* manager;
+    QString targetCurrency;</pre>
+     </li>
+     <li class="calibre14">
+      Open the
+      <strong class="source-inline1">
+       mainwindow.cpp
+      </strong>
+      file. Add several currency short code to both comboboxes in the class
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker750">
+      </a>
+      constructor. Set a validator to the
+      <strong class="bold">
+       Line Edit
+      </strong>
+      widget on the left so that it can only accept inputs that are numbers. Initialize the network access manager and connect its
+      <strong class="source-inline1">
+       finished()
+      </strong>
+      signal to our
+      <strong class="source-inline1">
+       finished()
+      </strong>
+      <span>
+       slot function:
+      </span>
+      <pre class="source-code">
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent), ui(new Ui::MainWindow) {
+    ui-&gt;setupUi(this);
+    <strong class="bold1">QStringList currencies;</strong>
+    <strong class="bold1">currencies.push_back("EUR");</strong>
+    <strong class="bold1">currencies.push_back("USD");</strong>
+    <strong class="bold1">currencies.push_back("CAD");</strong>
+    <strong class="bold1">currencies.push_back("MYR");</strong>
+    <strong class="bold1">currencies.push_back("GBP");</strong></pre>
+     </li>
+     <li class="calibre14">
+      We continue from the previous code and insert the currency short forms into the comboboxes. Then, we declare a new network access manager and connect its finished signal to our custom
+      <span>
+       slot function:
+      </span>
+      <pre class="source-code">
+    ui-&gt;currencyFrom-&gt;insertItems(0, currencies);
+    ui-&gt;currencyTo-&gt;insertItems(0, currencies);
+    QValidator *inputRange = new QDoubleValidator(this);
+    ui-&gt;amountFrom-&gt;setValidator(inputRange);
+    manager = new QNetworkAccessManager(this);
+    connect(manager, &amp;QNetworkAccessManager::finished, this, &amp;MainWindow::finished);
+}</pre>
+     </li>
+     <li class="calibre14">
+      Define what will happen
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker751">
+      </a>
+      if the
+      <strong class="bold">
+       Convert
+      </strong>
+      button is clicked by
+      <span>
+       the user:
+      </span>
+      <pre class="source-code">
+void MainWindow::on_convertButton_clicked() {
+    if (ui-&gt;amountFrom-&gt;text() != "") {
+        ui-&gt;convertButton-&gt;setEnabled(false);
+        QString from = ui-&gt;currencyFrom-&gt;currentText();
+        QString to = ui-&gt;currencyTo-&gt;currentText();
+        targetCurrency = to;
+        QString url = "http://data.fixer.io/api/latest?base=" +      from + "&amp;symbols=" + to + "&amp;access_key=YOUR_KEY";</pre>
+     </li>
+     <li class="calibre14">
+      Start the request by
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker752">
+      </a>
+      <span>
+       calling
+      </span>
+      <span>
+       <strong class="source-inline1">
+        get()
+       </strong>
+      </span>
+      <span>
+       :
+      </span>
+      <pre class="source-code">
+        QNetworkRequest request = QNetworkRequest(QUrl(url));
+        manager-&gt;get(request);
+    }
+    else {
+        QMessageBox::warning(this, "Error", "Please insert a value.");
+    }
+}</pre>
+     </li>
+     <li class="calibre14">
+      Define what will happen when the
+      <strong class="source-inline1">
+       finished()
+      </strong>
+      signal
+      <span>
+       is triggered:
+      </span>
+      <pre class="source-code">
+void MainWindow::finished(QNetworkReply* reply) {
+    QByteArray response = reply-&gt;readAll();
+    qDebug() &lt;&lt; response;
+    QJsonDocument jsonResponse =
+QJsonDocument::fromJson(response);
+    QJsonObject jsonObj = jsonResponse.object();
+    QJsonObject jsonObj2 = jsonObj.value("rates").toObject();
+    double rate = jsonObj2.value(targetCurrency).toDouble();</pre>
+     </li>
+     <li class="calibre14">
+      Continue to write the code from the preceding code, as shown in the
+      <span>
+       following snippet:
+      </span>
+      <pre class="source-code">
+    if (rate == 0)
+        rate = 1;
+    double amount = ui-&gt;amountFrom-&gt;text().toDouble();
+    double result = amount * rate;
+    ui-&gt;amountTo-&gt;setText(QString::number(result));
+    ui-&gt;convertButton-&gt;setEnabled(true);
+}</pre>
+     </li>
+     <li class="calibre14">
+      Compile and run the project, and
+      <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker753">
+      </a>
+      then you should get a simple currency converter that looks
+      <span>
+       like this:
+      </span>
+     </li>
+    </ol>
+    <div class="calibre2">
+     <div class="img---figure" id="_idContainer183">
+      <img alt="Figure 11.15 – A usable currency converter is complete" class="calibre4" src="image/B20976_11_015.jpg"/>
+     </div>
+    </div>
+    <p class="img---caption" lang="en-US" xml:lang="en-US">
+     Figure 11.15 – A usable currency converter is complete
+    </p>
+    <h2 class="calibre7" id="_idParaDest-241">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor241">
+     </a>
+     How it works…
+    </h2>
+    <p class="calibre3">
+     Similar to the previous example we saw, which uses an external program to achieve a specific task, this time we used an external service provider that provided us with an open
+     <strong class="bold">
+      Application Programming Interface
+     </strong>
+     (
+     <strong class="bold">
+      API
+     </strong>
+     ) that
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker754">
+     </a>
+     is free for all and easy
+     <span>
+      to use.
+     </span>
+    </p>
+    <p class="calibre3">
+     This way, we don’t have to think about the method used to retrieve the latest currency rate. Instead, the service provider has already done the job for us; we just have to send a polite request for it. Then, we wait for the response from their server and process the data according to our
+     <span>
+      intended purposes.
+     </span>
+    </p>
+    <p class="calibre3">
+     There are quite a few different
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker755">
+     </a>
+     service providers you can choose from, besides Fixer.io (
+     <a class="pcalibre pcalibre1 calibre6" href="http://fixer.io">
+      http://fixer.io
+     </a>
+     ). Some are free but come
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker756">
+     </a>
+     without any advanced features; some provide you with a premium price. Some of these alternatives are
+     <strong class="bold">
+      Open Exchange Rates
+     </strong>
+     (
+     <a class="pcalibre pcalibre1 calibre6" href="https://openexchangerates.org">
+      https://openexchangerates.org
+     </a>
+     ), the
+     <strong class="bold">
+      currencylayer API
+     </strong>
+     (
+     <a class="pcalibre pcalibre1 calibre6" href="https://currencylayer.com">
+      https://currencylayer.com
+     </a>
+     ), the
+     <strong class="bold">
+      Currency API
+     </strong>
+     (
+     <a class="pcalibre pcalibre1 calibre6" href="https://currency-api.appspot.com">
+      https://currency-api.appspot.com
+     </a>
+     ), the
+     <strong class="bold">
+      XE Currency Data API
+     </strong>
+     (
+     <a class="pcalibre pcalibre1 calibre6" href="http://www.xe.com/xecurrencydata">
+      http://www.xe.com/xecurrencydata
+     </a>
+     ), and
+     <span>
+      <strong class="bold">
+       jsonrates
+      </strong>
+     </span>
+     <span>
+      (
+     </span>
+     <a class="pcalibre pcalibre1 calibre6" href="http://jsonrates.com">
+      <span>
+       http://jsonrates.com
+      </span>
+     </a>
+     <span>
+      ).
+     </span>
+    </p>
+    <p class="calibre3">
+     In the
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker757">
+     </a>
+     previous code, you
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker758">
+     </a>
+     should have noticed an access key being
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker759">
+     </a>
+     passed to the Fixer.io API, which is a free access
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker760">
+     </a>
+     key I registered for this tutorial. If you use it for your own project, you should create an account
+     <span>
+      at Fixer.io.
+     </span>
+    </p>
+    <h2 class="calibre7" id="_idParaDest-242">
+     <a class="pcalibre pcalibre1 calibre6" id="_idTextAnchor242">
+     </a>
+     There’s more…
+    </h2>
+    <p class="calibre3">
+     Besides currency exchange rates, you
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker761">
+     </a>
+     can use this method to execute more advanced tasks that are perhaps too complicated to do by yourself, or are simply impossible to access unless you use the services provided by specialists, such as
+     <a class="pcalibre pcalibre1 calibre6" id="_idIndexMarker762">
+     </a>
+     programmable
+     <strong class="bold">
+      Short Message Service
+     </strong>
+     (
+     <strong class="bold">
+      SMS
+     </strong>
+     ) and voice services, web analytics and statistics generation, and online payment gateways. Most of these services are not free, but you can easily achieve those functions in minutes without even setting up the server infrastructure and backend system; it’s definitely the cheapest and fastest way to get your product up and running without
+     <span>
+      much hassle.
+     </span>
+    </p>
+   </div>
+  </div>
+ </body>
+</html>
