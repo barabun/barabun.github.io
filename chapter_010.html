@@ -1,0 +1,1118 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html>
+<html epub:prefix="z3998: http://www.daisy.org/z3998/2012/vocab/structure/#" lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+ <head>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   6
+  </title>
+ </head>
+ <body>
+  <div class="navigation">
+   <a class="nav-button" href="chapter_009.html">
+    ← Previous
+   </a>
+   <a class="nav-button" href="index.html">
+    Table of Contents
+   </a>
+   <a class="nav-button" href="chapter_011.html">
+    Next →
+   </a>
+  </div>
+  <div class="chapter-content">
+   <div id="_idContainer103">
+    <h1 class="chapter-number" id="_idParaDest-145">
+     <a id="_idTextAnchor145">
+     </a>
+     6
+    </h1>
+    <h1 id="_idParaDest-146">
+     <a id="_idTextAnchor146">
+     </a>
+     Transitioning from Qt 5 to Qt 6
+    </h1>
+    <p>
+     In this chapter, we will learn about the changes that have been made in
+     <strong class="bold">
+      Qt 6
+     </strong>
+     and how you can upgrade your existing Qt 5 project to Qt 6. Unlike previous updates, Qt 6 is almost a complete rewrite of the entire Qt code base from the ground up, including all the underlying classes. Such major changes may break your existing Qt 5 project if you simply switch over to
+     <span class="No-Break">
+      Qt 6.
+     </span>
+    </p>
+    <p>
+     In this chapter, we’re going to cover the following
+     <span class="No-Break">
+      main topics:
+     </span>
+    </p>
+    <ul>
+     <li>
+      Changes in
+      <span class="No-Break">
+       C++ classes
+      </span>
+     </li>
+     <li>
+      Using
+      <strong class="bold">
+       Clazy checks
+      </strong>
+      for Clang
+      <span class="No-Break">
+       and C++
+      </span>
+     </li>
+     <li>
+      Changes in
+      <span class="No-Break">
+       QML types
+      </span>
+     </li>
+    </ul>
+    <h1 id="_idParaDest-147">
+     <a id="_idTextAnchor147">
+     </a>
+     Technical requirements
+    </h1>
+    <p>
+     The technical requirements for this chapter include Qt 6.6.1 MinGW 64-bit, Qt 5.15.2 MinGW 64-bit, and Qt Creator 12.0.2. All the code used in this chapter can be downloaded from the following GitHub
+     <span class="No-Break">
+      repository:
+     </span>
+     <a href="https://github.com/PacktPublishing/QT6-C-GUI-Programming-Cookbook---Third-Edition-/tree/main/Chapter06">
+      <span class="No-Break">
+       https://github.com/PacktPublishing/QT6-C-GUI-Programming-Cookbook---Third-Edition-/tree/main/Chapter06
+      </span>
+     </a>
+     <span class="No-Break">
+      .
+     </span>
+    </p>
+    <h1 id="_idParaDest-148">
+     <a id="_idTextAnchor148">
+     </a>
+     Changes in C++ classes
+    </h1>
+    <p>
+     In
+     <a id="_idIndexMarker444">
+     </a>
+     this recipe, we will learn what the changes in Qt6’s C++
+     <span class="No-Break">
+      classes are.
+     </span>
+    </p>
+    <h2 id="_idParaDest-149">
+     <a id="_idTextAnchor149">
+     </a>
+     How to do it…
+    </h2>
+    <p>
+     Follow these
+     <a id="_idIndexMarker445">
+     </a>
+     steps to learn about C++ classes
+     <span class="No-Break">
+      in Qt6:
+     </span>
+    </p>
+    <ol>
+     <li>
+      Create a new
+      <strong class="bold">
+       Qt Console Application
+      </strong>
+      by going to
+      <strong class="bold">
+       File
+      </strong>
+      |
+      <span class="No-Break">
+       <strong class="bold">
+        New Project
+       </strong>
+      </span>
+      <span class="No-Break">
+       .
+      </span>
+     </li>
+     <li>
+      We will open up the
+      <strong class="source-inline">
+       main.cpp
+      </strong>
+      file and add the
+      <span class="No-Break">
+       following headers:
+      </span>
+      <pre class="source-code">
+#include &lt;QCoreApplication&gt;
+#include &lt;QDebug&gt;
+#include &lt;QLinkedList&gt;
+#include &lt;QRegExp&gt;
+#include &lt;QStringView&gt;
+#include &lt;QTextCodec&gt;
+#include &lt;QTextEncoder&gt;
+#include &lt;QTextDecoder&gt;</pre>
+     </li>
+     <li>
+      After that, add the following code for demonstrating the
+      <span class="No-Break">
+       <strong class="source-inline">
+        QLinkedList
+       </strong>
+      </span>
+      <span class="No-Break">
+       class:
+      </span>
+      <pre class="source-code">
+int main(int argc, char *argv[])
+{
+    QCoreApplication a(argc, argv);
+    <strong class="bold">// QLinkedList</strong>
+<strong class="bold">    QLinkedList&lt;QString&gt; list;</strong>
+<strong class="bold">    list &lt;&lt; "string1" &lt;&lt; "string2" &lt;&lt; "string3";</strong>
+<strong class="bold">    QLinkedList&lt;QString&gt;::iterator it;</strong>
+<strong class="bold">    for (it = list.begin(); it != list.end(); ++it)</strong>
+<strong class="bold">    {</strong>
+<strong class="bold">        qDebug() &lt;&lt; "QLinkedList:" &lt;&lt; *it;</strong>
+<strong class="bold">    }</strong></pre>
+     </li>
+     <li>
+      Then, we
+      <a id="_idIndexMarker446">
+      </a>
+      continue to add the following code to demonstrate how to extract numbers from a string by using the
+      <span class="No-Break">
+       <strong class="source-inline">
+        QRegExp
+       </strong>
+      </span>
+      <span class="No-Break">
+       class:
+      </span>
+      <pre class="source-code">
+// QRegExp
+QRegExp rx("\\d+");
+QString text = "Jacky has 3 carrots, 15 apples, 9 oranges and 12 grapes.";
+QStringList myList;
+int pos = 0;
+while ((pos = rx.indexIn(text, pos)) != -1)
+{
+    // Separate all numbers from the sentence
+    myList &lt;&lt; rx.cap(0);
+    pos += rx.matchedLength();
+}
+qDebug() &lt;&lt; "QRegExp:" &lt;&lt; myList;</pre>
+     </li>
+     <li>
+      We then follow by adding the following code at the bottom of the preceding code to demonstrate the
+      <span class="No-Break">
+       <strong class="source-inline">
+        QStringView
+       </strong>
+      </span>
+      <span class="No-Break">
+       class:
+      </span>
+      <pre class="source-code">
+// QStringView
+QStringView x = QString("Good afternoon");
+QStringView y = x.mid(5, 5);
+QStringView z = x.mid(5);
+qDebug() &lt;&lt; "QStringView:" &lt;&lt; y; // after
+qDebug() &lt;&lt; "QStringView:" &lt;&lt; z; // afternoon</pre>
+     </li>
+     <li>
+      Not only that, but
+      <a id="_idIndexMarker447">
+      </a>
+      we are also adding the following code to demonstrate the
+      <span class="No-Break">
+       <strong class="source-inline">
+        QTextCodec
+       </strong>
+      </span>
+      <span class="No-Break">
+       class:
+      </span>
+      <pre class="source-code">
+// QTextCodec
+QByteArray data = "\xCE\xB1\xCE\xB2\xCE\xB3"; // Alpha, beta, gamma symbols
+QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+QString str = codec-&gt;toUnicode(data);</pre>
+     </li>
+    </ol>
+    <pre class="source-code">
+qDebug() &lt;&lt; "QTextCodec:" &lt;&lt; str;</pre>
+    <ol>
+     <li value="7">
+      Next, add the following code, which demonstrates how to convert hexadecimal code to a character using the
+      <span class="No-Break">
+       <strong class="source-inline">
+        QTextEncoder
+       </strong>
+      </span>
+      <span class="No-Break">
+       class:
+      </span>
+      <pre class="source-code">
+// QTextEncoder
+QString str2 = QChar(0x41); // Character "A"
+QTextCodec *locale = QTextCodec::codecForLocale();
+QTextEncoder *encoder = locale-&gt;makeEncoder();
+QByteArray encoded = encoder-&gt;fromUnicode(str2);
+qDebug() &lt;&lt; "QTextEncoder:" &lt;&lt; encoded.data();</pre>
+     </li>
+     <li>
+      Let’s also add the following code to demonstrate how to convert a line of text from Shift JIS format to Unicode by using the
+      <span class="No-Break">
+       <strong class="source-inline">
+        QTextDecoder
+       </strong>
+      </span>
+      <span class="No-Break">
+       class:
+      </span>
+      <pre class="source-code">
+// QTextDecoder
+QByteArray data2 = "\x82\xB1\x82\xF1\x82\xC9\x82\xBF\x82\xCD\x90\xA2\x8A\x45"; // "Hello world" in Japanese
+QTextCodec *codec2 = QTextCodec::codecForName("Shift-JIS");
+QTextDecoder *decoder = codec2-&gt;makeDecoder();
+QString decoded = decoder-&gt;toUnicode(data2);
+qDebug() &lt;&lt; "QTextDecoder:" &lt;&lt; decoded;</pre>
+     </li>
+     <li>
+      Now that we’re done with the code, let’s try and compile the project using Qt 5 for now and see what will happen. Your program should compile just fine and give you the
+      <a id="_idIndexMarker448">
+      </a>
+      following results in the
+      <span class="No-Break">
+       output window:
+      </span>
+      <pre class="source-code">
+QLinkedList: "string1"
+QLinkedList: "string2"
+QLinkedList: "string3"
+QRegExp: ("3", "15", "9", "12")
+QStringView: "after"
+QStringView: "afternoon"
+QTextCodec: "αβγ"
+QTextEncoder: A
+QTextDecoder: "こんにちは世界"</pre>
+     </li>
+     <li>
+      Now, let’s change to Qt 6 and compile the project again, you should get errors
+      <span class="No-Break">
+       like this:
+      </span>
+      <pre class="source-code">
+QLinkedList: No such file or directory
+fatal error: QLinkedList: No such file or directory</pre>
+     </li>
+     <li>
+      Open up your project file (
+      <strong class="source-inline">
+       .pro
+      </strong>
+      ) and add the following code at
+      <span class="No-Break">
+       the top:
+      </span>
+      <pre class="source-code">
+QT += core5compat</pre>
+     </li>
+     <li>
+      Finally, compile the project again with Qt 6. You should be able to run it this time.
+      <strong class="source-inline">
+       core5compat
+      </strong>
+      is just a temporary solution for transitioning from Qt 5 to Qt 6. You may change to use
+      <strong class="source-inline">
+       std::list
+      </strong>
+      to replace
+      <strong class="source-inline">
+       QLinkedList
+      </strong>
+      since it will be deprecated in
+      <span class="No-Break">
+       the future.
+      </span>
+     </li>
+    </ol>
+    <h2 id="_idParaDest-150">
+     <a id="_idTextAnchor150">
+     </a>
+     How it works…
+    </h2>
+    <p>
+     We don’t need any GUIs since we are just testing out some of the C++ classes, so the
+     <strong class="bold">
+      Qt Console Application
+     </strong>
+     is sufficient for this project. We needed the
+     <strong class="source-inline">
+      QDebug
+     </strong>
+     class to print out the results in the
+     <span class="No-Break">
+      output window.
+     </span>
+    </p>
+    <p>
+     In the preceding example, we used some of the classes that have been deprecated in Qt 6, namely
+     <strong class="source-inline">
+      QLinkedList
+     </strong>
+     ,
+     <strong class="source-inline">
+      QRegExp
+     </strong>
+     ,
+     <strong class="source-inline">
+      QStringView
+     </strong>
+     ,
+     <strong class="source-inline">
+      QTextCodec
+     </strong>
+     ,
+     <strong class="source-inline">
+      QTextEncoder
+     </strong>
+     , and
+     <strong class="source-inline">
+      QTextDecoder
+     </strong>
+     . These are just some of the common classes that we will encounter when using Qt, which have been rewritten in Qt 6. If you are porting your project from Qt 5 to 6, the best way is to add the
+     <strong class="source-inline">
+      Core5Compat
+     </strong>
+     module to your project so that Qt 5 classes can continue to run under Qt 6. The
+     <strong class="source-inline">
+      Core5Compat
+     </strong>
+     module is a temporary measure for supporting Qt 5 classes under Qt 6 projects so that Qt programmers can safely move their projects to Qt 6 and take their time to slowly port their code over to Qt
+     <span class="No-Break">
+      6 classes.
+     </span>
+    </p>
+    <p>
+     The
+     <strong class="source-inline">
+      Core5Compat
+     </strong>
+     module
+     <a id="_idIndexMarker449">
+     </a>
+     will stop working when you move to Qt 7, so it’s not recommended to keep using the deprecated classes for
+     <span class="No-Break">
+      too long.
+     </span>
+    </p>
+    <h2 id="_idParaDest-151">
+     <a id="_idTextAnchor151">
+     </a>
+     There’s more…
+    </h2>
+    <p>
+     In Qt 6, a lot of the core functionality has been rewritten from scratch to keep the library up to date with the modern computing architecture and workflow. Thus, Qt 6 is considered a transitional phase where some classes have been completed and some
+     <span class="No-Break">
+      have not.
+     </span>
+    </p>
+    <p>
+     In order for it to work, Qt developers introduced the
+     <strong class="source-inline">
+      Core5Compat
+     </strong>
+     module
+     <a id="_idIndexMarker450">
+     </a>
+     to make it easier for Qt programmers to keep their projects going while slowly transitioning over to the new classes. You can check out what the replacements for these classes are from the official
+     <span class="No-Break">
+      online documentation.
+     </span>
+    </p>
+    <p>
+     Lastly, Qt 6 is now leveraging on C++ 17. It’s highly recommended for your project to adhere to C++ 17 standards so that your code can work nicely with
+     <span class="No-Break">
+      Qt 6.
+     </span>
+    </p>
+    <p class="callout-heading">
+     Note
+    </p>
+    <p class="callout">
+     There are many other C++ classes that have been deprecated or are being rewritten in Qt 6; please refer to this link to check the full list of C++ classes that have been changed or deprecated in Qt 6:
+     <a href="https://doc.qt.io/qt-6/obsoleteclasses.html">
+      https://doc.qt.io/qt-6/obsoleteclasses.html
+     </a>
+     . You may also add the
+     <strong class="source-inline">
+      QT_DISABLE_DEPRECATED_UP_TO
+     </strong>
+     macro to your Qt project to disable the use of deprecated C++ APIs in your project. For example, adding
+     <strong class="source-inline">
+      DEFINES += QT_DISABLE_DEPRECATED_UP_TO=0x050F00
+     </strong>
+     to your profile will disable all C++ APIs deprecated in
+     <span class="No-Break">
+      Qt 5.15.
+     </span>
+    </p>
+    <h1 id="_idParaDest-152">
+     <a id="_idTextAnchor152">
+     </a>
+     Using Clazy checks for Clang and C++
+    </h1>
+    <p>
+     In this
+     <a id="_idIndexMarker451">
+     </a>
+     chapter, we will learn how to use the Clazy checks from the Clang toolset to automatically display warnings when obsolete Qt 5 classes and functions are detected in your
+     <span class="No-Break">
+      Qt project.
+     </span>
+    </p>
+    <h2 id="_idParaDest-153">
+     <a id="_idTextAnchor153">
+     </a>
+     How to do it…
+    </h2>
+    <p>
+     Let’s get started by following
+     <span class="No-Break">
+      these steps:
+     </span>
+    </p>
+    <ol>
+     <li>
+      We will use the same project from the preceding example. Then, proceed to open up the preferences window by going to
+      <strong class="bold">
+       Edit
+      </strong>
+      |
+      <span class="No-Break">
+       <strong class="bold">
+        Preferences…
+       </strong>
+      </span>
+      <span class="No-Break">
+       .
+      </span>
+     </li>
+     <li>
+      After that, go to the
+      <strong class="bold">
+       Analyzer
+      </strong>
+      page and click on the button beside
+      <span class="No-Break">
+       <strong class="bold">
+        Diagnostic configuration
+       </strong>
+      </span>
+      <span class="No-Break">
+       :
+      </span>
+     </li>
+    </ol>
+    <div>
+     <div class="IMG---Figure" id="_idContainer094">
+      <img alt="Figure 6.1 – Open up the Diagnostic configuration window" src="../images\image/B20976_06_001.jpg"/>
+     </div>
+    </div>
+    <p class="IMG---Caption" lang="en-US" xml:lang="en-US">
+     Figure 6.1 – Open up the Diagnostic configuration window
+    </p>
+    <ol>
+     <li value="3">
+      Select the
+      <strong class="bold">
+       Default Clang-Tidy and Clazy checks
+      </strong>
+      option at the top and click the
+      <strong class="bold">
+       Copy…
+      </strong>
+      button, as shown in
+      <span class="No-Break">
+       <em class="italic">
+        Figure 6
+       </em>
+      </span>
+      <em class="italic">
+       .2
+      </em>
+      . Give it a name and click
+      <strong class="bold">
+       OK
+      </strong>
+      . The new option will now
+      <a id="_idIndexMarker452">
+      </a>
+      appear under the
+      <span class="No-Break">
+       <strong class="bold">
+        Custom
+       </strong>
+      </span>
+      <span class="No-Break">
+       category:
+      </span>
+     </li>
+    </ol>
+    <div>
+     <div class="IMG---Figure" id="_idContainer095">
+      <img alt="Figure 6.2 - Click on the Copy button" src="../images\image/B20976_06_002.jpg"/>
+     </div>
+    </div>
+    <p class="IMG---Caption" lang="en-US" xml:lang="en-US">
+     Figure 6.2 - Click on the Copy button
+    </p>
+    <ol>
+     <li value="4">
+      Then, open the
+      <strong class="bold">
+       Clazy Checks
+      </strong>
+      tab, enable the following options, and
+      <span class="No-Break">
+       click
+      </span>
+      <span class="No-Break">
+       <strong class="bold">
+        OK
+       </strong>
+      </span>
+      <span class="No-Break">
+       :
+      </span>
+      <ul>
+       <li>
+        <span class="No-Break">
+         <strong class="source-inline">
+          qt6-deprecated-api-fixes
+         </strong>
+        </span>
+       </li>
+       <li>
+        <span class="No-Break">
+         <strong class="source-inline">
+          qt6-header-fixes
+         </strong>
+        </span>
+       </li>
+       <li>
+        <span class="No-Break">
+         <strong class="source-inline">
+          qt6-qhash-signature
+         </strong>
+        </span>
+       </li>
+       <li>
+        <span class="No-Break">
+         <strong class="source-inline">
+          qt6-fwd-fixes
+         </strong>
+        </span>
+       </li>
+       <li>
+        <span class="No-Break">
+         <strong class="source-inline">
+          missing-qobject-macro
+         </strong>
+        </span>
+       </li>
+      </ul>
+     </li>
+     <li>
+      Once you’re done, close the preference window and go to
+      <strong class="bold">
+       Analyze
+      </strong>
+      |
+      <strong class="bold">
+       Clang-Tidy and Clazy...
+      </strong>
+      . The
+      <strong class="bold">
+       Files to Analyze
+      </strong>
+      window will pop up with all the source files being displayed on the window. We will just stick to the default option and proceed by clicking the
+      <span class="No-Break">
+       <strong class="bold">
+        Analyze
+       </strong>
+      </span>
+      <span class="No-Break">
+       button:
+      </span>
+     </li>
+    </ol>
+    <div>
+     <div class="IMG---Figure" id="_idContainer096">
+      <img alt="Figure 6.3 – Choose All Files and press the Analyze button" src="../images\image/B20976_06_003.jpg"/>
+     </div>
+    </div>
+    <p class="IMG---Caption" lang="en-US" xml:lang="en-US">
+     <span class="IMG---Caption-Char">
+      Figure 6.3 – Choose All Files and press the Analyze button
+     </span>
+    </p>
+    <ol>
+     <li value="6">
+      After the
+      <a id="_idIndexMarker453">
+      </a>
+      Clang-Tidy and Clazy tools finish analyzing the project, you should see the results displayed on a separate panel under the Qt Creator. It will show you the lines of code that have been deprecated in Qt 6 and give you suggestions on what to replace
+      <span class="No-Break">
+       them with:
+      </span>
+     </li>
+    </ol>
+    <div>
+     <div class="IMG---Figure" id="_idContainer097">
+      <img alt="Figure 6.4 – Results from the analysis" src="../images\image/B20976_06_004.jpg"/>
+     </div>
+    </div>
+    <p class="IMG---Caption" lang="en-US" xml:lang="en-US">
+     Figure 6.4 – Results from the analysis
+    </p>
+    <h2 id="_idParaDest-154">
+     <a id="_idTextAnchor154">
+     </a>
+     How it works...
+    </h2>
+    <p>
+     The Tidy and Clazy tool came with Clang packages so there is no need to install it separately. It is a powerful tool that can be used to check for many things, such as using deprecated functions in your code, placing a container inside a loop, marking a non-void slot as constant, registering QML type that starts with lowercase, and
+     <span class="No-Break">
+      so on.
+     </span>
+    </p>
+    <p>
+     It’s a tool that
+     <a id="_idIndexMarker454">
+     </a>
+     helps you to inspect and improve the quality of your code with ease. It should be widely promoted and used more frequently by
+     <span class="No-Break">
+      Qt programmers.
+     </span>
+    </p>
+    <h1 id="_idParaDest-155">
+     <a id="_idTextAnchor155">
+     </a>
+     Changes in QML types
+    </h1>
+    <p>
+     In this chapter, we will learn
+     <a id="_idIndexMarker455">
+     </a>
+     what changes have been made in Qt 6 compared to
+     <span class="No-Break">
+      Qt 5.
+     </span>
+    </p>
+    <h2 id="_idParaDest-156">
+     <a id="_idTextAnchor156">
+     </a>
+     How to do it…
+    </h2>
+    <p>
+     Let’s get started by following
+     <span class="No-Break">
+      these steps:
+     </span>
+    </p>
+    <ol>
+     <li>
+      Create a new
+      <strong class="bold">
+       Qt Quick Application
+      </strong>
+      by going to
+      <strong class="bold">
+       File
+      </strong>
+      |
+      <span class="No-Break">
+       <strong class="bold">
+        New Project
+       </strong>
+      </span>
+      <span class="No-Break">
+       .
+      </span>
+     </li>
+     <li>
+      Select the
+      <strong class="bold">
+       Qt 6.2
+      </strong>
+      option for
+      <strong class="bold">
+       Minimum required Qt version
+      </strong>
+      when defining
+      <span class="No-Break">
+       project details.
+      </span>
+     </li>
+    </ol>
+    <div>
+     <div class="IMG---Figure" id="_idContainer098">
+      <img alt="Figure 6.5 – Select Qt 6.2 as Minimum required Qt version" src="../images\image/B20976_06_005.jpg"/>
+     </div>
+    </div>
+    <p class="IMG---Caption" lang="en-US" xml:lang="en-US">
+     Figure 6.5 – Select Qt 6.2 as Minimum required Qt version
+    </p>
+    <ol>
+     <li value="3">
+      Once you have created the project, open up
+      <strong class="source-inline">
+       main.qml
+      </strong>
+      and add these properties to
+      <span class="No-Break">
+       the file:
+      </span>
+      <pre class="source-code">
+import QtQuick
+Window {
+    width: 640
+    height: 480
+    visible: true
+    title: qsTr("Hello World")
+    <strong class="bold">property variant myColor: "red"</strong>
+    <strong class="bold">property url imageFolder: "/images"</strong></pre>
+     </li>
+     <li>
+      Next, add
+      <a id="_idIndexMarker456">
+      </a>
+      a
+      <strong class="source-inline">
+       Rectangle
+      </strong>
+      object to
+      <strong class="source-inline">
+       main.qml
+      </strong>
+      , as shown in
+      <span class="No-Break">
+       the following:
+      </span>
+      <pre class="source-code">
+Rectangle {
+    id: rect
+    x: 100
+    y: 100
+    width: 100
+    height: 100
+    color: myColor
+}</pre>
+     </li>
+     <li>
+      After that, we’re going to add another
+      <strong class="source-inline">
+       Image
+      </strong>
+      object below
+      <span class="No-Break">
+       the rectangle:
+      </span>
+      <pre class="source-code">
+Image {
+    id: img
+    x: 300
+    y: 100
+    width: 150
+    height: 180
+    source: imageFolder + "/tux.png"
+}</pre>
+     </li>
+     <li>
+      Next, we
+      <a id="_idIndexMarker457">
+      </a>
+      create a new resource file for our project by going to
+      <strong class="bold">
+       File
+      </strong>
+      |
+      <strong class="bold">
+       New File…
+      </strong>
+      and selecting
+      <strong class="bold">
+       Qt Resource File
+      </strong>
+      under the
+      <span class="No-Break">
+       <strong class="bold">
+        Qt
+       </strong>
+      </span>
+      <span class="No-Break">
+       template.
+      </span>
+     </li>
+    </ol>
+    <div>
+     <div class="IMG---Figure" id="_idContainer099">
+      <img alt="Figure 6.6 – Create a new Qt Resource File" src="../images\image/B20976_06_006.jpg"/>
+     </div>
+    </div>
+    <p class="IMG---Caption" lang="en-US" xml:lang="en-US">
+     Figure 6.6 – Create a new Qt Resource File
+    </p>
+    <ol>
+     <li value="7">
+      Then, create a folder called
+      <strong class="source-inline">
+       images
+      </strong>
+      in the resource file and add
+      <strong class="source-inline">
+       tux.png
+      </strong>
+      into the
+      <span class="No-Break">
+       <strong class="source-inline">
+        images
+       </strong>
+      </span>
+      <span class="No-Break">
+       folder.
+      </span>
+     </li>
+    </ol>
+    <div>
+     <div class="IMG---Figure" id="_idContainer100">
+      <img alt="Figure 6.7 – Add tux.png to the images folder" src="../images\image/B20976_06_007.jpg"/>
+     </div>
+    </div>
+    <p class="IMG---Caption" lang="en-US" xml:lang="en-US">
+     Figure 6.7 – Add tux.png to the images folder
+    </p>
+    <ol>
+     <li value="8">
+      Build and run the project now, and you should similar results
+      <span class="No-Break">
+       as follows:
+      </span>
+     </li>
+    </ol>
+    <div>
+     <div class="IMG---Figure" id="_idContainer101">
+      <img alt="Figure 6.8 – The Hello World demo in Qt Quick 6" src="../images\image/B20976_06_008.jpg"/>
+     </div>
+    </div>
+    <p class="IMG---Caption" lang="en-US" xml:lang="en-US">
+     Figure 6.8 – The Hello World demo in Qt Quick 6
+    </p>
+    <h2 id="_idParaDest-157">
+     <a id="_idTextAnchor157">
+     </a>
+     How it works...
+    </h2>
+    <p>
+     Qt 6 introduces
+     <a id="_idIndexMarker458">
+     </a>
+     many changes to Qt Quick as well but they are mostly underlying functions that do not affect much of the QML language and objects. Therefore, there are not many changes you need to make to your QML scripts when transitioning from Qt 5 to Qt 6. However, there are still some minor changes to how the project is structured and slight differences in
+     <span class="No-Break">
+      the code.
+     </span>
+    </p>
+    <p>
+     One of the most obvious differences is that QML scripts are now listed under the
+     <strong class="source-inline">
+      QML
+     </strong>
+     category under the project structure instead of under
+     <strong class="source-inline">
+      Resources
+     </strong>
+     like how it used to be in
+     <span class="No-Break">
+      Qt 5.
+     </span>
+    </p>
+    <div>
+     <div class="IMG---Figure" id="_idContainer102">
+      <img alt="Figure 6.9 – QML files have their own category now" src="../images\image/B20976_06_009.jpg"/>
+     </div>
+    </div>
+    <p class="IMG---Caption" lang="en-US" xml:lang="en-US">
+     Figure 6.9 – QML files have their own category now
+    </p>
+    <p>
+     Hence, when we load the
+     <strong class="source-inline">
+      main.qml
+     </strong>
+     file in the
+     <strong class="source-inline">
+      main.cpp
+     </strong>
+     C++ source code, we will use
+     <span class="No-Break">
+      the following:
+     </span>
+    </p>
+    <pre class="source-code">
+const QUrl url(u"qrc:/qt6_qml_new/main.qml"_qs);</pre>
+    <p>
+     There are slight differences compared to how we did it in
+     <span class="No-Break">
+      Qt 5:
+     </span>
+    </p>
+    <pre class="source-code">
+const QUrl url(QStringLiteral("qrc:/main.qml"));</pre>
+    <p>
+     The
+     <strong class="source-inline">
+      u
+     </strong>
+     preceding the string
+     <a id="_idIndexMarker459">
+     </a>
+     creates a 16-bit string literal and the
+     <strong class="source-inline">
+      _qs
+     </strong>
+     after the string converts it to a
+     <strong class="source-inline">
+      QString
+     </strong>
+     . These operators are similar to the
+     <strong class="source-inline">
+      QStringLiteral
+     </strong>
+     macro used in Qt 5 but are easier to convert to the exact string format you want while complying with the C++ 17
+     <span class="No-Break">
+      coding style.
+     </span>
+    </p>
+    <p>
+     Another big difference in Qt 6 is that the
+     <strong class="bold">
+      Qt Quick Controls 1
+     </strong>
+     module is completely deleted from Qt Quick. Qt Quick now only supports
+     <strong class="bold">
+      Qt Quick Controls
+     </strong>
+     (formerly known as
+     <strong class="bold">
+      Qt Quick Controls 2
+     </strong>
+     ) with some slight changes. Let’s open up
+     <strong class="source-inline">
+      main.qml
+     </strong>
+     from the preceding example to see
+     <span class="No-Break">
+      the differences:
+     </span>
+    </p>
+    <pre class="source-code">
+<strong class="bold">import QtQuick</strong>
+Window {
+    width: 640
+    height: 480
+    visible: true
+    title: qsTr("Hello World")</pre>
+    <p>
+     As you can see from the highlighted part in the preceding code block, the version number is now optional when importing a Qt Quick module. Qt will pick the latest version available
+     <span class="No-Break">
+      by default.
+     </span>
+    </p>
+    <p>
+     Now, let’s look at the properties we declared in
+     <span class="No-Break">
+      the example:
+     </span>
+    </p>
+    <pre class="source-code">
+property variant myColor: "red"
+property url imageFolder: "/images"</pre>
+    <p>
+     Even though the preceding code will run fine, it’s recommended to use Qt functions such as
+     <strong class="source-inline">
+      Qt.color()
+     </strong>
+     and
+     <strong class="source-inline">
+      Qt.resolvedUrl()
+     </strong>
+     to return properties with the correct types, instead of just passing
+     <span class="No-Break">
+      a string:
+     </span>
+    </p>
+    <pre class="source-code">
+property variant myColor: Qt.color("red")
+property url imageFolder: Qt.resolvedUrl("/images")</pre>
+    <p>
+     Another small difference that you may or may not notice is the way Qt treats relative paths. Previously in Qt 5, we would write relative path as
+     <strong class="source-inline">
+      ./images
+     </strong>
+     , which will return as
+     <strong class="source-inline">
+      qrc:/images
+     </strong>
+     . In
+     <a id="_idIndexMarker460">
+     </a>
+     Qt 6, however,
+     <strong class="source-inline">
+      ./images
+     </strong>
+     will return as
+     <strong class="source-inline">
+      qrc:/[project_name]/images/tux.png
+     </strong>
+     , which is not correct. We must use
+     <strong class="source-inline">
+      /images
+     </strong>
+     without the preceding
+     <span class="No-Break">
+      dot instead.
+     </span>
+    </p>
+    <p class="callout-heading">
+     Note
+    </p>
+    <p class="callout">
+     For more information regarding
+     <a id="_idIndexMarker461">
+     </a>
+     the full changes of Qt Quick in Qt 6, please
+     <span class="No-Break">
+      visit
+     </span>
+     <a href="https://doc.qt.io/qt-6/qtquickcontrols-changes-qt6.html">
+      <span class="No-Break">
+       https://doc.qt.io/qt-6/qtquickcontrols-changes-qt6.html
+      </span>
+     </a>
+     <span class="No-Break">
+      .
+     </span>
+    </p>
+   </div>
+  </div>
+ </body>
+</html>
