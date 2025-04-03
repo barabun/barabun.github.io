@@ -1,0 +1,1860 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html>
+<html epub:prefix="z3998: http://www.daisy.org/z3998/2012/vocab/structure/#" lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+ <head>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Appendix A: Libraries
+  </title>
+ </head>
+ <body>
+  <div class="navigation">
+   <a class="nav-button" href="chapter_024.html">
+    ← Previous
+   </a>
+   <a class="nav-button" href="index.html">
+    Table of Contents
+   </a>
+   <a class="nav-button" href="chapter_026.html">
+    Next →
+   </a>
+  </div>
+  <div class="chapter-content">
+   <div id="sbo-rt-content">
+    <span aria-label="565" epub:type="pagebreak" id="pagebreak_565" role="doc-pagebreak">
+    </span>
+    <section epub:type="appendix" role="doc-appendix" xmlns:epub="http://www.idpf.org/2007/ops">
+     <a id="app00001">
+     </a>
+     <div id="CN">
+     </div>
+     <h1 class="chaptitle" epub:type="title" id="B9780443222191150019">
+      Appendix A: Libraries
+     </h1>
+     <div class="para_fl" id="p0010">
+      <b>
+       Abstract
+      </b>
+     </div>
+     <div class="para_indented" id="p0015">
+      Application programming interfaces are implemented and distributed as library files, either static libraries or dynamic libraries, such as Dynamic Link Libraries (DLLs) on Windows. This chapter describes the difference between static and dynamic libraries and the pros and cons of each, and covers the use of dynamic libraries to create plugins. Most of the chapter focuses on how to create static and shared libraries on Windows, Linux, and macOS. This addresses issues such as exporting symbols; DLL entry points; how to use Microsoft Visual Studio, XCode, and the GNU C++ compiler; using frameworks on the Mac; useful utilities to analyze library files such as libtool, nm, ldd, otool, tasklist.exe, and dlister.exe; and how to write code to load plugins at run time.
+     </div>
+     <div class="para_indented" id="p0020">
+      <b>
+       Keywords:
+      </b>
+      Compiler flag, Dynamic library, Exporting symbols, Framework, Linker, Object code, Plugin, Static library.
+     </div>
+     <div class="para_indented" id="p0025">
+      A library lets you package the compiled code and data that implement your application programming interface (API) so that your clients can embed these into their own applications. Libraries are the instruments of modularization. This appendix will cover the different types of libraries that you can use and how you can create them on various platforms. It also covers physical aspects of API design, namely exposing the public symbols of your API in the symbol export table of its library file.
+     </div>
+     <div class="para_indented" id="p0030">
+      The characteristics, usage, and supporting tools for libraries are inherently platform-specific. How you work with a Dynamic Link Library (DLL) on Windows is different from how you work with a Dynamic Shared Objects (DSO) on Unix. I have therefore decided to organize the bulk of the content in this appendix by platform, specifically Windows, Linux, and macOS. This also has the benefit of not distracting you with platform-specific details that you don't care about for your current project.
+     </div>
+     <section>
+      <a id="s0010">
+      </a>
+      <h2 class="h1hd" id="cesectitle0010">
+       Static versus dynamic libraries
+      </h2>
+      <div class="para_fl" id="p0035">
+       There are two main forms of libraries that you can create. The decision about which one you employ can have a significant impact on your clients' applications in terms of tangible factors such as load time, executable size, and robustness to different versions of your API. These two basic types are static libraries and dynamic (or shared) libraries. I will describe each in detail over the following sections.
+      </div>
+      <section>
+       <a id="s0015">
+       </a>
+       <h3 class="h2hd" id="cesectitle0015">
+        Static libraries
+       </h3>
+       <div class="para_fl" id="p0040">
+        A static library contains object code that's linked with an end-user application and then becomes part of that executable.
+        <a href="#f0010" id="Bf0010">
+         Fig. A.1
+        </a>
+        illustrates this concept. A static library is sometimes called an archive because it's essentially just a package of compiled object files. These
+        <a id="p566">
+        </a>
+        <span aria-label="566" epub:type="pagebreak" id="pagebreak_566" role="doc-pagebreak">
+        </span>
+        libraries normally have a file extension of
+        <span class="inlinecode">
+         .a
+        </span>
+        on Unix and macOS machines or
+        <span class="inlinecode">
+         .lib
+        </span>
+        on Windows (e.g.,
+        <span class="inlinecode">
+         libjpeg.a
+        </span>
+        or
+        <span class="inlinecode">
+         jpeg.lib)
+        </span>
+        .
+       </div>
+       <div class="pageavoid">
+        <figure class="fig" id="f0010">
+         <img alt="image" height="823" src="../../IMAGES/B9780443222191150019/main.assets/bm01-9780443222191.jpg" width="2084"/>
+         <figcaption class="figleg">
+          <a id="cap0010">
+          </a>
+          <a id="fspara0010">
+          </a>
+          <span class="fignum">
+           <a href="#Bf0010">
+            Figure A.1
+           </a>
+          </span>
+          Linking a static library into an application causes the library code to be embedded in the resulting executable.
+         </figcaption>
+        </figure>
+       </div>
+       <div class="para_indented" id="p0045">
+        Some implications of distributing your API's implementation as a static library are:
+       </div>
+       <div>
+        <ol id="ulist0010">
+         <li class="bulllist" id="p0050">
+          <a id="u0010">
+          </a>
+          ▪ A static library is needed only to link an application. It is not needed to run that application because the library code is essentially embedded inside the application. As a result, your clients can distribute their applications without additional run-time dependencies.
+         </li>
+         <li class="bulllist" id="p0055">
+          <a id="u0015">
+          </a>
+          ▪ If your clients wish to link your library into multiple executables, each one will embed a copy of your code. If your library is 10 MB in size and your client wishes to link this into five separate programs, then you could be adding up to 50 MB to the total size of the product. Note that only the object files in the static library that are actually used are copied to the application. So in reality the total size of each application could be less than this worst case.
+         </li>
+         <li class="bulllist" id="p0060">
+          <a id="u0020">
+          </a>
+          ▪ Your clients can distribute their applications without concerns that it will find an incompatible library version on the end user's machine or a completely different library with the same name from another vendor. This avoids the library version and dependency issues that were often described as “DLL hell” on early Windows platforms.
+         </li>
+         <li class="bulllist" id="p0065">
+          <a id="u0025">
+          </a>
+          ▪ On the other hand, if your clients want to be able to hot patch their application (i.e., they want to update the version of your API used by their application), they must replace the entire executable to achieve this. If this is done as an Internet-based update, the end user may have to download a much larger update and hence wait longer for the update to complete.
+         </li>
+        </ol>
+       </div>
+      </section>
+      <section>
+       <a id="s0020">
+       </a>
+       <h3 class="h2hd" id="cesectitle0020">
+        Dynamic libraries
+       </h3>
+       <div class="para_fl" id="p0070">
+        Dynamic libraries are files that are linked against at compile time to resolve undefined references and then distributed with the end user application so that the application can load the library code at run time (
+        <a href="#f0015" id="Bf0015">
+         Fig. A.2
+        </a>
+        ). This normally requires the use of a dynamic linker on
+        <a id="p567">
+        </a>
+        <span aria-label="567" epub:type="pagebreak" id="pagebreak_567" role="doc-pagebreak">
+        </span>
+        the end user's machine to find and load all dynamic library dependencies at run time, perform the necessary symbol relocations, and then pass control to the application. For example, the Linux dynamic linker is called
+        <span class="inlinecode">
+         ld.so,
+        </span>
+        and on the Mac it is called
+        <span class="inlinecode">
+         dyld
+        </span>
+        . Often, the dynamic linker supports several environment variables to modify or debug its behavior. For example, refer to
+        <span class="inlinecode">
+         man dyld
+        </span>
+        on the Mac.
+       </div>
+       <div class="pageavoid">
+        <figure class="fig" id="f0015">
+         <img alt="image" height="823" src="../../IMAGES/B9780443222191150019/main.assets/bm02-9780443222191.jpg" width="2084"/>
+         <figcaption class="figleg">
+          <a id="cap0015">
+          </a>
+          <a id="fspara0015">
+          </a>
+          <span class="fignum">
+           <a href="#Bf0015">
+            Figure A.2
+           </a>
+          </span>
+          A dynamic library is used to link an application and is then distributed with that application so that the library can be loaded at run time.
+         </figcaption>
+        </figure>
+       </div>
+       <div class="para_indented" id="p0075">
+        Dynamic libraries are sometimes called shared libraries because they can be shared by multiple programs. On Unix machines they can be called DSOs and on Windows they're referred to as DLLs. They have an
+        <span class="inlinecode">
+         .so
+        </span>
+        file extension on Unix platforms,
+        <span class="inlinecode">
+         .dll
+        </span>
+        on Windows, and
+        <span class="inlinecode">
+         .dylib
+        </span>
+        on macOS (e.g.,
+        <span class="inlinecode">
+         libjpeg.so
+        </span>
+        or
+        <span class="inlinecode">
+         jpeg.dll)
+        </span>
+        .
+       </div>
+       <div class="para_indented" id="p0080">
+        Some implications of using dynamic libraries to distribute your API include:
+       </div>
+       <div>
+        <ol id="ulist0015">
+         <li class="bulllist" id="p0085">
+          <a id="u0030">
+          </a>
+          ▪ Your clients must distribute your dynamic library with their application (as well as any dynamic libraries on which your library depends) so that it can be discovered when the application is run.
+         </li>
+         <li class="bulllist" id="p0090">
+          <a id="u0035">
+          </a>
+          ▪ Your clients' applications will not run if the dynamic library can't be found: for example, if the library is deleted or moved to a directory that's not in the dynamic library search path. Furthermore, the application may not run if the dynamic library is upgraded to a newer version or overwritten with an older version.
+         </li>
+         <li class="bulllist" id="p0095">
+          <a id="u0040">
+          </a>
+          ▪ Using dynamic libraries can often be more efficient than static libraries in terms of disk space if more than one application needs to use the library. This is because the library code is stored in a single shared file and not duplicated inside each executable. Note that this is not a hard and fast rule, however. As I noted earlier, the executable only needs to include the object code from the static library that's actually used. So if each application uses only a small fraction of the total static library, the disk space efficiency can still rival that of a complete dynamic library.
+         </li>
+         <li class="bulllist" id="p0100">
+          <a id="u0045">
+          </a>
+          ▪ Dynamic libraries may also be more efficient in terms of memory. Most modern operating systems will attempt only to load the dynamic library code into memory once and share it across all applications that depend upon it. This may also lead to better cache utilization. By comparison, every application that's linked against a static library will load duplicate copies of the library code into memory.
+         </li>
+         <li class="bulllist" id="p0105">
+          <a id="u0050">
+          </a>
+          ▪ If your clients wish to hot patch their application with a new (backward-compatible) version of your shared library, they can simply drop in the replacement library file and all of their applications will use this new library without having to recompile or relink.
+         </li>
+        </ol>
+       </div>
+       <div>
+        <aside aria-labelledby="b0015z" epub:type="sidebar">
+         <div class="box_top_space">
+         </div>
+         <div class="boxg1" id="b0015z">
+          <div class="b1textfl" id="bpar0025z">
+           <i>
+            TIP: You should prefer to distribute your library as a dynamic library to give your users greater flexibility. If your library is sufficiently small and stable, you may additionally decide to provide a static library version.
+           </i>
+          </div>
+         </div>
+        </aside>
+       </div>
+       <div class="para_fl">
+        <a id="p568">
+        </a>
+       </div>
+       <div>
+        <span aria-label="568" epub:type="pagebreak" id="pagebreak_568" role="doc-pagebreak">
+        </span>
+       </div>
+       <section>
+        <a id="sf0020">
+        </a>
+        <div class="pageavoid">
+         <figure class="fig" id="f0020">
+          <img alt="image" height="823" src="../../IMAGES/B9780443222191150019/main.assets/bm03-9780443222191.jpg" width="2084"/>
+          <figcaption class="figleg">
+           <a id="cap0020">
+           </a>
+           <a id="fspara0020">
+           </a>
+           <span class="fignum">
+            <a href="#Bf0020">
+             Figure A.3
+            </a>
+           </span>
+           A plugin library is a dynamic library that can be compiled separately from the application and explicitly loaded by the application on demand.
+          </figcaption>
+         </figure>
+        </div>
+       </section>
+       <div class="para_indented" id="p0115">
+        It's also important to understand the behavior of dynamic libraries that depend upon other dynamic libraries. If your library depends upon other dynamic libraries, then you must also ship those libraries with your software development kit (SDK), unless you can reasonably expect the end user's platform to have those libraries preinstalled. This is a transitive property: you must also ship all of the dependencies of your dependencies. Essentially, the entire chain of dynamic libraries must be available to the application at run time for it to be able to run. Of course, if your dynamic library links against a static library, then you don't need to provide that static library to your clients because the code from the static library is added directly to your dynamic library.
+       </div>
+      </section>
+      <section>
+       <a id="s0025">
+       </a>
+       <h3 class="h2hd" id="cesectitle0025">
+        Dynamic libraries as plugins
+       </h3>
+       <div class="para_fl" id="p0120">
+        Dynamic libraries are normally linked against an application and then distributed with that application so that the operating system can load the library when the application is launched. However, it's also possible for an application to load a dynamic library on demand, without the application having been compiled and linked against that library.
+       </div>
+       <div class="para_indented" id="p0125">
+        This can be used to create plugin interfaces, in which the application can load additional code at run time that extends the basic capabilities of the program. For example, most Web browsers support plugins to handle specific content types, such as viewing Apple QuickTime movies. This use of dynamic libraries is illustrated in
+        <a href="#f0020" id="Bf0020">
+         Fig. A.3
+        </a>
+        .
+       </div>
+       <div class="para_indented" id="p0130">
+        In terms of API development, this gives you the capability to create extensible APIs that allow your clients to drop in new functionality that your API will then load and execute. The Netscape Plugin API is an example of this: it's the API that you develop against to create a plugin (i.e., dynamic library) that browsers such as Firefox, Safari, Opera, and Chrome can then load and run. I discussed the use of plugins to create extensible APIs in
+        <a href="../B9780443222191000040/CH0015_533-564_B9780443222191000040.xhtml">
+         Chapter 15
+        </a>
+        .
+       </div>
+      </section>
+     </section>
+     <section>
+      <a id="s0030">
+      </a>
+      <h2 class="h1hd" id="cesectitle0030">
+       Libraries on Windows
+      </h2>
+      <div class="para_fl" id="p0135">
+       On Windows, static libraries are represented with
+       <span class="inlinecode">
+        .lib
+       </span>
+       files, whereas dynamic libraries have
+       <span class="inlinecode">
+        .dll
+       </span>
+       file extensions. Additionally, you must accompany each
+       <span class="inlinecode">
+        .dll
+       </span>
+       file with an import library, or
+       <span class="inlinecode">
+        .lib
+       </span>
+       file. The import library is used to resolve references to symbols exported in the DLL. For example, the Win32 User Interface API is implemented in
+       <span class="inlinecode">
+        user32.dll
+       </span>
+       , with an accompanying
+       <span class="inlinecode">
+        user32.lib
+       </span>
+       . Note that although they share the same
+       <span class="inlinecode">
+        .lib
+       </span>
+       file extension, a static
+       <a id="p569">
+       </a>
+       <span aria-label="569" epub:type="pagebreak" id="pagebreak_569" role="doc-pagebreak">
+       </span>
+       library and an import library are different file types. If you plan to distribute both static and dynamic library versions of your API, then you will need to avoid a filename collision by either naming the static library differently or placing each in a separate directory. For example:
+      </div>
+      <div>
+       <div class="pageavoid">
+        <p class="tnum">
+        </p>
+        <div class="big_device">
+         <table class="tbody" id="t0010">
+          <tbody>
+           <tr>
+            <th class="tb" scope="row">
+             <div class="tb1">
+              <b>
+               static:
+              </b>
+             </div>
+             <div class="tb1">
+              <b>
+               dynamic:
+              </b>
+             </div>
+             <div class="tb1">
+              <b>
+               import:
+              </b>
+             </div>
+            </th>
+            <td class="tb">
+             <div class="tb1">
+              <span class="inlinecode">
+               foo_static.lib
+              </span>
+             </div>
+             <div class="tb1">
+              <span class="inlinecode">
+               foo.dll
+              </span>
+             </div>
+             <div class="tb1">
+              <span class="inlinecode">
+               foo.lib
+              </span>
+             </div>
+            </td>
+            <td class="tb">
+             or
+            </td>
+            <td class="tb">
+             <div class="tb1">
+              <b>
+               static:
+              </b>
+             </div>
+             <div class="tb1">
+              <b>
+               dynamic:
+              </b>
+             </div>
+             <div class="tb1">
+              <b>
+               import:
+              </b>
+             </div>
+            </td>
+            <td class="tb">
+             <div class="tb1">
+              <span class="inlinecode">
+               static/foo.lib
+              </span>
+             </div>
+             <div class="tb1">
+              <span class="inlinecode">
+               dynamic/foo.dll
+              </span>
+             </div>
+             <div class="tb1">
+              <span class="inlinecode">
+               dynamic/foo.lib
+              </span>
+             </div>
+            </td>
+           </tr>
+          </tbody>
+         </table>
+        </div>
+       </div>
+      </div>
+      <div class="para_indented" id="p0140">
+       On Windows, several other file formats are implemented as DLLs:
+      </div>
+      <div>
+       <ol id="ulist0020">
+        <li class="bulllist" id="p0145">
+         <a id="u0055">
+         </a>
+         ▪ ActiveX Controls files (
+         <span class="inlinecode">
+          .ocx
+         </span>
+         )
+        </li>
+        <li class="bulllist" id="p0150">
+         <a id="u0060">
+         </a>
+         ▪ Device driver files (
+         <span class="inlinecode">
+          .drv
+         </span>
+         )
+        </li>
+        <li class="bulllist" id="p0155">
+         <a id="u0065">
+         </a>
+         ▪ Control Panel files (
+         <span class="inlinecode">
+          .cpl
+         </span>
+         )
+        </li>
+       </ol>
+      </div>
+      <section>
+       <a id="s0035">
+       </a>
+       <h3 class="h2hd" id="cesectitle0035">
+        Importing and exporting functions
+       </h3>
+       <div class="para_fl" id="p0160">
+        As I discussed in
+        <a href="../B9780443222191000106/CH0006_209-250_B9780443222191000106.xhtml">
+         Chapter 6
+        </a>
+        , if you want a function to be callable from a DLL on Windows, you must explicitly mark its declaration with this keyword:
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0035">
+          <img alt="image" height="81" src="../../IMAGES/B9780443222191150019/main.assets/bm06-9780443222191.jpg" width="727"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div class="para_indented" id="p0165">
+        For example,
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0040">
+          <img alt="image" height="139" src="../../IMAGES/B9780443222191150019/main.assets/bm07-9780443222191.jpg" width="1387"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div class="para_indented" id="p0170">
+        Conversely, if you want to use an exported DLL function in an application, then you must prefix the function prototype with this keyword:
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0045">
+          <img alt="image" height="81" src="../../IMAGES/B9780443222191150019/main.assets/bm08-9780443222191.jpg" width="727"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div class="para_indented" id="p0175">
+        It's therefore common to employ preprocessor macros to use the export decoration when building an API and the import decoration when using the same API in an application. It's also important to note that these
+        <span class="inlinecode">
+         __declspec
+        </span>
+        decorations may cause compile errors on non-Windows compilers, so you should use them only when compiling under Windows. The next preprocessor code provides a simple demonstration of this (see the Exporting Symbols Section in
+        <a href="../B9780443222191000106/CH0006_209-250_B9780443222191000106.xhtml">
+         Chapter 6
+        </a>
+        for a more complete cross-platform example):
+        <a id="p570">
+        </a>
+        <span aria-label="570" epub:type="pagebreak" id="pagebreak_570" role="doc-pagebreak">
+        </span>
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0050">
+          <img alt="image" height="602" src="../../IMAGES/B9780443222191150019/main.assets/bm09-9780443222191.jpg" width="2081"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div class="para_indented" id="p0180">
+        You can then decorate the symbols you want to export from your DLL as:
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0055">
+          <img alt="image" height="139" src="../../IMAGES/B9780443222191150019/main.assets/bm10-9780443222191.jpg" width="935"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div class="para_indented" id="p0185">
+        As an alternative to modifying your source code with these
+        <span class="inlinecode">
+         __declspec
+        </span>
+        declarations, you can create a module definition
+        <span class="inlinecode">
+         .def
+        </span>
+        file to specify the symbols to export. A minimal DEF file contains a
+        <span class="inlinecode">
+         LIBRARY
+        </span>
+        statement to specify the name of the DLL with which the file is associated, and an
+        <span class="inlinecode">
+         EXPORTS
+        </span>
+        statement followed by a list of symbol names to export:
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0060">
+          <img alt="image" height="313" src="../../IMAGES/B9780443222191150019/main.assets/bm11-9780443222191.jpg" width="519"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div class="para_indented" id="p0190">
+        The DEF file syntax also supports more powerful manipulations of your symbols, such as renaming symbols or using an ordinal number as the export name to help minimize the size of the DLL. The ordinal number represents the position of a symbol's address pointer in the DLL's export table. Using ordinal numbers for your DLL symbols can produce slightly faster and smaller libraries. However, from an API stability perspective this can be risky because seemingly innocuous changes to the DEF file can then change the exported symbols for your API. Therefore, I recommend using full symbol names rather than ordinal values when specifying your DLL exports.
+       </div>
+      </section>
+      <section>
+       <a id="s0040">
+       </a>
+       <h3 class="h2hd" id="cesectitle0040">
+        The Dynamic Link Library entry point
+       </h3>
+       <div class="para_fl" id="p0195">
+        DLLs can provide an optional entry point function to initialize data structures when a thread or process loads the DLL, or to clean up memory when the DLL is unloaded. This is managed by a function called
+        <span class="inlinecode">
+         DllMain()
+        </span>
+        that you define and export within the DLL. If the entry point function returns
+        <span class="inlinecode">
+         FALSE
+        </span>
+        , this is assumed to be a fatal error and the application will fail to start. This code provides a DLL entry point template:
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0065">
+          <img alt="image" height="1412" src="../../IMAGES/B9780443222191150019/main.assets/bm12-9780443222191.jpg" width="1560"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div class="para_fl">
+        <a id="p571">
+        </a>
+       </div>
+       <div>
+        <span aria-label="571" epub:type="pagebreak" id="pagebreak_571" role="doc-pagebreak">
+        </span>
+       </div>
+      </section>
+      <section>
+       <a id="s0045">
+       </a>
+       <h3 class="h2hd" id="cesectitle0045">
+        Creating libraries on Windows
+       </h3>
+       <div class="para_fl" id="p0200">
+        The next steps describe how to create a static library on Windows. These steps are for Microsoft Visual Studio 2017, although the steps are similar for other versions of Visual Studio:
+       </div>
+       <div>
+        <ul class="ce_list" id="olist0010">
+         <li class="numlist" id="p0205">
+          <a id="o0010">
+          </a>
+          1. Select the menu
+          <b>
+           File &gt; New &gt; Project.
+          </b>
+         </li>
+         <li class="numlist" id="p0210">
+          <a id="o0015">
+          </a>
+          2. Select the
+          <b>
+           Visual C++ &gt; Win32
+          </b>
+          option and the
+          <b>
+           Win32 Project
+          </b>
+          icon.
+         </li>
+         <li class="numlist" id="p0215">
+          <a id="o0020">
+          </a>
+          3. The Win32 Application Wizard should appear.
+         </li>
+         <li class="numlist" id="p0220">
+          <a id="o0025">
+          </a>
+          4. Select the
+          <b>
+           Static library
+          </b>
+          option under Application type (see
+          <a href="#f0025" id="Bf0025">
+           Fig. A.4
+          </a>
+          ).
+         </li>
+        </ul>
+       </div>
+       <div class="para_indented" id="p0225">
+        You can then add new or existing source files to your project under the Source Files folder in the left-hand pane. Then, when you perform a build for your project, the result will be a static library
+        <span class="inlinecode">
+         .lib
+        </span>
+        file.
+        <a id="p572">
+        </a>
+       </div>
+       <section>
+        <a id="sf0025">
+        </a>
+        <div class="pageavoid">
+         <figure class="fig" id="f0025">
+          <img alt="image" height="1768" src="../../IMAGES/B9780443222191150019/main.assets/bm04-9780443222191.jpg" width="2258"/>
+          <figcaption class="figleg">
+           <a id="cap0025">
+           </a>
+           <a id="fspara0025">
+           </a>
+           <span class="fignum">
+            <a href="#Bf0025">
+             Figure A.4
+            </a>
+           </span>
+           Creating a new static library or Dynamic Link Library (DLL) in Visual Studio 2017.
+          </figcaption>
+         </figure>
+        </div>
+       </section>
+       <div>
+        <span aria-label="572" epub:type="pagebreak" id="pagebreak_572" role="doc-pagebreak">
+        </span>
+       </div>
+       <div class="para_indented" id="p0230">
+        The steps to create a DLL are very similar. The only difference is during Step 4, where you will select the
+        <b>
+         DLL
+        </b>
+        option instead of Static library. Then, when you build your project, Visual Studio will generate a
+        <span class="inlinecode">
+         .dll
+        </span>
+        file and an associated
+        <span class="inlinecode">
+         .lib
+        </span>
+        import file.
+       </div>
+      </section>
+      <section>
+       <a id="s0050">
+       </a>
+       <h3 class="h2hd" id="cesectitle0050">
+        Useful Windows utilities
+       </h3>
+       <div class="para_fl" id="p0235">
+        There are various programs that can help you manage DLLs on Windows and to investigate DLL problems. Many of these are command-line tools that you can run from the MS-DOS prompt. A few of these DLLs utilities are:
+       </div>
+       <div>
+        <ol id="ulist0025">
+         <li class="bulllist" id="p0240">
+          <a id="u0070">
+          </a>
+          •
+          <b>
+           tasklist.exe
+          </b>
+          : This program can be used to find out which dynamic libraries a running Windows EXE file depends upon, for example:
+         </li>
+        </ol>
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0070">
+          <img alt="image" height="81" src="../../IMAGES/B9780443222191150019/main.assets/bm13-9780443222191.jpg" width="1455"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div>
+        <ol id="ulist0030">
+         <li class="bulllist" id="p0245">
+          <a id="u0075">
+          </a>
+          •
+          <b>
+           depends.exe:
+          </b>
+          The dependency walker utility will recursively scan an executable to discover all of its dependent DLLs. It will check for missing DLLs, invalid DLLs, and circular dependencies, among other error conditions.
+         </li>
+         <li class="bulllist" id="p0250">
+          <a id="u0080">
+          </a>
+          •
+          <b>
+           dlister.exe
+          </b>
+          : This utility provides a log of all the DLLs installed on your computer. This can be output as a text file or a database file.
+         </li>
+         <li class="bulllist" id="p0255">
+          <a id="u0085">
+          </a>
+          •
+          <b>
+           dcomp.exe
+          </b>
+          : Displays the differences between two DLL listings produced by the
+          <span class="inlinecode">
+           dlister.exe
+          </span>
+          program.
+         </li>
+        </ol>
+       </div>
+      </section>
+      <section>
+       <a id="s0055">
+       </a>
+       <h3 class="h2hd" id="cesectitle0055">
+        Loading plugins on Windows
+       </h3>
+       <div class="para_fl" id="p0260">
+        On the Windows platform, the
+        <span class="inlinecode">
+         LoadLibrary()
+        </span>
+        or
+        <span class="inlinecode">
+         LoadLibraryEx()
+        </span>
+        functions can be used to load a dynamic library into a process, and the
+        <span class="inlinecode">
+         GetProcAddress()
+        </span>
+        function is used to obtain the address of an exported symbol in the DLL. Note that you do not need an import library
+        <span class="inlinecode">
+         .lib
+        </span>
+        file to load a dynamic library in this way. To demonstrate this, consider this simple plugin interface that's used to create a
+        <span class="inlinecode">
+         plugin.dll
+        </span>
+        library:
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0075">
+          <img alt="image" height="486" src="../../IMAGES/B9780443222191150019/main.assets/bm14-9780443222191.jpg" width="2360"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div class="para_fl">
+        <a id="p573">
+        </a>
+       </div>
+       <div>
+        <span aria-label="573" epub:type="pagebreak" id="pagebreak_573" role="doc-pagebreak">
+        </span>
+       </div>
+       <div class="para_indented" id="p0265">
+        Then the following code snippet illustrates how to load this DLL on demand and call the
+        <span class="inlinecode">
+         DoSomething()
+        </span>
+        method from that library:
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0080">
+          <img alt="image" height="1239" src="../../IMAGES/B9780443222191150019/main.assets/bm15-9780443222191.jpg" width="2114"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+      </section>
+     </section>
+     <section>
+      <a id="s0060">
+      </a>
+      <h2 class="h1hd" id="cesectitle0060">
+       Libraries on Linux
+      </h2>
+      <div class="para_fl" id="p0270">
+       In the following sections, I'll provide an overview of creating and managing static and dynamic libraries on Linux. The emphasis here is to surface the important issues and techniques. However, for a deeper treatment, I recommend reading Ulrich Drepper's excellent article, “How to write shared libraries,” available online at:
+      </div>
+      <div class="para_indented" id="p0275">
+       <a href="https://akkadia.org/drepper/dsohowto.pdf">
+        https://akkadia.org/drepper/dsohowto.pdf
+       </a>
+      </div>
+      <section>
+       <a id="s0065">
+       </a>
+       <h3 class="h2hd" id="cesectitle0065">
+        Creating static libraries on Linux
+       </h3>
+       <div class="para_fl" id="p0280">
+        On Unix, a static library is simply an archive of object (
+        <span class="inlinecode">
+         .o
+        </span>
+        ) files. You can use the Unix
+        <span class="inlinecode">
+         ar
+        </span>
+        command to compile several object files into a static library. For example, the following commands demonstrate how to compile three
+        <span class="inlinecode">
+         .cpp
+        </span>
+        files to
+        <span class="inlinecode">
+         .o
+        </span>
+        files using the GNU C++ compiler and then creating a static library from those object files:
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0085">
+          <img alt="image" height="255" src="../../IMAGES/B9780443222191150019/main.assets/bm16-9780443222191.jpg" width="1456"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div class="para_indented" id="p0285">
+        The
+        <span class="inlinecode">
+         -c
+        </span>
+        option to
+        <span class="inlinecode">
+         g++
+        </span>
+        tells the compiler to produce an
+        <span class="inlinecode">
+         .o
+        </span>
+        file from the input
+        <span class="inlinecode">
+         .cpp
+        </span>
+        file. The options to
+        <span class="inlinecode">
+         ar
+        </span>
+        are:
+        <span class="inlinecode">
+         -c
+        </span>
+        creates an archive,
+        <span class="inlinecode">
+         -r
+        </span>
+        inserts the supplied
+        <span class="inlinecode">
+         .o
+        </span>
+        files into that archive, and
+        <span class="inlinecode">
+         -s
+        </span>
+        creates an index for the archive (equivalent to the older convention of running
+        <span class="inlinecode">
+         ranlib
+        </span>
+        on the resulting archive).
+        <a id="p574">
+        </a>
+       </div>
+       <div>
+        <span aria-label="574" epub:type="pagebreak" id="pagebreak_574" role="doc-pagebreak">
+        </span>
+       </div>
+       <div class="para_indented" id="p0290">
+        Your users can then link against your library using the
+        <span class="inlinecode">
+         -l
+        </span>
+        option to
+        <span class="inlinecode">
+         ld
+        </span>
+        or
+        <span class="inlinecode">
+         g++
+        </span>
+        . This specifies the name of the library to link against. The
+        <span class="inlinecode">
+         -L
+        </span>
+        linker option can also be used to specify the directory where your library can be found. For example:
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0090">
+          <img alt="image" height="81" src="../../IMAGES/B9780443222191150019/main.assets/bm17-9780443222191.jpg" width="1387"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div class="para_indented" id="p0295">
+        In this example, the end user application
+        <span class="inlinecode">
+         userapp
+        </span>
+        is created by compiling
+        <span class="inlinecode">
+         usercode.cpp
+        </span>
+        and linking against the
+        <span class="inlinecode">
+         libmyapi.a
+        </span>
+        static library in the same directory.
+       </div>
+       <div class="para_indented" id="p0300">
+        The order of archives on this command line is significant. For each archive that the linker finds on the command line, it looks to see if that archive defines any symbols that were referenced from any object files that were specified earlier on the command line. If it does define any needed symbols, the object files with those symbols are copied into the executable. It's therefore best practice to specify libraries at the end of the command line (
+        <a href="../B9780443222191160015/References_583-587_B9780443222191160015.xhtml#bib73" id="bib_73">
+         Mitchell et al., 2001
+        </a>
+        ).
+       </div>
+       <div class="para_indented" id="p0305">
+        While I'm discussing the creation of static libraries, it's worth noting the proper usage of the
+        <span class="inlinecode">
+         -static
+        </span>
+        compiler option. This flag is used for the creation of executables, not libraries. It's therefore applicable to users of your API, but not to the building of your API itself. This flag instructs the compiler to prefer linking the static versions of all dependent libraries into the executable so that it depends upon no dynamic libraries at run time.
+       </div>
+      </section>
+      <section>
+       <a id="s0070">
+       </a>
+       <h3 class="h2hd" id="cesectitle0070">
+        Creating dynamic libraries on Linux
+       </h3>
+       <div class="para_fl" id="p0310">
+        Creating a dynamic library on Linux is very similar to creating a static library. Using the GNU C++ compiler, you can simply use the
+        <span class="inlinecode">
+         -shared
+        </span>
+        linker option to generate an
+        <span class="inlinecode">
+         .so
+        </span>
+        file instead of an executable.
+       </div>
+       <div class="para_indented" id="p0315">
+        On platforms where it's not the default behavior, you should also specify either the
+        <span class="inlinecode">
+         -fpic
+        </span>
+        or
+        <span class="inlinecode">
+         -fPIC
+        </span>
+        command line option to instruct the compiler to emit position-independent code (PIC). This is needed because the code in a shared library may be loaded into a different memory location for different executables. It's therefore important to generate PIC code for shared libraries so that that user code doesn't depend upon the absolute memory address of symbols. The following example illustrates how to compile three source files into a dynamic library:
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0095">
+          <img alt="image" height="255" src="../../IMAGES/B9780443222191150019/main.assets/bm18-9780443222191.jpg" width="1943"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div class="para_indented" id="p0320">
+        Users can then link your dynamic library into their code using the same compile line shown earlier for the static library case: i.e.,
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0100">
+          <img alt="image" height="81" src="../../IMAGES/B9780443222191150019/main.assets/bm19-9780443222191.jpg" width="1353"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div class="para_indented" id="p0325">
+        If you have both a static library and a dynamic library with the same base name in the same directory (i.e.,
+        <span class="inlinecode">
+         libmyapi.a
+        </span>
+        and
+        <span class="inlinecode">
+         libmyapi.so)
+        </span>
+        , the linker will use the dynamic library. To favor the use of a static library over a dynamic library with the same base name, you can use the
+        <span class="inlinecode">
+         -static
+        </span>
+        linker option, or you could place the static library in a different directory and ensure that this directory appears earlier in the library search path (using the
+        <span class="inlinecode">
+         -L
+        </span>
+        linker option).
+        <a id="p575">
+        </a>
+       </div>
+       <div>
+        <span aria-label="575" epub:type="pagebreak" id="pagebreak_575" role="doc-pagebreak">
+        </span>
+       </div>
+       <div class="para_indented" id="p0330">
+        Note that in a dynamic library, all code is essentially flattened into a single object file. This contrasts with static libraries that are represented as a collection of object files that can be individually copied into an executable as needed (i.e., object files in a static archive that are not needed are not copied into the executable image). As a result, loading a dynamic library will involve loading all the code defined in that
+        <span class="inlinecode">
+         .so
+        </span>
+        file (
+        <a href="../B9780443222191160015/References_583-587_B9780443222191160015.xhtml#bib73">
+         Mitchell et al., 2001
+        </a>
+        ).
+       </div>
+       <div class="para_indented" id="p0335">
+        By default, all symbols in a DSO are exported publicly (unless you specify the
+        <span class="inlinecode">
+         -fvisibility=hidden
+        </span>
+        compiler option). However, the GNU C++ compiler supports the concept of export maps to explicitly define the set of symbols in a dynamic library that will be visible to client programs. This is a simple ASCII format where symbols can be listed individually or using glob-style expressions. For example, the following map file,
+        <span class="inlinecode">
+         export.map
+        </span>
+        , specifies that only the
+        <span class="inlinecode">
+         DoSomething()
+        </span>
+        function should be exported, and all other symbols should be hidden:
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0105">
+          <img alt="image" height="255" src="../../IMAGES/B9780443222191150019/main.assets/bm20-9780443222191.jpg" width="831"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div class="para_indented" id="p0340">
+        This map file can then be passed to the compiler when building a dynamic library using the
+        <span class="inlinecode">
+         --version-script
+        </span>
+        linker option, as in this example:
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0110">
+          <img alt="image" height="139" src="../../IMAGES/B9780443222191150019/main.assets/bm21-9780443222191.jpg" width="2013"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+      </section>
+      <section>
+       <a id="s0075">
+       </a>
+       <h3 class="h2hd" id="cesectitle0075">
+        Shared library entry points
+       </h3>
+       <div class="para_fl" id="p0345">
+        It's possible to define functions that will be called automatically when your shared library is loaded or unloaded. This can be used to perform library initialization and cleanup operations without requiring your users to call explicit functions to perform this.
+       </div>
+       <div class="para_indented" id="p0350">
+        One way to do this is using static constructors and destructors. This will work for any compiler and any platform, although you should remember that the order of initialization of static constructors is not defined across translation unit boundaries (i.e., you should never depend upon static variables in other
+        <span class="inlinecode">
+         .cpp
+        </span>
+        files being initialized). Bearing this caveat in mind, you could create a shared library entry point in one of your
+        <span class="inlinecode">
+         .cpp
+        </span>
+        files as:
+        <a id="p576">
+        </a>
+        <span aria-label="576" epub:type="pagebreak" id="pagebreak_576" role="doc-pagebreak">
+        </span>
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0115">
+          <img alt="image" height="891" src="../../IMAGES/B9780443222191150019/main.assets/bm22-9780443222191.jpg" width="2081"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div class="para_indented" id="p0355">
+        There is an alternative, more elegant approach. However, it's specific to the GNU compiler. This involves using the constructor and destructor
+        <span class="inlinecode">
+         __attribute__
+        </span>
+        decorations for functions. For example, the following code shows you how to define library initialization and cleanup routines and hide these within one of your
+        <span class="inlinecode">
+         .cpp
+        </span>
+        files:
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0120">
+          <img alt="image" height="545" src="../../IMAGES/B9780443222191150019/main.assets/bm23-9780443222191.jpg" width="1942"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div class="para_indented" id="p0360">
+        If you use this approach, you should be aware that your shared library must not be compiled with the GNU GCC arguments
+        <span class="inlinecode">
+         -nostartfiles
+        </span>
+        or
+        <span class="inlinecode">
+         -nostdlib
+        </span>
+        .
+       </div>
+      </section>
+      <section>
+       <a id="s0080">
+       </a>
+       <h3 class="h2hd" id="cesectitle0080">
+        Useful Linux utilities
+       </h3>
+       <div class="para_fl" id="p0365">
+        There are several standard Linux utilities that can help you work with static and shared libraries. Of note is the GNU
+        <span class="inlinecode">
+         libtool
+        </span>
+        shell script. This command provides a consistent and portable interface for creating libraries on different Unix platforms. The
+        <span class="inlinecode">
+         libtool
+        </span>
+        script can be used in various ways, but in its simplest form you can just give
+        <span class="inlinecode">
+         libtool
+        </span>
+        a list of object files, specify either the
+        <span class="inlinecode">
+         -static
+        </span>
+        or
+        <span class="inlinecode">
+         -dynamic
+        </span>
+        option, and it will then create a static or dynamic library, respectively. For example,
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0125">
+          <img alt="image" height="81" src="../../IMAGES/B9780443222191150019/main.assets/bm24-9780443222191.jpg" width="1872"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div class="para_indented" id="p0370">
+        The
+        <span class="inlinecode">
+         libtool
+        </span>
+        script can be very useful if you want your source code to compile easily on a range of Unix platforms without worrying about the idiosyncrasies of creating libraries on each platform.
+       </div>
+       <div class="para_indented" id="p0375">
+        Another useful command for working with libraries is
+        <span class="inlinecode">
+         nm
+        </span>
+        , which can be used to display the symbol names in an object file or library. This is useful to find out whether a library defines or uses a given symbol. For example, this command line will output all global (external) symbols in a library:
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0130">
+          <img alt="image" height="81" src="../../IMAGES/B9780443222191150019/main.assets/bm25-9780443222191.jpg" width="554"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div class="para_indented" id="p0380">
+        This will produce output such as:
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0135">
+          <img alt="image" height="429" src="../../IMAGES/B9780443222191150019/main.assets/bm26-9780443222191.jpg" width="1213"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div class="para_fl">
+        <a id="p577">
+        </a>
+       </div>
+       <div>
+        <span aria-label="577" epub:type="pagebreak" id="pagebreak_577" role="doc-pagebreak">
+        </span>
+       </div>
+       <div class="para_indented" id="p0385">
+        The character in the second column specifies the symbol type, where “T” refers to a text section symbol that's defined in this library and “U” refers to a symbol that's referenced by the library but is not defined by it. An uppercase letter represents an external symbol, whereas a lowercase character represents an internal symbol. The string in the third column provides the mangled symbol name. This can be unmangled using the
+        <span class="inlinecode">
+         c++filt
+        </span>
+        command. For example,
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0140">
+          <img alt="image" height="139" src="../../IMAGES/B9780443222191150019/main.assets/bm27-9780443222191.jpg" width="1108"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div class="para_indented" id="p0390">
+        Another useful command is
+        <span class="inlinecode">
+         ldd
+        </span>
+        . This can be used to display the list of dynamic libraries on which an executable depends. This will display the full path that will be used for each library, so you can see which version of a dynamic library will be loaded and whether any dynamic libraries cannot be found by the operating system. For example, the following output is produced on Linux for a simple executable:
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0145">
+          <img alt="image" height="429" src="../../IMAGES/B9780443222191150019/main.assets/bm28-9780443222191.jpg" width="2010"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div class="para_indented" id="p0395">
+        An executable that's been linked with the
+        <span class="inlinecode">
+         -static
+        </span>
+        option will not depend upon any dynamic libraries. Running
+        <span class="inlinecode">
+         ldd
+        </span>
+        on such an executable produces this output on Linux:
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0150">
+          <img alt="image" height="139" src="../../IMAGES/B9780443222191150019/main.assets/bm29-9780443222191.jpg" width="970"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div class="para_indented" id="p0400">
+        Finally, if you have a static library, it's possible to convert it to a dynamic library. Recall that a static archive (
+        <span class="inlinecode">
+         .a
+        </span>
+        ) is just a packaging of object files (
+        <span class="inlinecode">
+         .o
+        </span>
+        ). You can therefore extract the individual object files using the
+        <span class="inlinecode">
+         ar
+        </span>
+        command and then relink them as a dynamic library. For example,
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0155">
+          <img alt="image" height="139" src="../../IMAGES/B9780443222191150019/main.assets/bm30-9780443222191.jpg" width="1039"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+      </section>
+      <section>
+       <a id="s0085">
+       </a>
+       <h3 class="h2hd" id="cesectitle0085">
+        Loading plugins on Linux
+       </h3>
+       <div class="para_fl" id="p0405">
+        On Linux platforms, you can use the
+        <span class="inlinecode">
+         dlopen()
+        </span>
+        function call to load an
+        <span class="inlinecode">
+         .so
+        </span>
+        file into the current process. Then you can use the
+        <span class="inlinecode">
+         dlsym()
+        </span>
+        function to access symbols within that library. This lets you create plugin interfaces, as described earlier in the book. For example, consider the following very simple plugin interface:
+        <a id="p578">
+        </a>
+        <span aria-label="578" epub:type="pagebreak" id="pagebreak_578" role="doc-pagebreak">
+        </span>
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0160">
+          <img alt="image" height="487" src="../../IMAGES/B9780443222191150019/main.assets/bm31-9780443222191.jpg" width="1596"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div class="para_indented" id="p0410">
+        You can build a dynamic library for this API, such as
+        <span class="inlinecode">
+         libplugin.so
+        </span>
+        . Then the following code demonstrates how to load this library and call the
+        <span class="inlinecode">
+         DoSomething()
+        </span>
+        function within that
+        <span class="inlinecode">
+         .so
+        </span>
+        file:
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0165">
+          <img alt="image" height="1470" src="../../IMAGES/B9780443222191150019/main.assets/bm32-9780443222191.jpg" width="2150"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+      </section>
+      <section>
+       <a id="s0090">
+       </a>
+       <h3 class="h2hd" id="cesectitle0090">
+        Finding dynamic libraries at run time
+       </h3>
+       <div class="para_fl" id="p0415">
+        When you run an executable that depends upon a dynamic library, the system will search for this library in various standard locations, normally
+        <span class="inlinecode">
+         /lib
+        </span>
+        and
+        <span class="inlinecode">
+         /usr/lib
+        </span>
+        . If the
+        <span class="inlinecode">
+         .so
+        </span>
+        file cannot be found in any of these locations the executable will fail to launch. Recall that the
+        <span class="inlinecode">
+         ldd
+        </span>
+        command can be used to tell you if the system cannot find any dependent dynamic library. This is obviously a concern for creating executable programs that depend upon your API. There are three main options available to your clients to ensure that any executable they build using your API can find your library at run time:
+       </div>
+       <div>
+        <ul class="ce_list" id="olist0015">
+         <li class="numlist" id="p0420">
+          <a id="o0030">
+          </a>
+          1. The client of your API ensures that your library is installed in one of the standard library directories on the end user's machine, such as
+          <span class="inlinecode">
+           /usr/lib
+          </span>
+          . This will require the end user to perform an installation process and to have root privileges to copy files into a system directory.
+         </li>
+         <li class="numlist" id="p0425">
+          <a id="o0035">
+          </a>
+          2. The
+          <span class="inlinecode">
+           LD_LIBRARY_PATH
+          </span>
+          environment variable can be set to augment the default library search path with a colon-separated list of directories. Your clients could therefore distribute a shell script to run their application where that script sets the
+          <span class="inlinecode">
+           LD_LIBRARY_PATH
+          </span>
+          variable to an appropriate directory where your dynamic library can be found.
+         </li>
+         <li class="numlist" id="p0430">
+          <a id="o0040">
+          </a>
+          3. Your clients can use the rpath (run path) linker option to compile the preferred path to search for dynamic libraries into their executable. For example, this
+          <a id="p579">
+          </a>
+          <span aria-label="579" epub:type="pagebreak" id="pagebreak_579" role="doc-pagebreak">
+          </span>
+          compile line will produce an executable that will cause the system to search in
+          <span class="inlinecode">
+           /usr/local/lib
+          </span>
+          for any dynamic libraries:
+         </li>
+         <li>
+          <div class="pageavoid">
+           <figure class="fig" id="f0170">
+            <img alt="image" height="81" src="../../IMAGES/B9780443222191150019/main.assets/bm33-9780443222191.jpg" width="2255"/>
+            <figcaption class="figleg">
+            </figcaption>
+           </figure>
+          </div>
+         </li>
+        </ul>
+       </div>
+      </section>
+     </section>
+     <section>
+      <a id="s0095">
+      </a>
+      <h2 class="h1hd" id="cesectitle0095">
+       Libraries on macOS
+      </h2>
+      <div class="para_fl" id="p0435">
+       The macOS operating system is built upon a version of BSD Unix called Darwin. As such, many of the details that I've presented earlier for Linux apply equally well to the Mac. However, there are a few differences that are worth highlighting between Darwin and other Unix platforms such as Linux. Note that I'll refer to macOS here for simplicity, but everything I present applies equally well to all other Apple operating systems, such as iOS, iPadOS, watchOS, tvOS, and visionOS.
+      </div>
+      <section>
+       <a id="s0100">
+       </a>
+       <h3 class="h2hd" id="cesectitle0100">
+        Creating static libraries on macOS
+       </h3>
+       <div class="para_fl" id="p0440">
+        Static libraries can be created on macOS in the same way as for Linux (i.e., using
+        <span class="inlinecode">
+         ar
+        </span>
+        or
+        <span class="inlinecode">
+         libtool)
+        </span>
+        . However, there are some different behaviors when linking a static library into an application.
+       </div>
+       <div class="para_indented" id="p0445">
+        Apple discourages the use of the
+        <span class="inlinecode">
+         -static
+        </span>
+        compiler option to generate executables with all library dependencies linked statically. This is because Apple wants to ensure that applications always pull in the latest system libraries that they distribute. In fact the
+        <span class="inlinecode">
+         gcc
+        </span>
+        man page states that
+        <span class="inlinecode">
+         -static
+        </span>
+        "will not work on macOS unless all libraries (including
+        <span class="inlinecode">
+         libgcc.a
+        </span>
+        ) have also been compiled with
+        <span class="inlinecode">
+         -static
+        </span>
+        . Since neither a static version of
+        <span class="inlinecode">
+         libSystem.dylib
+        </span>
+        nor
+        <span class="inlinecode">
+         crt0.o
+        </span>
+        are provided, this option is not useful to most people."
+       </div>
+       <div class="para_indented" id="p0450">
+        Essentially, the
+        <span class="inlinecode">
+         -static
+        </span>
+        option on the Mac is reserved for building the kernel, or for the very brave.
+       </div>
+       <div class="para_indented" id="p0455">
+        Related to this situation, by default the Mac linker will scan through all paths in the library search path looking for a dynamic library. If it fails, it will then scan the paths again looking for a static library. This means that you cannot use the trick of favoring a static library by placing it in a directory that appears earlier in the library search path. However, there is a linker option called
+        <span class="inlinecode">
+         -search-paths-first
+        </span>
+        that will cause the linker to look in each search path for a dynamic library and then, if not found, to look for a static library in the same directory. This option makes the Mac linker behavior more like the Linux linker in this respect. Note, however, that there is no way to favor linking against a static library over a dynamic library on the Mac when both are located in the same directory.
+       </div>
+      </section>
+      <section>
+       <a id="s0105">
+       </a>
+       <h3 class="h2hd" id="cesectitle0105">
+        Creating dynamic libraries on macOS
+       </h3>
+       <div class="para_fl" id="p0460">
+        Dynamic libraries can be created on macOS in a way very similar to that in the Linux instructions given earlier. There's one important difference that you should use the
+        <span class="inlinecode">
+         -dynamiclib
+        </span>
+        option to
+        <span class="inlinecode">
+         g++
+        </span>
+        to create dynamic libraries on the Mac, instead of
+        <span class="inlinecode">
+         -shared
+        </span>
+        :
+        <a id="p580">
+        </a>
+        <span aria-label="580" epub:type="pagebreak" id="pagebreak_580" role="doc-pagebreak">
+        </span>
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0175">
+          <img alt="image" height="313" src="../../IMAGES/B9780443222191150019/main.assets/bm34-9780443222191.jpg" width="2152"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div class="para_indented" id="p0465">
+        Also, note the use of the
+        <span class="inlinecode">
+         -headerpad_max_install_names
+        </span>
+        option. This flag is highly recommended when building dynamic libraries on the Mac, for reasons I'll explain in a moment.
+       </div>
+       <div class="para_indented" id="p0470">
+        It should also be noted that the
+        <span class="inlinecode">
+         ldd
+        </span>
+        command is not available on macOS. Instead, you can use the
+        <span class="inlinecode">
+         otool
+        </span>
+        command to list the collection of dynamic libraries that an executable depends upon, such as:
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0180">
+          <img alt="image" height="81" src="../../IMAGES/B9780443222191150019/main.assets/bm35-9780443222191.jpg" width="554"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+      </section>
+      <section>
+       <a id="s0110">
+       </a>
+       <h3 class="h2hd" id="cesectitle0110">
+        Frameworks on macOS
+       </h3>
+       <div class="para_fl" id="p0475">
+        The macOS operating system also introduces the concept of frameworks to distribute all of the files necessary to compile and link against an API in a single package. A framework is simply a directory with a
+        <span class="inlinecode">
+         .framework
+        </span>
+        extension that can contain various resources such as dynamic libraries, header files, and reference documentation. It's essentially a bundle, in the
+        <span class="inlinecode">
+         NSBundle
+        </span>
+        sense. This bundling of all necessary development files in a single package can make it easier to install and uninstall a library. Also, a framework can contain multiple versions of a library in the same bundle to make it easier to maintain backward compatibility for older applications.
+       </div>
+       <div class="para_indented" id="p0480">
+        The following directory listing gives an example layout for a framework bundle, where the
+        <span class="inlinecode">
+         -&gt;
+        </span>
+        symbol represents a symbol link:
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0185">
+          <img alt="image" height="776" src="../../IMAGES/B9780443222191150019/main.assets/bm36-9780443222191.jpg" width="1353"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div class="para_indented" id="p0485">
+        Most of Apple's APIs are distributed as frameworks, including Cocoa, Foundation, and Core Services. You may therefore wish to distribute your API as a framework on the Mac to make it appear more like a system Mac library.
+       </div>
+       <div class="para_indented" id="p0490">
+        You can build your API as a framework using Apple's XCode development environment. This can be done by selecting the
+        <b>
+         File &gt; New Project
+        </b>
+        menu and then selecting Framework in the left-hand panel (
+        <a href="#f0030" id="Bf0030">
+         Fig. A.5
+        </a>
+        ). By default, you can choose to have your project setup to use either the Carbon or Cocoa frameworks. If you don't need either of these (i.e., you are writing a pure C++ library), you can simply remove these frameworks after XCode has created the project for you.
+       </div>
+       <div class="para_indented" id="p0495">
+        Clients can link against your framework by supplying the
+        <span class="inlinecode">
+         -framework
+        </span>
+        option to
+        <span class="inlinecode">
+         g++
+        </span>
+        or
+        <span class="inlinecode">
+         ld
+        </span>
+        . They can also specify the
+        <span class="inlinecode">
+         -F
+        </span>
+        option to specify the directory to find your framework bundle.
+        <a id="p581">
+        </a>
+       </div>
+       <div>
+        <span aria-label="581" epub:type="pagebreak" id="pagebreak_581" role="doc-pagebreak">
+        </span>
+       </div>
+       <section>
+        <a id="sf0030">
+        </a>
+        <div class="pageavoid">
+         <figure class="fig" id="f0030">
+          <img alt="image" height="1680" src="../../IMAGES/B9780443222191150019/main.assets/bm05-9780443222191.jpg" width="2376"/>
+          <figcaption class="figleg">
+           <a id="cap0030">
+           </a>
+           <a id="fspara0030">
+           </a>
+           <span class="fignum">
+            <a href="#Bf0030">
+             Figure A.5
+            </a>
+           </span>
+           Creating a framework project using Apple's XCode integrated development environment (IDE).
+          </figcaption>
+         </figure>
+        </div>
+       </section>
+      </section>
+      <section>
+       <a id="s0115">
+       </a>
+       <h3 class="h2hd" id="cesectitle0115">
+        Text-based InstallAPI
+       </h3>
+       <div class="para_fl" id="p0500">
+        When you install Xcode on your Mac you are installing a version of the clang compiler, but you are also installing one or more SDKs that let your code compile against the system libraries for different OS types (e.g., macOS, iOS, tvOS, watchOS) and different OS versions. You can find all these SDKs inside of the Xcode app bundle. For example,
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0190">
+          <img alt="image" height="487" src="../../IMAGES/B9780443222191150019/main.assets/bm37-9780443222191.jpg" width="1491"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div class="para_indented" id="p0505">
+        Originally, Apple included all of the actual Mach-O library binary files for each of these SDKs, such as the
+        <span class="inlinecode">
+         .dylib
+        </span>
+        files for your code to link against. However, this produced very large SDK sizes, and those sizes would be compounded if you installed many SDKs for different platforms and OS versions. So Apple introduced the Text-based InstallAPI to address this issue.
+        <a id="p582">
+        </a>
+       </div>
+       <div>
+        <span aria-label="582" epub:type="pagebreak" id="pagebreak_582" role="doc-pagebreak">
+        </span>
+       </div>
+       <div class="para_indented" id="p0510">
+        When compiling a library with the “Supports Text-Based InstallAPI” Xcode setting turned on, Xcode will generate a
+        <span class="inlinecode">
+         .tbd
+        </span>
+        file for your library. This is a plain text YAML file that contains all the information needed to link code against the library, without any of the actual executable code. This includes information such as the filesystem path where the library lives in an OS distribution as well as the names of all of the exported symbols in the library. These
+        <span class="inlinecode">
+         .tbd
+        </span>
+        files can be vastly smaller than the actual library files themselves, often by two orders of magnitude, so Apple was able to reduce the size of their SDK distributions drastically.
+       </div>
+       <div class="para_indented" id="p0515">
+        This feature is not likely to be something that you'll use yourself. It's more useful within Apple for distributing OS SDKs. However, it's useful to know about these files in case you come across them in an SDK and wonder what they are, or in case you're pondering why you can't find any
+        <span class="inlinecode">
+         .dylib
+        </span>
+        files in an SDK.
+       </div>
+       <div class="para_indented" id="p0520">
+        It's also worth noting that in recent versions of Apple operating systems, you will no longer find most system libraries in
+        <span class="inlinecode">
+         /usr/lib
+        </span>
+        . For example, even though the
+        <span class="inlinecode">
+         .tbd
+        </span>
+        file for
+        <span class="inlinecode">
+         libxml2
+        </span>
+        says that the library lives at
+        <span class="inlinecode">
+         /usr/lib/libxml2.2.dylib
+        </span>
+        , that file is no longer present as of macOS Big Sur. The reason is that the OS now ships with a built-in dynamic library cache of all system libraries. So checking for the library's existence on the file system will fail. However, if you attempt to
+        <span class="inlinecode">
+         dlopen()
+        </span>
+        the library, then it will work.
+       </div>
+      </section>
+      <section>
+       <a id="s0120">
+       </a>
+       <h3 class="h2hd" id="cesectitle0120">
+        Finding dynamic libraries at run time
+       </h3>
+       <div class="para_fl" id="p0525">
+        The same Linux principles for finding dynamic libraries at run time apply to applications that are run under macOS, with a couple of small differences. The first is that the environment variable that is used to augment the library search path is called
+        <span class="inlinecode">
+         DYLD_LIBRARY_PATH
+        </span>
+        (although
+        <span class="inlinecode">
+         LD_LIBRARY_PATH
+        </span>
+        is now also supported by more recent versions of macOS).
+       </div>
+       <div class="para_indented" id="p0530">
+        Also, Apple added support for the
+        <span class="inlinecode">
+         -rpath
+        </span>
+        linker option only in recent versions of macOS. Traditionally, you would instead use the notion of install names. An install name is a path that is burned into a Mach-O binary to specify the path to search for dependent dynamic libraries. This path can be specified relative to the executable program by starting the install name with the special string
+        <span class="inlinecode">
+         @executable_path
+        </span>
+        .
+       </div>
+       <div class="para_indented" id="p0535">
+        You can specify an install name when you build your dynamic library, but your clients may also change this path using the
+        <span class="inlinecode">
+         install_name_tool
+        </span>
+        utility. However, they cannot specify a path that is longer than the original path in the
+        <span class="inlinecode">
+         .dylib
+        </span>
+        . This is why it is always advisable to build your dynamic libraries with the
+        <span class="inlinecode">
+         -headerpad_max_install_names
+        </span>
+        option on the Mac: to give your clients the flexibility to change the library's install name to whatever they wish.
+       </div>
+       <div class="para_indented" id="p0540">
+        The following commands demonstrate how a client could change the install name for your library, and change the install name for their executable:
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0195">
+          <img alt="image" height="371" src="../../IMAGES/B9780443222191150019/main.assets/bm38-9780443222191.jpg" width="2186"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+      </section>
+     </section>
+    </section>
+   </div>
+  </div>
+ </body>
+</html>

@@ -1,0 +1,2995 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html>
+<html epub:prefix="z3998: http://www.daisy.org/z3998/2012/vocab/structure/#" lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+ <head>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   8: Performance
+  </title>
+ </head>
+ <body>
+  <div class="navigation">
+   <a class="nav-button" href="chapter_016.html">
+    ← Previous
+   </a>
+   <a class="nav-button" href="index.html">
+    Table of Contents
+   </a>
+   <a class="nav-button" href="chapter_018.html">
+    Next →
+   </a>
+  </div>
+  <div class="chapter-content">
+   <div id="sbo-rt-content">
+    <span aria-label="329" epub:type="pagebreak" id="pagebreak_329" role="doc-pagebreak">
+    </span>
+    <section epub:type="chapter" id="CH0008" role="doc-chapter" xmlns:epub="http://www.idpf.org/2007/ops">
+     <h1 class="chaptitle" epub:type="title" id="B9780443222191000052">
+      8: Performance
+     </h1>
+     <section epub:type="preamble">
+      <a id="abs0010">
+      </a>
+      <div class="abstract">
+       <h2 class="h1hd" id="cesectitle0010">
+        Abstract
+       </h2>
+       <div id="abssec0010">
+        <p class="abspara" id="abspara0010">
+         This chapter covers C++ features that can affect the performance of your application programming interface (API). In general, you should not warp your API to achieve high performance; always measure performance and target any optimizations at actual bottlenecks. The performance impact of passing arguments as const references and of reducing your #include dependencies is explained. It's shown how naive constant declarations can add weight to your classes, as well as why initialization lists are efficient and where you should declare them. Coverage is provided on memory optimizations so that your APIs map well to modern CPU caching strategies, including variable clustering, bit fields, unions, and size-based types. The use of inlining can improve performance at the cost of exposing internal details, so it's advised to defer the technique until necessary. The technique of copy on write provides a way to define large objects that optimize their use of memory and are efficient to pass around by value. A section is also presented on iterating over elements, where the trade-off between iterators and array references is discussed. Finally, a survey of performance profiling tools is presented, including performance, memory, and multithreading profilers.
+        </p>
+       </div>
+      </div>
+     </section>
+     <section>
+      <h3 class="h2hd" id="cesectitle0015">
+       Keywords
+      </h3>
+      <div class="keywords">
+       Const reference; Consteval; Constexpr; Constinit; Copy on write; Extern template; Forward declaration; Include guard; Initialization list; Inline
+      </div>
+     </section>
+     <section>
+      <p class="textfl" id="p0010">
+       It's not the focus of this book to tell you how to optimize the performance of your implementation, or even to tell you whether it's necessary. Your implementation should be as fast as it needs to be: some application programming interfaces (APIs) are performance critical and must be called many times per second whereas other APIs are infrequently used and their speed is of less concern. However, it is the focus of this book to show you how certain API design decisions can affect performance, and therefore how you can optimize the performance of your interface.
+      </p>
+      <p class="text" id="p0015">
+       Your implementation may not need to have high performance, but your interface should still be as optimal as possible so that it’s not actively undermining performance. Requirements change, and you may find yourself needing to optimize your implementation after the first version of your API has been released. In this situation, you'll wish that you had considered the performance impact of your API beforehand, so that you're not forced to break backward compatibility to improve performance.
+      </p>
+      <p class="text" id="p0020">
+       However, the most important point to make here is that you should strive never to warp your API for performance reasons. Good designs normally correspond with good performance (
+       <a href="../B9780443222191160015/References_583-587_B9780443222191160015.xhtml#bib99" id="bib_99">
+        Tulach, 2008
+       </a>
+       ;
+       <a href="../B9780443222191160015/References_583-587_B9780443222191160015.xhtml#bib11" id="bib_11">
+        Bloch 2008
+       </a>
+       ). Your API should continue to provide a clean and logical representation of the problem domain even after you've optimized its implementation. There are cases where this is simply not possible. For example, if you're writing an API that must communicate across a remote procedure call barrier, or if you're sending multiple HTTP requests to a Web-based API, you may hit the case that the overhead for performing many individual API calls is too slow and instead you feel the need to introduce a vectorized API, which batches up many calls into a single method. But other than these domain-specific examples, you will often find that a lot can be optimized behind your API without having to change the public interface. That's why you're writing an API after all!
+      </p>
+      <div>
+       <aside aria-labelledby="b0010" epub:type="sidebar">
+        <div class="box_top_space">
+        </div>
+        <div class="boxg1" id="b0010">
+         <div class="b1textfl" id="bpar0010">
+          <i>
+           TIP: Don't unduly warp your API to achieve high performance.
+          </i>
+         </div>
+        </div>
+       </aside>
+      </div>
+      <p class="text" id="p0025">
+       There are several components to API performance. I'll consider each of these in the following subsections:
+      </p>
+      <div>
+       <ul class="ce_list" id="olist0010">
+        <li class="numlist" id="p0030">
+         <a id="o0010">
+         </a>
+         1.
+         <b>
+          Compile-time speed.
+         </b>
+         The impact of your API on the time it takes to compile a client program. This can affect the productivity of your users.
+         <a id="p330">
+         </a>
+        </li>
+        <li>
+         <span aria-label="330" epub:type="pagebreak" id="pagebreak_330" role="doc-pagebreak">
+         </span>
+        </li>
+        <li class="numlist" id="p0035">
+         <a id="o0015">
+         </a>
+         2.
+         <b>
+          Run-time speed.
+         </b>
+         The time overhead for calling your API methods. This is important if your methods must be called frequently.
+        </li>
+        <li class="numlist" id="p0040">
+         <a id="o0020">
+         </a>
+         3.
+         <b>
+          Run-time memory overhead.
+         </b>
+         The memory overhead for calling your API methods. This is important if you expect many of your objects to be created and kept in memory. It can also affect CPU cache performance.
+        </li>
+        <li class="numlist" id="p0045">
+         <a id="o0025">
+         </a>
+         4.
+         <b>
+          Library size
+         </b>
+         : The size of the object code for your implementation that clients must link into their applications. This affects the total disk and memory footprint of your clients' applications.
+        </li>
+        <li class="numlist" id="p0050">
+         <a id="o0030">
+         </a>
+         5.
+         <b>
+          Start-up time
+         </b>
+         : The time it takes to load and initialize a dynamic library that implements your API. Various factors can affect this, such as template resolution, binding unresolved symbols, calling static initializers, and library path searching.
+        </li>
+       </ul>
+      </div>
+      <p class="text" id="p0055">
+       In addition to specific API factors that affect these performance metrics, you should, of course, investigate your compiler's options to see whether there are any flags you can turn on or off to give a performance boost. For example, turning off run-time type information if you don't need to use the
+       <span class="inlinecode">
+        dynamic_cast
+       </span>
+       operator is one common decision (
+       <span class="inlinecode">
+        -fno-rtti
+       </span>
+       for the GNU C++ compiler).
+      </p>
+      <p class="text" id="p0060">
+       One of the most important lessons to learn about performance optimization is that you should never trust your instincts about which parts of your implementation you think will be slow. You should always measure the actual performance profile of your API in real-world situations and then focus your optimization effort on the areas that give you the biggest impact. A corollary to this is that you don't need to start with the most efficient implementation: do it the easy way first and then figure out which parts of your implementation need to be optimized once everything is working.
+      </p>
+      <p class="text" id="p0065">
+       At Pixar, we would regularly have various teams work on different components of a particular feature for one of our films. For example, the driving system in
+       <i>
+        Cars
+       </i>
+       involved work by the R&amp;D team to implement a generic simulation plugin system, work by GUI engineers to provide direct manipulation controls for animators, and work by the production teams on the movie to integrate everything into their pipeline. Then, once all of the software was functional and integrated, we convened “speed team” meetings to assess where the bottlenecks were and assign work to the relevant engineers so that the overall system would meet specific performance criteria.
+      </p>
+      <p class="text" id="p0070">
+       The important point is always to remember Amdahl's law. This states that the overall performance improvement gained by optimizing a single part of a system is limited by the fraction of time that the improved part is actually used. You may increase the performance of one part of your API by a factor of 10, but if a client's program spends only 1% of its time in that code, then the overall improvement is reduced to a factor of only 0.1 (10 ∗ 0.01).
+       <a id="p331">
+       </a>
+       <span aria-label="331" epub:type="pagebreak" id="pagebreak_331" role="doc-pagebreak">
+       </span>
+      </p>
+      <div>
+       <aside aria-labelledby="b0015" epub:type="sidebar">
+        <div class="box_top_space">
+        </div>
+        <div class="boxg1" id="b0015">
+         <div class="b1textfl" id="bpar0015">
+          <i>
+           TIP: To optimize an API, instrument your code and collect performance data for real-world examples. Then target your optimization effort at the actual bottlenecks. Don't guess where the performance hot spots are.
+          </i>
+         </div>
+        </div>
+       </aside>
+      </div>
+      <section>
+       <a id="s0010">
+       </a>
+       <h2 class="h1hd" id="cesectitle0020">
+        Pass input arguments by const reference
+       </h2>
+       <p class="textfl" id="p0075">
+        In
+        <a href="../B9780443222191000106/CH0006_209-250_B9780443222191000106.xhtml">
+         Chapter 6
+        </a>
+        , I recommended that you prefer const references over pointers to pass input parameters (i.e., parameters that are not changed by the function), but that you should prefer pointers over nonconst references for output parameters so that their mutability is clearly advertised to clients. This section now offers some additional performance reasons to support the use of const references to pass input arguments into a function.
+       </p>
+       <p class="text" id="p0080">
+        By default, function arguments in C++ are passed “by value”. This means that the object being passed into the function is copied, and then that copy is destroyed when the function returns. As a result, the original object that's passed into the method can never be modified. However, this involves the overhead of calling the object's copy constructor and then destructor. Instead, you should pass a const reference to the object. This has the effect of only passing the pointer to the object, but also ensuring that the object is not modified by the method:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0030">
+          <img alt="image" height="197" src="../../IMAGES/B9780443222191000052/main.assets/u08-01-9780443222191.jpg" width="2252"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div>
+        <aside aria-labelledby="b0020" epub:type="sidebar">
+         <div class="box_top_space">
+         </div>
+         <div class="boxg1" id="b0020">
+          <div class="b1textfl" id="bpar0020">
+           <i>
+            TIP: Always prefer passing a nonmutable object as a const reference rather than passing it by value. This will avoid the memory and performance costs to create and destroy a temporary copy of the object, and all of its member and inherited objects.
+           </i>
+          </div>
+         </div>
+        </aside>
+       </div>
+       <p class="text" id="p0085">
+        This rule applies only to objects. It's not necessary for built-in types such as
+        <span class="inlinecode">
+         int
+        </span>
+        ,
+        <span class="inlinecode">
+         bool
+        </span>
+        ,
+        <span class="inlinecode">
+         float
+        </span>
+        ,
+        <span class="inlinecode">
+         double
+        </span>
+        , or
+        <span class="inlinecode">
+         char
+        </span>
+        because these are small enough to fit in a CPU register. In addition, C++ Standard Library iterators, smart pointers, and function objects are designed to be passed by value. However, for all other custom types, you should favor references or const references. Let's look at a specific example:
+        <a id="p332">
+        </a>
+        <span aria-label="332" epub:type="pagebreak" id="pagebreak_332" role="doc-pagebreak">
+        </span>
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0035">
+          <img alt="image" height="1702" src="../../IMAGES/B9780443222191000052/main.assets/u08-02-9780443222191.jpg" width="1941"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0090">
+        If you assume that the
+        <span class="inlinecode">
+         SetObjectByValue()
+        </span>
+        and
+        <span class="inlinecode">
+         SetObjectByConstReference()
+        </span>
+        methods both simply assign their argument to the
+        <span class="inlinecode">
+         mObject
+        </span>
+        member variable, then the sequence of operations that's performed when each of these methods is called is:
+       </p>
+       <div>
+        <ol id="ulist0010">
+         <li class="bulllist" id="p0095">
+          <a id="u0010">
+          </a>
+          •
+          <b>
+           SetObjectByValue(object)
+          </b>
+         </li>
+         <li class="bulllist">
+          <ol id="ulist0015">
+           <li class="bulllist1" id="p0100">
+            <a id="u0015">
+            </a>
+            •
+            <span class="inlinecode">
+             std::string
+            </span>
+            constructor
+           </li>
+           <li class="bulllist1" id="p0105">
+            <a id="u0020">
+            </a>
+            •
+            <span class="inlinecode">
+             MyObject
+            </span>
+            copy constructor
+           </li>
+           <li class="bulllist1" id="p0110">
+            <a id="u0025">
+            </a>
+            •
+            <span class="inlinecode">
+             MyObject
+            </span>
+            assignment operator
+           </li>
+           <li class="bulllist1" id="p0115">
+            <a id="u0030">
+            </a>
+            •
+            <span class="inlinecode">
+             MyObject
+            </span>
+            destructor
+           </li>
+           <li class="bulllist1" id="p0120">
+            <a id="u0035">
+            </a>
+            •
+            <span class="inlinecode">
+             std::string
+            </span>
+            destructor
+           </li>
+          </ol>
+         </li>
+         <li class="bulllist" id="p0125">
+          <a id="u0040">
+          </a>
+          •
+          <b>
+           SetObjectByConstReference(object)
+          </b>
+         </li>
+         <li class="bulllist">
+          <ol id="ulist0020">
+           <li class="bulllist1" id="p0130">
+            <a id="u0045">
+            </a>
+            •
+            <span class="inlinecode">
+             MyObject
+            </span>
+            assignment operator
+           </li>
+          </ol>
+         </li>
+        </ol>
+       </div>
+       <p class="text" id="p0135">
+        The situation becomes worse if
+        <span class="inlinecode">
+         MyObject
+        </span>
+        is derived from some base class, because then the copy constructor and destructor of each base class in the object hierarchy would also have to be called for the pass by value case.
+       </p>
+       <p class="text" id="p0140">
+        There's another reason to avoid passing arguments by value, and that's the “slicing problem” (
+        <a href="../B9780443222191160015/References_583-587_B9780443222191160015.xhtml#bib70" id="bib_70">
+         Meyers, 2005
+        </a>
+        ). This is the problem in which, if a method accepts a base class argument (by value) and you pass a derived class, then any extra fields of the derived class will be sliced off. This is because the size of the object to be passed by value is determined, at compile time, to be the size of the base class. Passing arguments as const references instead of passing by value avoids the slicing problem.
+        <a id="p333">
+        </a>
+       </p>
+       <div>
+        <span aria-label="333" epub:type="pagebreak" id="pagebreak_333" role="doc-pagebreak">
+        </span>
+       </div>
+      </section>
+      <section>
+       <a id="s0015">
+       </a>
+       <h2 class="h1hd" id="cesectitle0025">
+        Minimize #include dependencies
+       </h2>
+       <p class="textfl" id="p0145">
+        The time it takes to compile a large project can depend greatly on the number and depth of
+        <span class="inlinecode">
+         #include
+        </span>
+        files. As such, one of the common techniques for decreasing build times is to try and reduce the number of
+        <span class="inlinecode">
+         #include
+        </span>
+        statements in header files. As you know, it's good practice to put include guards around your header files to avoid their being expanded multiple times during the complication of a single translation unit. But there are other factors you can consider to improve build times.
+       </p>
+       <section>
+        <a id="s0020">
+        </a>
+        <h3 class="h2hd" id="cesectitle0030">
+         Avoid “Winnebago” headers
+        </h3>
+        <p class="textfl" id="p0150">
+         Some APIs provide a single large header file that pulls in all of the classes and global definitions for the interface. This can seem like a convenient affordance for your clients. However, it only serves to increase the compile-time coupling between your clients' code and your API, and it means that even the most minimal use of your API must pull in every public symbol.
+        </p>
+        <p class="text" id="p0155">
+         For example, the standard Win32 header
+         <span class="inlinecode">
+          windows.h
+         </span>
+         pulls in well over 200,000 lines of code (under Visual Studio 9.0). Every
+         <span class="inlinecode">
+          .cpp
+         </span>
+         file that includes this header effectively adds over 4
+         <span title='hsp="0.25"'>
+         </span>
+         MB of extra code that needs to be loaded from around 90 separate files and compiled for every source file. Similarly, the macOS header
+         <span class="inlinecode">
+          Cocoa/Cocoa.h
+         </span>
+         expands to over 100,000 lines of code at over 3
+         <span title='hsp="0.25"'>
+         </span>
+         MB.
+        </p>
+        <p class="text" id="p0160">
+         Precompiled headers can help to alleviate this burden by preprocessing these large common include files to a more optimal form, such as a
+         <span class="inlinecode">
+          .pch
+         </span>
+         or
+         <span class="inlinecode">
+          .gch
+         </span>
+         file. However, a more modular and loosely coupled solution would involve providing a collection of smaller individual headers for each component of your API. Clients can then choose to
+         <span class="inlinecode">
+          #include
+         </span>
+         only the declarations for the subset of your API that they're using. This can make for longer lists of
+         <span class="inlinecode">
+          #include
+         </span>
+         statements in your clients' code, but the result is an overall reduction in the amount of your API that their code must pull in.
+        </p>
+       </section>
+       <section>
+        <a id="s0025">
+        </a>
+        <h3 class="h2hd" id="cesectitle0035">
+         Forward declarations
+        </h3>
+        <p class="textfl" id="p0165">
+         A header file, A, includes another header file, B, to pull in the declaration of a class, function, struct, enum, or other entity that's used in header A. The most common situation in an object-oriented program is that header A wants to pull in the declaration of one or more classes from header B. However, in many situations, header A doesn't actually need to include header B and can instead simply provide a forward declaration for the classes needed. A forward declaration can be used when:
+        </p>
+        <div>
+         <ul class="ce_list" id="olist0015">
+          <li class="numlist" id="p0170">
+           <a id="o0035">
+           </a>
+           1. The size of the class is not required. If you include the class as a member variable or subclass from it, then the compiler will need to know the size of the class.
+          </li>
+          <li class="numlist" id="p0175">
+           <a id="o0040">
+           </a>
+           2. You don't reference any member methods of the class. Doing so would require knowing the method prototype: its argument and return types.
+           <a id="p334">
+           </a>
+          </li>
+          <li>
+           <span aria-label="334" epub:type="pagebreak" id="pagebreak_334" role="doc-pagebreak">
+           </span>
+          </li>
+          <li class="numlist" id="p0180">
+           <a id="o0045">
+           </a>
+           3. You don't reference any member variables of the class; but you already know never to make those public (or protected).
+          </li>
+         </ul>
+        </div>
+        <p class="text" id="p0185">
+         For example, you can use forward declarations if header A refers only to the name of classes from header B via pointers or references:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0040">
+           <img alt="image" height="602" src="../../IMAGES/B9780443222191000052/main.assets/u08-03-9780443222191.jpg" width="1143"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0190">
+         However, if you were to change the definition of class A so that the compiler needs to know the actual size of class B, then you must include the actual declaration of class B (i.e., you must
+         <span class="inlinecode">
+          #include
+         </span>
+         its header). For example, if you store an actual copy of B inside A:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0045">
+           <img alt="image" height="602" src="../../IMAGES/B9780443222191000052/main.assets/u08-04-9780443222191.jpg" width="1143"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0195">
+         As noted in the chapter on Patterns, you can use the pimpl idiom to avoid having to define object B as a data member in your header file, and thereby avoid the need to
+         <span class="inlinecode">
+          #include
+         </span>
+         the
+         <span class="inlinecode">
+          B.h
+         </span>
+         header in the previous case.
+        </p>
+        <p class="text" id="p0200">
+         Obviously, you will need to
+         <span class="inlinecode">
+          #include
+         </span>
+         the full header in any
+         <span class="inlinecode">
+          .cpp
+         </span>
+         file that uses the classes in that header (e.g.,
+         <span class="inlinecode">
+          A.cpp
+         </span>
+         must include
+         <span class="inlinecode">
+          B.h)
+         </span>
+         . A forward declare simply tells the compiler to add the name to its symbol table with a promise that you'll provide the full declaration when it actually needs it.
+        </p>
+        <p class="text" id="p0205">
+         One interesting point is that a forward declaration is sufficient if you pass a variable to a method by value or return it by value (although you should prefer a const reference over passing a parameter by value). You might think that the compiler needs to know the size of the class at this point, but it's needed only by the code that implements the method and any client code that calls it. So the following example is quite legal:
+         <a id="p335">
+         </a>
+         <span aria-label="335" epub:type="pagebreak" id="pagebreak_335" role="doc-pagebreak">
+         </span>
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0050">
+           <img alt="image" height="486" src="../../IMAGES/B9780443222191000052/main.assets/u08-05-9780443222191.jpg" width="900"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <div>
+         <aside aria-labelledby="b0025" epub:type="sidebar">
+          <div class="box_top_space">
+          </div>
+          <div class="boxg1" id="b0025">
+           <div class="b1textfl" id="bpar0025">
+            <i>
+             TIP: As a rule of thumb, you should need to #include the header file for a class only if you use an object of that class as a member variable in your own class or if you inherit from that class.
+            </i>
+           </div>
+          </div>
+         </aside>
+        </div>
+        <p class="text" id="p0210">
+         Note: it's generally safer to use forward declarations only for your own code. By using forward declarations, you are embedding knowledge of how symbols are declared in the header that you're eliding. For example, if you use forward declares for a foreign header and your API is used in environments with different versions of that header, the declaration of a class within that header could be changed to a typedef, or the class could be changed to a templated class, which would break your forward declaration. This is one reason why you should specifically never try to forward declare C++ Standard Library objects. For example, always do
+         <span class="inlinecode">
+          #include &lt;string&gt;
+         </span>
+         , never attempt to forward declare
+         <span class="inlinecode">
+          std::string
+         </span>
+         .
+        </p>
+        <div>
+         <aside aria-labelledby="b0030" epub:type="sidebar">
+          <div class="box_top_space">
+          </div>
+          <div class="boxg1" id="b0030">
+           <div class="b1textfl" id="bpar0030">
+            <i>
+             TIP: Only forward declare symbols from your own API.
+            </i>
+           </div>
+          </div>
+         </aside>
+        </div>
+        <p class="text" id="p0215">
+         Of note here is the
+         <span class="inlinecode">
+          &lt;iosfwd&gt;
+         </span>
+         header offered by the Standard Library. This header contains forward declarations for the input/output library, so that you don't have to pull the full definitions into your own header files.
+        </p>
+        <p class="text" id="p0220">
+         Finally, a header file should declare all of its dependencies as either forward declarations or explicit
+         <span class="inlinecode">
+          #include
+         </span>
+         lines. Otherwise, the inclusion of the header in other files may become order dependent. This is at odds with the statement to minimize the number of
+         <span class="inlinecode">
+          #include
+         </span>
+         statements, but it is an important exception for the sake of API robustness and elegance. A good way to test this is to ensure that an empty
+         <span class="inlinecode">
+          .cpp
+         </span>
+         file that includes only your public header can compile without error.
+        </p>
+        <div>
+         <aside aria-labelledby="b0035" epub:type="sidebar">
+          <div class="box_top_space">
+          </div>
+          <div class="boxg1" id="b0035">
+           <div class="b1textfl" id="bpar0035">
+            <i>
+             TIP: A header file should #include or forward declare all of its dependencies.
+            </i>
+           </div>
+          </div>
+         </aside>
+        </div>
+        <p class="textfl">
+         <a id="p336">
+         </a>
+        </p>
+        <div>
+         <span aria-label="336" epub:type="pagebreak" id="pagebreak_336" role="doc-pagebreak">
+         </span>
+        </div>
+       </section>
+       <section>
+        <a id="s0030">
+        </a>
+        <h3 class="h2hd" id="cesectitle0040">
+         Redundant #include guards
+        </h3>
+        <p class="textfl" id="p0225">
+         Another way to reduce the overhead of parsing too many include files is to add redundant preprocessor guards at the point of inclusion. For example, if you have an include file,
+         <span class="inlinecode">
+          bigfile.h
+         </span>
+         , which looks like this:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0055">
+           <img alt="image" height="371" src="../../IMAGES/B9780443222191000052/main.assets/u08-06-9780443222191.jpg" width="831"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0230">
+         Then you might include this file from another header by doing this:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0060">
+           <img alt="image" height="197" src="../../IMAGES/B9780443222191000052/main.assets/u08-07-9780443222191.jpg" width="692"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0235">
+         This saves the cost of pointlessly opening and parsing the entire include file if you've already included it. This may seem like a trivial optimization, and indeed it can be for small include hierarchies. However, if you have a large code base with many include files, this optimization can make a significant difference. Back in 1996, John Lakos performed several experiments to demonstrate the degree of performance improvements that this optimization can elicit on a large project. The results were striking (
+         <a href="../B9780443222191160015/References_583-587_B9780443222191160015.xhtml#bib52" id="bib_52">
+          Lakos, 1996
+         </a>
+         ). However, because these results are from the mid-1990s, I designed a similar experiment to test this effect on a modern compiler, and the results correlate well with those of Lakos.
+        </p>
+        <p class="text" id="p0240">
+         For a given number
+         <i>
+          N
+         </i>
+         , I generated
+         <i>
+          N
+         </i>
+         include files that each included the
+         <i>
+          N
+         </i>
+         -1 other include files. Each include file also contained around 100 lines of class declarations. I also generated
+         <i>
+          N
+         </i>
+         <span class="inlinecode">
+          .cpp
+         </span>
+         files, in which each
+         <span class="inlinecode">
+          .cpp
+         </span>
+         file included only one header. I then timed how long it took to compile every
+         <span class="inlinecode">
+          .cpp
+         </span>
+         file. This experiment therefore chooses a worst-case O(n
+         <sup>
+          2
+         </sup>
+         ) include structure, although it also includes the time to run the compiler
+         <span class="hiddenClass">
+          <!--<mml:math alttext="MathML" xmlns:mml="http://www.w3.org/1998/Math/MathML">
+<mml:mrow>
+<mml:mi>N</mml:mi>
+</mml:mrow>
+</mml:math>-->
+         </span>
+         <span>
+          <img alt="Equation" height="10" src="../../IMAGES/B9780443222191000052/main.stripin/si1.png" width="11"/>
+         </span>
+         times. The experiment was performed for a set of include files that used redundant include guards and a set that did not.
+         <a href="#t0010" id="Bt0010">
+          Table 8.1
+         </a>
+         shows the averaged results of this experiment, using the GNU C++ compiler, version 4.2.1, on an Intel Core 2 Duo processor running macOS 10.6 with 2
+         <span title='hsp="0.25"'>
+         </span>
+         GB of RAM.
+        </p>
+        <p class="text" id="p0245">
+         This behavior will, of course, vary by compiler and platform, so in the interest of good experimental technique, I repeated the experiment with the Microsoft C++ compiler, version 14.0, on an Intel Core 2 Quad CPU running Windows XP with 3.25
+         <span title='hsp="0.25"'>
+         </span>
+         GB of RAM. The results in this case were even more pronounced, with a speedup of around 18 times for the
+         <i>
+          N
+         </i>
+         <span title='hsp="0.25"'>
+         </span>
+         =
+         <span title='hsp="0.25"'>
+         </span>
+         128 case.
+         <a id="p337">
+         </a>
+         <span aria-label="337" epub:type="pagebreak" id="pagebreak_337" role="doc-pagebreak">
+         </span>
+        </p>
+        <div class="pageavoid">
+         <p class="tnum">
+          <a href="#Bt0010">
+           Table 8.1
+          </a>
+         </p>
+         <div class="big_device">
+          <table class="tbody" id="t0010">
+           <caption class="ttitle">
+            <a id="tspara0010">
+            </a>
+            Compilation time speedup from using redundant include guards for a worst-case include hierarchy containing
+            <i>
+             N
+            </i>
+            include files.
+           </caption>
+           <thead>
+            <tr>
+             <th class="tcolhd1" scope="col">
+              N
+             </th>
+             <th class="tcolhd1" scope="col">
+              Without guards (s)
+             </th>
+             <th class="tcolhd1" scope="col">
+              With guards (s)
+             </th>
+             <th class="tcolhd1" scope="col">
+              Speedup
+             </th>
+            </tr>
+           </thead>
+           <tbody>
+            <tr>
+             <th class="tb" scope="row">
+              2
+             </th>
+             <td class="tb_calign">
+              0.07
+             </td>
+             <td class="tb_calign">
+              0.07
+             </td>
+             <td class="tb_calign">
+              1.00 ×
+             </td>
+            </tr>
+            <tr>
+             <th class="tb" scope="row">
+              4
+             </th>
+             <td class="tb_calign">
+              0.15
+             </td>
+             <td class="tb_calign">
+              0.14
+             </td>
+             <td class="tb_calign">
+              1.07 ×
+             </td>
+            </tr>
+            <tr>
+             <th class="tb" scope="row">
+              8
+             </th>
+             <td class="tb_calign">
+              0.35
+             </td>
+             <td class="tb_calign">
+              0.31
+             </td>
+             <td class="tb_calign">
+              1.13 ×
+             </td>
+            </tr>
+            <tr>
+             <th class="tb" scope="row">
+              16
+             </th>
+             <td class="tb_calign">
+              0.98
+             </td>
+             <td class="tb_calign">
+              0.76
+             </td>
+             <td class="tb_calign">
+              1.29 ×
+             </td>
+            </tr>
+            <tr>
+             <th class="tb" scope="row">
+              32
+             </th>
+             <td class="tb_calign">
+              4.07
+             </td>
+             <td class="tb_calign">
+              2.12
+             </td>
+             <td class="tb_calign">
+              1.92 ×
+             </td>
+            </tr>
+            <tr>
+             <th class="tb" scope="row">
+              64
+             </th>
+             <td class="tb_calign">
+              25.90
+             </td>
+             <td class="tb_calign">
+              6.82
+             </td>
+             <td class="tb_calign">
+              3.80 ×
+             </td>
+            </tr>
+            <tr>
+             <th class="tb" scope="row">
+              128
+             </th>
+             <td class="tb_calign">
+              226.83
+             </td>
+             <td class="tb_calign">
+              24.70
+             </td>
+             <td class="tb_calign">
+              9.18 ×
+             </td>
+            </tr>
+           </tbody>
+          </table>
+         </div>
+        </div>
+        <div>
+         <aside aria-labelledby="b0040" epub:type="sidebar">
+          <div class="box_top_space">
+          </div>
+          <div class="boxg1" id="b0040">
+           <div class="b1textfl" id="bpar0040">
+            <i>
+             TIP: Consider adding redundant #include guards to your headers to optimize compile time for your clients.
+            </i>
+           </div>
+          </div>
+         </aside>
+        </div>
+        <p class="text" id="p0250">
+         By comparison, I found that the experiment showed almost no effect under Linux (1.03× speedup for
+         <i>
+          N
+         </i>
+         <span title='hsp="0.25"'>
+         </span>
+         =
+         <span title='hsp="0.25"'>
+         </span>
+         128), in which presumably the combination of the GNU compiler and the Linux disk cache produces a more efficient environment. However, the users of your API may be using a broad range of platforms, so this optimization could have a large impact on many of them. Even a speedup of only 1.29× could make a big difference to the amount of time they spend waiting for a build to finish. The code to run the experiment is included in the full source code package on the accompanying website for this book, so you can try it out for your own platforms.
+        </p>
+        <p class="text" id="p0255">
+         Herb Sutter recommends against using redundant
+         <span class="inlinecode">
+          #include
+         </span>
+         guards, partly because they break encapsulation (
+         <a href="../B9780443222191160015/References_583-587_B9780443222191160015.xhtml#bib98" id="bib_98">
+          Sutter and Alexandrescu, 2004
+         </a>
+         ). I also do not support breaking encapsulation. You should never use this technique across libraries or to include headers that you do not maintain. Use this only within your own APIs. As with all optimizations, you should measure performance for your compilers first. Modern compilers are improving in this area, although I was still able to measure significant differences across platforms as of 2024.
+        </p>
+        <p class="text" id="p0260">
+         This technique has been used to practical benefit by many large-scale APIs. To give a retro example, the Commodore Amiga platform used this technique to improve the performance of the AmigaOS APIs. For instance, here's what the top of the
+         <span class="inlinecode">
+          intuition/screens.h
+         </span>
+         header file looked like for the Amiga in the early 1990s:
+         <a id="p338">
+         </a>
+         <span aria-label="338" epub:type="pagebreak" id="pagebreak_338" role="doc-pagebreak">
+         </span>
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0065">
+           <img alt="image" height="2260" src="../../IMAGES/B9780443222191000052/main.assets/u08-08-9780443222191.jpg" width="1765"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+       </section>
+      </section>
+      <section>
+       <a id="s0035">
+       </a>
+       <h2 class="h1hd" id="cesectitle0045">
+        Declaring constants
+       </h2>
+       <p class="textfl" id="p0265">
+        Often you want to define several public constants for your API. This is a great technique for avoiding the proliferation of hardcoded values throughout your client's code, such as maximum values or default strings. For example, you might declare several constants in the global scope of your header in this way:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0070">
+          <img alt="image" height="197" src="../../IMAGES/B9780443222191000052/main.assets/u08-09-9780443222191.jpg" width="1663"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0270">
+        The issue to be aware of here is that only very simple constants for built-in types will be inlined by your C++ compiler. By default, any variable that you define in this way will
+        <a id="p339">
+        </a>
+        <span aria-label="339" epub:type="pagebreak" id="pagebreak_339" role="doc-pagebreak">
+        </span>
+        cause your compiler to store space for the variable in every module that includes your header. In the previous case, this will happen for both the float and the string constant. If you declare a lot of constants, and your API headers are included in many
+        <span class="inlinecode">
+         .cpp
+        </span>
+        files, then this can cause bloat in the client's
+        <span class="inlinecode">
+         .o
+        </span>
+        object files and the final binary. The solution is to declare the constants as extern:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0075">
+          <img alt="image" height="197" src="../../IMAGES/B9780443222191000052/main.assets/u08-10-9780443222191.jpg" width="1316"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0275">
+        Then define the value of each constant in the accompanying
+        <span class="inlinecode">
+         .cpp
+        </span>
+        file. In this way, the space for the variables is allocated only once. This has the additional benefit of hiding the actual constant values from the header file: they are implementation details, after all.
+       </p>
+       <p class="text" id="p0280">
+        A better way to do this is if you can declare the constants within a class. Then you can declare them as static const (so they will not count toward the per-object memory size):
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0080">
+          <img alt="image" height="487" src="../../IMAGES/B9780443222191000052/main.assets/u08-11-9780443222191.jpg" width="1455"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0285">
+        You can then define the value for these constants in the associated
+        <span class="inlinecode">
+         .cpp
+        </span>
+        file:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0085">
+          <img alt="image" height="255" src="../../IMAGES/B9780443222191000052/main.assets/u08-12-9780443222191.jpg" width="1906"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0290">
+        You may think that this is a trivial optimization and will save an insignificant amount of space. However, at Linden Lab, we decided to clean up all of these instances in the Second Life Viewer source code. The end effect was an appreciable 10% reduction in the size of the generated files.
+       </p>
+       <p class="text" id="p0295">
+        If you're using a C++17 (or later) compiler, then you should instead take advantage of inline variables to solve this issue for you, allowing you simply to put your constants, and their values, in your header files.
+       </p>
+       <p class="text" id="p0300">
+        Another option to avoid the bloat issue in certain cases is to use enums as an alternative to variables. Or you could also use getter methods to return the constant values, such as:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0090">
+          <img alt="image" height="487" src="../../IMAGES/B9780443222191000052/main.assets/u08-13-9780443222191.jpg" width="1388"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div>
+        <aside aria-labelledby="b0045" epub:type="sidebar">
+         <div class="box_top_space">
+         </div>
+         <div class="boxg1" id="b0045">
+          <div class="b1textfl" id="bpar0045">
+           <i>
+            TIP: Declare global scope constants with extern, or declare constants in classes as static const. Then define the value of the constant in the .cpp file. This reduces the size of object files for modules that include your headers. Even better, hide these constants behind a function call or use C++17 inline variables.
+           </i>
+          </div>
+         </div>
+        </aside>
+       </div>
+       <p class="textfl">
+        <a id="p340">
+        </a>
+       </p>
+       <div>
+        <span aria-label="340" epub:type="pagebreak" id="pagebreak_340" role="doc-pagebreak">
+        </span>
+       </div>
+       <section>
+        <a id="s0040">
+        </a>
+        <h3 class="h2hd" id="cesectitle0050">
+         The constexpr, consteval, and constinit keywords
+        </h3>
+        <p class="textfl" id="p0305">
+         The problem with most of the previous options is that the compiler can no longer evaluate the const expression at compile time, because the actual value is hidden in the
+         <span class="inlinecode">
+          .cpp
+         </span>
+         file. For example, clients would not be able to do either of these:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0095">
+           <img alt="image" height="139" src="../../IMAGES/B9780443222191000052/main.assets/u08-14-9780443222191.jpg" width="1732"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0310">
+         However, the
+         <span class="inlinecode">
+          constexpr
+         </span>
+         keyword was added as of C++11 to allow for more aggressive compile-time optimizations. This can be used to indicate functions or variables that you know to be constant, so that the compiler can perform greater optimization. For example, consider this code:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0100">
+           <img alt="image" height="139" src="../../IMAGES/B9780443222191000052/main.assets/u08-15-9780443222191.jpg" width="1839"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0315">
+         This is illegal according to the C++03 standard, because the compiler has no way of knowing that the value returned by
+         <span class="inlinecode">
+          GetTableSize()
+         </span>
+         is a compile-time constant. However, under C++11, you can tell the compiler that this is in fact the case:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0105">
+           <img alt="image" height="140" src="../../IMAGES/B9780443222191000052/main.assets/u08-16-9780443222191.jpg" width="2045"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0320">
+         The
+         <span class="inlinecode">
+          constexpr
+         </span>
+         keyword can also be applied to variables. However, marking the result of a function as a compile-time constant opens the door to letting us define constants using a function call while allowing clients to use the constant value at compile time. For example:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0110">
+           <img alt="image" height="487" src="../../IMAGES/B9780443222191000052/main.assets/u08-17-9780443222191.jpg" width="2221"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0325">
+         As I covered in the C++ Revisions chapter, C++20 added further const specifiers to the standard with the introduction of
+         <span class="inlinecode">
+          consteval
+         </span>
+         and
+         <span class="inlinecode">
+          constinit
+         </span>
+         . The
+         <span class="inlinecode">
+          consteval
+         </span>
+         specifier allows functions to be used in constant expressions and requires the function to be evaluated at compile time. The
+         <span class="inlinecode">
+          constinit
+         </span>
+         specifier ensures that a static or thread storage variable is initialized at compile time, to avoid static initialization problems at library load time. Here's a quick summary of the differences between each of these similar-sounding keywords:
+        </p>
+        <div>
+         <ol id="ulist0025">
+          <li class="bulllist" id="p0330">
+           <a id="u0050">
+           </a>
+           •
+           <span class="inlinecode">
+            const
+           </span>
+           declares that an object or variable is immutable (e.g., that a method does not change any data members or that a variable cannot be modified).
+           <a id="p341">
+           </a>
+          </li>
+          <li>
+           <span aria-label="341" epub:type="pagebreak" id="pagebreak_341" role="doc-pagebreak">
+           </span>
+          </li>
+          <li class="bulllist" id="p0335">
+           <a id="u0055">
+           </a>
+           •
+           <span class="inlinecode">
+            constexpr
+           </span>
+           can be used on functions and variables to produce a constant expression that can be evaluated at compile time or at run-time;
+           <span class="inlinecode">
+            constexpr
+           </span>
+           functions and static data members are also implicitly
+           <span class="inlinecode">
+            inline
+           </span>
+           .
+          </li>
+          <li class="bulllist" id="p0340">
+           <a id="u0060">
+           </a>
+           •
+           <span class="inlinecode">
+            consteval
+           </span>
+           can be used only on functions and forces compile-time evaluation of the function;
+           <span class="inlinecode">
+            consteval
+           </span>
+           implies
+           <span class="inlinecode">
+            inline
+           </span>
+           . It cannot be applied to destructors or allocation/deallocation functions, and you cannot use
+           <span class="inlinecode">
+            consteval
+           </span>
+           and
+           <span class="inlinecode">
+            constexpr
+           </span>
+           together.
+          </li>
+          <li class="bulllist" id="p0345">
+           <a id="u0065">
+           </a>
+           •
+           <span class="inlinecode">
+            constinit
+           </span>
+           can be used only on variables that can be initialized at compile time. You cannot use
+           <span class="inlinecode">
+            constinit
+           </span>
+           and
+           <span class="inlinecode">
+            constexpr
+           </span>
+           together.
+          </li>
+         </ol>
+        </div>
+       </section>
+      </section>
+      <section>
+       <a id="s0045">
+       </a>
+       <h2 class="h1hd" id="cesectitle0055">
+        Initialization lists
+       </h2>
+       <p class="textfl" id="p0350">
+        C++ provides constructor initialization lists to let you easily initialize all member variables in your class. Using this feature can afford a slight performance increase over simply initializing each member variable in the body of the constructor. For example, instead of writing:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0115">
+          <img alt="image" height="834" src="../../IMAGES/B9780443222191000052/main.assets/u08-18-9780443222191.jpg" width="2114"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0355">
+        you could write:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0120">
+          <img alt="image" height="834" src="../../IMAGES/B9780443222191000052/main.assets/u08-19-9780443222191.jpg" width="2183"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0360">
+        Member variables are constructed before the body of the constructor is called, so in the first example the default
+        <span class="inlinecode">
+         std::string
+        </span>
+        constructor will be called to initialize the
+        <span class="inlinecode">
+         two
+        </span>
+        member variables,
+        <a id="p342">
+        </a>
+        <span aria-label="342" epub:type="pagebreak" id="pagebreak_342" role="doc-pagebreak">
+        </span>
+        and then inside the constructor the assignment operator is called (DeLoura, 2001). However, in the second example, only the assignment operator is invoked. Using an initialization list therefore avoids the cost of calling the default constructor for each member variable that you include in the list.
+       </p>
+       <p class="text" id="p0365">
+        Of course, in terms of good API design, you should hide as much implementation detail from your header files as possible. The best approach is therefore to define the class in your header file as:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0125">
+          <img alt="image" height="602" src="../../IMAGES/B9780443222191000052/main.assets/u08-20-9780443222191.jpg" width="2149"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0370">
+        Then provide the constructor and initialization list in the associated
+        <span class="inlinecode">
+         .cpp
+        </span>
+        file:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0130">
+          <img alt="image" height="371" src="../../IMAGES/B9780443222191000052/main.assets/u08-21-9780443222191.jpg" width="2322"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div>
+        <aside aria-labelledby="b0050" epub:type="sidebar">
+         <div class="box_top_space">
+         </div>
+         <div class="boxg1" id="b0050">
+          <div class="b1textfl" id="bpar0050">
+           <i>
+            TIP: Use constructor initialization lists to avoid the cost of a constructor call for each data member, but declare these in the .cpp file to hide implementation details.
+           </i>
+          </div>
+         </div>
+        </aside>
+       </div>
+       <p class="text" id="p0375">
+        Here are a few things to be aware of when using initialization lists:
+       </p>
+       <div>
+        <ul class="ce_list" id="olist0020">
+         <li class="numlist" id="p0380">
+          <a id="o0050">
+          </a>
+          1. The order of variables in the initialization list must match the order in which the variables are specified in the class.
+         </li>
+         <li class="numlist" id="p0385">
+          <a id="o0055">
+          </a>
+          2. You can't specify arrays in an initialization list. However, you can specify an
+          <span class="inlinecode">
+           std::vector
+          </span>
+          , which may be a better data structure choice anyway.
+         </li>
+         <li class="numlist" id="p0390">
+          <a id="o0060">
+          </a>
+          3. If you're declaring a derived class, the default constructor for any base classes will be called implicitly. You can use the initialization list to call a nondefault constructor instead. If specified, a call to a base class constructor must appear before any member variables.
+          <a id="p343">
+          </a>
+         </li>
+         <li>
+          <span aria-label="343" epub:type="pagebreak" id="pagebreak_343" role="doc-pagebreak">
+          </span>
+         </li>
+         <li class="numlist" id="p0395">
+          <a id="o0065">
+          </a>
+          4. If you've declared any of your member variables as references or as const, then you must initialize them via the initialization list (to avoid the default constructor defining their initial, and only, value).
+         </li>
+        </ul>
+       </div>
+       <p class="text" id="p0400">
+        In C++03, constructors cannot call other constructors. However, this constraint was loosened in C++11, allowing constructors to call other constructors in the same class. This lets you avoid copying code between constructors by delegating the implementation of one constructor to another, such as in this example:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0135">
+          <img alt="image" height="776" src="../../IMAGES/B9780443222191000052/main.assets/u08-22-9780443222191.jpg" width="1317"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0405">
+        Although the same effect could be achieved by using a single constructor with a default argument, that would bake the default value into your client's code. The C++11 syntax lets you hide this value because you can (and should) define the initialization list in the
+        <span class="inlinecode">
+         .cpp
+        </span>
+        file.
+       </p>
+      </section>
+      <section>
+       <a id="s0050">
+       </a>
+       <h2 class="h1hd" id="cesectitle0060">
+        Memory optimization
+       </h2>
+       <p class="textfl" id="p0410">
+        On modern CPUs, memory latency can be one of the largest performance concerns for a large application. That's because while processor speeds have been improving at a rate of roughly 55% per year, access times for DRAM have been improving at around 7% per year (
+        <a href="../B9780443222191160015/References_583-587_B9780443222191160015.xhtml#bib37" id="bib_37">
+         Hennessy and Patterson, 2006
+        </a>
+        ). This has resulted in the so-called processor–memory performance gap, as shown in
+        <a href="#f0010" id="Bf0010">
+         Fig. 8.1
+        </a>
+        .
+       </p>
+       <p class="text" id="p0415">
+        Because of this trend, memory overhead is now a principal factor in the execution time of most programs. This is further exacerbated by the fact that the cost for a cache miss (i.e., the cost to access main memory) has increased from a few CPU cycles 30 years ago to over 400 cycles on modern architectures. The effect of this is that a seemingly elegant and demonstrably correct algorithm can behave poorly in real-world situations because of unanticipated cache behavior (
+        <a href="../B9780443222191160015/References_583-587_B9780443222191160015.xhtml#bib1" id="bib_1">
+         Albrecht, 2009
+        </a>
+        ). As a result, cache-miss optimization has become an extremely important element of performance optimization activities in recent years.
+       </p>
+       <p class="text" id="p0420">
+        Although it's not the focus of this book to provide techniques to optimize your implementation details in the presence of caches, there are some API-related efforts that you can undertake to improve data cache efficiency. One key technique is to reduce the
+        <a id="p344">
+        </a>
+        <span aria-label="344" epub:type="pagebreak" id="pagebreak_344" role="doc-pagebreak">
+        </span>
+        size of your objects: the smaller your objects are, the more of them can potentially fit into a cache. There are several ways that you can reduce the size of your objects:
+       </p>
+       <div class="pageavoid">
+        <figure class="fig" id="f0010">
+         <img alt="image" height="1285" src="../../IMAGES/B9780443222191000052/main.assets/f08-01-9780443222191.jpg" width="2750"/>
+         <figcaption class="figleg">
+          <a id="cap0010">
+          </a>
+          <a id="fspara0010">
+          </a>
+          <span class="fignum">
+           <a href="#Bf0010">
+            Figure 8.1
+           </a>
+          </span>
+          The widening gap in CPU performance improvements versus memory improvements. The vertical axis is on a logarithmic scale.
+          <span class="figcredit">
+           Adapted from Hennessy, J.L. and Patterson, D.A., 2006. Computer Architecture: A Quantitative Approach, Fourth ed. Morgan Kaufmann, ISBN 0123704901. Copyright Morgan Kaufmann Publishers.
+          </span>
+         </figcaption>
+        </figure>
+       </div>
+       <div>
+        <ul class="ce_list" id="olist0025">
+         <li class="numlist" id="p0425">
+          <a id="o0070">
+          </a>
+          1.
+          <b>
+           Cluster member variables by type.
+          </b>
+          Modern computers access memory a single word at a time. Your C++ compiler will therefore align certain data members so that their memory addresses fall on word boundaries. A number of unused padding bytes may be added to a structure to make this happen. By clustering all member variables of the same type next to each other, you can minimize the amount of memory lost to these padding bytes.
+          <a href="#t0015" id="Bt0015">
+           Table 8.2
+          </a>
+          provides example alignment figures for member variable on the Windows platform.
+         </li>
+         <li class="numlist" id="p0430">
+          <a id="o0075">
+          </a>
+          2.
+          <b>
+           Use bit fields.
+          </b>
+          A bit field is a decorator for a member variable that specifies how many bits the variable should occupy (e.g.,
+          <span class="inlinecode">
+           int tinyInt:4
+          </span>
+          ). This is particularly useful for packing several bools into a single byte or squeezing two or more numbers into the space of a single int. The downside is that there's normally a performance penalty for using bit field sizes that are not a multiple of 8, but if memory is your biggest concern, then this may be an acceptable cost. When implementing performance optimizations, you often have to trade speed for size, or vice versa. Remember, when in doubt about the impact of a feature, measure the real-world performance.
+         </li>
+         <li class="numlist" id="p0435">
+          <a id="o0080">
+          </a>
+          3.
+          <b>
+           Use unions.
+          </b>
+          A union (or
+          <span class="inlinecode">
+           std::variant
+          </span>
+          in C++17) is a structure in which data members share the same memory space. This can be used to allow multiple values that are never used at the same time to share the same area of memory, thus saving memory. The size of a union is the size of the largest type in the union. For example:
+         </li>
+        </ul>
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0140">
+          <img alt="image" height="313" src="../../IMAGES/B9780443222191000052/main.assets/u08-23-9780443222191.jpg" width="727"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div>
+        <ul class="ce_list" id="olist0030">
+         <li class="numlist" id="p0440">
+          <a id="o0085">
+          </a>
+          4.
+          <b>
+           Don't add virtual methods until you need them.
+          </b>
+          I recommended this as a way to keep an API minimally complete back in
+          <a href="../B9780443222191000143/CH0002_25-80_B9780443222191000143.xhtml">
+           Chapter 2
+          </a>
+          , but there are also performance
+          <a id="p345">
+          </a>
+          <span aria-label="345" epub:type="pagebreak" id="pagebreak_345" role="doc-pagebreak">
+          </span>
+          reasons to do this. Once you add one virtual method to a class, that class needs to have a vtable. Only one copy of the vtable needs to be allocated per class type, but a pointer to the vtable is stored in every instance of your object. This adds the size of one pointer to your overall object size (normally 4-bytes for a 32-bit application or 8-bytes for a 64-bit application).
+         </li>
+         <li>
+          <div class="pageavoid">
+           <p class="tnum">
+            <a href="#Bt0015">
+             Table 8.2
+            </a>
+           </p>
+           <table class="tbody" id="t0015">
+            <caption class="ttitle">
+             Typical alignment of member variables of different types under Windows on x86 CPUs.
+            </caption>
+            <thead>
+             <tr>
+              <th class="tcolhd1" scope="col">
+               Type
+              </th>
+              <th class="tcolhd1" scope="col">
+               Size (bytes)
+              </th>
+              <th class="tcolhd1" scope="col">
+               Alignment (bytes)
+              </th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+              <th class="tb" scope="row">
+               bool
+              </th>
+              <td class="tb_calign">
+               1
+              </td>
+              <td class="tb_calign">
+               1
+              </td>
+             </tr>
+             <tr>
+              <th class="tb" scope="row">
+               char
+              </th>
+              <td class="tb_calign">
+               1
+              </td>
+              <td class="tb_calign">
+               1
+              </td>
+             </tr>
+             <tr>
+              <th class="tb" scope="row">
+               short int
+              </th>
+              <td class="tb_calign">
+               2
+              </td>
+              <td class="tb_calign">
+               2
+              </td>
+             </tr>
+             <tr>
+              <th class="tb" scope="row">
+               int
+              </th>
+              <td class="tb_calign">
+               4
+              </td>
+              <td class="tb_calign">
+               4
+              </td>
+             </tr>
+             <tr>
+              <th class="tb" scope="row">
+               float
+              </th>
+              <td class="tb_calign">
+               4
+              </td>
+              <td class="tb_calign">
+               4
+              </td>
+             </tr>
+             <tr>
+              <th class="tb" scope="row">
+               double
+              </th>
+              <td class="tb_calign">
+               8
+              </td>
+              <td class="tb_calign">
+               8
+              </td>
+             </tr>
+             <tr>
+              <th class="tb" scope="row">
+               pointer/reference (32-bit)
+              </th>
+              <td class="tb_calign">
+               4
+              </td>
+              <td class="tb_calign">
+               4
+              </td>
+             </tr>
+             <tr>
+              <th class="tb" scope="row">
+               pointer/reference (64-bit)
+              </th>
+              <td class="tb_calign">
+               8
+              </td>
+              <td class="tb_calign">
+               8
+              </td>
+             </tr>
+            </tbody>
+           </table>
+           <footer>
+            <p class="tftnote">
+             These sizes may vary by platform and processor.
+            </p>
+           </footer>
+          </div>
+         </li>
+         <li class="numlist" id="p0445">
+          <a id="o0090">
+          </a>
+          5.
+          <b>
+           Use explicit size-based types.
+          </b>
+          The size of various types can differ by platform, compiler, and whether you're building on a 32-bit or a 64-bit architecture. If you want to specify the exact size of a member variable, then you should use a type that specifically enforces this, rather than assuming that types such as
+          <span class="inlinecode">
+           bool
+          </span>
+          ,
+          <span class="inlinecode">
+           short
+          </span>
+          , or
+          <span class="inlinecode">
+           int
+          </span>
+          will be a specific size. As of C++11, you can use the
+          <span class="inlinecode">
+           cstdint
+          </span>
+          header to access various fixed-width integer types, such as
+          <span class="inlinecode">
+           int8_t
+          </span>
+          ,
+          <span class="inlinecode">
+           uint32_t
+          </span>
+          , and
+          <span class="inlinecode">
+           int64_t
+          </span>
+          .
+         </li>
+        </ul>
+       </div>
+       <p class="text" id="p0450">
+        Let's look at an example. The following structure defines a collection of variables to describe a fireworks effect. It contains information about the color and color variance of the firework particles, some flags such as whether the effect is currently active, and a screen location for the effect to begin. A real fireworks class would have a lot more state, but this is sufficient for illustration purposes:
+        <a id="p346">
+        </a>
+        <span aria-label="346" epub:type="pagebreak" id="pagebreak_346" role="doc-pagebreak">
+        </span>
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0145">
+          <img alt="image" height="1008" src="../../IMAGES/B9780443222191000052/main.assets/u08-24-9780443222191.jpg" width="831"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0455">
+        The variables in this class are ordered roughly in terms of their logical function, without any consideration to how efficiently they're packed in terms of memory. Most member variables are ordered in this way, or sometimes even more randomly simply by adding new variables to the end of the class. For this particular example, the total size for the structure on a 32-bit computer is 48 bytes: that is,
+        <span class="inlinecode">
+         sizeof(Fireworks_A)
+        </span>
+        <span title='hsp="0.25"'>
+        </span>
+        =
+        <span title='hsp="0.25"'>
+        </span>
+        =
+        <span title='hsp="0.25"'>
+        </span>
+        48.
+       </p>
+       <p class="text" id="p0460">
+        If you simply cluster the member variables based upon their type and sort them based upon the size of each type (bools, chars, then ints), then the size of the structure can be reduced to 32 bytes, a 33% reduction:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0150">
+          <img alt="image" height="1007" src="../../IMAGES/B9780443222191000052/main.assets/u08-25-9780443222191.jpg" width="831"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div>
+        <aside aria-labelledby="b0055" epub:type="sidebar">
+         <div class="box_top_space">
+         </div>
+         <div class="boxg1" id="b0055">
+          <div class="b1textfl" id="bpar0055">
+           <i>
+            TIP: Cluster member variables by their type to optimize object size.
+           </i>
+          </div>
+         </div>
+        </aside>
+       </div>
+       <p class="text" id="p0465">
+        You can still squeeze a few more bytes out of the structure, however. By using bit fields you can make each of the bool flags occupy a single bit instead of an entire byte. Doing this lets you get the structure size down to 28 bytes, a 42% reduction:
+        <a id="p347">
+        </a>
+        <span aria-label="347" epub:type="pagebreak" id="pagebreak_347" role="doc-pagebreak">
+        </span>
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0155">
+          <img alt="image" height="1008" src="../../IMAGES/B9780443222191000052/main.assets/u08-26-9780443222191.jpg" width="971"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div>
+        <aside aria-labelledby="b0060" epub:type="sidebar">
+         <div class="box_top_space">
+         </div>
+         <div class="boxg1" id="b0060">
+          <div class="b1textfl" id="bpar0060">
+           <i>
+            TIP: Consider the use of bit fields to compress an object further, but be aware of their performance impact.
+           </i>
+          </div>
+         </div>
+        </aside>
+       </div>
+       <p class="text" id="p0470">
+        Finally, you can step back and consider the actual size requirements for each variable rather than simply using ints for all integer values. Doing so, you might decide that the RGB variance values need to be only 1 byte, and the screen space coordinates can be 2 bytes each. I'll use the types of
+        <span class="inlinecode">
+         char
+        </span>
+        and
+        <span class="inlinecode">
+         short
+        </span>
+        , respectively, to simplify the subsequent figure, but in reality you could use size-specific types such as
+        <span class="inlinecode">
+         int8_t
+        </span>
+        and
+        <span class="inlinecode">
+         uint16_t
+        </span>
+        :
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0160">
+          <img alt="image" height="1007" src="../../IMAGES/B9780443222191000052/main.assets/u08-27-9780443222191.jpg" width="971"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div>
+        <aside aria-labelledby="b0065" epub:type="sidebar">
+         <div class="box_top_space">
+         </div>
+         <div class="boxg1" id="b0065">
+          <div class="b1textfl" id="bpar0065">
+           <i>
+            TIP: Use size-specific types, such as
+           </i>
+           <span class="inlinecode">
+            <i>
+             int32_t
+            </i>
+           </span>
+           <i>
+            or
+           </i>
+           <span class="inlinecode">
+            <i>
+             uint16_t
+            </i>
+           </span>
+           <i>
+            , to specify the maximum number of required bits for a variable.
+           </i>
+          </div>
+         </div>
+        </aside>
+       </div>
+       <p class="text" id="p0475">
+        This version of our structure occupies only 16 bytes, a reduction of 66% from the original unoptimized size of 48 bytes. That's quite a massive memory savings, just by
+        <a id="p348">
+        </a>
+        <span aria-label="348" epub:type="pagebreak" id="pagebreak_348" role="doc-pagebreak">
+        </span>
+        rearranging the member variables and thinking a little more about how large they need to be.
+        <a href="#f0015" id="Bf0015">
+         Fig. 8.2
+        </a>
+        shows you exactly where all of your memory is going in each of these four configurations.
+       </p>
+      </section>
+      <section>
+       <a id="s0055">
+       </a>
+       <h2 class="h1hd" id="cesectitle0065">
+        Don't inline functions until you need to
+       </h2>
+       <p class="textfl" id="p0480">
+        This may seem like strange advice to give in a chapter on performance: don't inline code! However, this is first and foremost a book about APIs, and inlining code in your header files breaks one of the cardinal rules of API design: don't expose implementation details. That's not to say that you should never inline code. Sometimes your performance requirements demand it, but you should do so with your eyes wide open and with a full understanding of the implications, such as:
+       </p>
+       <div>
+        <ul class="ce_list" id="olist0035">
+         <li class="numlist" id="p0485">
+          <a id="o0095">
+          </a>
+          1.
+          <b>
+           Exposing implementation details.
+          </b>
+          As I've just covered, the primary reason for avoiding inlining in public API headers is that it causes you to expose the implementation of your API methods directly in the header. I spent an entire section in
+          <a href="../B9780443222191000143/CH0002_25-80_B9780443222191000143.xhtml">
+           Chapter 2
+          </a>
+          detailing why you shouldn't do that.
+          <a id="p349">
+          </a>
+         </li>
+         <li>
+          <span aria-label="349" epub:type="pagebreak" id="pagebreak_349" role="doc-pagebreak">
+          </span>
+         </li>
+         <li class="numlist" id="p0490">
+          <a id="o0100">
+          </a>
+          2.
+          <b>
+           Code embedded in client applications.
+          </b>
+          Inlined code in your API headers is compiled directly into your clients' applications. This means that clients must recompile their code whenever you release a new version of the API with any changes to inlined code. They cannot simply drop a new version of your shared library into their installation and expect their application just to work. In other words, inlining breaks binary compatibility.
+         </li>
+         <li class="numlist" id="p0495">
+          <a id="o0105">
+          </a>
+          3.
+          <b>
+           Code bloat.
+          </b>
+          Excessive inlining can significantly grow the size of your object files and resulting binary. This is, of course, because each call to an inlined method is replaced by all of the operations of that method. This larger code size can end up reducing performance by causing more disk access and virtual-memory page faults.
+         </li>
+         <li class="numlist" id="p0500">
+          <a id="o0110">
+          </a>
+          4.
+          <b>
+           Debugging complications.
+          </b>
+          Many debuggers have problems dealing with inlined code. This is perfectly understandable: it's difficult to put a breakpoint in a function that doesn't actually exist! The common way to circumvent these problems is to turn off inlining for debug code.
+         </li>
+        </ul>
+       </div>
+       <p class="text" id="p0505">
+        As Donald Knuth famously stated: “Premature optimization is the root of all evil” (
+        <a href="../B9780443222191160015/References_583-587_B9780443222191160015.xhtml#bib49" id="bib_49">
+         Knuth, 1974
+        </a>
+        ).
+       </p>
+       <p class="text" id="p0510">
+        Despite these downsides, there still may be cases in which you need to put inlined code into your API's public headers. The two main reasons for doing this are:
+       </p>
+       <div>
+        <ul class="ce_list" id="olist0040">
+         <li class="numlist" id="p0515">
+          <a id="o0115">
+          </a>
+          1.
+          <b>
+           Performance.
+          </b>
+          Using getter and setter methods to wrap access to member variables can cause a performance impact on your code if those methods are called many times a second. Inlining can recover those performance loses while allowing you to keep the getter/setter methods (the accompanying source code for this book has a simple program to let you test this for yourself). However, marking a function as inline may not necessarily give you performance gains. For one, this is simply a hint to the compiler that can be ignored. Some situations in which the request is likely to be ignored are using loops in the function, calling another inline function, or recursion. Even when the compiler does inline the method, the resulting code could be larger or smaller, and it could be faster or slower, depending upon the original size of the method, your CPU's instruction cache, and your virtual memory system (
+          <a href="../B9780443222191160015/References_583-587_B9780443222191160015.xhtml#bib17" id="bib_17">
+           Cline et al., 1998
+          </a>
+          ). Inlining tends to work best for small, simple, frequently called functions.
+         </li>
+         <li class="numlist" id="p0520">
+          <a id="o0120">
+          </a>
+          2.
+          <b>
+           Templates.
+          </b>
+          You may also be using templates in your header and so are forced to inline the template implementation. However, as I covered in the previous chapter on C++ Usage, you can sometimes use explicit template instantiation to avoid this.
+         </li>
+        </ul>
+       </div>
+       <p class="textfl">
+        <a id="p350">
+        </a>
+        <span aria-label="350" epub:type="pagebreak" id="pagebreak_350" role="doc-pagebreak">
+        </span>
+       </p>
+       <div>
+        <aside aria-labelledby="b0070" epub:type="sidebar">
+         <div class="box_top_space">
+         </div>
+         <div class="boxg1" id="b0070">
+          <div class="b1textfl" id="bpar0070">
+           <i>
+            TIP: Avoid using inlined code in your public headers until you have proven that your code is causing a performance problem and confirmed that inlining will fix that problem.
+           </i>
+          </div>
+         </div>
+        </aside>
+       </div>
+       <p class="text" id="p0525">
+        For those cases in which you need to use inlined code, I will discuss the best way to do it. One way to inline code is simply to include the implementation of a method in the class body, such as:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0165">
+          <img alt="image" height="776" src="../../IMAGES/B9780443222191000052/main.assets/u08-28-9780443222191.jpg" width="1318"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0530">
+        This perfectly demonstrates the concern of including implementation details in your header files: a user of your API can look at your header and see exactly how an inlined method is implemented. In this example, the implementation is simple, but it could easily expose a lot more complexity.
+       </p>
+       <p class="text" id="p0535">
+        Another way to inline code is by using the C++
+        <span class="inlinecode">
+         inline
+        </span>
+        keyword. This approach offers at least one improvement over the previous syntax in that it lets you define the code for a method outside the class body. Although the code is still in the header, at least you don't obfuscate the class declaration with code:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0170">
+          <img alt="image" height="1183" src="../../IMAGES/B9780443222191000052/main.assets/u08-29-9780443222191.jpg" width="1698"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="textfl">
+        <a id="p351">
+        </a>
+       </p>
+       <div>
+        <span aria-label="351" epub:type="pagebreak" id="pagebreak_351" role="doc-pagebreak">
+        </span>
+       </div>
+       <p class="text" id="p0540">
+        An even better style would be to hide the inline statements in a separate header, where the filename of that header indicates that it contains implementation details. This is the same technique that I suggested earlier for dealing with templates, and it's used by several industry-strength APIs such as the Boost headers. Boost uses the convention of a “detail” subdirectory to hold all private details that must be exposed in header files and then
+        <span class="inlinecode">
+         #include
+        </span>
+        those from the public header files. For example:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0175">
+          <img alt="image" height="893" src="../../IMAGES/B9780443222191000052/main.assets/u08-30-9780443222191.jpg" width="900"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0545">
+        The Boost headers also often use the convention of using a “detail” subnamespace to contain all private implementation code, such as
+        <span class="inlinecode">
+         boost::tuples::detail
+        </span>
+        . This is a good practice to segment necessary private code further in public headers.
+       </p>
+       <p class="text" id="p0550">
+        Finally, I'll make the point that this section was about avoiding inlining functions. With C++17, you can also inline variable definitions with external linkage. This is a great feature that you should use where possible to define constants in your header files.
+       </p>
+      </section>
+      <section>
+       <a id="s0060">
+       </a>
+       <h2 class="h1hd" id="cesectitle0070">
+        Copy on write
+       </h2>
+       <p class="textfl" id="p0555">
+        One of the best ways to save memory is not to allocate any until you need to. This is the essential goal of copy-on-write (COW) techniques. These work by allowing all clients to share a single resource until one of them needs to modify the resource. Only at that point is a copy made. Hence the name: copy on write. The advantage is that if the resource is never modified, then it can be shared for all clients. This is related to the Flyweight design pattern, which describes objects that share as much memory as possible to minimize memory consumption (
+        <a href="../B9780443222191160015/References_583-587_B9780443222191160015.xhtml#bib33" id="bib_33">
+         Gamma et al., 1994
+        </a>
+        ).
+        <a id="p352">
+        </a>
+        <span aria-label="352" epub:type="pagebreak" id="pagebreak_352" role="doc-pagebreak">
+        </span>
+       </p>
+       <div class="pageavoid">
+        <figure class="fig" id="f0015">
+         <img alt="image" height="1303" src="../../IMAGES/B9780443222191000052/main.assets/f08-02-9780443222191.jpg" width="2333"/>
+         <figcaption class="figleg">
+          <a id="cap0015">
+          </a>
+          <a id="fspara0015">
+          </a>
+          <span class="fignum">
+           <a href="#Bf0015">
+            Figure 8.2
+           </a>
+          </span>
+          The memory layout for four different configurations of the member variables in a class. Fireworks_A is the original unoptimized version, Fireworks_B employs type clustering, Fireworks_C uses bit fields to compress the bool variables, and Fireworks_D uses smaller integer types.
+         </figcaption>
+        </figure>
+       </div>
+       <div class="pageavoid">
+        <figure class="fig" id="f0020">
+         <img alt="image" height="1087" src="../../IMAGES/B9780443222191000052/main.assets/f08-03-9780443222191.jpg" width="2751"/>
+         <figcaption class="figleg">
+          <a id="cap0020">
+          </a>
+          <a id="fspara0020">
+          </a>
+          <span class="fignum">
+           <a href="#Bf0020">
+            Figure 8.3
+           </a>
+          </span>
+          Illustrating copy on write: Object1 and Object2 can share the same resource until Object2 wants to change it, at which point a copy must be made so that the changes do not affect Object1's state.
+         </figcaption>
+        </figure>
+       </div>
+       <div>
+        <aside aria-labelledby="b0075" epub:type="sidebar">
+         <div class="box_top_space">
+         </div>
+         <div class="boxg1" id="b0075">
+          <div class="b1textfl" id="bpar0075">
+           <i>
+            TIP: Use copy-on-write semantics to reduce the memory cost for many copies of your objects.
+           </i>
+          </div>
+         </div>
+        </aside>
+       </div>
+       <p class="text" id="p0560">
+        For example, several string objects that store the same text could all share the same memory buffer. Then when one of the strings must modify the text, it creates a copy of the memory buffer so that the modification doesn't affect the other strings.
+        <a href="#f0020" id="Bf0020">
+         Fig. 8.3
+        </a>
+        illustrates this concept. Most C++ Standard Library string implementations use copy on write so that passing them by value is fairly cheap (
+        <a href="../B9780443222191160015/References_583-587_B9780443222191160015.xhtml#bib92" id="bib_92">
+         Stroustrup, 2000
+        </a>
+        ).
+       </p>
+       <p class="text" id="p0565">
+        There are several ways to implement copy on write. One popular way is to declare a class template that lets you create pointers to objects managed with copy-on-write semantics, in the same way that you would create a shared or weak pointer template. The class normally contains a standard shared pointer, to track the reference count of the underlying object, and provides a private
+        <span class="inlinecode">
+         Detach()
+        </span>
+        method for operations that modify the object and hence require detaching from the shared object and creating a new copy. An implementation of this is shown next using shared pointers. I show this with inline methods within the class declaration for reasons of clarity. In real-world applications, you should, of course, hide these inline definitions in a separate header as they obscure the interface declarations:
+        <a id="p353">
+        </a>
+        <span aria-label="353" epub:type="pagebreak" id="pagebreak_353" role="doc-pagebreak">
+        </span>
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0180">
+          <img alt="image" height="2723" src="../../IMAGES/B9780443222191000052/main.assets/u08-31p1-9780443222191.jpg" width="1465"/>
+          <img alt="image" height="1933" src="../../IMAGES/B9780443222191000052/main.assets/u08-31p2-9780443222191.jpg" width="1942"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0570">
+        This class can then be used as:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0185">
+          <img alt="image" height="255" src="../../IMAGES/B9780443222191000052/main.assets/u08-32-9780443222191.jpg" width="1975"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0575">
+        In this example,
+        <span class="inlinecode">
+         string2
+        </span>
+        points to the same object as
+        <span class="inlinecode">
+         string1
+        </span>
+        , whereas
+        <span class="inlinecode">
+         string3
+        </span>
+        points to a copy of the object because it needed to modify it. As I've mentioned, many implementations of
+        <span class="inlinecode">
+         std::string
+        </span>
+        will use copy-on-write semantics anyway. I'm simply using this as a convenient example.
+       </p>
+       <p class="text" id="p0580">
+        There's a loophole that can be exploited in the previous
+        <span class="inlinecode">
+         CowPtr
+        </span>
+        implementation. It's possible for users to dig into the copy-on-write pointer and access the underlying object to hold on to references to its data. They could then modify the data directly, thus affecting all
+        <span class="inlinecode">
+         CowPtr
+        </span>
+        variables that share that object. For example:
+        <a id="p355">
+        </a>
+        <span aria-label="355" epub:type="pagebreak" id="pagebreak_355" role="doc-pagebreak">
+        </span>
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0190">
+          <img alt="image" height="255" src="../../IMAGES/B9780443222191000052/main.assets/u08-33-9780443222191.jpg" width="1975"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0585">
+        In this code, the user takes a reference to a character in the underlying
+        <span class="inlinecode">
+         std::string
+        </span>
+        of
+        <span class="inlinecode">
+         string1
+        </span>
+        . After
+        <span class="inlinecode">
+         string2
+        </span>
+        is created, which shares the same memory as
+        <span class="inlinecode">
+         string1
+        </span>
+        , the user then directly changes the second character in the shared string, causing both
+        <span class="inlinecode">
+         string1
+        </span>
+        and
+        <span class="inlinecode">
+         string2
+        </span>
+        now to equal “Spare Me”.
+       </p>
+       <p class="text" id="p0590">
+        The best way to avoid this sort of misuse is simply not to expose
+        <span class="inlinecode">
+         CowPtr
+        </span>
+        to your clients. It most cases, you don't need your clients to know you are using a copy-on-write optimization: it's an implementation detail, after all. Instead, you could use
+        <span class="inlinecode">
+         CowPtr
+        </span>
+        to declare member variables in your objects and not change your public API in any way. This is called implicit sharing by the Qt library. For example:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0195">
+          <img alt="image" height="718" src="../../IMAGES/B9780443222191000052/main.assets/u08-34-9780443222191.jpg" width="1524"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0595">
+        where the implementation of
+        <span class="inlinecode">
+         MyObject
+        </span>
+        might look like:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0200">
+          <img alt="image" height="834" src="../../IMAGES/B9780443222191000052/main.assets/u08-35-9780443222191.jpg" width="1698"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0600">
+        In this way, your clients can use your
+        <span class="inlinecode">
+         MyObject
+        </span>
+        API without any knowledge that it uses copy on write, but underneath the covers the object is sharing memory whenever possible and enabling more efficient copy and assignment operations:
+        <a id="p356">
+        </a>
+        <span aria-label="356" epub:type="pagebreak" id="pagebreak_356" role="doc-pagebreak">
+        </span>
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0205">
+          <img alt="image" height="486" src="../../IMAGES/B9780443222191000052/main.assets/u08-36-9780443222191.jpg" width="1178"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0605">
+        In this example,
+        <span class="inlinecode">
+         obj1
+        </span>
+        and
+        <span class="inlinecode">
+         obj2
+        </span>
+        will share the same underlying string object, whereas
+        <span class="inlinecode">
+         obj3
+        </span>
+        will contain its own copy because it modified the string.
+       </p>
+      </section>
+      <section>
+       <a id="s0065">
+       </a>
+       <h2 class="h1hd" id="cesectitle0075">
+        Iterating over elements
+       </h2>
+       <p class="textfl" id="p0610">
+        Iterating over a collection of objects is an extremely common task for client code, so it's worth spending some time looking at alternative strategies that offer different strengths and weaknesses. That way you can choose the best solution for your API requirements.
+       </p>
+       <section>
+        <a id="s0070">
+        </a>
+        <h3 class="h2hd" id="cesectitle0080">
+         Iterators
+        </h3>
+        <p class="textfl" id="p0615">
+         The C++ Standard Library approach to this problem is to use iterators. These are objects that can traverse over some or all elements in a container class (
+         <a href="../B9780443222191160015/References_583-587_B9780443222191160015.xhtml#bib48" id="bib_48">
+          Josuttis, 1999
+         </a>
+         ). An iterator points to a single element in a container, with various operators available, such as
+         <span class="inlinecode">
+          operator∗
+         </span>
+         to return the current element,
+         <span class="inlinecode">
+          operator-&gt;
+         </span>
+         <span title='hsp="0.25"'>
+         </span>
+         to access the members of the container element directly, and
+         <span class="inlinecode">
+          operator++
+         </span>
+         to step forward to the next element. This design intentionally mimics the interface of plain pointer manipulation in C/C++.
+        </p>
+        <p class="text" id="p0620">
+         Clients can then use the
+         <span class="inlinecode">
+          begin()
+         </span>
+         and
+         <span class="inlinecode">
+          end()
+         </span>
+         methods on each container class to return iterators that bound all elements in the container, or they can use various Standard Library algorithms that return iterators within the set of all elements, such as
+         <span class="inlinecode">
+          std::find()
+         </span>
+         ,
+         <span class="inlinecode">
+          std::lower_bound()
+         </span>
+         , and
+         <span class="inlinecode">
+          std::upper_bound()
+         </span>
+         . The next code segment provides a simple example of using a Standard Library iterator to sum all of the values in an
+         <span class="inlinecode">
+          std::vector
+         </span>
+         :
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0210">
+           <img alt="image" height="313" src="../../IMAGES/B9780443222191000052/main.assets/u08-37-9780443222191.jpg" width="1836"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0625">
+         This is purely an illustrative example. If you really wanted to calculate the sum of all elements in a container, you should prefer the use of the Standard Library algorithm
+         <span class="inlinecode">
+          std::accumulate
+         </span>
+         , as described in the Functional APIs section of the Styles chapter.
+        </p>
+        <p class="text" id="p0630">
+         In terms of your own API designs, here are some reasons why you may want to adopt an iterator model to allow your clients to iterate over data:
+         <a id="p357">
+         </a>
+         <span aria-label="357" epub:type="pagebreak" id="pagebreak_357" role="doc-pagebreak">
+         </span>
+        </p>
+        <div>
+         <ol id="ulist0030">
+          <li class="bulllist" id="p0635">
+           <a id="u0070">
+           </a>
+           ▪ Iterators are a well-known pattern with which most engineers are already familiar. As such, using an iterator model in your own APIs will minimize the learning curve for users. This addresses the ease of use quality I introduced in
+           <a href="../B9780443222191000143/CH0002_25-80_B9780443222191000143.xhtml">
+            Chapter 2
+           </a>
+           . For example, most engineers will already be aware of any performance issues, such as knowing that they should prefer the preincrement operator for iterators (
+           <span class="inlinecode">
+            ++it
+           </span>
+           ) as opposed to postincrement (
+           <span class="inlinecode">
+            it++
+           </span>
+           ), to avoid the construction and destruction of temporary variables.
+          </li>
+          <li class="bulllist" id="p0640">
+           <a id="u0075">
+           </a>
+           ▪ The iterator abstraction can be applied to simple sequential data structures, such as arrays or lists, as well as more complicated data structures, such as sets and maps, which are often implemented as self-balancing binary search trees such as red-black trees (
+           <a href="../B9780443222191160015/References_583-587_B9780443222191160015.xhtml#bib48">
+            Josuttis, 1999
+           </a>
+           ).
+          </li>
+          <li class="bulllist" id="p0645">
+           <a id="u0080">
+           </a>
+           ▪ Iterators can be implemented quite efficiently, even as simply as a pointer in some cases. In fact,
+           <span class="inlinecode">
+            std::vector
+           </span>
+           iterators were actually implemented this way in Visual C++ 6 and GNU C++ 3 (although most modern Standard Library implementations now use dedicated iterator classes).
+          </li>
+          <li class="bulllist" id="p0650">
+           <a id="u0085">
+           </a>
+           ▪ Iterators can be used to traverse massive datasets that may not even fit entirely into memory. For example, the iterator could be implemented to page in blocks of data from disk as needed, and free previously processed blocks. Of course, the client can also stop traversing at any point without having to visit every element in the container.
+          </li>
+          <li class="bulllist" id="p0655">
+           <a id="u0090">
+           </a>
+           ▪ Clients can create multiple iterators to traverse the same data and use these iterators simultaneously. If clients wish to insert or delete elements while traversing the container, there are established patterns for doing this while maintaining the integrity of the iterators.
+          </li>
+         </ol>
+        </div>
+       </section>
+       <section>
+        <a id="s0075">
+        </a>
+        <h3 class="h2hd" id="cesectitle0085">
+         Random access
+        </h3>
+        <p class="textfl" id="p0660">
+         An iterator allows clients to traverse linearly through each element in a container. However, you may have cases where you wish to support random access to any element, such as accessing a specific element in an array or vector container. C++ Standard Library container classes that support random accesses provide this in a couple of ways:
+        </p>
+        <div>
+         <ul class="ce_list" id="olist0045">
+          <li class="numlist" id="p0665">
+           <a id="o0125">
+           </a>
+           1.
+           <b>
+            The
+            <span class="inlinecode">
+             <b>
+              []
+             </b>
+            </span>
+            operator.
+           </b>
+           This is meant to simulate the array indexing syntax of C/C++. Normally this operator is implemented without any bounds checking, so it can be made very efficient.
+          </li>
+          <li class="numlist" id="p0670">
+           <a id="o0130">
+           </a>
+           2.
+           <b>
+            The
+            <span class="inlinecode">
+             <b>
+              at()
+             </b>
+            </span>
+            method.
+           </b>
+           This method is required to check if the supplied index is out of range and throw an exception in this case. As a result, this approach can be slower than the
+           <span class="inlinecode">
+            []
+           </span>
+           operator.
+          </li>
+         </ul>
+        </div>
+        <p class="text" id="p0675">
+         To illustrate these concepts, the iterator source example in the previous section can be recast in terms of the
+         <span class="inlinecode">
+          []
+         </span>
+         operator as:
+         <a id="p358">
+         </a>
+         <span aria-label="358" epub:type="pagebreak" id="pagebreak_358" role="doc-pagebreak">
+         </span>
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0215">
+           <img alt="image" height="313" src="../../IMAGES/B9780443222191000052/main.assets/u08-38-9780443222191.jpg" width="1282"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0680">
+         In terms of performance, these two methods are essentially equivalent. Obviously one approach may prove to be marginally more efficient than the other for a given platform and compiler, but in general they should involve an equivalent degree of overhead.
+        </p>
+        <p class="text" id="p0685">
+         If you plan to add random access functionality to your API, you should strive to adopt the previous design to capitalize on consistency with the Standard Library. However, if your API doesn't need to provide random access to the underlying data, you should prefer using the iterator model over the
+         <span class="inlinecode">
+          operator[]
+         </span>
+         approach, simply because an iterator expresses the user's intent more clearly and results in client code that is more obvious and consistent.
+        </p>
+       </section>
+       <section>
+        <a id="s0080">
+        </a>
+        <h3 class="h2hd" id="cesectitle0090">
+         Array references
+        </h3>
+        <p class="textfl" id="p0690">
+         As an alternative to iterators, some APIs use an approach in which the user passes in an array data structure by reference. The API then fills the array with the requested elements and returns it to the user. The Maya API uses this pattern extensively. Autodesk Maya is a high-end 3D modeling and animation system used extensively in the film and game industry. The package includes a C++ and Python API that provides programmatic access to the underlying 2D and 3D data in a scene.
+        </p>
+        <p class="text" id="p0695">
+         As an example of this pattern, the
+         <span class="inlinecode">
+          MfnDagNode::getAllPaths()
+         </span>
+         method is used to return a sequence of node paths in the Maya scene graph. This is achieved by passing in an
+         <span class="inlinecode">
+          MDagPathArray
+         </span>
+         object by reference, which is then populated with
+         <span class="inlinecode">
+          MDagPath
+         </span>
+         references. Some reasons for this design, and hence the reasons why you may prefer this approach for your own APIs, are:
+        </p>
+        <div>
+         <ol id="ulist0035">
+          <li class="bulllist" id="p0700">
+           <a id="u0095">
+           </a>
+           ▪ The primary purpose of this method is performance. In essence, it's a way to collapse a series of connected nodes of a graph data structure into a sequential array data structure. This provides a data structure that can be very efficiently iterated over, but also locates elements adjacent to each other in memory. The result is a data structure that can take better advantage of CPU caching strategies, as opposed to a tree structure in which individual nodes in the tree may be fragmented across the process's address space.
+          </li>
+          <li class="bulllist" id="p0705">
+           <a id="u0100">
+           </a>
+           ▪ This technique is particularly efficient if the client keeps the same array around to service multiple calls to
+           <span class="inlinecode">
+            getAllPaths()
+           </span>
+           . Also, any initial performance overhead to fill the array can be compensated for if the array is kept around to support multiple iterations over its elements.
+          </li>
+          <li class="bulllist" id="p0710">
+           <a id="u0105">
+           </a>
+           ▪ This technique also offers a specific feature that the iterator model does not: support for noncontiguous elements. That is, a traditional iterator cannot handle different orderings of elements or omit certain elements from a sequence, whereas using the array reference technique, you can fill the array with any subset of elements in any order.
+          </li>
+         </ol>
+        </div>
+        <p class="textfl">
+         <a id="p359">
+         </a>
+        </p>
+        <div>
+         <span aria-label="359" epub:type="pagebreak" id="pagebreak_359" role="doc-pagebreak">
+         </span>
+        </div>
+        <p class="text" id="p0715">
+         This concept can be seen in other languages, too, such as the
+         <span class="inlinecode">
+          iterator_to_array()
+         </span>
+         function in PHP, which can be used to convert an iterator into an array for faster traversal in certain cases.
+        </p>
+        <p class="text" id="p0720">
+         As an alternative to consuming a user supplied array, you could also return a const container of objects and rely on the compiler's return value optimization to avoid copying data.
+        </p>
+        <div>
+         <aside aria-labelledby="b0080" epub:type="sidebar">
+          <div class="box_top_space">
+          </div>
+          <div class="boxg1" id="b0080">
+           <div class="b1textfl" id="bpar0080">
+            <i>
+             TIP: Adopt an iterator model for traversing simple linear data structures. If you have a linked list or tree data structure, then consider using array references if iteration performance is critical.
+            </i>
+           </div>
+          </div>
+         </aside>
+        </div>
+       </section>
+       <section>
+        <a id="s0085">
+        </a>
+        <h3 class="h2hd" id="cesectitle0095">
+         Extern templates
+        </h3>
+        <p class="textfl" id="p0725">
+         One issue with the use of templates in C++03 is that compilers must generate code in each translation unit where a template is instantiated. Most modern compilers will discard any duplicate code when assembling the final binary at link time, but this can still cause increases in compilation time and intermediate object code size.
+        </p>
+        <p class="text" id="p0730">
+         C++11 introduced the concept of extern templates to improve this situation. This lets you define a template without instantiating it in a translation unit. Ultimately, this feature does not affect your public interface, but it can help with compilation and link performance for your clients.
+        </p>
+        <p class="text" id="p0735">
+         For example, consider this class template defined in a
+         <span class="inlinecode">
+          header.h
+         </span>
+         file:
+         <a id="p360">
+         </a>
+         <span aria-label="360" epub:type="pagebreak" id="pagebreak_360" role="doc-pagebreak">
+         </span>
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0220">
+           <img alt="image" height="834" src="../../IMAGES/B9780443222191000052/main.assets/u08-39-9780443222191.jpg" width="831"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0740">
+         This template can be instantiated in multiple translation units. For example, these two modules both instantiate a specialization of the template for type
+         <span class="inlinecode">
+          int
+         </span>
+         :
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0225">
+           <img alt="image" height="1181" src="../../IMAGES/B9780443222191000052/main.assets/u08-40-9780443222191.jpg" width="832"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0745">
+         In this case, the compiler will generate code for the template instantiation in both
+         <span class="inlinecode">
+          module1.o
+         </span>
+         and
+         <span class="inlinecode">
+          module2.o
+         </span>
+         object files. To avoid this, you can prevent the template instantiation in one of the modules by using an extern template. For example,
+         <a id="p361">
+         </a>
+         <span aria-label="361" epub:type="pagebreak" id="pagebreak_361" role="doc-pagebreak">
+         </span>
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0230">
+           <img alt="image" height="718" src="../../IMAGES/B9780443222191000052/main.assets/u08-41-9780443222191.jpg" width="2324"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0750">
+         With this change, the compiler will no longer generate code for the template instantiation in
+         <span class="inlinecode">
+          module2.o
+         </span>
+         . The resulting library or executable binary will be the same in each case, but the compiler can do less work and produce smaller intermediate products.
+        </p>
+        <p class="text" id="p0755">
+         When using extern templates, it's incumbent on you to ensure that the template is instantiated in at least one translation unit; otherwise you'll get an undefined symbol linker error.
+        </p>
+       </section>
+      </section>
+      <section>
+       <a id="s0090">
+       </a>
+       <h2 class="h1hd" id="cesectitle0100">
+        Performance analysis
+       </h2>
+       <p class="textfl" id="p0760">
+        In the final section in this chapter on performance, I'll look at some tools and techniques to help you measure the performance of your system. Most of these are aimed at analyzing the performance of your implementation code and as such are not directly related to how you design your API. However, this is obviously still a very important part of producing an efficient API and therefore worthy of focus.
+       </p>
+       <p class="text" id="p0765">
+        I'll consider several different aspects of performance: time-based performance, memory overhead, and multithreading contention. Also, whereas the preceding sections in this chapter dealt with stable features of C++, the subsequent text presents software products that may change over time. Products come, go, change ownership, and change focus. However, I have endeavored to make this list as up-to-date as possible at the time of publication.
+       </p>
+       <section>
+        <a id="s0095">
+        </a>
+        <h3 class="h2hd" id="cesectitle0105">
+         Time-based analysis
+        </h3>
+        <p class="textfl" id="p0770">
+         The most traditional interpretation of performance is how long it takes your code to perform various operations. For example, if you are developing an image processing library, how long does your
+         <span class="inlinecode">
+          Sharpen()
+         </span>
+         or
+         <span class="inlinecode">
+          RedEyeReduction()
+         </span>
+         method take to run on a given image? The implication here is that you must write some sample or test programs that use your API so that you can then time your API's performance under different real-world scenarios. If you have written such programs, there are several forms of performance analysis you could consider using:
+        </p>
+        <div>
+         <ul class="ce_list" id="olist0050">
+          <li class="numlist" id="p0775">
+           <a id="o0135">
+           </a>
+           1.
+           <b>
+            In-house instrumentation.
+           </b>
+           The most targeted and efficient profiling you can perform is the kind that you write yourself. Every piece of software is different, and so the performance-critical sections of your code will be specific to your API. It's therefore extremely beneficial to have access to a fast timer class that can be inserted into your code at key points to gather accurate timing information. The results can be output to a file and analyzed offline, or your clients could integrate a visual display of the timer results into their end-user applications.
+          </li>
+          <li class="unnumlist" id="p0925">
+           <a id="u0205">
+           </a>
+           The Second Life Viewer provides this capability via its
+           <span class="inlinecode">
+            LLFastTimer
+           </span>
+           class. This works by inserting
+           <span class="inlinecode">
+            LLFastTimer()
+           </span>
+           calls into critical sections of the code using an extensible label that identifies the area being analyzed, such as
+           <a id="p362">
+           </a>
+           <span aria-label="362" epub:type="pagebreak" id="pagebreak_362" role="doc-pagebreak">
+           </span>
+           <span class="inlinecode">
+            LLFastTimer(RENDER_WATER)
+           </span>
+           . The Second Life Viewer itself then provides a debugging overlay display to view the cumulative result of the timers in real time. See
+           <a href="#f0025" id="Bf0025">
+            Fig. 8.4
+           </a>
+           for an example of this debugging view.
+          </li>
+          <li>
+           <div class="pageavoid">
+            <figure class="fig" id="f0025">
+             <img alt="image" height="1743" src="../../IMAGES/B9780443222191000052/main.assets/f08-04-9780443222191.jpg" width="2289"/>
+             <figcaption class="figleg">
+              <a id="cap0025">
+              </a>
+              <a id="fspara0025">
+              </a>
+              <span class="fignum">
+               <a href="#Bf0025">
+                Figure 8.4
+               </a>
+              </span>
+              Screenshot of the Second Life Viewer showing its built-in view to display the results of various timers embedded in the code.
+             </figcaption>
+            </figure>
+           </div>
+          </li>
+         </ul>
+        </div>
+        <div id="p0780">
+        </div>
+        <div>
+         <ul class="ce_list" id="olist0055">
+          <li class="numlist" id="p0785">
+           <a id="o0140">
+           </a>
+           2.
+           <b>
+            Binary instrumentation.
+           </b>
+           This technique involves instrumenting a program or shared library by adding code that records details for each function call. Running the instrumented binary then creates an exact trace of the function calls for that session. Processing the resulting data can then determine the top call stacks where the program spent most of its time.
+          </li>
+          <li class="unnumlist" id="p0930">
+           <a id="u0210">
+           </a>
+           One drawback of this approach is that the extra instrumentation overhead can slow the program execution significantly, sometimes by as much as 10-100 times, although relative performance should be preserved. Finally, this technique will
+           <a id="p363">
+           </a>
+           <span aria-label="363" epub:type="pagebreak" id="pagebreak_363" role="doc-pagebreak">
+           </span>
+           obviously not be able to time functions that do not appear as symbols in the binary file, such as inline functions.
+          </li>
+         </ul>
+        </div>
+        <div id="p0790">
+        </div>
+        <div>
+         <ul class="ce_list" id="olist0060">
+          <li class="numlist" id="p0795">
+           <a id="o0145">
+           </a>
+           3.
+           <b>
+            Sampling.
+           </b>
+           This involves the use of a separate program that continually samples your test application to determine its program counter. This is a low-overhead statistical technique, meaning that it may not log every single function call made by your application, but with a sufficiently high sample rate, it can still be useful in telling you where your application is spending most of its time.
+          </li>
+          <li class="unnumlist" id="p0935">
+           <a id="u0215">
+           </a>
+           Sampling can be performed at a system level (e.g., to see if your application spends a lot of time in system calls, such as whether it is I/O bound), or it can be isolated to the functions in your application. In addition to recording time samples, this technique can refer to sampling processor events, such as cache misses, mispredicted branches, and CPU stalls.
+          </li>
+         </ul>
+        </div>
+        <div id="p0800">
+        </div>
+        <div>
+         <ul class="ce_list" id="olist0065">
+          <li class="numlist" id="p0805">
+           <a id="o0150">
+           </a>
+           4.
+           <b>
+            Counter monitoring.
+           </b>
+           Many commercially available operating systems provide performance counters that report how well various subsystems are performing, such as the processor, memory, network, and disk. For example, Microsoft provides the Performance Counters API to access counter data on the Windows platform. By monitoring these counters while your application is running you can determine system bottlenecks and evaluate how inadequate system resources can affect your API's performance.
+          </li>
+         </ul>
+        </div>
+        <p class="text" id="p0810">
+         Given this categorization of performance analyzing techniques, the next list provides a cross-section of profiling tools that were on the market at the time of this book's publication:
+        </p>
+        <div>
+         <ol id="ulist0040">
+          <li class="bulllist" id="p0815">
+           <a id="u0110">
+           </a>
+           ▪
+           <b>
+            Intel VTune
+           </b>
+           : This is a commercial performance analysis suite available for both Microsoft Windows and Linux platforms. It includes a binary instrumentation feature (called call graph), time- and event-based sampling, and a counter monitor, among various other tools. It comes with extensive and powerful graphical tools to visualize the resulting performance data.
+          </li>
+          <li class="bulllist" id="p0820">
+           <a id="u0115">
+           </a>
+           ▪
+           <b>
+            gprof
+           </b>
+           : GProf is the GNU profiler. It uses binary instrumentation to record the number of calls, and time spent within each function. It is integrated with the GNU C++ compiler and activated via the -pg command line option. Running an instrumented binary creates a data file in the current directory that can be analyzed with the gprof program (or the Saturn application on macOS).
+          </li>
+          <li class="bulllist" id="p0825">
+           <a id="u0120">
+           </a>
+           ▪
+           <b>
+            OProfile
+           </b>
+           : This is an open source performance tool for Linux. It is a system-wide sampling profiler that can also leverage hardware performance counters. Profile data can be produced at the function or instruction level and the software includes support for annotating source trees with profile information.
+          </li>
+          <li class="bulllist" id="p0830">
+           <a id="u0125">
+           </a>
+           ▪
+           <b>
+            AMD CodeXL
+           </b>
+           : A freely available profiler from AMD that runs on Windows and Linux. It is based upon OProfile with specific support for analyzing and visualizing the pipeline stages of AMD processors.
+           <a id="p364">
+           </a>
+          </li>
+          <li>
+           <span aria-label="364" epub:type="pagebreak" id="pagebreak_364" role="doc-pagebreak">
+           </span>
+          </li>
+          <li class="bulllist" id="p0835">
+           <a id="u0130">
+           </a>
+           ▪
+           <b>
+            Open SpeedShop
+           </b>
+           : An open source performance measurement tool for Linux based upon SGI's IRIX SpeedShop and currently supported by the Krell Institute. Open SpeedShop uses a sampling technique with support for hardware performance counters. It provides support for parallel and multithreaded programs and also includes a Python scripting API.
+          </li>
+          <li class="bulllist" id="p0840">
+           <a id="u0135">
+           </a>
+           ▪
+           <b>
+            Sysprof
+           </b>
+           : This is an open source performance profiler for Linux. It uses a system-wide sampling technique to profile the entire Linux system while your application is running. A simple user interface is provided to browse the resulting data.
+          </li>
+          <li class="bulllist" id="p0845">
+           <a id="u0140">
+           </a>
+           ▪
+           <b>
+            Callgrind
+           </b>
+           : Callgrind is a part of the valgrind instrumentation framework for Linux and macOS. It uses a binary instrumentation technique to collect call graph and instruction data for a given program run. The separate KCachegrind tool can be used to visualize the profile data. An optional cache simulator can be used to profile memory access behavior.
+          </li>
+          <li class="bulllist" id="p0850">
+           <a id="u0145">
+           </a>
+           ▪
+           <b>
+            Apple Shark
+           </b>
+           : Shark is a system-wide sampling profiler written by Apple and provided for free as part of their developer tools. It can also profile hardware and software events such as cache misses and virtual memory activity. Shark includes an intuitive and easy-to-use interface to browse the hot spots of your Apple applications.
+          </li>
+          <li class="bulllist" id="p0855">
+           <a id="u0150">
+           </a>
+           ▪
+           <b>
+            DTrace
+           </b>
+           : DTrace is a unique and powerful tracing framework that can be used to monitor applications in real time. This is done by writing custom tracing programs that can define a list of probes and actions to be performed when a probe fires. Probes include opening a file, starting a process, and executing a specific line of code; actions can analyze the run-time context such as the call stack. Apple added DTrace to macOS 10.5 with an accompanying GUI called Instruments. It is also available as ktrace on FreeBSD.
+          </li>
+         </ol>
+        </div>
+       </section>
+       <section>
+        <a id="s0100">
+        </a>
+        <h3 class="h2hd" id="cesectitle0110">
+         Memory-based analysis
+        </h3>
+        <p class="textfl" id="p0860">
+         As I stated earlier in this chapter, memory performance can be just as important as time-based performance. Algorithms that allocate and deallocate memory frequently, or whose memory allocation profiles don't map well to modern processor caches, can end up performing a lot slower than expected. Also, memory bugs such as doubling freeing or accessing unallocated memory can corrupt data or cause crashes, and memory leaks can build up over time to the point that they consume all available memory and reduce the performance of your clients' applications to a crawl or cause them to crash.
+        </p>
+        <p class="text" id="p0865">
+         These tools can be used to profile your API's memory performance and to detect memory bugs:
+        </p>
+        <div>
+         <ol id="ulist0045">
+          <li class="bulllist" id="p0870">
+           <a id="u0155">
+           </a>
+           ▪
+           <b>
+            UNICOM Systems PurifyPlus
+           </b>
+           : This is a commercial memory debugger that uses binary instrumentation to detect memory access errors in C/C++ programs. After a program run, Purify outputs a report file that can be browsed via a graphical interface. It includes an API that you can access within your programs. Purify is available for Solaris, Linux, AIX, and Windows.
+           <a id="p365">
+           </a>
+          </li>
+          <li>
+           <span aria-label="365" epub:type="pagebreak" id="pagebreak_365" role="doc-pagebreak">
+           </span>
+          </li>
+          <li class="bulllist" id="p0875">
+           <a id="u0160">
+           </a>
+           ▪
+           <b>
+            Valgrind
+           </b>
+           : Valgrind is an open source instrumentation framework for Linux and macOS that began life as a memory profiling tool. However, it has since matured into a more general performance analysis tool. It works by performing binary instrumentation of your executable file and outputs a textual report when your program ends. Several front-end GUIs are available to browse the output file, such as Valkyrie and Alleyoop.
+          </li>
+          <li class="bulllist" id="p0880">
+           <a id="u0165">
+           </a>
+           ▪
+           <b>
+            Perforce TotalView MemoryScape
+           </b>
+           : A commercial memory analysis tool available for Unix and macOS platforms that works without binary instrumentation. It provides a real-time graphical view of your heap memory, including memory use, allocation bounds violations, and leaks. It handles parallel and multithreaded programs and also incorporates a scripting language to perform batch testing.
+          </li>
+          <li class="bulllist" id="p0885">
+           <a id="u0170">
+           </a>
+           ▪
+           <b>
+            Parasoft Insure++
+           </b>
+           : A commercial memory debugger that is available for Windows, Linux, Solaris, AIX, and HP-UX. Insure++ performs instrumentation at the source code level by prepending your compile line with the insure program. You can even set your debugger to stop whenever it detects an error, by adding a breakpoint in
+           <span class="inlinecode">
+            __Insure_trap_error()
+           </span>
+           . Of course, there is a GUI tool to let you browse the detected memory errors.
+          </li>
+          <li class="bulllist" id="p0890">
+           <a id="u0175">
+           </a>
+           ▪
+           <b>
+            Synopsys Coverity
+           </b>
+           : Coverity is a tool different from the others I have listed. It's a static analysis tool, which means that it checks your source code without executing your programs. It records all potential coding errors in a database using a unique ID for each error that is stable across multiple analysis runs. A Web interface is provided to view the results of the static analysis.
+          </li>
+         </ol>
+        </div>
+       </section>
+       <section>
+        <a id="s0105">
+        </a>
+        <h3 class="h2hd" id="cesectitle0115">
+         Multithreading analysis
+        </h3>
+        <p class="textfl" id="p0895">
+         The final aspect of performance that I'll cover here is multithreaded performance. Writing efficient multithreaded code is a very difficult task, but luckily there are various tools out there to help you find logical threading errors in your code, such as race conditions or deadlocks, as well as profile the performance of your threaded code to find concurrency bottlenecks:
+        </p>
+        <div>
+         <ol id="ulist0050">
+          <li class="bulllist" id="p0900">
+           <a id="u0180">
+           </a>
+           ▪
+           <b>
+            Intel Inspector
+           </b>
+           : This is a commercial threading analysis tool available for 32-bit and 64-bit Windows and Linux. It can be used to discover logical threading errors, such as potential deadlocks. You can use it as a command-line tool that outputs a textual report, or you can use the accompanying visual GUI that maps potential errors to source code lines.
+          </li>
+          <li class="bulllist" id="p0905">
+           <a id="u0185">
+           </a>
+           ▪
+           <b>
+            Intel VTune
+           </b>
+           : The thread profiler component of VTune lets you visualize your threaded application's behavior by displaying a time line that shows what your threads are doing and how they interact. This lets you determine if you're getting the maximum concurrency from your code. It runs on Windows and Linux.
+          </li>
+          <li class="bulllist" id="p0910">
+           <a id="u0190">
+           </a>
+           ▪
+           <b>
+            Intel Parallel Studio XE
+           </b>
+           : Intel's Parallel Studio provides a suite of tools to support parallel applications on multicore systems, including a utility to identify candidate functions for parallelizing, the Intel Threading Building Blocks, an inspector tool to
+           <a id="p366">
+           </a>
+           detect threading and memory errors, and a performance analysis tool for parallel applications.
+          </li>
+          <li class="bulllist" id="p0915">
+           <a id="u0195">
+           </a>
+           ▪
+           <b>
+            ParaTools ThreadSpotter
+           </b>
+           : Lets you find performance problems in multithreaded and OpenMPI applications on Solaris, Linux, and Windows. It can identify areas where a program is using processor cache memory, and in some cases it can suggest ways to restructure the code to make more effective use of cache memory.
+          </li>
+          <li class="bulllist" id="p0920">
+           <a id="u0200">
+           </a>
+           ▪
+           <b>
+            Helgrind and DRD
+           </b>
+           : Helgrind and DRD are both modules of the open source Valgrind instrumentation framework. They can be used to detect synchronization errors in pthreads-based applications, including misuses of the pthreads API, deadlocks, and race conditions. They can be used on Linux and macOS.
+          </li>
+         </ol>
+        </div>
+       </section>
+      </section>
+     </section>
+    </section>
+   </div>
+  </div>
+ </body>
+</html>

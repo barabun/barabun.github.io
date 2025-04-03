@@ -1,0 +1,1186 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html>
+<html epub:prefix="z3998: http://www.daisy.org/z3998/2012/vocab/structure/#" lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+ <head>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   13: Objective-C and Swift
+  </title>
+ </head>
+ <body>
+  <div class="navigation">
+   <a class="nav-button" href="chapter_021.html">
+    ← Previous
+   </a>
+   <a class="nav-button" href="index.html">
+    Table of Contents
+   </a>
+   <a class="nav-button" href="chapter_023.html">
+    Next →
+   </a>
+  </div>
+  <div class="chapter-content">
+   <div id="sbo-rt-content">
+    <span aria-label="487" epub:type="pagebreak" id="pagebreak_487" role="doc-pagebreak">
+    </span>
+    <section epub:type="chapter" id="CH0013" role="doc-chapter" xmlns:epub="http://www.idpf.org/2007/ops">
+     <h1 class="chaptitle" epub:type="title" id="B9780443222191000131">
+      13: Objective-C and Swift
+     </h1>
+     <section epub:type="preamble">
+      <a id="abs0010">
+      </a>
+      <div class="abstract">
+       <h2 class="h1hd" id="cesectitle0010">
+        Abstract
+       </h2>
+       <div id="abssec0010">
+        <p class="abspara" id="abspara0010">
+         Objective-C was designed as an alternate way to add object-oriented concepts to the C programming language. There's also a variant of the language called Objective-C++, which combines the syntax of C++ and Objective-C. This chapter starts with a review of how interface design differs between C++ and Objective-C. Then it shows how C++ and Objective-C++ code can interoperate effectively, including how to use Objective-C behind a C++ application programming interface (API) and how to use C++ behind an Objective-C API. Finally, the Objective-C language has been superseded by the Swift programming language, so the chapter also covers how to call C++ code from behind a Swift API.
+        </p>
+       </div>
+      </div>
+     </section>
+     <section>
+      <h3 class="h2hd" id="cesectitle0015">
+       Keywords
+      </h3>
+      <div class="keywords">
+       Category; Data hiding; Foundation; Implementation; Interface; Objective-C; Optional; Swift
+      </div>
+     </section>
+     <section>
+      <p class="textfl" id="p0010">
+       Up to this chapter, I've focused on general aspects of application programming interface (API) design that could be applicable to any C++ project. Having covered the standard API design pipeline, the remaining chapters in this book deal with more specialized topics, such as integrating with other programming languages and extensibility via plugins. Although not all APIs need to be concerned with these topics, I felt that a comprehensive book on C++ API design should include coverage of these advanced topics. In this chapter, I will focus on interoperability with the Objective-C and Swift programming languages.
+      </p>
+      <p class="text" id="p0015">
+       The Objective-C language was originally developed by Brad Cox and Tom Love in the 1980s. The language was adopted by NeXT, Inc., the company founded by Steve Jobs after he left Apple in 1985. NeXT eventually acquired the trademark to Objective-C before it was itself acquired by Apple in 1996. Since that time, Objective-C has become the standard programming language for developing iOS and macOS applications, at least until the release of Swift in 2014.
+      </p>
+      <p class="text" id="p0020">
+       Objective-C is essentially an alternate approach to adding object-oriented features to the C programming language, influenced by the message-passing features of the Smalltalk language. However, there's a variant of the language called Objective-C++ that combines the syntax of C++ and Objective-C. As such, these two languages are closely linked, and given the prominence of the language as a vehicle for producing apps for Apple's App Store, I think there's value in looking at how a C++ API can interoperate with Objective-C.
+      </p>
+      <p class="text" id="p0025">
+       I'll begin by briefly comparing the language features of C++ and Objective-C. This is not meant to be an exhaustive review, but it is sufficient for us to be able to discuss the API design implications. For a more complete introduction to the language, see (
+       <a href="../B9780443222191160015/References_583-587_B9780443222191160015.xhtml#bib50" id="bib_50">
+        Kochan, 2013
+       </a>
+       ). After setting this context, I'll look at how Objective-C code can be hidden behind a pure C++ API. I'll then look at how a C++ API can be exposed to Objective-C. And finally, I'll look at how a C++ API can be exposed through Objective-C to Swift, the newest programming language for developing applications on Apple's ecosystem of platforms.
+      </p>
+      <section>
+       <a id="s0010">
+       </a>
+       <h2 class="h1hd" id="cesectitle0020">
+        Interface design in C++ and Objective-C
+       </h2>
+       <p class="textfl" id="p0030">
+        Because C++ and Objective-C are both founded on C, they share a lot of common concepts, such as header files, preprocessor directives, typedefs, and free function calls. Header files in Objective-C follow the same C convention of using an
+        <span class="inlinecode">
+         .h
+        </span>
+        suffix, whereas the implementation files use an
+        <span class="inlinecode">
+         .m
+        </span>
+        suffix for Objective-C files and
+        <span class="inlinecode">
+         .mm
+        </span>
+        for Objective-C++ files.
+        <a id="p488">
+        </a>
+       </p>
+       <div>
+        <span aria-label="488" epub:type="pagebreak" id="pagebreak_488" role="doc-pagebreak">
+        </span>
+       </div>
+       <p class="text" id="p0035">
+        You're already familiar with C++'s object-oriented concepts at this point, but for the purposes of comparison, let's consider a simple class that holds the components of a person's name along with a function to return a formatted version of that name, as part of a larger address book library:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0010">
+          <img alt="image" height="1413" src="../../IMAGES/B9780443222191000131/main.assets/u13-01-9780443222191.jpg" width="1665"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0040">
+        An equivalent API in Objective-C might look like:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0015">
+          <img alt="image" height="660" src="../../IMAGES/B9780443222191000131/main.assets/u13-02-9780443222191.jpg" width="1732"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0045">
+        You'll notice a few differences about how interfaces are defined in Objective-C versus C++, such as:
+       </p>
+       <div>
+        <ul class="ce_list" id="olist0010">
+         <li class="numlist" id="p0050">
+          <a id="o0010">
+          </a>
+          1. Classes are declared between the
+          <span class="inlinecode">
+           @interface
+          </span>
+          and
+          <span class="inlinecode">
+           @end
+          </span>
+          keywords in header files (and optionally also in the
+          <span class="inlinecode">
+           .m
+          </span>
+          files for private extensions to the interface, as we'll discuss later). Also note that Objective-C classes typically inherit from the
+          <span class="inlinecode">
+           NSObject
+          </span>
+          class or one of its subclasses.
+         </li>
+         <li class="numlist" id="p0055">
+          <a id="o0015">
+          </a>
+          2. Objective-C offers the concept of a property to provide access to a piece of data. The compiler can automatically generate getter and setter functions for these
+          <a id="p489">
+          </a>
+          <span aria-label="489" epub:type="pagebreak" id="pagebreak_489" role="doc-pagebreak">
+          </span>
+          properties, unlike C++, in which you must manually write these. We could have also defined specific
+          <span class="inlinecode">
+           getGivenName
+          </span>
+          and
+          <span class="inlinecode">
+           setGivenName
+          </span>
+          functions, but it's more idiomatic to use properties for data members in Objective-C.
+         </li>
+         <li class="numlist" id="p0060">
+          <a id="o0020">
+          </a>
+          3. Objective-C doesn't have a concept of namespaces. As such, you must ensure that all of your public symbols have a unique prefix; otherwise they could conflict with another system or third-party library. The convention in Objective-C is to use two or three capital letters, such as CA for Core Animation, UI for UIKit, and NS for core Foundation classes. (The NS prefix comes from the name of the NeXTSTEP operating system.)
+         </li>
+         <li class="numlist" id="p0065">
+          <a id="o0025">
+          </a>
+          4. All objects in Objective-C are created and passed around as pointers (or const pointers), such as
+          <span class="inlinecode">
+           NSString ∗
+          </span>
+          . Objective-C objects are always allocated on the heap, never statically on the stack. There is also no concept of references in the Objective-C language.
+         </li>
+         <li class="numlist" id="p0070">
+          <a id="o0030">
+          </a>
+          5. Although Objective-C supports the standard C
+          <span class="inlinecode">
+           #include
+          </span>
+          preprocessor directive, it also adds a
+          <span class="inlinecode">
+           #import
+          </span>
+          option. This behaves like
+          <span class="inlinecode">
+           #include
+          </span>
+          with the exception that it won't include the same file twice. This means that you don't need to add include guards at the top of your Objective-C header files.
+         </li>
+        </ul>
+       </div>
+      </section>
+      <section>
+       <a id="s0015">
+       </a>
+       <h2 class="h1hd" id="cesectitle0025">
+        Data hiding in Objective-C
+       </h2>
+       <p class="textfl" id="p0075">
+        You may have noticed in the earlier example that the C++ code used the pimpl idiom to hide its data members, but this was not necessary for the Objective-C version. It's worth taking a moment to look at how we can achieve data hiding in Objective-C, because the language offers features different from C++ in this regard.
+       </p>
+       <p class="text" id="p0080">
+        First, the use of properties in Objective-C can simplify access to data members because you can declare the properties in your header file, but the actual data members are defined within the
+        <span class="inlinecode">
+         .m
+        </span>
+        file. This effectively achieves what we're trying to do with the pimpl idiom for C++ code: move the data member definitions out of the header files and into the implementation. For example, continuing our
+        <span class="inlinecode">
+         ADRPerson
+        </span>
+        example from earlier, here is what the associated
+        <span class="inlinecode">
+         .m
+        </span>
+        file might look like:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0020">
+          <img alt="image" height="834" src="../../IMAGES/B9780443222191000131/main.assets/u13-03-9780443222191.jpg" width="1039"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <div id="p0085">
+        It’s also possible to put these data member definitions in the header file inside the
+        <span class="inlinecode">
+         @interface
+        </span>
+        declaration, and you can also use Objective-C's access level keywords such as
+        <a id="p490">
+        </a>
+        <span aria-label="490" epub:type="pagebreak" id="pagebreak_490" role="doc-pagebreak">
+        </span>
+        <span class="inlinecode">
+         @private
+        </span>
+        to hide it from the public API (i.e., you can make the class look similar in form to the C++ version). However, the ability to hide these definitions within the implementation file is a far superior approach and should be preferred.
+       </div>
+       <p class="text" id="p0090">
+        Another aspect of Objective-C that lets you hide information from your public API is based on a feature called categories. A category can be used to add new methods to any class, even if you don't have access to its source code, using this syntax:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0025">
+          <img alt="image" height="313" src="../../IMAGES/B9780443222191000131/main.assets/u13-04-9780443222191.jpg" width="1247"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0095">
+        You can define multiple categories to extend any given object, in which each category is given a unique name inside parentheses, such as
+        <span class="inlinecode">
+         CategoryName
+        </span>
+        in the previous example. One of the restrictions of categories is that you can't add new properties to the class, only functions (i.e., you can't change the size of the object after its initial declaration).
+       </p>
+       <p class="text" id="p0100">
+        Although categories can be a powerful feature that let you add your own specializations to system and third-party objects, there is a variant of this feature called class extensions that is more relevant to our data hiding focus here. Class extensions can only be added to classes where you have the source code, but as a result they let you add new properties to a class in addition to new functions. The syntax is similar to declaring a category, except that you don't provide a name. For this reason, class extensions are sometimes also called anonymous categories.
+       </p>
+       <p class="text" id="p0105">
+        For example, let's look at our
+        <span class="inlinecode">
+         adrperson.m
+        </span>
+        implementation file again and include a class extension that adds a new data member and function to the
+        <span class="inlinecode">
+         ADRPerson
+        </span>
+        class, completely hidden from the header file:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0030">
+          <img alt="image" height="1297" src="../../IMAGES/B9780443222191000131/main.assets/u13-05-9780443222191.jpg" width="1039"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="textfl">
+        <a id="p491">
+        </a>
+       </p>
+       <div>
+        <span aria-label="491" epub:type="pagebreak" id="pagebreak_491" role="doc-pagebreak">
+        </span>
+       </div>
+       <p class="text" id="p0110">
+        In this example, we've used a class extension to add a new
+        <span class="inlinecode">
+         cachedFullName
+        </span>
+        data member to the class as well as a new
+        <span class="inlinecode">
+         generateFullName
+        </span>
+        function. Both are completely hidden from the public API declarations in the header file.
+       </p>
+       <p class="text" id="p0115">
+        One limitation of the previous example is that the hidden data and function are visible only within the one
+        <span class="inlinecode">
+         .m
+        </span>
+        file where they are declared. However, if you need to refer to these hidden members in another
+        <span class="inlinecode">
+         .m
+        </span>
+        file you can do so by moving the declarations into a private header, such as an
+        <span class="inlinecode">
+         adrperson_private.h
+        </span>
+        that can be included by your other source files but not distributed with the public headers for your API. For example, the private header might look like:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0035">
+          <img alt="image" height="544" src="../../IMAGES/B9780443222191000131/main.assets/u13-06-9780443222191.jpg" width="1004"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0120">
+        And then the
+        <span class="inlinecode">
+         .m
+        </span>
+        file would look like:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0040">
+          <img alt="image" height="834" src="../../IMAGES/B9780443222191000131/main.assets/u13-07-9780443222191.jpg" width="1039"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+      </section>
+      <section>
+       <a id="s0020">
+       </a>
+       <h2 class="h1hd" id="cesectitle0030">
+        Objective-C behind a C++ API
+       </h2>
+       <p class="textfl" id="p0125">
+        Now that I've introduced some of the basic concepts of Objective-C, let's discuss the various ways that C++ and Objective-C can be comingled.
+       </p>
+       <p class="text" id="p0130">
+        One simple way is to maintain a pure C++ API and to leverage Objective-C in your implementation code. This is possible because both languages use header files and an Objective-C++ compiler can compile a header that contains C++ syntax.
+       </p>
+       <p class="text" id="p0135">
+        There are several reasons why you might want to do this. One could be that you want your library to take advantage of certain functionality that's included with Objective-C's
+        <a id="p492">
+        </a>
+        <span aria-label="492" epub:type="pagebreak" id="pagebreak_492" role="doc-pagebreak">
+        </span>
+        Foundation library. Another reason might be to integrate with the native logging and performance measurement features for Apple platforms, such as
+        <span class="inlinecode">
+         NSLog
+        </span>
+        ,
+        <span class="inlinecode">
+         os_log
+        </span>
+        , and
+        <span class="inlinecode">
+         os_signpost
+        </span>
+        .
+       </p>
+       <p class="text" id="p0140">
+        Let's look at an example. The following header file is pure C++ and provides an object for calculating and holding a globally unique identifier (GUID) such as
+        <span class="inlinecode">
+         3a446875-61a5-42af-509c-ca0067405be4
+        </span>
+        . We'll keep this example simple by using a private data member in the header, although of course you could use the pimpl idiom to improve data hiding:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0045">
+          <img alt="image" height="950" src="../../IMAGES/B9780443222191000131/main.assets/u13-08-9780443222191.jpg" width="1282"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0145">
+        We may decide that we want to use Objective-C's
+        <span class="inlinecode">
+         NSUUID
+        </span>
+        object to generate the GUID string. In that case, we could create an
+        <span class="inlinecode">
+         .mm
+        </span>
+        file (instead of a
+        <span class="inlinecode">
+         .cpp
+        </span>
+        ) with the implementation for this class and compile it with an Objective-C++ compiler. The
+        <span class="inlinecode">
+         .mm
+        </span>
+        file might look like:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0050">
+          <img alt="image" height="1297" src="../../IMAGES/B9780443222191000131/main.assets/u13-09-9780443222191.jpg" width="1663"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="textfl">
+        <a id="p493">
+        </a>
+       </p>
+       <div>
+        <span aria-label="493" epub:type="pagebreak" id="pagebreak_493" role="doc-pagebreak">
+        </span>
+       </div>
+       <p class="text" id="p0150">
+        Most of the code in this file is standard C++, except for the
+        <span class="inlinecode">
+         #import
+        </span>
+        statement and the contents of the
+        <span class="inlinecode">
+         Reset()
+        </span>
+        function. The latter code uses the
+        <span class="inlinecode">
+         NSUUID
+        </span>
+        object from the Objective-C Foundation library and converts the
+        <span class="inlinecode">
+         NSString ∗
+        </span>
+        representation to an
+        <span class="inlinecode">
+         std::string
+        </span>
+        . That way, no knowledge of the fact that we've used Objective-C is leaked into the header file. However, your clients would now need to link their projects against the Objective-C runtime and the Foundation framework to resolve these symbols.
+       </p>
+       <p class="text" id="p0155">
+        The following command line shows how to compile and link a simple
+        <span class="inlinecode">
+         main.mm
+        </span>
+        Objective-C++ program. The
+        <span class="inlinecode">
+         -lobjc
+        </span>
+        flag to pull in the Objective-C runtime may be optional with some compilers:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0055">
+          <img alt="image" height="81" src="../../IMAGES/B9780443222191000131/main.assets/u13-10-9780443222191.jpg" width="1700"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0160">
+        Let's say that you wanted to maintain the flexibility to have your project be compiled by a regular C++ compiler for clients who don't have access to an Objective-C++ build environment. We can achieve this by checking the
+        <span class="inlinecode">
+         __OBJC__
+        </span>
+        compiler define that most Objective-C compilers set (gcc and clang both set this define):
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0060">
+          <img alt="image" height="1586" src="../../IMAGES/B9780443222191000131/main.assets/u13-11-9780443222191.jpg" width="1663"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0165">
+        This comingling of Objective-C and C++ is possible because Objective-C++ is essentially just a union of the two syntaxes in the same file. However, they are still essentially two distinct languages, and so there is a limit to how much you can mix the
+        <a id="p494">
+        </a>
+        <span aria-label="494" epub:type="pagebreak" id="pagebreak_494" role="doc-pagebreak">
+        </span>
+        features from each language. The following list offers some guidance on what you can and cannot do with Objective-C++:
+       </p>
+       <div>
+        <ul class="ce_list" id="ulist0010">
+         <li class="numlist" id="p0170">
+          <a id="u0010">
+          </a>
+          - Memory management is handled natively for each language. For example, C++ uses its
+          <span class="inlinecode">
+           new
+          </span>
+          and
+          <span class="inlinecode">
+           delete
+          </span>
+          syntax and Objective-C uses
+          <span class="inlinecode">
+           retain
+          </span>
+          and
+          <span class="inlinecode">
+           release
+          </span>
+          , or more likely these days Objective-C will use Automatic Reference Counting to eliminate the need to manage retain counts manually.
+         </li>
+         <li class="numlist" id="p0175">
+          <a id="u0015">
+          </a>
+          - A C++ class cannot derive from an Objective-C one, and vice versa. Also C++ supports multiple inheritance whereas Objective-C uses single inheritance, and whereas there are similar member access level concepts, they use different syntax (e.g.,
+          <span class="inlinecode">
+           private
+          </span>
+          in C++ versus
+          <span class="inlinecode">
+           @private
+          </span>
+          in Objective-C).
+         </li>
+         <li class="numlist" id="p0180">
+          <a id="u0020">
+          </a>
+          - You can pass C++ objects as Objective-C function arguments, and vice versa. For example, you can pass
+          <span class="inlinecode">
+           std::string
+          </span>
+          to an Objective-C function and you can pass
+          <span class="inlinecode">
+           NSString ∗
+          </span>
+          to a C++ function. Objective-C objects are always created on the heap and passed around as pointers.
+         </li>
+         <li class="numlist" id="p0185">
+          <a id="u0025">
+          </a>
+          - C++ objects can hold Objective-C objects because they are essentially just pointers. But Objective-C can hold C++ objects as data members only if they have a default constructor and no virtual functions.
+         </li>
+         <li class="numlist" id="p0190">
+          <a id="u0030">
+          </a>
+          - C++ uses the type
+          <span class="inlinecode">
+           bool
+          </span>
+          with values
+          <span class="inlinecode">
+           true
+          </span>
+          and
+          <span class="inlinecode">
+           false
+          </span>
+          whereas Objective-C uses
+          <span class="inlinecode">
+           BOOL
+          </span>
+          with values
+          <span class="inlinecode">
+           YES
+          </span>
+          and
+          <span class="inlinecode">
+           NO
+          </span>
+          . Similarly, C++ uses
+          <span class="inlinecode">
+           nullptr
+          </span>
+          whereas Objective-C uses
+          <span class="inlinecode">
+           nil
+          </span>
+          . These are each defined slightly differently, so it's good practice to pair the right type with the right language.
+         </li>
+         <li class="numlist" id="p0195">
+          <a id="u0035">
+          </a>
+          - C++ namespaces can't be intermingled with Objective-C (i.e., Objective-C declarations cannot appear inside a C++ namespace or include the declaration of a namespace).
+         </li>
+        </ul>
+       </div>
+      </section>
+      <section>
+       <a id="s0025">
+       </a>
+       <h2 class="h1hd" id="cesectitle0035">
+        C++ behind an Objective-C API
+       </h2>
+       <p class="textfl" id="p0200">
+        The previous section considered how to use Objective-C while hiding it behind a C++ API. In this section, I'll look at how you can leverage a C++ API behind an Objective-C one. You may want to do this, for example, if you want to offer a more standard API experience for building applications on Apple platforms.
+       </p>
+       <p class="text" id="p0205">
+        Generally, using this approach you will want to use only Objective-C in your header files and not intermingle C++ syntax. That way you're not forcing your Objective-C clients to also understand C++ code. Essentially, the use of Objective-C++ lets you offer a plain Objective-C API while mixing Objective-C and C++ in your implementation (
+        <span class="inlinecode">
+         .mm
+        </span>
+        ) files.
+       </p>
+       <p class="text" id="p0210">
+        Let's take our address book example from earlier. The pure Objective-C version of the API looked like:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0065">
+          <img alt="image" height="660" src="../../IMAGES/B9780443222191000131/main.assets/u13-12-9780443222191.jpg" width="1732"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="textfl">
+        <a id="p495">
+        </a>
+       </p>
+       <div>
+        <span aria-label="495" epub:type="pagebreak" id="pagebreak_495" role="doc-pagebreak">
+        </span>
+       </div>
+       <p class="text" id="p0215">
+        Now, let's say that we want to implement this Objective-C API using our C++ library. In this case, the Objective-C interface will just be a thin layer on top of the underlying C++ API. So the implementation will store an instance of the C++ object and all Objective-C getters and setters will call through to their counterparts in the C++ interface:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0070">
+          <img alt="image" height="2369" src="../../IMAGES/B9780443222191000131/main.assets/u13-13-9780443222191.jpg" width="1684"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="textfl">
+        <a id="p496">
+        </a>
+       </p>
+       <div>
+        <span aria-label="496" epub:type="pagebreak" id="pagebreak_496" role="doc-pagebreak">
+        </span>
+       </div>
+       <p class="text" id="p0220">
+        We explicitly check for
+        <span class="inlinecode">
+         nil
+        </span>
+        <span class="inlinecode">
+         NSString
+        </span>
+        pointers in the setter functions; otherwise our code will crash when trying to convert the
+        <span class="inlinecode">
+         NSString ∗
+        </span>
+        to a
+        <span class="inlinecode">
+         std::string
+        </span>
+        .
+        <span class="inlinecode">
+         [nil UTF8String]
+        </span>
+        is not a problem because Objective-C specifically allows passing a message to a
+        <span class="inlinecode">
+         nil
+        </span>
+        object, returning a
+        <span class="inlinecode">
+         nil
+        </span>
+        result.
+       </p>
+       <p class="text" id="p0225">
+        In essence, the Objective-C layer is a facade pattern, in which we're hiding one API behind another. In this case, we're also using a language barrier to hide our implementation API details further: if Objective-C developers want to delve into our implementation details, they will have to understand C++ code as well. Moreover we're hiding the existence of the
+        <span class="inlinecode">
+         address::Person
+        </span>
+        C++ object from the Objective-C API by using a class extension.
+       </p>
+       <p class="text" id="p0230">
+        You may have noticed in the previous example that I didn't create an
+        <span class="inlinecode">
+         init
+        </span>
+        function (equivalent to a C++ constructor) to initialize our
+        <span class="inlinecode">
+         address::Person
+        </span>
+        C++ object. Instead, I relied on the behavior of the Objective-C compiler to initialize all member variables automatically to
+        <span class="inlinecode">
+         nil
+        </span>
+        or 0, or in the case of a C++ object, to call its default constructor.
+       </p>
+       <p class="text" id="p0235">
+        However, we can extend this example to demonstrate using an explicit
+        <span class="inlinecode">
+         init
+        </span>
+        and
+        <span class="inlinecode">
+         dealloc
+        </span>
+        function, to allocate and deallocate any necessary resources. In this example, I'll switch to allocating the
+        <span class="inlinecode">
+         address::Person
+        </span>
+        object on the heap to show how to delete the C++ object when the Objective-C object is destroyed:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0075">
+          <img alt="image" height="1554" src="../../IMAGES/B9780443222191000131/main.assets/u13-14-9780443222191.jpg" width="1386"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="textfl">
+        <a id="p497">
+        </a>
+       </p>
+       <div>
+        <span aria-label="497" epub:type="pagebreak" id="pagebreak_497" role="doc-pagebreak">
+        </span>
+       </div>
+      </section>
+      <section>
+       <a id="s0030">
+       </a>
+       <h2 class="h1hd" id="cesectitle0040">
+        C++ behind a Swift API
+       </h2>
+       <p class="textfl" id="p0240">
+        Apple introduced the Swift programming language in 2014 as a replacement for Objective-C. Since that time, Swift has risen in popularity as the way to write code for platforms such as iOS and macOS. Interoperability with Objective-C was one of the core design principles of Swift. As such, this also provides a path for interoperability between Swift and C++.
+       </p>
+       <p class="text" id="p0245">
+        In fact, if you already have an Objective-C layer for your C++ API, then you're most of the way toward also supporting Swift. For example, taking the Objective-C address book example from the previous section, you can access this directly from within Swift simply by importing the library and accessing the object, such as:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0080">
+          <img alt="image" height="313" src="../../IMAGES/B9780443222191000131/main.assets/u13-15-9780443222191.jpg" width="1352"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0250">
+        However, there are several things you can do to augment your Objective-C APIs to make them more idiomatic when accessed from Swift. I'll discuss a number of these tactics in the remainder of this chapter.
+       </p>
+       <p class="text" id="p0255">
+        Swift introduced the concept of optionals, similar to
+        <span class="inlinecode">
+         std::optional
+        </span>
+        in C++17, in which a variable can hold a value or no value (i.e.,
+        <span class="inlinecode">
+         nil)
+        </span>
+        . Any variable can be defined as an optional by adding a “?” suffix to the type name. For example,
+        <span class="inlinecode">
+         String?
+        </span>
+        specifies a variable that can hold a string value or
+        <span class="inlinecode">
+         nil
+        </span>
+        . When defining the various data types in your Objective-C interface, you need to declare whether they are optional. This is because all objects in Objective-C are pointers, but the compiler doesn't have enough information to know whether the Swift form of the object can hold
+        <span class="inlinecode">
+         nil
+        </span>
+        (e.g., should
+        <span class="inlinecode">
+         NSString ∗
+        </span>
+        in Objective-C map to
+        <span class="inlinecode">
+         String
+        </span>
+        or
+        <span class="inlinecode">
+         String?
+        </span>
+        In Swift?).
+       </p>
+       <p class="text" id="p0260">
+        The concept of optionals in Swift maps to that of nullability in Objective-C (i.e., the use of the
+        <span class="inlinecode">
+         _Nullable
+        </span>
+        and
+        <span class="inlinecode">
+         _Nonnull
+        </span>
+        annotations for data type declarations), as shown here:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0085">
+          <img alt="image" height="81" src="../../IMAGES/B9780443222191000131/main.assets/u13-16-9780443222191.jpg" width="2114"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0265">
+        In this example, the
+        <span class="inlinecode">
+         name
+        </span>
+        parameter is defined as
+        <span class="inlinecode">
+         _Nonnull
+        </span>
+        , which will map to a nonoptional
+        <span class="inlinecode">
+         String
+        </span>
+        in Swift, whereas the return type is defined as
+        <span class="inlinecode">
+         _Nullable
+        </span>
+        , which maps to an optional
+        <span class="inlinecode">
+         ADRPerson?
+        </span>
+        in Swift. At a semantic level, this is stating that we require a string to work with, but we may not find an
+        <span class="inlinecode">
+         ADRPerson
+        </span>
+        object that matches that name so the result could be
+        <span class="inlinecode">
+         nil
+        </span>
+        .
+        <a id="p498">
+        </a>
+       </p>
+       <div>
+        <span aria-label="498" epub:type="pagebreak" id="pagebreak_498" role="doc-pagebreak">
+        </span>
+       </div>
+       <p class="text" id="p0270">
+        Rather than annotate every data type in your Objective-C API, it's easier to declare a default for the entire header file and then provide only annotations for cases that differ from that default. For example, you can use the
+        <span class="inlinecode">
+         NS_ASSUME_NONNULL_BEGIN
+        </span>
+        and
+        <span class="inlinecode">
+         NS_ASSUME_NONNULL_END
+        </span>
+        macros to state that all Objective-C objects between this pair should be assumed to be nonnull:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0090">
+          <img alt="image" height="892" src="../../IMAGES/B9780443222191000131/main.assets/u13-17-9780443222191.jpg" width="1732"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0275">
+        In this case, all of the
+        <span class="inlinecode">
+         NSString ∗
+        </span>
+        Objective-C objects will map to nonoptional
+        <span class="inlinecode">
+         String
+        </span>
+        types in Swift. We could then use the
+        <span class="inlinecode">
+         _Nullable
+        </span>
+        keyword to annotate specific declarations where we do want to support the use of an optional.
+       </p>
+       <p class="text" id="p0280">
+        Another feature of Swift is support for named parameters. That is, it's possible to provide a name for each parameter of a Swift function and for the caller to specify that name when the function is called. For example, given this Swift function signature:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0095">
+          <img alt="image" height="81" src="../../IMAGES/B9780443222191000131/main.assets/u13-18-9780443222191.jpg" width="1874"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0285">
+        you would write code to call this function as:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0100">
+          <img alt="image" height="81" src="../../IMAGES/B9780443222191000131/main.assets/u13-19-9780443222191.jpg" width="1732"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0290">
+        Objective-C uses a scheme known as interleaved parameters, in which the name of the function is interleaved with the arguments. So the previous Swift function might be represented in Objective-C syntax as:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0105">
+          <img alt="image" height="81" src="../../IMAGES/B9780443222191000131/main.assets/u13-20-9780443222191.jpg" width="2391"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0295">
+        Because of these different parameter schemes, it's often necessary to provide additional context for how to map the interleaved names in Objective-C to named
+        <a id="p499">
+        </a>
+        <span aria-label="499" epub:type="pagebreak" id="pagebreak_499" role="doc-pagebreak">
+        </span>
+        parameters in Swift. This can be done by using the
+        <span class="inlinecode">
+         NS_SWIFT_NAME
+        </span>
+        macro at the end of the Objective-C function declaration. Here are some examples:
+       </p>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0110">
+          <img alt="image" height="313" src="../../IMAGES/B9780443222191000131/main.assets/u13-21-9780443222191.jpg" width="2356"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+       <p class="text" id="p0300">
+        In the first example, I've converted the interleaved function and parameter name of
+        <span class="inlinecode">
+         findGiven
+        </span>
+        in the Objective-C case instead to use a function name of just
+        <span class="inlinecode">
+         find
+        </span>
+        with an initial named parameter of
+        <span class="inlinecode">
+         given
+        </span>
+        in the Swift case. In the second example, I've renamed the Objective-C function
+        <span class="inlinecode">
+         getFullName
+        </span>
+        to be just
+        <span class="inlinecode">
+         fullName
+        </span>
+        in Swift, to be more idiomatic.
+       </p>
+       <p class="text" id="p0305">
+        The final topic I'll cover in this section is controlling how your Objective-C types are bridged to Swift types. By default, an
+        <span class="inlinecode">
+         NSString ∗
+        </span>
+        in Objective-C will be bridged to a
+        <span class="inlinecode">
+         String
+        </span>
+        in Swift, and an
+        <span class="inlinecode">
+         id
+        </span>
+        will be bridged to
+        <span class="inlinecode">
+         Any
+        </span>
+        . However, the various container classes provided by Objective-C can hold any objects that are derived from
+        <span class="inlinecode">
+         NSObject
+        </span>
+        . So, unlike in C++ where you would declare the type of the elements in a vector, such as
+        <span class="inlinecode">
+         std::vector&lt;std::string&gt;,
+        </span>
+        in Objective-C you would only declare that you're using an
+        <span class="inlinecode">
+         NSArray ∗
+        </span>
+        .
+       </p>
+       <p class="text" id="p0310">
+        What this means for bridging to Swift types is that the type of the container elements cannot be inferred by default, so they will be assumed to be
+        <span class="inlinecode">
+         Any
+        </span>
+        or
+        <span class="inlinecode">
+         AnyHashable
+        </span>
+        .
+        <a href="#t0010" id="Bt0010">
+         Table 13.1
+        </a>
+        shows the default mappings of Objective-C types to Swift (the mappings were different before Swift 3, but I'll not worry about that here because Swift 3 came out in 2016).
+       </p>
+       <p class="text" id="p0315">
+        It's possible to provide annotations for your Objective-C data types to indicate what type of object they hold. This information will then be used to bridge to a more specific type in Swift. This is done by providing typing information in angled brackets, as shown in
+        <a href="#t0015" id="Bt0015">
+         Table 13.2
+        </a>
+        .
+       </p>
+       <p class="text" id="p0320">
+        Putting everything together in this section, you've seen how you can make a C++ API available in Swift by going through an Objective-C API, and how you can refine the Swift representation of that API by controlling the use of optionals, the naming of functions and parameters, and the bridging of Objective-C types to Swift. Given all of this, our initial
+        <span class="inlinecode">
+         ADRPerson
+        </span>
+        object can now be expressed as follows to provide idiomatic interfaces in both Objective-C and Swift:
+        <a id="p500">
+        </a>
+        <span aria-label="500" epub:type="pagebreak" id="pagebreak_500" role="doc-pagebreak">
+        </span>
+       </p>
+       <div class="pageavoid">
+        <p class="tnum">
+         <a href="#Bt0010">
+          Table 13.1
+         </a>
+        </p>
+        <table class="tbody" id="t0010">
+         <caption class="ttitle">
+          <a id="tspara0010">
+          </a>
+          A partial mapping of Objective-C types to Swift types.
+         </caption>
+         <thead>
+          <tr>
+           <th class="tcolhd1" scope="col">
+            Objective-C
+           </th>
+           <th class="tcolhd1" scope="col">
+            Swift
+           </th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <th class="tb" scope="row">
+            <span class="inlinecode">
+             Id
+            </span>
+           </th>
+           <td class="tb">
+            <span class="inlinecode">
+             Any
+            </span>
+           </td>
+          </tr>
+          <tr>
+           <th class="tb" scope="row">
+            <span class="inlinecode">
+             NSArray ∗
+            </span>
+           </th>
+           <td class="tb">
+            <span class="inlinecode">
+             [Any]
+            </span>
+           </td>
+          </tr>
+          <tr>
+           <th class="tb" scope="row">
+            <span class="inlinecode">
+             NSDictionary ∗
+            </span>
+           </th>
+           <td class="tb">
+            <span class="inlinecode">
+             [AnyHashable: Any]
+            </span>
+           </td>
+          </tr>
+          <tr>
+           <th class="tb" scope="row">
+            <span class="inlinecode">
+             NSSet ∗
+            </span>
+           </th>
+           <td class="tb">
+            <span class="inlinecode">
+             Set&lt;AnyHashable&gt;
+            </span>
+           </td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+       <div class="pageavoid">
+        <p class="tnum">
+         <a href="#Bt0015">
+          Table 13.2
+         </a>
+        </p>
+        <table class="tbody" id="t0015">
+         <caption class="ttitle">
+          <a id="tspara0015">
+          </a>
+          Example mappings of Objective-C container classes to Swift.
+         </caption>
+         <thead>
+          <tr>
+           <th class="tcolhd1" scope="col">
+            Objective-C
+           </th>
+           <th class="tcolhd1" scope="col">
+            Swift
+           </th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <th class="tb" scope="row">
+            <span class="inlinecode">
+             NSArray&lt;NSString ∗&gt; ∗
+            </span>
+           </th>
+           <td class="tb">
+            <span class="inlinecode">
+             [String]
+            </span>
+           </td>
+          </tr>
+          <tr>
+           <th class="tb" scope="row">
+            <span class="inlinecode">
+             NSDictionary&lt;NSString ∗, id&gt; ∗
+            </span>
+           </th>
+           <td class="tb">
+            <span class="inlinecode">
+             [String: Any]
+            </span>
+           </td>
+          </tr>
+          <tr>
+           <th class="tb" scope="row">
+            <span class="inlinecode">
+             NSSet&lt;NSString ∗&gt; ∗
+            </span>
+           </th>
+           <td class="tb">
+            <span class="inlinecode">
+             Set&lt;String&gt;
+            </span>
+           </td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+       <div>
+        <div class="pageavoid">
+         <figure class="fig" id="f0115">
+          <img alt="image" height="950" src="../../IMAGES/B9780443222191000131/main.assets/u13-22-9780443222191.jpg" width="1732"/>
+          <figcaption class="figleg">
+          </figcaption>
+         </figure>
+        </div>
+       </div>
+      </section>
+     </section>
+    </section>
+   </div>
+  </div>
+ </body>
+</html>

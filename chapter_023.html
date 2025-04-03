@@ -1,0 +1,2041 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html>
+<html epub:prefix="z3998: http://www.daisy.org/z3998/2012/vocab/structure/#" lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+ <head>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   14: Scripting
+  </title>
+ </head>
+ <body>
+  <div class="navigation">
+   <a class="nav-button" href="chapter_022.html">
+    ← Previous
+   </a>
+   <a class="nav-button" href="index.html">
+    Table of Contents
+   </a>
+   <a class="nav-button" href="chapter_024.html">
+    Next →
+   </a>
+  </div>
+  <div class="chapter-content">
+   <div id="sbo-rt-content">
+    <span aria-label="501" epub:type="pagebreak" id="pagebreak_501" role="doc-pagebreak">
+    </span>
+    <section epub:type="chapter" id="CH0014" role="doc-chapter" xmlns:epub="http://www.idpf.org/2007/ops">
+     <h1 class="chaptitle" epub:type="title" id="B978044322219100012X">
+      14: Scripting
+     </h1>
+     <section epub:type="preamble">
+      <a id="abs0010">
+      </a>
+      <div class="abstract">
+       <h2 class="h1hd" id="cesectitle0010">
+        Abstract
+       </h2>
+       <div id="abssec0010">
+        <p class="abspara" id="abspara0010">
+         This advanced topic covers how to expose your C++ application programming interface through a scripting language such as Python, Ruby, Lua, Tcl, or Perl. The reasons you may want to do this are discussed, as well as the issues that you'll face in doing so, such as cross-language compatibility issues. A range of script binding technologies are then presented, including Boost Python, Simplified Wrapper and Interface Generator (SWIG), Python-SIP, Component Object Model Automation, and Common Object Request Broker Architecture. The remainder of the chapter provides practical instruction on how to add Python bindings using Boost Python and Ruby bindings using SWIG. In each case, specifics are covered, such as how to expose a class hierarchy, define constructors, support inheritance, use language specific features such as properties in Python, and achieve cross-language polymorphism: that is, how to access members of derived classes from C++ that are defined in the scripting language.
+        </p>
+       </div>
+      </div>
+     </section>
+     <section>
+      <h3 class="h2hd" id="cesectitle0015">
+       Keywords
+      </h3>
+      <div class="keywords">
+       Boost python; Embedding; Extending; Language barrier; Ruby; Script binding; Simplified Wrapper and Interface generator (SWIG)
+      </div>
+     </section>
+     <section>
+      <p class="textfl" id="p0010">
+       Continuing the focus from the previous chapter on interoperability with other programming languages, this chapter deals with the topic of scripting (i.e., allowing your C++ application programming interface (API) to be accessed from a scripting language such as Python, Ruby, Lua, Tcl, or Perl). I'll explain why you might want to do this and what some of the issues are that you need to be aware of, and then review some main technologies that let you create bindings for these languages.
+      </p>
+      <p class="text" id="p0015">
+       To make this chapter more practical and instructive, I will take a detailed look at two script binding technologies and show how these can be used to create bindings for two scripting languages. Specifically, I will provide an in-depth treatment for how to create Python bindings for your C++ API using Boost Python, followed by a thorough analysis of how to create Ruby bindings using the Simplified Wrapper and Interface Generator (SWIG). I have chosen to focus on Python and Ruby because these are two of the most popular scripting languages in use, and in terms of binding technologies, Boost Python and SWIG are both freely available open source solutions that provide extensive control over the resulting bindings.
+      </p>
+      <section>
+       <a id="s0010">
+       </a>
+       <hgroup>
+        <h2 class="h1hd" id="cesectitle0020">
+         Adding script bindings
+        </h2>
+        <p class="h2after1" id="cesectitle0025">
+         Extending versus embedding
+        </p>
+       </hgroup>
+       <section>
+        <a id="s0015">
+        </a>
+        <p class="textfl" id="p0020">
+         A script binding provides a way to access a C++ API from a scripting language. This normally involves creating wrapper code for the C++ classes and functions that allow them to be imported into the scripting language using its native module loading features, such as the
+         <span class="inlinecode">
+          import
+         </span>
+         keyword in Python,
+         <span class="inlinecode">
+          require
+         </span>
+         in Ruby, or
+         <span class="inlinecode">
+          use
+         </span>
+         in Perl.
+        </p>
+        <p class="text" id="p0025">
+         There are two main strategies for integrating C++ with a scripting language:
+        </p>
+        <div>
+         <ul class="ce_list" id="olist0010">
+          <li class="numlist" id="p0030">
+           <a id="o0010">
+           </a>
+           1.
+           <b>
+            Extending the language
+           </b>
+           . In this model, the script binding is provided as a module that supplements the functionality of the scripting language. That is, users who write code with the scripting language can use your module in their own programs. Your module will look just like any other module for that language. For example, the expat and md5 modules in the Python standard library are implemented in C, not Python.
+          </li>
+          <li class="numlist" id="p0035">
+           <a id="o0015">
+           </a>
+           2.
+           <b>
+            Embedding within an application
+           </b>
+           . In this case, an end user C++ application embeds a scripting language inside it. Script bindings are then used to let end users write scripts for that specific application that call down into the core functionality of the program. Examples of this include the Autodesk Maya 3D modeling system, which offers Python and Maya Embedded Language scripting, and the Adobe
+           <a id="p502">
+           </a>
+           <span aria-label="502" epub:type="pagebreak" id="pagebreak_502" role="doc-pagebreak">
+           </span>
+           Director multimedia authoring platform, which embeds the Lingo scripting language.
+          </li>
+         </ul>
+        </div>
+        <p class="text" id="p0040">
+         Whichever strategy applies to your situation, the procedure for defining and building the script bindings is the same in each case. The only thing that really changes is who owns the C++
+         <span class="inlinecode">
+          main()
+         </span>
+         function.
+        </p>
+       </section>
+       <section>
+        <a id="s0020">
+        </a>
+        <h3 class="h2hd" id="cesectitle0030">
+         Advantages of scripting
+        </h3>
+        <p class="textfl" id="p0045">
+         The decision to provide access to native code APIs from within a scripting language offers many advantages. These advantages can apply directly to you, if you provide a supported script binding for your C++ API, or to your clients, who may create their own script bindings on top of your C++-only API. I enumerate a few of these benefits here:
+        </p>
+        <div>
+         <ol id="ulist0010">
+          <li class="bulllist" id="p0050">
+           <a id="u0010">
+           </a>
+           •
+           <b>
+            Cross-platform
+           </b>
+           . Scripting languages are interpreted, so they execute plain ASCII source code or platform-independent byte code. They will also normally provide their own modules to interface with platform-specific features, such as the file system. Writing code for a scripting language should therefore work on multiple platforms without modification. This can also be considered a disadvantage for proprietary projects because scripting code will normally have to be distributed in source form.
+          </li>
+          <li class="bulllist" id="p0055">
+           <a id="u0015">
+           </a>
+           •
+           <b>
+            Faster development
+           </b>
+           . If you make a change to a C++ program, you must compile and link your code again. For large systems, this can be a time-consuming operation and can hinder engineers’ productivity as they wait to be able to test their change. In a scripting language, you simply edit the source code and then run it; there's no compile and link stage. This allows you to prototype and test new changes quickly, often resulting in greater engineer efficiency and project velocity.
+          </li>
+          <li class="bulllist" id="p0060">
+           <a id="u0020">
+           </a>
+           •
+           <b>
+            Write less code
+           </b>
+           . A given problem can normally be solved with less code in a higher-level scripting language versus C++. Scripting languages don't require explicit memory management, they tend to have a much larger standard library available to them than the C++ Standard Library, and they often take care of complex concepts such as reference counting behind the scenes. For example, the following single line of Ruby code will take a string and return an alphabetized list of all of the unique letters in that string. This would take a lot more code to implement in C++:
+          </li>
+         </ol>
+        </div>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0020">
+           <img alt="image" height="139" src="../../IMAGES/B978044322219100012X/main.assets/u14-01-9780443222191.jpg" width="1629"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <div>
+         <ol id="ulist0015">
+          <li class="bulllist" id="p0065">
+           <a id="u0025">
+           </a>
+           •
+           <b>
+            Script-based applications
+           </b>
+           . The traditional view of scripting languages is that you use them for small command-line tasks, but you must write any large applications in a language such as C++ for maximum efficiency. However, an alternative view
+           <a id="p503">
+           </a>
+           <span aria-label="503" epub:type="pagebreak" id="pagebreak_503" role="doc-pagebreak">
+           </span>
+           is that you can write the core performance-critical routines in C++, create script bindings for them, then write your application in a scripting language. In Model-View-Controller parlance, the Model and potentially also the View are written in C++ whereas the Controller is implemented using a scripting language. The key insight is that you don't need a superfast compiled language to manage user input that happens at a low rate of hertz.
+          </li>
+          <li class="bulllist" id="p0070">
+           At Pixar, we rewrote our in-house animation toolset as a Python-based main application that calls down into an extensive set of efficient Model and View C++ APIs. This gave us all of the advantages that I list here, such as removing the compile-link phase for many application logic changes while delivering an interactive 3D animation system for our artists.
+          </li>
+          <li class="bulllist" id="p0075">
+           <a id="u0030">
+           </a>
+           •
+           <b>
+            Support for expert users
+           </b>
+           . Adding a scripting language to an end user application can allow advanced users to customize the functionality of the application by writing macros to perform repetitive tasks or tasks that are not exposed through the GUI. This can be done without sacrificing the usability of the software for novice users, who will interface with the application solely through the GUI.
+          </li>
+          <li class="bulllist" id="p0080">
+           <a id="u0035">
+           </a>
+           •
+           <b>
+            Extensibility
+           </b>
+           . In addition to giving expert users access to under-the-covers functionality, a scripting interface can be used to let them add entirely new functionality to the application through plugin interfaces. Thus the developer of the application is no longer responsible for solving every user's problem. Instead, users have the power to solve their own problems. For example, the Firefox Web browser allows new extensions to be created using JavaScript as its embedded scripting language.
+          </li>
+          <li class="bulllist" id="p0085">
+           <a id="u0040">
+           </a>
+           •
+           <b>
+            Scripting for testability
+           </b>
+           . One extremely valuable side effect of being able to write code in a scripting language is that you can write automated tests using that language. This is an advantage because you can enable your quality assurance (QA) team to write automated tests, too. Often (though not exclusively), QA engineers will not write C++ code. However, there are many skilled QA engineers who can write scripting language code. Involving your QA team in writing automated tests can let them contribute at a lower level and have greater insight into potential issues that should be covered by testing efforts.
+          </li>
+          <li class="bulllist" id="p0090">
+           <a id="u0045">
+           </a>
+           •
+           <b>
+            Expressiveness
+           </b>
+           . The field of linguistics defines the principle of linguistic relativity (also known as the Sapir-Whorf hypothesis) as the idea that people's thoughts and behavior are influenced by their language. When applied to the field of computer science, this can mean that the expressiveness, flexibility, and ease of use of a programming language could affect the kinds of solutions that you can envision. That's because you don't have to be distracted by low-level issues such as memory management or statically typed data representations. This is obviously a more qualitative and subjective point than the previous technical arguments, but worth thinking about.
+          </li>
+         </ol>
+        </div>
+        <p class="textfl">
+         <a id="p504">
+         </a>
+        </p>
+        <div>
+         <span aria-label="504" epub:type="pagebreak" id="pagebreak_504" role="doc-pagebreak">
+         </span>
+        </div>
+       </section>
+       <section>
+        <a id="s0025">
+        </a>
+        <h3 class="h2hd" id="cesectitle0035">
+         Language compatibility issues
+        </h3>
+        <p class="textfl" id="p0095">
+         One important issue to be aware of when exposing a C++ API in a scripting language is that the patterns and idioms of C++ will not map directly to those of the scripting language. As such, a direct translation of the C++ API into the scripting language may produce a script module that doesn't feel natural or idiomatic in that language. For example:
+        </p>
+        <div>
+         <ol id="ulist0025">
+          <li class="bulllist" id="p0100">
+           <a id="u0050">
+           </a>
+           •
+           <b>
+            Naming conventions
+           </b>
+           . C++ functions are often written using either upper or lower camel case, such as
+           <span class="inlinecode">
+            GetName()
+           </span>
+           or
+           <span class="inlinecode">
+            getName()
+           </span>
+           . However, the Python convention (defined in PEP 8) is to use snake case for method names, such as
+           <span class="inlinecode">
+            get_name()
+           </span>
+           . Similarly, Ruby specifies that method names should use snake case, too.
+          </li>
+          <li class="bulllist" id="p0105">
+           <a id="u0055">
+           </a>
+           •
+           <b>
+            Getters and setters
+           </b>
+           . In this book, I have advocated that you should never directly expose data members in your classes, and that you should instead always provide getter/setter methods to access those members. However, many script languages allow you to use the syntax for accessing a member variable while forcing the access to go through getter and setter methods. In fact, in Ruby this is the only way that you can access member variables from outside a class. The result is that instead of C++ style code such as:
+          </li>
+         </ol>
+        </div>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0025">
+           <img alt="image" height="139" src="../../IMAGES/B978044322219100012X/main.assets/u14-02-9780443222191.jpg" width="1247"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0110">
+         you can simply write this, which still involves using underlying getter and setter methods:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0030">
+           <img alt="image" height="139" src="../../IMAGES/B978044322219100012X/main.assets/u14-03-9780443222191.jpg" width="727"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <div>
+         <ol id="ulist0030">
+          <li class="bulllist" id="p0115">
+           <a id="u0060">
+           </a>
+           •
+           <b>
+            Iterators
+           </b>
+           . Most scripting languages support the general concept of iterators to navigate through the elements in a sequence. However, the implementation of this concept will not normally harmonize well with the C++ Standard Library implementation. For example, C++ has five categories of iterators (forward, bidirectional, random access, input, and output), whereas Python has a single iterator category (forward). Making a C++ object iterable in a scripting language therefore requires specific attention to adapt it to the semantics of that language, such as adding an
+           <span class="inlinecode">
+            __iter__()
+           </span>
+           method in the case of Python.
+          </li>
+          <li class="bulllist" id="p0120">
+           <a id="u0065">
+           </a>
+           •
+           <b>
+            Operators
+           </b>
+           . You already know that C++ supports several operators, such as
+           <span class="inlinecode">
+            operator+
+           </span>
+           ,
+           <span class="inlinecode">
+            operator+=
+           </span>
+           , and
+           <span class="inlinecode">
+            operator[]
+           </span>
+           . Often these can be translated directly into the equivalent syntax of the scripting language, such as exposing C++'s stream
+           <span class="inlinecode">
+            operator&lt;&lt;
+           </span>
+           as the
+           <span class="inlinecode">
+            to_s()
+           </span>
+           method in Ruby (which returns a string representation of the object). However, the target language may support additional operators that are not supported by C++, such as Ruby's power operator (
+           <span class="inlinecode">
+            ∗∗
+           </span>
+           ) and its operator to return the quotient and modules of a division (
+           <span class="inlinecode">
+            divmod
+           </span>
+           ).
+           <a id="p505">
+           </a>
+          </li>
+          <li>
+           <span aria-label="505" epub:type="pagebreak" id="pagebreak_505" role="doc-pagebreak">
+           </span>
+          </li>
+          <li class="bulllist" id="p0125">
+           <a id="u0070">
+           </a>
+           •
+           <b>
+            Containers
+           </b>
+           . The C++ Standard Library provides container classes such as
+           <span class="inlinecode">
+            std::vector
+           </span>
+           ,
+           <span class="inlinecode">
+            std::set
+           </span>
+           , and
+           <span class="inlinecode">
+            std::map
+           </span>
+           . These are statically typed class templates that can contain only objects of the same type. By comparison, many scripting languages are dynamically typed and support containers with elements of different types. It's a lot more common to use these flexible types to pass data around in scripting languages. For example, a C++ method that accepts several nonconst reference arguments might be better represented in a scripting language by a method that returns a tuple. For instance:
+          </li>
+          <li>
+           <div class="pageavoid">
+            <figure class="fig" id="f0035">
+             <img alt="image" height="255" src="../../IMAGES/B978044322219100012X/main.assets/u14-04-9780443222191.jpg" width="1524"/>
+             <figcaption class="figleg">
+             </figcaption>
+            </figure>
+           </div>
+          </li>
+         </ol>
+        </div>
+        <p class="text" id="p0130">
+         All of this means that creating a good script binding is often a process that requires a degree of manually tuning. Technologies that attempt to create bindings fully automatically will normally produce APIs that don't feel natural in the scripting language. For example, the PyObjC utility provides a bridge for Objective-C objects in Python, but it can result in cumbersome constructs in Python, such as methods called
+         <span class="inlinecode">
+          setValue_()
+         </span>
+         . In contrast, a technology that lets you manually craft the way that functions are exposed in script will let you produce a higher-quality result.
+        </p>
+       </section>
+       <section>
+        <a id="s0030">
+        </a>
+        <h3 class="h2hd" id="cesectitle0040">
+         Crossing the language barrier
+        </h3>
+        <p class="textfl" id="p0135">
+         The language barrier refers to the boundary where C++ meets the scripting language. The script bindings for an object will take care of forwarding method calls in the scripting language down into the relevant C++ code. However, having C++ code call up into the scripting language will not normally happen by default. This is because a C++ API that has not been specifically designed to interoperate with a scripting language will not know that it's running within a script environment.
+        </p>
+        <p class="text" id="p0140">
+         For example, consider a C++ class with a virtual method that gets overridden in Python. The C++ code has no idea that Python has overridden one of its virtual methods. This makes sense because the C++ vtable is created statically at compile time and cannot adapt to Python's dynamic ability to add methods at run time. Some binding technologies provide extra functionality to make this cross-language polymorphism work. I will discuss how this is done for Boost Python and SWIG later in the chapter.
+        </p>
+        <p class="text" id="p0145">
+         Another issue to be aware of is whether the C++ code uses an internal event or notification system. If this is the case, some extra mechanism will need to be put in place to forward any C++ triggered events across the language boundary into script code. For example, Qt and Boost offer a signal/slot system in which C++ code can register to receive notifications when another C++ object changes state. However, allowing scripts
+         <a id="p506">
+         </a>
+         <span aria-label="506" epub:type="pagebreak" id="pagebreak_506" role="doc-pagebreak">
+         </span>
+         to receive these events will require you to write explicit code that can intercept the C++ events and send them over the boundary to the script object.
+        </p>
+        <p class="text" id="p0150">
+         Finally, exceptions are another case in which C++ code may need to communicate with script code. For example, uncaught C++ exceptions must be caught at the language barrier and then be translated into the native exception type of the script language.
+        </p>
+       </section>
+      </section>
+      <section>
+       <a id="s0035">
+       </a>
+       <h2 class="h1hd" id="cesectitle0045">
+        Script binding technologies
+       </h2>
+       <p class="textfl" id="p0155">
+        There are various technologies you can use to generate the wrappers that allow a scripting language to call down into your C++ code. Each offers its own specific advantages and disadvantages. Some are language-neutral technologies that support many scripting languages (such as COM or CORBA), some are specific to C/C++ but provide support for creating bindings to many languages (such as SWIG), some provide C++ bindings for a single language (such as Boost Python), whereas others focus on C++ bindings for a specific API (such as the Pivy Python bindings for the Open Inventor C++ Toolkit).
+       </p>
+       <p class="text" id="p0160">
+        I will list several of these technologies here, and then in the remainder of the chapter I'll focus on two in more detail. I have chosen to focus on portable yet C++-specific solutions, rather than considering the more general and heavyweight interprocess communication models such as COM or CORBA. To provide greater utility, I will look at one binding technology that lets you define the script binding programmatically (Boost Python) and another that uses an interface definition file to generate code for the binding (SWIG).
+       </p>
+       <p class="text" id="p0165">
+        Any script binding technology is essentially founded upon the Adapter design pattern. That is, it provides a one-to-one mapping of one API to another API while translating data types into their most appropriate native form and perhaps using more idiomatic naming conventions. Recognizing this fact means that you should also be aware of the standard issues that face API wrapping design patterns such as Proxy and Adapter. Of principal concern is the need to keep the two APIs synchronized over time. As you will see, both Boost Python and SWIG require you to keep redundant files in sync as you evolve the C++ API, such as extra C++ files in the case of Boost and separate interface files in the case of SWIG. This often turns out to be the largest maintenance cost when supporting a scripting API.
+       </p>
+       <section>
+        <a id="s0040">
+        </a>
+        <h3 class="h2hd" id="cesectitle0050">
+         Boost Python
+        </h3>
+        <p class="textfl" id="p0170">
+         Boost Python (also written as
+         <span class="inlinecode">
+          boost::python
+         </span>
+         or Boost.Python) is a C++ library that lets C++ APIs interoperate with Python. It's part of the excellent Boost libraries, available from
+         <a href="https://www.boost.org/">
+          https://www.boost.org/
+         </a>
+         . With Boost Python, you can create bindings programmatically in C++ code and link the bindings against the Python and Boost Python libraries. This produces a dynamic library that can be imported directly into Python.
+        </p>
+        <p class="text" id="p0175">
+         Boost Python includes support for these capabilities and features in terms of wrapping C++ APIs:
+        </p>
+        <div>
+         <ol id="ulist0035">
+          <li class="bulllist" id="p0180">
+           <a id="u0075">
+           </a>
+           • C++ references and pointers.
+           <a id="p507">
+           </a>
+          </li>
+          <li>
+           <span aria-label="507" epub:type="pagebreak" id="pagebreak_507" role="doc-pagebreak">
+           </span>
+          </li>
+          <li class="bulllist" id="p0185">
+           <a id="u0080">
+           </a>
+           • Translation of C++ exceptions to Python.
+          </li>
+          <li class="bulllist" id="p0190">
+           <a id="u0085">
+           </a>
+           • C++ default arguments and Python keyword arguments.
+          </li>
+          <li class="bulllist" id="p0195">
+           <a id="u0090">
+           </a>
+           • Manipulating Python objects in C++.
+          </li>
+          <li class="bulllist" id="p0200">
+           <a id="u0095">
+           </a>
+           • Exporting C++ iterators as Python iterators.
+          </li>
+          <li class="bulllist" id="p0205">
+           <a id="u0100">
+           </a>
+           • Python documentation strings.
+          </li>
+          <li class="bulllist" id="p0210">
+           <a id="u0105">
+           </a>
+           • Globally registered type coercions.
+          </li>
+         </ol>
+        </div>
+       </section>
+       <section>
+        <a id="s0045">
+        </a>
+        <h3 class="h2hd" id="cesectitle0055">
+         Simplified wrapper and interface generator
+        </h3>
+        <p class="textfl" id="p0215">
+         SWIG is an open source utility that can be used to create bindings for C or C++ interfaces in a variety of high-level languages. The supported languages include scripting languages such as Perl, PHP, Python, Tcl, and Ruby, as well as non-scripting languages such as C#, Common Lisp, Java, Lua, Modula-3, OCAML, Octave, and R.
+        </p>
+        <p class="text" id="p0220">
+         The central design concept of SWIG is the interface file, normally given an
+         <span class="inlinecode">
+          .i
+         </span>
+         file extension. This file is used to specify the generic bindings for a given module using C/C++ as the syntax to define the bindings. The general format of an SWIG interface file is as follows.
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0040">
+           <img alt="image" height="371" src="../../IMAGES/B978044322219100012X/main.assets/u14-05-9780443222191.jpg" width="2219"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0225">
+         The SWIG program can then read this interface file and generate bindings for a specific language. These bindings are then compiled to a shared library that can be loaded by the scripting language. For more information about SWIG, see
+         <a href="https://www.swig.org/">
+          https://www.swig.org/
+         </a>
+         .
+        </p>
+       </section>
+       <section>
+        <a id="s0050">
+        </a>
+        <h3 class="h2hd" id="cesectitle0060">
+         Python-SIP
+        </h3>
+        <p class="textfl" id="p0230">
+         SIP is a tool that lets you create C and C++ bindings for Python. It was originally created for the PyQt package, which provides Python bindings for the Qt tool kit. As such, Python-SIP has specific support for the Qt signal/slot mechanism. However, the tool can also be used to create bindings for any C++ API.
+        </p>
+        <p class="text" id="p0235">
+         SIP works in a fashion similar to that of SWIG, although it doesn't support the range of languages that SWIG does. SIP supports much of the C/C++ syntax for its interface specification files and uses a syntax for its commands similar to that of SWIG (i.e., tokens that start with a % symbol), although it supports a different set and style of commands to customize the binding. Here's an example of a simple Python–SIP interface specification file:
+         <a id="p508">
+         </a>
+         <span aria-label="508" epub:type="pagebreak" id="pagebreak_508" role="doc-pagebreak">
+         </span>
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0045">
+           <img alt="image" height="1065" src="../../IMAGES/B978044322219100012X/main.assets/u14-06-9780443222191.jpg" width="1871"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+       </section>
+       <section>
+        <a id="s0055">
+        </a>
+        <h3 class="h2hd" id="cesectitle0065">
+         Component object model automation
+        </h3>
+        <p class="textfl" id="p0240">
+         Component Object Model (COM) is a binary interface standard that allows objects to interact with each other via interprocess communication. COM objects specify well-defined interfaces that enable software components to be reused and linked together to build end user applications. The technology was developed by Microsoft in 1993 and is still used today, predominantly on the Windows platform, although Microsoft now encourages the use of .NET and SOAP.
+        </p>
+        <p class="text" id="p0245">
+         COM encompasses a large suite of technologies, but the part on which I will focus here is COM Automation, also known as OLE Automation, or simply Automation. This involves Automation objects (also known as ActiveX objects) being accessed from scripting languages to perform repetitive tasks or to control an application from script. Many target languages are supported, such as Visual Basic, JScript, Perl, Python, Ruby, and the range of Microsoft.NET languages.
+        </p>
+        <p class="text" id="p0250">
+         A COM object is identified by a Universally Unique ID (UUID) and exposes its functionality via interfaces that are also identified by UUIDs. All COM objects support the
+         <span class="inlinecode">
+          IUnknown
+         </span>
+         interface methods of
+         <span class="inlinecode">
+          AddRef()
+         </span>
+         ,
+         <span class="inlinecode">
+          Release()
+         </span>
+         , and
+         <span class="inlinecode">
+          QueryInterface()
+         </span>
+         . COM Automation objects additionally implement the
+         <span class="inlinecode">
+          IDispatch
+         </span>
+         interface, which includes the
+         <span class="inlinecode">
+          Invoke()
+         </span>
+         method to trigger a named function in the object.
+        </p>
+        <p class="text" id="p0255">
+         The object model for the interface being exposed is described using an interface description language (IDL). IDL is a language-neutral description of a software component's interface, normally stored in a file with an
+         <span class="inlinecode">
+          .idl
+         </span>
+         extension. This IDL description can then be translated into various forms using the
+         <span class="inlinecode">
+          MIDL.EXE
+         </span>
+         compiler on Windows. The generated files include the proxy DLL code for the COM object and a type library that describes the object model. The next sample shows an example of the Microsoft IDL syntax:
+         <a id="p509">
+         </a>
+         <span aria-label="509" epub:type="pagebreak" id="pagebreak_509" role="doc-pagebreak">
+         </span>
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0050">
+           <img alt="image" height="1297" src="../../IMAGES/B978044322219100012X/main.assets/u14-07-9780443222191.jpg" width="2221"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0260">
+         There's also a framework called Cross-Platform COM, or XPCOM. This is an open source project developed by Mozilla and used in many of their applications including the Firefox browser. XPCOM follows a design similar to that of COM, although their components are not compatible or interchangeable.
+        </p>
+       </section>
+       <section>
+        <a id="s0060">
+        </a>
+        <h3 class="h2hd" id="cesectitle0070">
+         Common object request broker architecture
+        </h3>
+        <p class="textfl" id="p0265">
+         The Common Object Request Broker Architecture (CORBA) is an industry standard that enables software components to communicate with each other independently of their location and vendor. In this regard, it is similar to COM: both technologies solve the problem of communication between objects from different sources and both use a language-neutral IDL format to describe each object's interface.
+        </p>
+        <p class="text" id="p0270">
+         CORBA is cross-platform with several open source implementations and provides strong support for Unix platforms. It was defined by the Object Manage Group in 1991 (the same group that manages the UML modeling language). CORBA offers a wide range of language bindings, including Python, Perl, Ruby, Smalltalk, JavaScript, Tcl, and the CORBA Scripting Language (IDLscript). It also supports interfaces with multiple inheritance, versus COM's single inheritance.
+        </p>
+        <p class="text" id="p0275">
+         In terms of scripting, CORBA doesn't require a specific automation interface, as does COM. All CORBA objects are scriptable by default via the Dynamic Invocation Interface, which lets scripting languages determine the object's interface dynamically. As an example of accessing CORBA objects from a scripting language, here is a simple IDL description and how it maps to the Ruby language:
+         <a id="p510">
+         </a>
+         <span aria-label="510" epub:type="pagebreak" id="pagebreak_510" role="doc-pagebreak">
+         </span>
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0055">
+           <img alt="image" height="602" src="../../IMAGES/B978044322219100012X/main.assets/u14-08-9780443222191.jpg" width="1282"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+       </section>
+      </section>
+      <section>
+       <a id="s0065">
+       </a>
+       <h2 class="h1hd" id="cesectitle0075">
+        Adding Python bindings with Boost Python
+       </h2>
+       <p class="textfl" id="p0280">
+        The rest of this chapter is dedicated to giving you a concrete understanding of how to create script bindings for your C++ API. I will begin by showing you how to create Python bindings using the Boost Python libraries.
+       </p>
+       <p class="text" id="p0285">
+        Python is an open source dynamically typed language that was designed by Guido van Rossum and first appeared in 1991. Python is strongly typed and features automatic memory management and reference counting. It comes with a large and extensive standard library, including modules such as os, sys, re, difflib, codecs, datetime, math, gzip, csv, socket, json, and xml, among many others. One of the more unusual aspects of Python is that indentation is used to define scope, as opposed to curly braces in C and C++. The original CPython implementation of Python is the most common, but there are other major implementations, such as Jython (written in Java) and Iron Python (targeting the .NET framework). For more details on the Python language, refer to
+        <a href="https://www.python.org/">
+         https://www.python.org/
+        </a>
+        .
+       </p>
+       <p class="text" id="p0290">
+        As I've noted, Boost Python is used to define Python bindings programmatically, which can then be compiled to a dynamic library that can be directly loaded by Python.
+        <a href="#f0010" id="Bf0010">
+         Fig. 14.1
+        </a>
+        illustrates this basic workflow.
+       </p>
+       <section>
+        <a id="s0070">
+        </a>
+        <h3 class="h2hd" id="cesectitle0080">
+         Building Boost Python
+        </h3>
+        <p class="textfl" id="p0295">
+         Many Boost packages are implemented solely as headers, using templates and inline functions, so you only need to make sure that you add the Boost directory to your compiler's include search path. However, using Boost Python requires you to build and link against the boost_python library, so you need to know how to build Boost.
+        </p>
+        <p class="text" id="p0300">
+         The recommended way to build Boost libraries is to use the bjam utility, a descendant of the Perform Jam build system. First you will need to download bjam. Prebuild executables are available for most platforms from
+         <a href="https://www.boost.org/">
+          https://www.boost.org/
+         </a>
+         .
+         <a id="p511">
+         </a>
+        </p>
+        <section>
+         <a id="sf0010">
+         </a>
+         <div class="pageavoid">
+          <figure class="fig" id="f0010">
+           <img alt="image" height="1036" src="../../IMAGES/B978044322219100012X/main.assets/f14-01-9780443222191.jpg" width="2284"/>
+           <figcaption class="figleg">
+            <a id="cap0010">
+            </a>
+            <a id="fspara0010">
+            </a>
+            <span class="fignum">
+             <a href="#Bf0010">
+              Figure 14.1
+             </a>
+            </span>
+            The workflow for creating Python bindings of a C++ application programming interface (API) using Boost Python.
+            <i>
+             White boxes
+            </i>
+            represent files and
+            <i>
+             shaded boxes
+            </i>
+            represent commands.
+           </figcaption>
+          </figure>
+         </div>
+        </section>
+        <div>
+         <span aria-label="511" epub:type="pagebreak" id="pagebreak_511" role="doc-pagebreak">
+         </span>
+        </div>
+        <p class="text" id="p0305">
+         Building the Boost libraries on a Unix variant such as Linux or Mac involves these steps:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0060">
+           <img alt="image" height="197" src="../../IMAGES/B978044322219100012X/main.assets/u14-09-9780443222191.jpg" width="1353"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0310">
+         The &lt;toolset&gt; string is used to define the compiler under which you wish to build, such as “gcc,” “darwin,” “msvc,” or “intel.”
+        </p>
+        <p class="text" id="p0315">
+         If you have multiple versions of python installed on your machine, you can specify which version to use via bjam's configuration file, a file called
+         <span class="inlinecode">
+          user-config.bjam
+         </span>
+         that you should create in your home directory. You can find more details about configuring bjam in the Boost.Build manual, but essentially you will want to add something like these entries to your
+         <span class="inlinecode">
+          user-config.bjam
+         </span>
+         file:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0065">
+           <img alt="image" height="313" src="../../IMAGES/B978044322219100012X/main.assets/u14-10-9780443222191.jpg" width="1942"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0320">
+         On Windows, you can perform similar steps from the command prompt. Just run
+         <span class="inlinecode">
+          bootstrap.bat
+         </span>
+         instead of
+         <span class="inlinecode">
+          boostrap.sh
+         </span>
+         .
+        </p>
+       </section>
+       <section>
+        <a id="s0075">
+        </a>
+        <h3 class="h2hd" id="cesectitle0085">
+         Wrapping a C++ API with Boost Python
+        </h3>
+        <p class="textfl" id="p0325">
+         Let's start by presenting a simple C++ API, which I will then expose to Python. I'll use the example of a phone book that lets you store phone numbers for multiple contacts. This gives us a manageable yet nontrivial example to build upon throughout the chapter. Here's the public definition of our phone book API:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0070">
+           <img alt="image" height="1470" src="../../IMAGES/B978044322219100012X/main.assets/u14-11-9780443222191.jpg" width="1732"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="textfl">
+         <a id="p512">
+         </a>
+        </p>
+        <div>
+         <span aria-label="512" epub:type="pagebreak" id="pagebreak_512" role="doc-pagebreak">
+         </span>
+        </div>
+        <p class="text" id="p0330">
+         This will let us demonstrate several capabilities, such as wrapping multiple classes, the use of C++ Standard Library containers, and the use of multiple constructors. I will also take the opportunity to demonstrate the creation of Python properties in addition to the direct mapping of C++ member functions to Python methods.
+        </p>
+        <p class="text" id="p0335">
+         The
+         <span class="inlinecode">
+          Person
+         </span>
+         class is essentially just a data container: it contains only getter and setter methods that access underlying data members. These are good candidates for translating to Python properties. A property in Python behaves like a normal object but uses getter and setter methods to manage access to that object (as well as a deleter method for destroying the object). This makes for more intuitive access to class members that you want to behave like a simple data member, while letting you provide logic that controls getting and setting the value.
+        </p>
+        <p class="text" id="p0340">
+         Now that I've presented our C++ API, let's look at how you can specify Python bindings for it using
+         <span class="inlinecode">
+          boost::python
+         </span>
+         . You will normally create a separate
+         <span class="inlinecode">
+          .cpp
+         </span>
+         file to specify the bindings for a given module, in which it's conventional to use the same base filename as the module with a
+         <span class="inlinecode">
+          _wrap
+         </span>
+         suffix appended; I will use
+         <span class="inlinecode">
+          phonebook_wrap.cpp
+         </span>
+         for our example. This wrap file is where you specify the classes you want to expose and the methods you want to be available on those classes. This file presents the
+         <span class="inlinecode">
+          boost::python
+         </span>
+         code necessary to wrap our
+         <span class="inlinecode">
+          phonebook.h
+         </span>
+         API:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0075">
+           <img alt="image" height="1239" src="../../IMAGES/B978044322219100012X/main.assets/u14-12-9780443222191.jpg" width="2253"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0345">
+         Note that for the
+         <span class="inlinecode">
+          Person
+         </span>
+         class, I defined two properties, called
+         <span class="inlinecode">
+          name
+         </span>
+         and
+         <span class="inlinecode">
+          home_number
+         </span>
+         , and I provided the C++ getter and setter functions to control access to those properties (if I provided only a getter method, then the property would be read only). For the
+         <span class="inlinecode">
+          PhoneBook
+         </span>
+         class, I defined standard methods, called
+         <span class="inlinecode">
+          size()
+         </span>
+         ,
+         <span class="inlinecode">
+          add_person()
+         </span>
+         ,
+         <span class="inlinecode">
+          remove_person()
+         </span>
+         , and
+         <span class="inlinecode">
+          find_person()
+         </span>
+         , respectively. I also had to specify explicitly how I want the pointer return value of
+         <span class="inlinecode">
+          find_person()
+         </span>
+         to behave.
+         <a id="p513">
+         </a>
+        </p>
+        <div>
+         <span aria-label="513" epub:type="pagebreak" id="pagebreak_513" role="doc-pagebreak">
+         </span>
+        </div>
+        <p class="text" id="p0350">
+         You can then compile the code for
+         <span class="inlinecode">
+          phonebook.cpp
+         </span>
+         and
+         <span class="inlinecode">
+          phonebook_wrap.cpp
+         </span>
+         to a dynamic library. This will involve compiling against the headers for Python and
+         <span class="inlinecode">
+          boost::python
+         </span>
+         as well as linking against the libraries for both. The result should be a
+         <span class="inlinecode">
+          phonebook.so
+         </span>
+         library on Mac and Linux, or
+         <span class="inlinecode">
+          phonebook.dll
+         </span>
+         on Windows. (Python doesn't recognize the
+         <span class="inlinecode">
+          .dylib
+         </span>
+         extension on the Mac.) For example, on Linux:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0080">
+           <img alt="image" height="255" src="../../IMAGES/B978044322219100012X/main.assets/u14-13-9780443222191.jpg" width="2172"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <div id="p0355">
+        </div>
+        <div>
+         <aside aria-labelledby="b0015" epub:type="sidebar">
+          <div class="box_top_space">
+          </div>
+          <div class="boxg1" id="b0015">
+           <div class="b1textfl" id="bpar0015">
+            <i>
+             TIP: Make sure that you compile your script bindings with the same version of Python against which your Boost Python library was built.
+            </i>
+           </div>
+          </div>
+         </aside>
+        </div>
+        <p class="text" id="p0360">
+         At this point, you can directly load the dynamic library into Python using its
+         <span class="inlinecode">
+          import
+         </span>
+         keyword. Here's some sample Python code that loads our C++ library and demonstrates the creation of
+         <span class="inlinecode">
+          Person
+         </span>
+         and
+         <span class="inlinecode">
+          Phonebook
+         </span>
+         objects. Note the property syntax for accessing the Person object, such as
+         <span class="inlinecode">
+          p.name,
+         </span>
+         versus the method call syntax for the
+         <span class="inlinecode">
+          PhoneBook
+         </span>
+         members, such as
+         <span class="inlinecode">
+          book.add_person():
+         </span>
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0085">
+           <img alt="image" height="1239" src="../../IMAGES/B978044322219100012X/main.assets/u14-14-9780443222191.jpg" width="1318"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+       </section>
+       <section>
+        <a id="s0080">
+        </a>
+        <h3 class="h2hd" id="cesectitle0090">
+         Constructors
+        </h3>
+        <p class="textfl" id="p0365">
+         In our previous
+         <span class="inlinecode">
+          phonebook_wrap.cpp
+         </span>
+         file, I didn't specify the constructors for the
+         <span class="inlinecode">
+          Person
+         </span>
+         or
+         <span class="inlinecode">
+          PhoneBook
+         </span>
+         classes explicitly. In this case, Boost Python will expose the default constructor for each class. That's why I was able to write:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0090">
+           <img alt="image" height="81" src="../../IMAGES/B978044322219100012X/main.assets/u14-15-9780443222191.jpg" width="971"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="textfl">
+         <a id="p514">
+         </a>
+        </p>
+        <div>
+         <span aria-label="514" epub:type="pagebreak" id="pagebreak_514" role="doc-pagebreak">
+         </span>
+        </div>
+        <section>
+         <a id="sf0090">
+         </a>
+        </section>
+        <p class="text" id="p0370">
+         However, in the C++ API, the
+         <span class="inlinecode">
+          Person
+         </span>
+         class has two constructors, a default constructor and a second constructor that accepts a string parameter:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0095">
+           <img alt="image" height="429" src="../../IMAGES/B978044322219100012X/main.assets/u14-16-9780443222191.jpg" width="1561"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0375">
+         You can tell Boost Python to expose both of these constructors by updating the wrapping code for Person to specify a single constructor in the class definition and then list further constructors using the
+         <span class="inlinecode">
+          .def()
+         </span>
+         syntax:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0100">
+           <img alt="image" height="313" src="../../IMAGES/B978044322219100012X/main.assets/u14-17-9780443222191.jpg" width="2114"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0380">
+         Now you can create
+         <span class="inlinecode">
+          Person
+         </span>
+         objects from Python using either constructor:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0105">
+           <img alt="image" height="371" src="../../IMAGES/B978044322219100012X/main.assets/u14-18-9780443222191.jpg" width="1039"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+       </section>
+       <section>
+        <a id="s0085">
+        </a>
+        <h3 class="h2hd" id="cesectitle0095">
+         Extending the Python API
+        </h3>
+        <p class="textfl" id="p0385">
+         It's also possible to add new methods to the Python API that don't exist in the C++ API. This is most commonly used to define some of the standard Python object methods, such as
+         <span class="inlinecode">
+          __str__()
+         </span>
+         to return a human-readable version of the object or
+         <span class="inlinecode">
+          __eq__()
+         </span>
+         to test for equality.
+        </p>
+        <p class="text" id="p0390">
+         In the next example, I have updated the
+         <span class="inlinecode">
+          phonebook_wrap.cpp
+         </span>
+         file to include a static free function that prints out the values of a
+         <span class="inlinecode">
+          Person
+         </span>
+         object. I then use this function to define the
+         <span class="inlinecode">
+          Person.__str__()
+         </span>
+         method in Python:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0110">
+           <img alt="image" height="1644" src="../../IMAGES/B978044322219100012X/main.assets/u14-19-9780443222191.jpg" width="2253"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="textfl">
+         <a id="p515">
+         </a>
+        </p>
+        <div>
+         <span aria-label="515" epub:type="pagebreak" id="pagebreak_515" role="doc-pagebreak">
+         </span>
+        </div>
+        <section>
+         <a id="sf0110">
+         </a>
+        </section>
+        <p class="text" id="p0395">
+         This demonstrates the general ability to add new methods to a class. However, in this particular case, Boost Python provides an alternative way to specify the
+         <span class="inlinecode">
+          __str__()
+         </span>
+         function in a more idiomatic fashion. You could define
+         <span class="inlinecode">
+          operator&lt;&lt;
+         </span>
+         for
+         <span class="inlinecode">
+          Person
+         </span>
+         and tell Boost to use this operator for the
+         <span class="inlinecode">
+          __str__()
+         </span>
+         method. For example:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0115">
+           <img alt="image" height="1355" src="../../IMAGES/B978044322219100012X/main.assets/u14-20-9780443222191.jpg" width="2254"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="textfl">
+         <a id="p516">
+         </a>
+        </p>
+        <div>
+         <span aria-label="516" epub:type="pagebreak" id="pagebreak_516" role="doc-pagebreak">
+         </span>
+        </div>
+        <p class="text" id="p0400">
+         With this definition for
+         <span class="inlinecode">
+          Person.__str__()
+         </span>
+         you can now write code such as this (entered at the interactive Python interpreter prompt, &gt;&gt;&gt;):
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0120">
+           <img alt="image" height="429" src="../../IMAGES/B978044322219100012X/main.assets/u14-21-9780443222191.jpg" width="1248"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0405">
+         While I am talking about extending the Python API, I will note that the dynamic nature of Python means that you can add new methods to a class at run time. This is not a Boost Python feature, but a core capability of the Python language itself. For example, you could define the
+         <span class="inlinecode">
+          __str__()
+         </span>
+         method at the Python level as:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0125">
+           <img alt="image" height="892" src="../../IMAGES/B978044322219100012X/main.assets/u14-22-9780443222191.jpg" width="2184"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0410">
+         This will output out the next text to the shell:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0130">
+           <img alt="image" height="139" src="../../IMAGES/B978044322219100012X/main.assets/u14-23-9780443222191.jpg" width="693"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+       </section>
+       <section>
+        <a id="s0090">
+        </a>
+        <h3 class="h2hd" id="cesectitle0100">
+         Inheritance in C++
+        </h3>
+        <p class="textfl" id="p0415">
+         Both C++ and Python support multiple inheritance, and Boost Python makes it easy to expose all of the base classes of any C++ class. I'll show how this is done by turning the
+         <span class="inlinecode">
+          Person
+         </span>
+         class into a base class (i.e., provide a virtual destructor) and adding a derived class called
+         <span class="inlinecode">
+          PersonWithCell
+         </span>
+         , which adds the ability to specify a cell phone number. This is not a particularly good design choice, but it serves our purposes for this example:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0135">
+           <img alt="image" height="1530" src="../../IMAGES/B978044322219100012X/main.assets/u14-24-9780443222191.jpg" width="1837"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="textfl">
+         <a id="p517">
+         </a>
+        </p>
+        <div>
+         <span aria-label="517" epub:type="pagebreak" id="pagebreak_517" role="doc-pagebreak">
+         </span>
+        </div>
+        <section>
+         <a id="sf0135">
+         </a>
+        </section>
+        <p class="text" id="p0420">
+         You can then represent this inheritance hierarchy in Python by updating the wrap file as:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0140">
+           <img alt="image" height="834" src="../../IMAGES/B978044322219100012X/main.assets/u14-25-9780443222191.jpg" width="2357"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0425">
+         Now you can create
+         <span class="inlinecode">
+          PersonWithCell
+         </span>
+         objects from Python as:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0145">
+           <img alt="image" height="950" src="../../IMAGES/B978044322219100012X/main.assets/u14-26-9780443222191.jpg" width="1110"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="textfl">
+         <a id="p518">
+         </a>
+        </p>
+        <div>
+         <span aria-label="518" epub:type="pagebreak" id="pagebreak_518" role="doc-pagebreak">
+         </span>
+        </div>
+       </section>
+       <section>
+        <a id="s0095">
+        </a>
+        <h3 class="h2hd" id="cesectitle0105">
+         Cross-language polymorphism
+        </h3>
+        <p class="textfl" id="p0430">
+         You can create classes in Python that derive from C++ classes that you've exposed with Boost Python. For example, the next Python program shows how you could create the
+         <span class="inlinecode">
+          PersonWithCell
+         </span>
+         class directly in Python and still be able to add instances of this class to
+         <span class="inlinecode">
+          PhoneBook
+         </span>
+         :
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0150">
+           <img alt="image" height="1065" src="../../IMAGES/B978044322219100012X/main.assets/u14-27-9780443222191.jpg" width="2080"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0435">
+         Of course, the
+         <span class="inlinecode">
+          cell_number
+         </span>
+         property on
+         <span class="inlinecode">
+          PyPersonWithCell
+         </span>
+         will be callable only from Python. C++ will have no idea that a new method has been dynamically added to an inherited class.
+        </p>
+        <p class="text" id="p0440">
+         Moreover, even C++ virtual functions that are overridden in Python will not be callable from C++ by default. However, Boost Python provides a way to do this if cross-language polymorphism is important for your API. This is done by defining a wrapper class that multiply inherits from the C++ class being bound as well as Boost Python's wrapper class template. This wrapper class can then check to see whether an override has been defined in Python for a given virtual function and then call that method if it's defined. For example, given a C++ class called
+         <span class="inlinecode">
+          Base
+         </span>
+         with a virtual method, you can create the wrapper class as:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0155">
+           <img alt="image" height="1528" src="../../IMAGES/B978044322219100012X/main.assets/u14-28-9780443222191.jpg" width="1770"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="textfl">
+         <a id="p519">
+         </a>
+        </p>
+        <div>
+         <span aria-label="519" epub:type="pagebreak" id="pagebreak_519" role="doc-pagebreak">
+         </span>
+        </div>
+        <p class="text" id="p0445">
+         Then you can expose the
+         <span class="inlinecode">
+          Base
+         </span>
+         class as:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0160">
+           <img alt="image" height="139" src="../../IMAGES/B978044322219100012X/main.assets/u14-29-9780443222191.jpg" width="1596"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+       </section>
+       <section>
+        <a id="s0100">
+        </a>
+        <h3 class="h2hd" id="cesectitle0110">
+         Supporting iterators
+        </h3>
+        <p class="textfl" id="p0450">
+         Boost Python also lets you create Python iterators based upon C++ Standard Library iterator interfaces that you define in your C++ API. This lets you create objects in Python that behave more “Pythonically” in terms of iterating through the elements in a container. For example, you can add
+         <span class="inlinecode">
+          begin()
+         </span>
+         and
+         <span class="inlinecode">
+          end()
+         </span>
+         methods to the
+         <span class="inlinecode">
+          PhoneBook
+         </span>
+         class that provide access to Standard Library iterators for traversing through all of the contacts in the phone book:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0165">
+           <img alt="image" height="776" src="../../IMAGES/B978044322219100012X/main.assets/u14-30-9780443222191.jpg" width="1663"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="textfl">
+         With these additional methods, you can extend the wrapping for the
+         <span class="inlinecode">
+          PhoneBook
+         </span>
+         class to specify the
+         <span class="inlinecode">
+          __iter__()
+         </span>
+         method, which is the Python way for an object to return an iterator:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0170">
+           <img alt="image" height="660" src="../../IMAGES/B978044322219100012X/main.assets/u14-31-9780443222191.jpg" width="2360"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0455">
+         Now, you can write Python code that iterates through all contacts in a PhoneBook object as:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0175">
+           <img alt="image" height="602" src="../../IMAGES/B978044322219100012X/main.assets/u14-32-9780443222191.jpg" width="1212"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="textfl">
+         <a id="p520">
+         </a>
+        </p>
+        <div>
+         <span aria-label="520" epub:type="pagebreak" id="pagebreak_520" role="doc-pagebreak">
+         </span>
+        </div>
+       </section>
+       <section>
+        <a id="s0105">
+        </a>
+        <h3 class="h2hd" id="cesectitle0115">
+         Putting it all together
+        </h3>
+        <p class="textfl" id="p0460">
+         Combining all of the features that I've introduced in the preceding sections, here's the final definition of the
+         <span class="inlinecode">
+          phonebook.h
+         </span>
+         header and the
+         <span class="inlinecode">
+          phonebook_wrap.cpp
+         </span>
+         <span class="inlinecode">
+          boost::python
+         </span>
+         wrapper:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0180">
+           <img alt="image" height="2569" src="../../IMAGES/B978044322219100012X/main.assets/u14-33p1-9780443222191.jpg" width="1553"/>
+           <img alt="image" height="1726" src="../../IMAGES/B978044322219100012X/main.assets/u14-33p2-9780443222191.jpg" width="2312"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="textfl">
+         <a id="p521">
+         </a>
+        </p>
+        <section>
+         <a id="sf0180">
+         </a>
+        </section>
+        <div>
+         <span aria-label="521" epub:type="pagebreak" id="pagebreak_521" role="doc-pagebreak">
+         </span>
+        </div>
+       </section>
+      </section>
+      <section>
+       <a id="s0110">
+       </a>
+       <h2 class="h1hd" id="cesectitle0120">
+        Adding Ruby bindings with SWIG
+       </h2>
+       <p class="textfl" id="p0465">
+        In the following sections, I'll look at another example of creating script bindings for C++ APIs. In this case I'll use the SWIG and I'll use this utility to create bindings for the Ruby language.
+       </p>
+       <p class="text" id="p0470">
+        Ruby is an open source dynamically typed scripting language that was released by Yukihiro “Matz” Matsumoto in 1995. Ruby was influenced by languages such as Perl and Smalltalk with an emphasis on ease of use. In Ruby, everything is an object, even types that C++ treats separately as built-in primitives such as
+        <span class="inlinecode">
+         int
+        </span>
+        ,
+        <span class="inlinecode">
+         float
+        </span>
+        , and
+        <span class="inlinecode">
+         bool
+        </span>
+        . Ruby is an extremely popular scripting language and is often cited as being more popular than Python in Japan, where it was originally developed. For more information on the Ruby language, see
+        <a href="https://www.ruby-lang.org/">
+         https://www.ruby-lang.org/
+        </a>
+        .
+       </p>
+       <p class="text" id="p0475">
+        SWIG works by reading the binding definition within an interface file and generating C++ code to specify the bindings. This generated code can then be compiled to a dynamic library that can be directly loaded by Ruby.
+        <a href="#f0015" id="Bf0015">
+         Fig. 14.2
+        </a>
+        illustrates this basic workflow. SWIG supports many scripting languages. I will use it to create Ruby bindings, but it could just as easily be used to create Python bindings, Perl bindings, or bindings for several other languages.
+        <a id="p522">
+        </a>
+       </p>
+       <div>
+        <span aria-label="522" epub:type="pagebreak" id="pagebreak_522" role="doc-pagebreak">
+        </span>
+       </div>
+       <section>
+        <a id="sf0015">
+        </a>
+        <div class="pageavoid">
+         <figure class="fig" id="f0015">
+          <img alt="image" height="797" src="../../IMAGES/B978044322219100012X/main.assets/f14-02-9780443222191.jpg" width="2751"/>
+          <figcaption class="figleg">
+           <a id="cap0015">
+           </a>
+           <a id="fspara0015">
+           </a>
+           <span class="fignum">
+            <a href="#Bf0015">
+             Figure 14.2
+            </a>
+           </span>
+           The workflow for creating Ruby bindings of a C++ application programming interface (API) using Simplified Wrapper and Interface Generator (SWIG).
+           <i>
+            White boxes
+           </i>
+           represent files and
+           <i>
+            shaded boxes
+           </i>
+           represent commands.
+          </figcaption>
+         </figure>
+        </div>
+       </section>
+       <section>
+        <a id="s0115">
+        </a>
+        <h3 class="h2hd" id="cesectitle0125">
+         Wrapping a C++ API with SWIG
+        </h3>
+        <p class="textfl" id="p0480">
+         I'll start with the same phone book API from the Python example and then show how to create Ruby bindings for this interface using SWIG. The phone book C++ header looks like:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0185">
+           <img alt="image" height="1528" src="../../IMAGES/B978044322219100012X/main.assets/u14-34-9780443222191.jpg" width="1732"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="textfl">
+         <a id="p523">
+         </a>
+        </p>
+        <div>
+         <span aria-label="523" epub:type="pagebreak" id="pagebreak_523" role="doc-pagebreak">
+         </span>
+        </div>
+        <p class="text" id="p0485">
+         Let's look at a basic SWIG interface file to specify how you want to expose this C++ API to Ruby:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0190">
+           <img alt="image" height="1993" src="../../IMAGES/B978044322219100012X/main.assets/u14-35-9780443222191.jpg" width="2002"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0490">
+         You can see that the interface file looks similar to the
+         <span class="inlinecode">
+          phonebook.h
+         </span>
+         header file. In fact, SWIG can parse most C++ syntax directly. If your C++ header is simple, you can even use SWIG's
+         <span class="inlinecode">
+          %include
+         </span>
+         directive to tell it to read the C++ header file directly. I've chosen not to do this so that you have direct control over what you do and don't expose to Ruby.
+        </p>
+        <p class="text" id="p0495">
+         Now that you have an initial interface file, you can ask SWIG to read this file and generate Ruby bindings for all of the specified C++ classes and methods. This will create a
+         <span class="inlinecode">
+          phonebook_wrap.cxx
+         </span>
+         file, which you can compile together with the C++ code to create a dynamic library. For example, the steps on Linux are:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0195">
+           <img alt="image" height="313" src="../../IMAGES/B978044322219100012X/main.assets/u14-36-9780443222191.jpg" width="2013"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="textfl">
+         <a id="p524">
+         </a>
+        </p>
+        <div>
+         <span aria-label="524" epub:type="pagebreak" id="pagebreak_524" role="doc-pagebreak">
+         </span>
+        </div>
+       </section>
+       <section>
+        <a id="s0120">
+        </a>
+        <h3 class="h2hd" id="cesectitle0130">
+         Tuning the Ruby API
+        </h3>
+        <p class="textfl" id="p0500">
+         This first attempt at the Ruby binding is rudimentary. There are several issues that you'll want to address to make the API feel more natural to Ruby programmers. First, the naming convention for Ruby methods is to use snake case instead of camel case: that is,
+         <span class="inlinecode">
+          add_person()
+         </span>
+         instead of
+         <span class="inlinecode">
+          AddPerson()
+         </span>
+         . SWIG supports this by letting you rename symbols in the scripting API using its
+         <span class="inlinecode">
+          %rename
+         </span>
+         command. For example, you can add these lines to the interface file to tell SWIG to rename the methods of the
+         <span class="inlinecode">
+          PhoneBook
+         </span>
+         class:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0200">
+           <img alt="image" height="255" src="../../IMAGES/B978044322219100012X/main.assets/u14-37-9780443222191.jpg" width="1698"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0505">
+         Recent versions of SWIG support an
+         <span class="inlinecode">
+          -autorename
+         </span>
+         command line option to perform this function renaming automatically. It's expected that this option will eventually be turned on by default.
+        </p>
+        <p class="text" id="p0510">
+         Second, Ruby has a concept similar to Python's properties to provide convenient access to data members. In fact, elegantly, all instance variables in Ruby are private and must therefore be accessed using via getter/setter methods. The
+         <span class="inlinecode">
+          %rename
+         </span>
+         syntax can be used to accomplish this ability, too. For example:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0205">
+           <img alt="image" height="255" src="../../IMAGES/B978044322219100012X/main.assets/u14-38-9780443222191.jpg" width="1594"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0515">
+         Finally, you may have noticed that I added an extra
+         <span class="inlinecode">
+          IsEmpty()
+         </span>
+         method to the
+         <span class="inlinecode">
+          PhoneBook
+         </span>
+         C++ class. This method returns true if no contacts have been added to the phone book. I've added this because it lets us demonstrate how to expose a C++ member function as a Ruby query method. This is a method that returns a Boolean return value, and by convention it ends with a question mark. I would therefore like the
+         <span class="inlinecode">
+          IsEmpty()
+         </span>
+         C++ function to appear as
+         <span class="inlinecode">
+          empty?
+         </span>
+         in Ruby. This can be done using SWIG's
+         <span class="inlinecode">
+          %predicate
+         </span>
+         or
+         <span class="inlinecode">
+          %rename
+         </span>
+         directives:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0210">
+           <img alt="image" height="81" src="../../IMAGES/B978044322219100012X/main.assets/u14-39-9780443222191.jpg" width="1282"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0520">
+         With these amendments to our interface file, our Ruby API is starting to feel more idiomatic. If you rerun SWIG on the interface file and rebuild the phone book dynamic library, you can import it directly into Ruby and write code such as:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0215">
+           <img alt="image" height="1008" src="../../IMAGES/B978044322219100012X/main.assets/u14-40-9780443222191.jpg" width="1282"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="textfl">
+         <a id="p525">
+         </a>
+        </p>
+        <div>
+         <span aria-label="525" epub:type="pagebreak" id="pagebreak_525" role="doc-pagebreak">
+         </span>
+        </div>
+        <section>
+         <a id="sf0215">
+         </a>
+        </section>
+        <p class="text" id="p0525">
+         Note the use of the
+         <span class="inlinecode">
+          p.name
+         </span>
+         getter and
+         <span class="inlinecode">
+          p.name=
+         </span>
+         setter, as well as the snake case
+         <span class="inlinecode">
+          add_person()
+         </span>
+         method name.
+        </p>
+       </section>
+       <section>
+        <a id="s0125">
+        </a>
+        <h3 class="h2hd" id="cesectitle0135">
+         Constructors
+        </h3>
+        <p class="textfl" id="p0530">
+         Our
+         <span class="inlinecode">
+          Person
+         </span>
+         class has two constructors: a default constructor that takes no parameters and a nondefault constructor that takes an
+         <span class="inlinecode">
+          std::string
+         </span>
+         name. Using SWIG, you simply have to include those constructor declarations in the interface file and it will automatically create the relevant constructors in Ruby. That is, given the previous interface file, you can already do:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0220">
+           <img alt="image" height="371" src="../../IMAGES/B978044322219100012X/main.assets/u14-41-9780443222191.jpg" width="1316"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0535">
+         In general, method overloading is not quite as flexible in Ruby as it is in C++. For example, SWIG will not be able to disambiguate between overloaded functions that map to the same types in Ruby: for example, a constructor that takes a
+         <span class="inlinecode">
+          short
+         </span>
+         and another that takes an
+         <span class="inlinecode">
+          int
+         </span>
+         , or a constructor that takes a pointer to an object and another that takes a reference to the same type. SWIG provides a way to deal with this by letting you ignore a given overloaded method (using
+         <span class="inlinecode">
+          %ignore
+         </span>
+         ) or renaming one of the methods (using
+         <span class="inlinecode">
+          %rename
+         </span>
+         ).
+        </p>
+       </section>
+       <section>
+        <a id="s0130">
+        </a>
+        <h3 class="h2hd" id="cesectitle0140">
+         Extending the Ruby API
+        </h3>
+        <p class="textfl" id="p0540">
+         SWIG lets you extend the functionality of your C++ API (e.g., to add new methods to a class that will appear only in the Ruby API). This is done using SWIG's
+         <span class="inlinecode">
+          %extend
+         </span>
+         directive. I will demonstrate this by adding a
+         <span class="inlinecode">
+          to_s()
+         </span>
+         method to the Ruby version of our
+         <span class="inlinecode">
+          Person
+         </span>
+         class. This is a standard Ruby method that is used to return a human-readable representation of an object, equivalent to Python's
+         <span class="inlinecode">
+          __str__()
+         </span>
+         method:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0225">
+           <img alt="image" height="2165" src="../../IMAGES/B978044322219100012X/main.assets/u14-42-9780443222191.jpg" width="1732"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="textfl">
+         <a id="p526">
+         </a>
+        </p>
+        <div>
+         <span aria-label="526" epub:type="pagebreak" id="pagebreak_526" role="doc-pagebreak">
+         </span>
+        </div>
+        <section>
+         <a id="sf0225">
+         </a>
+        </section>
+        <p class="text" id="p0545">
+         Using this new definition for our
+         <span class="inlinecode">
+          Person
+         </span>
+         binding, you can write this Ruby code:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0230">
+           <img alt="image" height="544" src="../../IMAGES/B978044322219100012X/main.assets/u14-43-9780443222191.jpg" width="1110"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0550">
+         The
+         <span class="inlinecode">
+          puts p
+         </span>
+         line will print out the
+         <span class="inlinecode">
+          Person
+         </span>
+         object using our
+         <span class="inlinecode">
+          to_s()
+         </span>
+         method. In this case, this results in the following output:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0235">
+           <img alt="image" height="81" src="../../IMAGES/B978044322219100012X/main.assets/u14-44-9780443222191.jpg" width="762"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+       </section>
+       <section>
+        <a id="s0135">
+        </a>
+        <h3 class="h2hd" id="cesectitle0145">
+         Inheritance in C++
+        </h3>
+        <p class="textfl" id="p0555">
+         As with the previous constructor case, there's nothing special that you need to do to represent inheritance using SWIG. You just declare the class in the interface file using the standard C++ syntax. For example, you can add this
+         <span class="inlinecode">
+          PersonWithCell
+         </span>
+         class to our API:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0240">
+           <img alt="image" height="1644" src="../../IMAGES/B978044322219100012X/main.assets/u14-45-9780443222191.jpg" width="1837"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="textfl">
+         <a id="p527">
+         </a>
+        </p>
+        <div>
+         <span aria-label="527" epub:type="pagebreak" id="pagebreak_527" role="doc-pagebreak">
+         </span>
+        </div>
+        <section>
+         <a id="sf0240">
+         </a>
+        </section>
+        <p class="text" id="p0560">
+         Then you can update the SWIG interface file as:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0245">
+           <img alt="image" height="2233" src="../../IMAGES/B978044322219100012X/main.assets/u14-46-9780443222191.jpg" width="1786"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="textfl">
+         <a id="p528">
+         </a>
+        </p>
+        <div>
+         <span aria-label="528" epub:type="pagebreak" id="pagebreak_528" role="doc-pagebreak">
+         </span>
+        </div>
+        <p class="text" id="p0565">
+         You can then access this derived C++ class from Ruby as:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0250">
+           <img alt="image" height="718" src="../../IMAGES/B978044322219100012X/main.assets/u14-47-9780443222191.jpg" width="1143"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0570">
+         Ruby supports only single inheritance, with support for additional mixin classes. C++ supports multiple inheritance, of course. Therefore, by default SWIG will consider only the first base class listed in the derived class: member functions in any other base classes will not be inherited. However, versions of SWIG support an optional
+         <span class="inlinecode">
+          -minherit
+         </span>
+         command line option that will attempt to simulate multiple inheritance using Ruby mixins (although in this case a class no longer has a true base class in Ruby).
+        </p>
+       </section>
+       <section>
+        <a id="s0140">
+        </a>
+        <h3 class="h2hd" id="cesectitle0150">
+         Cross-language polymorphism
+        </h3>
+        <p class="textfl" id="p0575">
+         By default, if you override a virtual function in Ruby, you'll be unable to call the Ruby method from C++. However, SWIG gives you a way to enable this kind of cross-language polymorphism via its “directors” feature. When you enable directors for a class, SWIG generates a new wrapper class that derives from the C++ class as well as SWIG's Director class. The director class stores a pointer to the underlying Ruby object and works out whether a function call should be directed to an overridden Ruby method or the default C++ implementation. This is analogous to the way that Boost Python supports cross-language polymorphism. However, SWIG creates the wrapper class for you behind the scenes: all you have to do is specify for which classes you want to create directors and enable the directors feature in your
+         <span class="inlinecode">
+          %module
+         </span>
+         directive. For example, this update to our interface file will turn on cross-language polymorphism for all of our classes:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0255">
+           <img alt="image" height="719" src="../../IMAGES/B978044322219100012X/main.assets/u14-48-9780443222191.jpg" width="1109"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="textfl">
+         <a id="p529">
+         </a>
+        </p>
+        <div>
+         <span aria-label="531" epub:type="pagebreak" id="pagebreak_531" role="doc-pagebreak">
+         </span>
+        </div>
+       </section>
+       <section>
+        <a id="s0145">
+        </a>
+        <h3 class="h2hd" id="cesectitle0155">
+         Putting it all together
+        </h3>
+        <p class="textfl" id="p0580">
+         I have evolved our simple example through several iterations to add each incremental enhancement. I'll finish this section by presenting the entire C++ header and SWIG interface file for your reference. First, here's the C++ API:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0260">
+           <img alt="image" height="2165" src="../../IMAGES/B978044322219100012X/main.assets/u14-49-9780443222191.jpg" width="1837"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0585">
+         and here's the final SWIG interface (
+         <span class="inlinecode">
+          .i
+         </span>
+         ) file:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0265">
+           <img alt="image" height="2820" src="../../IMAGES/B978044322219100012X/main.assets/u14-50p1-9780443222191.jpg" width="1415"/>
+           <img alt="image" height="544" src="../../IMAGES/B978044322219100012X/main.assets/u14-50p2-9780443222191.jpg" width="1663"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+       </section>
+      </section>
+     </section>
+    </section>
+   </div>
+  </div>
+ </body>
+</html>

@@ -1,0 +1,1054 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html>
+<html epub:prefix="z3998: http://www.daisy.org/z3998/2012/vocab/structure/#" lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+ <head>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   9: Concurrency
+  </title>
+ </head>
+ <body>
+  <div class="navigation">
+   <a class="nav-button" href="chapter_017.html">
+    ← Previous
+   </a>
+   <a class="nav-button" href="index.html">
+    Table of Contents
+   </a>
+   <a class="nav-button" href="chapter_019.html">
+    Next →
+   </a>
+  </div>
+  <div class="chapter-content">
+   <div id="sbo-rt-content">
+    <span aria-label="367" epub:type="pagebreak" id="pagebreak_367" role="doc-pagebreak">
+    </span>
+    <section epub:type="chapter" id="CH0009" role="doc-chapter" xmlns:epub="http://www.idpf.org/2007/ops">
+     <h1 class="chaptitle" epub:type="title" id="B9780443222191000076">
+      9: Concurrency
+     </h1>
+     <section epub:type="preamble">
+      <a id="abs0010">
+      </a>
+      <div class="abstract">
+       <h2 class="h1hd" id="cesectitle0010">
+        Abstract
+       </h2>
+       <div id="abssec0010">
+        <p class="abspara" id="abspara0010">
+         It wasn't until C++11 that the standard defined how code should behave in a multithreaded environment. With that introduction of that revision, it's now possible to write robust multithreaded code in C++ without having to resort to using third-party libraries such as pthreads or Boost. This chapter covers some of the core multithreading features offered by C++. It then explains some of the related terminology, such as concurrency versus parallelism, race conditions, thread safety, and reentrancy. Various techniques are presented to initialize and synchronize data so that your code is safe to use from multiple threads simultaneously. The chapter finishes with a selection of best practices to consider when writing multithreaded code and coverage of the Thread-Safe Interface design pattern.
+        </p>
+       </div>
+      </div>
+     </section>
+     <section>
+      <h3 class="h2hd" id="cesectitle0015">
+       Keywords
+      </h3>
+      <div class="keywords">
+       Concurrency; Data race; Multithreading; Parallelism; Race condition; Reentrancy; Shared data; Stateless; Synchronization; Thread safety
+      </div>
+     </section>
+     <section>
+      <p class="textfl" id="p0010">
+       Concurrency is the act of breaking down a problem into independently executing elements and then composing those together to solve some larger problem. This is distinct from the concept of parallelism, which is concerned with executing multiple operations simultaneously. The difference is that a concurrent algorithm might run correctly on a single processor or 100 of them, whereas a parallel program is about employing multiple cores to execute different elements of a task at the same time.
+      </p>
+      <p class="text" id="p0015">
+       Concurrency is often achieved through multithreading, in which a single process can have multiple threads of execution. Some of the complexities introduced by multithreaded programming include the need to communicate between threads, such as through message passing or shared memory, and managing access to shared resources, such as global data. Done incorrectly, your code can exhibit severe faults such as crashes, deadlocking, or resource starvation.
+      </p>
+      <p class="text" id="p0020">
+       In this chapter, I'll cover some of the core multithreading features offered by C++. I'll then explain some of the related terminology, such as race conditions, thread safety, and reentrancy. I'll also look at ways to initialize and synchronize data so that your code is safe to use from multiple threads simultaneously. And finally, I'll introduce a collection of best practices for writing concurrent code and discuss the Thread-Safe Interface design pattern as one way to write thread-safe object-oriented code.
+      </p>
+      <p class="text" id="p0025">
+       Because this is a book focused on the design of software interfaces, I'll not dive deeply into all of the aspects of how to write robust multithreaded code in C++. There are many other good books on the market with that focus (e.g.,
+       <a href="../B9780443222191160015/References_583-587_B9780443222191160015.xhtml#bib102" id="bib_102">
+        Williams, 2012
+       </a>
+       ). Instead, I'll look at how adopting a multithreading model can influence your application programming interface (API) design decisions. Having said that, this topic does require delving one level down into your implementation code because that's where many of the decisions are made that ultimately determine the thread safety of your API, such as mutex locking.
+      </p>
+      <section>
+       <a id="s0010">
+       </a>
+       <h2 class="h1hd" id="cesectitle0020">
+        Multithreading with C++
+       </h2>
+       <p class="textfl" id="p0030">
+        The C++98 and C++03 standards did not specify how code should behave in the presence of multiple threads. As a result, it was not possible to write portable multithreaded code using compilers based on these early standards. Some of the problems that could be faced writing C++03 code include optimizing compilers that may reorder statements and multiple processor caches that might reorder shared memory writes. As a result, developers had to rely on external libraries, such as pthreads or Boost, to make their multithreaded programs work correctly.
+        <a id="p368">
+        </a>
+       </p>
+       <div>
+        <span aria-label="368" epub:type="pagebreak" id="pagebreak_368" role="doc-pagebreak">
+        </span>
+       </div>
+       <p class="text" id="p0035">
+        Fortunately, the C++11 standard introduced direct support for multithreading, including a memory model that defines how a compiler can access memory. This involved the introduction of atomic load and store operations and memory access settings that specify how operations on different threads should be synchronized. The C++20 revision added some incremental improvements to this memory model, in particular for Power and ARM CPUs and NVIDIA GPUs.
+       </p>
+       <div>
+        <aside aria-labelledby="b0010" epub:type="sidebar">
+         <div class="box_top_space">
+         </div>
+         <div class="boxg1" id="b0010">
+          <div class="b1textfl" id="bpar0010">
+           <i>
+            TIP: Building a modern robust multithreaded library in C++ will generally require the use of C++11 or later.
+           </i>
+          </div>
+         </div>
+        </aside>
+       </div>
+       <p class="text" id="p0040">
+        At the language level, the C++11 standard also enforced guarantees around the behavior of the
+        <span class="inlinecode">
+         static
+        </span>
+        keyword. This is a typical way to implement shared data in C++, but it wasn't until C++11 that the standard required the initialization of a static object to be thread-safe. Now the standard states that only one thread can enter the initialization of a static and that the compiler must not introduce any deadlocks around its initialization.
+       </p>
+       <p class="text" id="p0045">
+        Additionally, C++11 introduced the specific concept of a thread and various new primitives for working with threads, such as semaphores, mutex locks, and condition variables. The writers of the specification even added higher-level concepts in the form of asynchronous tasks that abstract away many of the details of managing threads.
+       </p>
+       <p class="text" id="p0050">
+        The standard also introduced minimum requirements for C++ Standard Library implementations when it comes to thread safety. For example, data containers can't use a static object for internal purposes without synchronization. However, in general, if you expect any threads to write to Standard Library data containers, you should add your own synchronization mechanisms to keep them thread-safe.
+       </p>
+       <p class="text" id="p0055">
+        Because of the large number of threading features that were added to C++11 (and later revisions), several different categories of solutions operate at different levels of abstraction. You may not need to worry about all of the different tiers for most projects. This list gives an overview of these levels of abstraction, from the lowest to the highest level:
+       </p>
+       <div>
+        <ul class="ce_list" id="olist0010">
+         <li class="numlist" id="p0060">
+          <a id="o0010">
+          </a>
+          1.
+          <b>
+           Memory model:
+          </b>
+          The standard introduced the
+          <span class="inlinecode">
+           std::atomic
+          </span>
+          template, which can be used to access data atomically across multiple threads, along with the
+          <span class="inlinecode">
+           std::memory_order
+          </span>
+          enum, which specifies how atomic operation memory accesses are ordered. It also enforced the thread safety of the
+          <span class="inlinecode">
+           static
+          </span>
+          keyword and introduced per-thread static storage with the
+          <span class="inlinecode">
+           thread_local
+          </span>
+          keyword.
+         </li>
+         <li class="numlist" id="p0065">
+          <a id="o0015">
+          </a>
+          2.
+          <b>
+           Threading model:
+          </b>
+          The
+          <span class="inlinecode">
+           std::thread
+          </span>
+          class was introduced to represent a single thread of execution along with related synchronization primitives to help you
+          <a id="p369">
+          </a>
+          <span aria-label="369" epub:type="pagebreak" id="pagebreak_369" role="doc-pagebreak">
+          </span>
+          coordinate work across multiple threads such as
+          <span class="inlinecode">
+           std::mutex
+          </span>
+          ,
+          <span class="inlinecode">
+           std::lock_guard
+          </span>
+          ,
+          <span class="inlinecode">
+           std::condition_variable
+          </span>
+          , and
+          <span class="inlinecode">
+           std::init_once
+          </span>
+          .
+         </li>
+         <li class="numlist" id="p0070">
+          <a id="o0020">
+          </a>
+          3.
+          <b>
+           Task execution:
+          </b>
+          The
+          <span class="inlinecode">
+           std::async
+          </span>
+          function template can be used to execute a function asynchronously without having to worry about the details of coordinating multiple threads. The result of an asynchronous function is returned in an
+          <span class="inlinecode">
+           std::future
+          </span>
+          , which offers the ability to wait until the future has a valid result.
+         </li>
+         <li class="numlist" id="p0075">
+          <a id="o0025">
+          </a>
+          4.
+          <b>
+           Standard Library containers and algorithms:
+          </b>
+          The C++ standard defines the basic thread safety guarantees for Standard Library container classes, and as of C++17 the set of algorithms includes parallel variants that can take advantage of multiple processors, including functions such as
+          <span class="inlinecode">
+           std::copy
+          </span>
+          ,
+          <span class="inlinecode">
+           std::reverse
+          </span>
+          , and
+          <span class="inlinecode">
+           std::transform
+          </span>
+          .
+         </li>
+        </ul>
+       </div>
+      </section>
+      <section>
+       <a id="s0015">
+       </a>
+       <h2 class="h1hd" id="cesectitle0025">
+        Terminology
+       </h2>
+       <p class="textfl" id="p0080">
+        Before I dive in deeper, I'll explain some of the terms you may encounter when trying to build an interface that can take advantage of concurrency and parallelism. In the remaining sections of this chapter, we will look at how multithreaded programming can affect your API designs and how to build robust thread-safe and concurrent interfaces.
+       </p>
+       <section>
+        <a id="s0020">
+        </a>
+        <h3 class="h2hd" id="cesectitle0030">
+         Data races and race conditions
+        </h3>
+        <p class="textfl" id="p0085">
+         A data race is when one thread accesses a memory location while another thread is writing to the same address, causing undefined or unpredictable behavior. This can happen when code tries to access some shared data without any synchronization. The standard way to fix these kinds of faults is therefore to add appropriate synchronization around the data accesses, or to use an operation that's guaranteed to execute atomically, so that only one thread can access the shared data at any time.
+        </p>
+        <p class="text" id="p0090">
+         In contrast, a race condition is a semantic flaw that happens when the timing or order of events affects the correctness of a section of code. The classic example of a race condition is a bank account transfer operation, such as:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0010">
+           <img alt="image" height="544" src="../../IMAGES/B9780443222191000076/main.assets/u09-01-9780443222191.jpg" width="2427"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0095">
+         In this example, it's possible for two threads to get past the initial balance check, but then both threads remove money from the account, potentially resulting in a negative balance. This is an example of a check-then-act race condition. The fix in this case is to make the entire function operate atomically by introducing synchronization around all of the code inside the function.
+         <a id="p370">
+         </a>
+        </p>
+        <div>
+         <span aria-label="370" epub:type="pagebreak" id="pagebreak_370" role="doc-pagebreak">
+         </span>
+        </div>
+        <p class="text" id="p0100">
+         Race conditions and data races are very different types of concurrency errors, and neither is a subset of the other. Data races are concerned with access to the same memory address whereas race conditions are concerned with the correctness of blocks of code. Many race conditions can be caused by data races, but it's also possible to have race conditions in code that has no data races.
+        </p>
+       </section>
+       <section>
+        <a id="s0025">
+        </a>
+        <h3 class="h2hd" id="cesectitle0035">
+         Thread safety
+        </h3>
+        <p class="textfl" id="p0105">
+         A thread-safe API is one in which its functions can be called by multiple threads simultaneously without producing unexpected behavior or faults (i.e., without exhibiting any data races or race conditions). Another way of describing this is an API that only accesses shared resources in a way that ensures safety and correctness when executed by multiple threads at the same time.
+        </p>
+        <p class="text" id="p0110">
+         There's not generally just one solution to ensuring thread safety because achieving this will depend upon the specific characteristics of your code and the usage pattern of clients exercising your code. Race conditions in particular will depend upon the semantics of your code and whether certain blocks of code need to be executed atomically. It can therefore sometimes be better to think of three basic levels of guarantees that your code offers:
+        </p>
+        <div>
+         <ul class="ce_list" id="olist0015">
+          <li class="numlist" id="p0115">
+           <a id="o0030">
+           </a>
+           1.
+           <b>
+            Not Thread-Safe.
+           </b>
+           The API doesn't provide any specific correctness guarantees when accessed by multiple threads simultaneously. Most code written using C++98/C++03 should be considered not thread-safe unless it specifically employs a threading library such as pthreads or Boost threads.
+          </li>
+          <li class="numlist" id="p0120">
+           <a id="o0035">
+           </a>
+           2.
+           <b>
+            Partially Thread-Safe.
+           </b>
+           The API provides some guarantees of thread safety when used in specific ways. For example, most of the C++ Standard Library containers offer the guarantee that simultaneous reads of the same object are okay and simultaneous writes of different objects are okay. But simultaneous writes of the same object are not directly supported, requiring clients to implement their own synchronization to handle these cases. We'll see an example of this later in the chapter.
+          </li>
+          <li class="numlist" id="p0125">
+           <a id="o0040">
+           </a>
+           3.
+           <b>
+            Thread-Safe.
+           </b>
+           The API commits to being free of data races and race conditions when accessed by multiple threads at the same time. This requires a concerted effort on the part of the developer to ensure that all access to shared resources is done safely and that operations that need to be executed atomically are done so.
+          </li>
+         </ul>
+        </div>
+        <p class="text" id="p0130">
+         Even if your API offers full thread safety, clients of your interface could still use it in ways that introduce race conditions into their code. For example, consider this simple code fragment to pop an element from the end of a vector:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0015">
+           <img alt="image" height="197" src="../../IMAGES/B9780443222191000076/main.assets/u09-02-9780443222191.jpg" width="658"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="textfl">
+         <a id="p371">
+         </a>
+        </p>
+        <section>
+         <a id="sf0015">
+         </a>
+        </section>
+        <div>
+         <span aria-label="371" epub:type="pagebreak" id="pagebreak_371" role="doc-pagebreak">
+         </span>
+        </div>
+        <p class="text" id="p0135">
+         The
+         <span class="inlinecode">
+          pop_back()
+         </span>
+         method of
+         <span class="inlinecode">
+          std::vector
+         </span>
+         produces undefined behavior if the vector is empty (using the clang 14 compiler, it causes a crash). However, in the previous code fragment, it would be possible for two threads to pass the condition check, which would then cause undefined behavior if the vector had only one element and both threads tried to call
+         <span class="inlinecode">
+          pop_back()
+         </span>
+         . Ultimately, the authors of this code fragment need to perform their own locking around this entire code block to ensure thread safety. This is why the Standard Library container classes aren't required to implement locking of their underlying data: because the users of the container class will often need to implement locking at the level of their own code anyway.
+        </p>
+        <p class="text" id="p0140">
+         One possible way to address this at the API level might be for the container class to offer a
+         <span class="inlinecode">
+          pop_back_if_empty()
+         </span>
+         function, in which the need to introduce locking can then be hidden entirely within the API implementation and not exposed to the client. However, this could mean adding many of these composite operations, which would quickly pollute the API and violate the principle of being minimally complete that we introduced in the Qualities chapter.
+        </p>
+       </section>
+       <section>
+        <a id="s0030">
+        </a>
+        <h3 class="h2hd" id="cesectitle0040">
+         Reentrancy
+        </h3>
+        <p class="textfl" id="p0145">
+         An API call is considered reentrant if it can be safely called again before the previous invocation has finished: for example, if a function can be interrupted at any point during its execution and then safely reentered before that earlier invocation is done.
+        </p>
+        <p class="text" id="p0150">
+         This sounds similar to the definition of thread safety, but the key distinction is that reentrancy is a term that comes from a time before the introduction of modern multitasking operating systems and therefore refers to the ability to reenter a function within a single-threaded environment: for example, if a system interrupt is triggered and the interrupt handler calls the reentrant function while it's already in the process of being executed.
+        </p>
+        <p class="text" id="p0155">
+         A function that's reentrant can often also be thread-safe, but this is not always guaranteed: a reentrant function might not be thread-safe, and a thread-safe function might not be reentrant. For example, the use of mutex locking can make a function thread-safe in the presence of multiple threads, but if that function locked its mutex and was then called again within the same thread before releasing that lock, it would be deadlocked waiting for the mutex to be released.
+        </p>
+        <p class="text" id="p0160">
+         Some best practices for writing reentrant functions:
+        </p>
+        <div>
+         <ul class="ce_list" id="olist0020">
+          <li class="numlist" id="p0165">
+           <a id="o0045">
+           </a>
+           1. The function should work only on the data provided by the caller.
+          </li>
+          <li class="numlist" id="p0170">
+           <a id="o0050">
+           </a>
+           2. It should not hold static or global nonconst data unless atomic access can be guaranteed.
+          </li>
+          <li class="numlist" id="p0175">
+           <a id="o0055">
+           </a>
+           3. It should not return the memory address to any static or global nonconstant data.
+          </li>
+          <li class="numlist" id="p0180">
+           <a id="o0060">
+           </a>
+           4. It must not call other nonreentrant functions.
+          </li>
+          <li class="numlist" id="p0185">
+           <a id="o0065">
+           </a>
+           5. Locking any shared resource should be avoided, unless you can use a reentrant lock, such as a recursive mutex lock.
+          </li>
+          <li class="numlist" id="p0190">
+           <a id="o0070">
+           </a>
+           6. Self-modifying code should be avoided unless this can be done in its own thread-specific memory.
+          </li>
+         </ul>
+        </div>
+        <p class="textfl">
+         <a id="p372">
+         </a>
+        </p>
+        <div>
+         <span aria-label="372" epub:type="pagebreak" id="pagebreak_372" role="doc-pagebreak">
+         </span>
+        </div>
+        <p class="text" id="p0195">
+         For the purposes of most modern projects, thread safety is probably the more important issue to be concerned about. But if you are developing an API that may be used in an interrupt or signal handler, then you will want to consider whether your function calls are reentrant within the same thread.
+        </p>
+       </section>
+       <section>
+        <a id="s0035">
+        </a>
+        <h3 class="h2hd" id="cesectitle0045">
+         Asynchronous tasks
+        </h3>
+        <p class="textfl" id="p0200">
+         C++11 introduced a number of primitives to help developers directly create and manage threads, but it also introduced some higher-level concepts for performing work asynchronously in the form of the
+         <span class="inlinecode">
+          std::async
+         </span>
+         and
+         <span class="inlinecode">
+          std::future
+         </span>
+         templates.
+        </p>
+        <p class="text" id="p0205">
+         The
+         <span class="inlinecode">
+          std::async
+         </span>
+         function template is used to run any C++ functor asynchronously, and
+         <span class="inlinecode">
+          std::future
+         </span>
+         is used to access the result of that function once the work has completed. This makes it a lot easier to perform background processing tasks without having to worry about managing threads and semaphores. For example, the next code snippet demonstrates using a lambda function to perform some work asynchronously using
+         <span class="inlinecode">
+          std::async
+         </span>
+         . The main thread can then do some other work and then call
+         <span class="inlinecode">
+          future.get()
+         </span>
+         to block on the result from
+         <span class="inlinecode">
+          std::async
+         </span>
+         :
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0020">
+           <img alt="image" height="544" src="../../IMAGES/B9780443222191000076/main.assets/u09-03-9780443222191.jpg" width="1802"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0210">
+         Asynchronous tasks make it a lot easier to write multithreaded code in C++. However, in terms of implications for your API designs, there's perhaps not a lot to talk about here. That's because you can use any function or object method with
+         <span class="inlinecode">
+          std::async
+         </span>
+         (i.e., there's nothing special you need to add to your class definitions to make them callable with
+         <span class="inlinecode">
+          std::async
+         </span>
+         ). This is an elegant feature of the C++ implementation, particularly compared with other languages such as Swift, in which functions must be decorated with an
+         <span class="inlinecode">
+          async
+         </span>
+         keyword and callers of those async functions must use the
+         <span class="inlinecode">
+          await
+         </span>
+         keyword at the call site, which can cause a cascade of changes to happen to add asynchronous support to a Swift API.
+        </p>
+       </section>
+       <section>
+        <a id="s0040">
+        </a>
+        <h3 class="h2hd" id="cesectitle0050">
+         Parallelism
+        </h3>
+        <p class="textfl" id="p0215">
+         As noted at the start of this chapter, concurrency and parallelism are related but distinct concepts. For the purposes of the discussion here, I'll define parallelism as splitting a task into multiple subtasks that can then be executed simultaneously on multiple CPUs. For example, consider an algorithm that runs a function on every value in a vector and returns another vector containing all of the results. This input vector could be split into several smaller vectors and each of those could be computed on a different CPU to parallelize the work.
+         <a id="p373">
+         </a>
+        </p>
+        <div>
+         <span aria-label="373" epub:type="pagebreak" id="pagebreak_373" role="doc-pagebreak">
+         </span>
+        </div>
+        <p class="text" id="p0220">
+         The C++17 standard introduced parallel support for many of the algorithms in the C++ Standard Library. These are provided as overloaded versions of functions such as
+         <span class="inlinecode">
+          std::sort
+         </span>
+         ,
+         <span class="inlinecode">
+          std::find
+         </span>
+         ,
+         <span class="inlinecode">
+          std::reverse
+         </span>
+         , and
+         <span class="inlinecode">
+          std::count
+         </span>
+         . These new parallelized versions accept a new execution policy argument, which can be one of the following values:
+        </p>
+        <div>
+         <ul class="ce_list" id="olist0025">
+          <li class="numlist" id="p0225">
+           <a id="o0075">
+           </a>
+           1.
+           <span class="inlinecode">
+            std::execution::seq
+           </span>
+           : Runs the algorithm sequentially. This is the default if you don't specify an execution policy.
+          </li>
+          <li class="numlist" id="p0230">
+           <a id="o0080">
+           </a>
+           2.
+           <span class="inlinecode">
+            std::execution::par
+           </span>
+           : The implementation can choose to run the algorithm in parallel on multiple processors. You're responsible for ensuring no data races happen within the function.
+          </li>
+          <li class="numlist" id="p0235">
+           <a id="o0085">
+           </a>
+           3.
+           <span class="inlinecode">
+            std::execution::par_unseq
+           </span>
+           : The implementation can choose to run the algorithm in parallel on multiple processors. Additionally, this policy enables the use of vectorization/single instruction, multiple data technology where available.
+          </li>
+          <li class="numlist" id="p0240">
+           <a id="o0090">
+           </a>
+           4.
+           <span class="inlinecode">
+            std::execution::unseq
+           </span>
+           (introduced in C++20): Indicates that the algorithm can be vectorized (e.g., it can execute on a single thread but take advantage of CPU vectorization technology such as SSE on ×86 chips or Altivec on PPC chips).
+          </li>
+         </ul>
+        </div>
+        <p class="text" id="p0245">
+         For instance, the previous example of executing a function over every element in a vector is performed by the
+         <span class="inlinecode">
+          std::transform
+         </span>
+         function. You can use the C++17 parallelized version of this algorithm as follows. In this example, we use a lambda function to double the value of every element in the vector. The key part in this example is the use of the
+         <span class="inlinecode">
+          std::execution::par
+         </span>
+         policy to enable the parallel implementation:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0025">
+           <img alt="image" height="429" src="../../IMAGES/B9780443222191000076/main.assets/u09-04-9780443222191.jpg" width="1976"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0250">
+         Like the previous asynchronous task section, this functionality likely has little impact on the actual design of your APIs. The new parallel algorithms are features that your clients could use in their code or that you can use within your API implementation, but they don't have much of an impact on the surface area of your API itself. One exception might be if you want to provide your own parallel algorithms, in which case you might consider being consistent with the functions in the C++ Standard Library and handle an execution policy parameter to configure the parallel behavior of your calls.
+        </p>
+       </section>
+      </section>
+      <section>
+       <a id="s0045">
+       </a>
+       <hgroup>
+        <h2 class="h1hd" id="cesectitle0055">
+         Accessing shared data
+        </h2>
+        <p class="h2after1" id="cesectitle0060">
+         Stateless APIs
+        </p>
+       </hgroup>
+       <section>
+        <a id="s0050">
+        </a>
+        <p class="textfl" id="p0255">
+         Threading errors are generally caused when multiple threads try to manipulate a shared resource at the same time, such as a global variable. Therefore, objects that don't maintain or rely on any shared state can be safely accessed by multiple threads. Any function parameters and local variables within a function are allocated on the stack, and each thread has its own stack, so these are safe to use within your functions.
+         <a id="p374">
+         </a>
+        </p>
+        <div>
+         <span aria-label="374" epub:type="pagebreak" id="pagebreak_374" role="doc-pagebreak">
+         </span>
+        </div>
+        <p class="text" id="p0260">
+         There are certain categories of problem that lend themselves more toward this kind of approach, such as mathematical calculations or unit conversion routines. For example:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0030">
+           <img alt="image" height="718" src="../../IMAGES/B9780443222191000076/main.assets/u09-05-9780443222191.jpg" width="1490"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0265">
+         In this case, the
+         <span class="inlinecode">
+          Factorial()
+         </span>
+         function uses only the value parameter
+         <span class="inlinecode">
+          num
+         </span>
+         and a local variable
+         <span class="inlinecode">
+          result
+         </span>
+         , so this can be considered stateless and safe to call from multiple threads. The function is declared
+         <span class="inlinecode">
+          static
+         </span>
+         , indicating that it does not refer to any object instance state. We are not passing in any pointers or references to shared state.
+        </p>
+        <p class="text" id="p0270">
+         Stateless functions such as this will often be side effect free and deterministic, meaning that for the same set of inputs they'll produce the same result every time they're called unless, of course, they depend upon some other nondeterministic function, such as a random number generator. This is essentially the same as the concept of pure functions, which I described earlier in the Functional APIs section of the Styles chapter. The functional programming style often adapts well to concurrency without the need for additional synchronization.
+        </p>
+        <p class="text" id="p0275">
+         It's sometimes possible to recast an otherwise stateful API as a stateless one. This can be done by having any state that it may produce be returned as the result of the function. For example, consider this class that holds a vector of numbers with a routine to reverse the vector:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0035">
+           <img alt="image" height="602" src="../../IMAGES/B9780443222191000076/main.assets/u09-06-9780443222191.jpg" width="1978"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0280">
+         This object maintains the state for the number sequence in an instance variable. Without appropriate synchronization, calling the
+         <span class="inlinecode">
+          Reverse()
+         </span>
+         method at the same time from multiple threads on the same object could have unpredictable results. Instead, we can develop a stateless version of this API:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0040">
+           <img alt="image" height="313" src="../../IMAGES/B9780443222191000076/main.assets/u09-07-9780443222191.jpg" width="2253"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0285">
+         In this case, the number sequence is passed into the API and the modified version of the sequence is returned as the function result. If the implementation of this function
+         <a id="p375">
+         </a>
+         <span aria-label="375" epub:type="pagebreak" id="pagebreak_375" role="doc-pagebreak">
+         </span>
+         uses only temporary local variables, then this should be safe to call from multiple threads. However if the caller needs to store this result in a shared data structure, we've simply moved the burden of correctly synchronizing the code onto the caller.
+        </p>
+        <p class="text" id="p0290">
+         An example of this in the C++ Standard Library is reversing a string. You can use the
+         <span class="inlinecode">
+          std::reverse()
+         </span>
+         function to reverse a string in place (i.e., to change the state of the string). Or you can use the
+         <span class="inlinecode">
+          std::string
+         </span>
+         constructor to return a new string that is the reverse of the input string, such as:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0045">
+           <img alt="image" height="429" src="../../IMAGES/B9780443222191000076/main.assets/u09-08-9780443222191.jpg" width="1940"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+       </section>
+       <section>
+        <a id="s0055">
+        </a>
+        <h3 class="h2hd" id="cesectitle0065">
+         Initializing shared data
+        </h3>
+        <p class="textfl" id="p0295">
+         If you're unable to avoid shared data in your projects, then you must make sure that all access to any shared data is appropriately synchronized to make it safe in the presence of multiple threads. The first part of achieving this is to ensure that the data are safely initialized. If multiple threads try to initialize your data at the same time, then it can leave your data in an inconsistent state.
+        </p>
+        <p class="text" id="p0300">
+         There are multiple ways to declare global data, with different levels of scoping. This code provides examples of a few of these:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0050">
+           <img alt="image" height="1586" src="../../IMAGES/B9780443222191000076/main.assets/u09-09-9780443222191.jpg" width="2460"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0305">
+         Data defined at the file, global, namespace, or class scope (i.e., 1, 2, 3, and 5) should generally be avoided because they introduce several problems. First, they are initialized
+         <a id="p376">
+         </a>
+         <span aria-label="376" epub:type="pagebreak" id="pagebreak_376" role="doc-pagebreak">
+         </span>
+         when a library is first loaded into a process and they use memory in every linked process, even when those processes don't use the library. Second, if you call any functions to initialize the data, then you can run into complex initialization dependency problems that in the worst case can cause your library to crash on load.
+        </p>
+        <p class="text" id="p0310">
+         A static variable is initialized when it's first encountered, so using a function-scoped static (i.e., 4) is far preferable because it avoids library load time dependency issues and it creates the shared data only if that function is executed. This is described in more detail in the section on Singletons in the Patterns chapter.
+        </p>
+        <p class="text" id="p0315">
+         As we noted earlier in this chapter, before C++11 it was simply not possible to implement thread-safe initialization of data using the
+         <span class="inlinecode">
+          static
+         </span>
+         keyword. However, since C++11, static data initialization must now be implemented by compilers in a thread-safe manner. So you should use static data without further synchronization only if you're using C++11 or a later revision.
+        </p>
+        <p class="text" id="p0320">
+         Nevertheless, there may be times when you need to perform several instructions to initialize your shared data fully and a single static declaration is insufficient. In those cases, you can rely on another new feature of C++11:
+         <span class="inlinecode">
+          std::call_once
+         </span>
+         . This will execute a piece of code exactly once even if called concurrently from multiple threads. Here's an example:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0055">
+           <img alt="image" height="544" src="../../IMAGES/B9780443222191000076/main.assets/u09-10-9780443222191.jpg" width="1455"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0325">
+         Because we're talking about static data and threading, we should mention the
+         <span class="inlinecode">
+          thread_local
+         </span>
+         keyword that was also introduced with C++11. This is a way to define a static variable with a separate copy of the data per thread. A thread-local variable is created at thread creation time and destroyed when the thread finishes. A typical example of this is a random number generator in which each thread has its own random seed, as shown in this example:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0060">
+           <img alt="image" height="602" src="../../IMAGES/B9780443222191000076/main.assets/u09-11-9780443222191.jpg" width="2462"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0330">
+         Finally, another way to ensure that your shared data are initialized in a thread-safe manner is to perform the initialization while the app is still single threaded. This is
+         <a id="p377">
+         </a>
+         <span aria-label="377" epub:type="pagebreak" id="pagebreak_377" role="doc-pagebreak">
+         </span>
+         something that only the client of your library can fully determine, so this approach means providing an initialization function that your clients must call at an appropriately early point in their programs.
+        </p>
+       </section>
+       <section>
+        <a id="s0060">
+        </a>
+        <h3 class="h2hd" id="cesectitle0070">
+         Synchronized data access
+        </h3>
+        <p class="textfl" id="p0335">
+         Now that we've covered how to initialize shared data safely, we can move on to discuss how to modify those data safely without causing a data race. A data race is when two or more threads try to access the same memory address and at least one of the threads is writing to the data.
+        </p>
+        <p class="text" id="p0340">
+         The way to avoid data races is to introduce locking around all accesses to the data, such as with a mutually exclusive lock, also known as a mutex. This ensures that only a single thread can access the shared data at any point in time. You generally must acquire the mutex lock before you access the shared data and then release it afterward. If you don't balance your lock and unlock calls, perhaps due to an early function exit, then no other attempt to acquire the lock will succeed and your program will deadlock.
+        </p>
+        <p class="text" id="p0345">
+         To avoid this, it's better to apply RAII principles and have the lock be automatically released when your code goes out of scope. This is also referred to as the scoped locking idiom (
+         <a href="../B9780443222191160015/References_583-587_B9780443222191160015.xhtml#bib85" id="bib_85">
+          Schmidt, 1999
+         </a>
+         ). C++11 introduced new objects for this purpose, such as
+         <span class="inlinecode">
+          std::lock_guard
+         </span>
+         and
+         <span class="inlinecode">
+          std::unique_lock
+         </span>
+         . For example, when an
+         <span class="inlinecode">
+          std::lock_guard
+         </span>
+         object is created it locks the mutex, and when it goes out of scope the mutex is released. Here's an example:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0065">
+           <img alt="image" height="1297" src="../../IMAGES/B9780443222191000076/main.assets/u09-12-9780443222191.jpg" width="1975"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0350">
+         We don't need to add locking code to the constructor. Objects are constructed by a single thread and can be accessed by other threads only once they've been initialized. So it's safe to eschew the lock in this case. Of course, if the constructor were to try to access any shared or global resources, then locking would be required.
+         <a id="p378">
+         </a>
+        </p>
+        <div>
+         <span aria-label="378" epub:type="pagebreak" id="pagebreak_378" role="doc-pagebreak">
+         </span>
+        </div>
+        <p class="text" id="p0355">
+         In this example I've added the mutex as a class data member, so the mutex will be initialized when the object is created and we will create a separate mutex for each instance of the object. This is generally preferrable to the alternative of having a single mutex for all instances because the way it's expressed in the previous example allows different threads to access different instances of the object at the same time. However, if you did want to use a single mutex for all instances, you could declare the mutex to be a static class data member. You would want to do this if the shared data you want to protect are also a static data member (i.e., the data are shared across all instances of the object).
+        </p>
+        <div>
+         <aside aria-labelledby="b0015" epub:type="sidebar">
+          <div class="box_top_space">
+          </div>
+          <div class="boxg1" id="b0015">
+           <div class="b1textfl" id="bpar0015">
+            <i>
+             TIP: Any time you create global or static data for your APIs, you should think about the thread safety implications of accessing those shared data from multiple threads.
+            </i>
+           </div>
+          </div>
+         </aside>
+        </div>
+       </section>
+      </section>
+      <section>
+       <a id="s0065">
+       </a>
+       <h2 class="h1hd" id="cesectitle0075">
+        Concurrent API design
+       </h2>
+       <p class="textfl" id="p0360">
+        In terms of API design, it's important to bear in mind that building an API that handles concurrency can be different from building a single-threaded one. Nonetheless, many of the design principles we've already covered will help you in both cases. For example, designing loosely coupled, minimally complete interfaces in which you hide implementation details and don't duplicate concepts will help you as you design APIs that support concurrency. And if you chose to adopt a functional programming style, then your use of pure functions is likely already thread-safe.
+       </p>
+       <section>
+        <a id="s0070">
+        </a>
+        <h3 class="h2hd" id="cesectitle0080">
+         Concurrency best practices
+        </h3>
+        <p class="textfl" id="p0365">
+         In his book
+         <i>
+          Clean Code
+         </i>
+         , Robert Martin offers a series of great tips for writing good concurrent code (
+         <a href="../B9780443222191160015/References_583-587_B9780443222191160015.xhtml#bib61" id="bib_61">
+          Martin, 2008
+         </a>
+         ). Also, Bjarne Stroustrup and Herb Sutter provide several recommendations related to concurrency on their C++ Core Guidelines website. I've summarized several of these best practices here as they relate to API design:
+        </p>
+        <div>
+         <ol id="ulist0010">
+          <li class="bulllist" id="p0370">
+           <a id="u0010">
+           </a>
+           •
+           <b>
+            Limit Access to Shared Data
+           </b>
+           : As we've already covered, most multithreaded problems come down to accessing shared resources, such as shared mutable data. Code that doesn't share writable data won't have data races. So, limiting the amount of shared data you have in your design and ensuring that all access goes through an API where you can enforce synchronization will help to avoid data races.
+          </li>
+          <li class="bulllist" id="p0375">
+           <a id="u0015">
+           </a>
+           •
+           <b>
+            Return Copies of Data
+           </b>
+           : If your clients can work on copies of your data, then this will be much simpler than trying to synchronize all access to a single shared instance. For example, you can have an API that returns a read-only copy of the data if clients don't always need the ability to change it. Or you can have an API that returns a copy of your data for clients to work on and then provide a single synchronized API call for them to return the modified version.
+           <a id="p379">
+           </a>
+          </li>
+          <li>
+           <span aria-label="379" epub:type="pagebreak" id="pagebreak_379" role="doc-pagebreak">
+           </span>
+          </li>
+          <li class="bulllist" id="p0380">
+           <a id="u0020">
+           </a>
+           •
+           <b>
+            Independent Threads
+           </b>
+           : You should try to partition your data into independent objects so that threaded code doesn't need to share data from other threads. By allowing threads to be as independent as possible, you minimize the need to perform synchronization and avoid data races. Similarly, you should be aware of dependencies between API calls that require synchronization because these can introduce subtle bugs.
+          </li>
+          <li class="bulllist" id="p0385">
+           <a id="u0025">
+           </a>
+           •
+           <b>
+            Minimize Synchronized Sections
+           </b>
+           : When you add locking to some shared resource, you're ensuring that only one thread can execute that critical section of code at any time. If you perform a lot of work within this critical section, you can drastically affect the overall performance of your system. So try to limit locks to just the code that needs to be synchronized and don't include other unrelated calls.
+          </li>
+          <li class="bulllist" id="p0390">
+           <a id="u0030">
+           </a>
+           •
+           <b>
+            Think in Terms of High-Level Tasks
+           </b>
+           : Threads are a low-level implementation concept. But usually your clients are focused on achieving higher-level tasks. Thinking about your API design in terms of tasks, rather than threads, can therefore make it easier for your clients to reason about your design. C++11 introduced the concept of
+           <span class="inlinecode">
+            std::async
+           </span>
+           to run a function asynchronously. Consider using this task-level feature to introduce support for concurrency in your designs where feasible.
+          </li>
+          <li class="bulllist" id="p0395">
+           <a id="u0035">
+           </a>
+           •
+           <b>
+            Don't Rely on the Volatile Keyword
+           </b>
+           : The
+           <span class="inlinecode">
+            volatile
+           </span>
+           keyword is used to tell the compiler that a variable can be changed by some external event. This can be used to avoid compiler optimizations such as caching the value in a register. This may sound like it could also be useful for multithreading because multiple threads may try to change the same variable, but it's important to appreciate that
+           <span class="inlinecode">
+            volatile
+           </span>
+           has nothing to do with concurrency (i.e., it doesn't perform any synchronization or prevent instruction reordering). Adding this keyword will not fix any data races in your code.
+          </li>
+          <li class="bulllist" id="p0400">
+           <a id="u0040">
+           </a>
+           •
+           <b>
+            Test Concurrent Code
+           </b>
+           : When writing concurrent code, you should not ignore seemingly one-off failures because they can indicate that you have an underlying threading problem. Make sure you thoroughly test concurrent code by running it on different platforms, running it multiple times with different timings and orderings, and running with more threads than processors. Also, take advantage of tools that can help you find potential threading errors in your code. You can refer to the Multithreading Analysis section of the Performance chapter for a review of several tools that can check your multithreaded code.
+          </li>
+         </ol>
+        </div>
+       </section>
+       <section>
+        <a id="s0075">
+        </a>
+        <h3 class="h2hd" id="cesectitle0085">
+         Thread-Safe Interface pattern
+        </h3>
+        <p class="textfl" id="p0405">
+         If you have multiple functions within your API that call each other, there can be the potential for self-deadlocking (i.e., when one function locks a resource and then calls another function that also tries to lock the same resource). One way to solve this is with a recursive mutex, but that can introduce additional locking overhead. A better solution is to use the Thread-Safe Interface design pattern. The basic principles of this pattern are (
+         <a href="../B9780443222191160015/References_583-587_B9780443222191160015.xhtml#bib85">
+          Schmidt, 1999
+         </a>
+         ):
+         <a id="p380">
+         </a>
+         <span aria-label="380" epub:type="pagebreak" id="pagebreak_380" role="doc-pagebreak">
+         </span>
+        </p>
+        <div>
+         <ul class="ce_list" id="olist0030">
+          <li class="numlist" id="p0410">
+           <a id="o0095">
+           </a>
+           1. Only public methods should acquire and release locks. These functions can then call into private or protected implementation methods to perform the actual work.
+          </li>
+          <li class="numlist" id="p0415">
+           <a id="o0100">
+           </a>
+           2. Private and protected methods should perform work only when called by the public methods. These functions should never call public methods because that could introduce self-deadlocking.
+          </li>
+         </ul>
+        </div>
+        <p class="text" id="p0420">
+         This is demonstrated in this code:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0070">
+           <img alt="image" height="1007" src="../../IMAGES/B9780443222191000076/main.assets/u09-13-9780443222191.jpg" width="1837"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="text" id="p0425">
+         The use of inheritance can also introduce subtle concurrency bugs around locking. For example, you may have an API that does locking to synchronize access to a shared resource, but a client could override a virtual function and provide a new implementation that doesn't do any locking. The Thread-Safe Interface pattern can help here, too. You just need to ensure that any virtual functions are defined as protected or private (i.e., that clients can provide an alternative implementation for a virtual function, but the functionality is only ever accessed by calling a public function that performs all necessary locking). For example:
+        </p>
+        <div>
+         <div class="pageavoid">
+          <figure class="fig" id="f0075">
+           <img alt="image" height="1586" src="../../IMAGES/B9780443222191000076/main.assets/u09-14-9780443222191.jpg" width="1941"/>
+           <figcaption class="figleg">
+           </figcaption>
+          </figure>
+         </div>
+        </div>
+        <p class="textfl">
+         <a id="p381">
+         </a>
+        </p>
+        <div>
+         <span aria-label="381" epub:type="pagebreak" id="pagebreak_381" role="doc-pagebreak">
+         </span>
+        </div>
+        <section>
+         <a id="sf0075">
+         </a>
+        </section>
+        <p class="text" id="p0430">
+         In this example, you can see that the client created a new
+         <span class="inlinecode">
+          MyDerivedObject
+         </span>
+         class that overrides the protected virtual function
+         <span class="inlinecode">
+          DoFoo()
+         </span>
+         . The client doesn't need to worry about locking any shared resources in this override because the only correct way to call
+         <span class="inlinecode">
+          DoFoo()
+         </span>
+         is by calling the public
+         <span class="inlinecode">
+          Foo()
+         </span>
+         function, which performs all necessary locking before forwarding to the
+         <span class="inlinecode">
+          DoFoo()
+         </span>
+         implementation.
+        </p>
+       </section>
+      </section>
+     </section>
+    </section>
+   </div>
+  </div>
+ </body>
+</html>
